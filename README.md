@@ -26,6 +26,11 @@
     * Application상의 메서드 요청의 결과값
     
 # illuminati는 쉽게 사용할 수 있습니다.
+1. 따로 데이터 타입을 만들 필요가 없습니다. (DTO가 필요 없음)
+2. Agent설치가 필요 없습니다.
+3. Annotation방식으로 간편한 적용이 가능합니다.
+
+# illuminati 사용방법
 1. MAVEN, GRADLE Dependency 추가
 2. illuminati-{**phase**}.yml, properties에 설정 추가 (queue주소... 등등)
 3. Application 실행시 -Dspring.profiles.active={**phase**} 추가
