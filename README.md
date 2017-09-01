@@ -102,9 +102,9 @@ public class ApiSampleController {
 
 ## Illuminati Consumer 추가 
 * Spring Cloud Stream을 이용하여 쉽게 Consumer를 추가할수 있음
-* Consumer에서 ElasticSearch나 MongoDB, MySQL, Hadoop등 원하는대로 데이터를 전송가능
-* 여러 컨슈머에서 동시에 같은 Event 데이터를 받을수 있음
-* 여러 컨슈머에서 데이터를 나누어 받아 Throughput을 쉽게 늘릴수 있음 
+* Consumer에서 ElasticSearch나 MongoDB, MySQL, Hadoop등 원하는대로 데이터를 전송가능 (Sample은 ES만완성)
+   * 여러 컨슈머에서 동시에 같은 Event 데이터를 받을수 있음
+   * 여러 컨슈머에서 데이터를 나누어 받아 Throughput을 쉽게 늘릴수 있음 
 
 ## Illuminati 데이타를 이용하여 Kibana에서 확인 가능 
 * 커머스 데이타 Sample 화면
