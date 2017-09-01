@@ -101,6 +101,7 @@ public class ApiSampleController {
 * 여러 컨슈머에서 동시에 같은 Event 데이터를 받을수 있음
 
 ## Illuminati 데이타를 이용하여 Kibana에서 확인 가능 
+* 커머스 데이타 Sample 화면
 
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/kibana-sample.png)
 
