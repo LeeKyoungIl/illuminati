@@ -19,6 +19,7 @@
 2. 클라이언트 요청에 관한 모든 정보
     * 모든 HEADER, COOKIE
     * OS, BROWSER, DEVICE 정보
+    * Global Transaction ID발급으로 Applicaion상의 메서드 호출 순서,내용 추적가능
     * Application상의 실행 메서드 및 파라메터
     * Application상의 메서드 실행 시간
     * Application상의 메서드 요청의 파라메터값 (GET, POST)
@@ -26,7 +27,9 @@
     
 # illuminati는 쉽게 사용할 수 있습니다.
 1. MAVEN, GRADLE Dependency 추가
-2. 수집을 원하는 곳에 @Illuminati Annotation을 추가
+2. illuminati-{**phase**}.yml, properties에 설정 추가 (queue주소... 등등)
+3. Application 실행시 -Dspring.profiles.active={**phase**} 추가
+3. 수집을 원하는 곳에 **@Illuminati** Annotation을 추가
 
 # illuminati 구조
 
@@ -91,4 +94,13 @@ public class ApiSampleController {
         }
 }
 ```
+
+## Illuminati Consumer 추가 
+* Spring Cloud Stream을 이용하여 쉽게 Consumer를 추가할수 있음
+* Consumer에서 ElasticSearch나 MongoDB, MySQL, Hadoop등 원하는대로 데이터를 전송가능
+* 여러 컨슈머에서 동시에 같은 Event 데이터를 받을수 있음
+
+## Illuminati 데이타를 이용하여 Kibana에서 확인 가능 
+
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/kibana-sample.png)
 
