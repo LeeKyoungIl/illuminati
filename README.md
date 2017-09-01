@@ -12,6 +12,7 @@
 ## 권장사항
 * ElasticSearch
 * Kibana
+* Spring Cloud Stream - Consumer 제작시
 
 # illuminati에서 수집을 하는 Event 데이터 정보
 1. 적용 서버의 정보와(IP, HOST_NAME..등등), JVM MEMORY 사용정보
@@ -27,7 +28,7 @@
 1. MAVEN, GRADLE Dependency 추가
 2. 수집을 원하는 곳에 @Illuminati Annotation을 추가
 
-## illuminati 구조
+# illuminati 구조
 
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
 
