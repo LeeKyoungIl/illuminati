@@ -31,6 +31,10 @@
 3. Application 실행시 -Dspring.profiles.active={**phase**} 추가
 3. 수집을 원하는 곳에 **@Illuminati** Annotation을 추가
 
+# illuminati는 본래의 Application 로직에 영향이 없습니다.
+1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
+2. 성능하락은 발생할수도 있지만 물리서버에서는 큰 차이는 없습니다. (가상 장비에서는 조금더 발생할수 있습니다.)
+
 # illuminati 구조
 
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
