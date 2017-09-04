@@ -70,7 +70,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 ```
 
 ## Gradle Dependency 추가 
-    * Maven
+    * Gradle
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.5'
