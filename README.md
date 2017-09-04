@@ -39,14 +39,25 @@
     * Maven
     
 ```java
+<dependency>
+  <groupId>com.leekyoungil.illuminati</groupId>
+  <artifactId>illuminati-client-annotation</artifactId>
+  <version>0.5</version>
+</dependency>
 
+<dependency>
+  <groupId>com.leekyoungil.illuminati</groupId>
+  <artifactId>illuminati-client-processor</artifactId>
+  <version>0.7.1</version>
+</dependency>
 ```
 
 ## Gradle Dependency 추가 
     * Maven
     
 ```java
-
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.7.1'
 ```
 
 ## Class에 @Illuminati 추가 
