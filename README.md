@@ -56,17 +56,26 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
     * Maven
     
 ```java
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-annotation</artifactId>
-  <version>0.5</version>
-</dependency>
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
 
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-processor</artifactId>
-  <version>0.7.1</version>
-</dependency>
+<dependencies>
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-annotation</artifactId>
+      <version>0.5</version>
+   </dependency>
+
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-processor</artifactId>
+      <version>0.7.2</version>
+   </dependency>
+</dependencies>
 ```
 
 ## Gradle Dependency 추가 
