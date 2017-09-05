@@ -111,3 +111,26 @@ parentModuleName: apisample
 samplingRate: 50
 debug: false
 ```
+
+## sampling rate 기능 
+ * 설정파일중 samplingRate항목이 있는데 이는 요청중에 얼마나 일루미나티로 데이터를 수집할 것인지 설정하는 기능 입니다. 
+ * 예를들어 100을 설정하면 모든 요청을 다 수집하며 30으로 하면 요청중 30%만 수집을 합니다. 
+ * 성능상에 약간의 이득을 볼수는 있으나 그 차이가 크지 않으니 100%로 설정을 하는것을 권장 합니다.
+
+## 카오스 봄버 기능 
+ * 카오스 봄버는 illuminati를 적용한 메서드들중에 임의로 Exception을 발생시키는 기능 입니다. 
+ * 모든 코드는 Exception에 대비하고 Exception이 발생 했을때 복구를 할 수 있어야 합니다. 
+ * 해당 기능은 위험한 기능으로 설정 파일의 debug모드가 true일때만 동작 합니다.
+ 
+## 카오스 봄버는 application.properties 혹은 illuminati.yml에 따로 설정을 해야 합니다. 
+ * illuminati.yml
+```java
+# it is very dangerous function. it is activate when debug is true.
+# after using this function. you must have to re compile.(clean first)
+chaosBomber: true
+```
+
+## illuminati는 쉽게 비활성화 할수 있습니다. 
+ * 이미 @illuminati가 적용된 모든 소스를 수정하기는 어렵습니다. 
+ * pom.xml 혹은 build.gradle에서 illuminati-client-processor 부분만 주석처리를 하면 됩니다.
+ * 꼭 clean후 다시 컴파일을 하여 배포를 하면 소스 수정 없이 비활성화를 할수 있습니다.
