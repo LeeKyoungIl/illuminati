@@ -117,7 +117,7 @@ public class FileUtils {
             }
         } catch (IOException ex) {
             if (messager != null) {
-                messager.printMessage(Diagnostic.Kind.ERROR,"Sorry, something is wrong in read process. ("+ex.toString()+")");
+                messager.printMessage(Diagnostic.Kind.WARNING,"Sorry, something is wrong in read process. ("+ex.toString()+")");
             }
 
             FileUtils.FILEUTIL_LOGGER.debug("Sorry, something is wrong in read process. ("+ex.toString()+")");
@@ -127,7 +127,7 @@ public class FileUtils {
                     input.close();
                 } catch (IOException ex) {
                     if (messager != null) {
-                        messager.printMessage(Diagnostic.Kind.ERROR,"Sorry, something is wrong in close InputStream process. ("+ex.toString()+")");
+                        messager.printMessage(Diagnostic.Kind.WARNING,"Sorry, something is wrong in close InputStream process. ("+ex.toString()+")");
                     }
 
                     FileUtils.FILEUTIL_LOGGER.debug("Sorry, something is wrong in close InputStream process. ("+ex.toString()+")");
