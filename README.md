@@ -73,13 +73,13 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-annotation</artifactId>
-      <version>0.5</version>
+      <version>0.8</version>
    </dependency>
 
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.7.2</version>
+      <version>0.7.4</version>
    </dependency>
 </dependencies>
 ```
@@ -92,8 +92,8 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.5'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.7.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.7.4'
 ```
 
 ## Class에 @Illuminati 추가 

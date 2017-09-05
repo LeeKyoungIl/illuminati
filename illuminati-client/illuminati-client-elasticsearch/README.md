@@ -14,7 +14,7 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.6</version>
+  <version>0.6.1</version>
 </dependency>
 ```
 
