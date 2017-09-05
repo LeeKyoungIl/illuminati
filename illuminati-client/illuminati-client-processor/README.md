@@ -1,56 +1,12 @@
 # Project illuminati : illuminati-client-processor
 
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/illuminati-logo.png)
+# illuminati client의 core 모듈입니다.
 
-# Application 에서 일어나는 모든 EVENT 데이터를 수집하고 Kibana또는 다른툴을(어떤툴이든) 이용해서 보여주는 플랫폼 입니다.
-
-# illuminati 개발 의도
-**쓰레기 데이터란 없습니다.**
-Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 데이터가 의미가 있는 데이터 인지는 쌓이는 데이터들은 확인해서 구분해야 합니다.
-그리고 데이터 수집과 분석은 서로 다른 프로세스에서 실행 되어야 합니다. 
-**illuminati**는 Application에서 발생하는 모든 데이터를 사용자의 필요성에 따라서 수집을 쉽게 할수 있고 그 수집된 데이터의 분석을 처리하는 
-프로세스를 분리하여 확장이 가능하고 좀더 빠르게 데이터를 분석할수 있도록 하기위해 만들어졌습니다.
-
-## 필수사항
-* Java6 이상
-* RabbitMQ 또는 Kafka
-* AspectJ를 사용할 수 있는 Java Web Application 
-
-## 권장사항
-* ElasticSearch
-* Kibana
-* Spring Cloud Stream - Consumer 제작시
-
-# illuminati에서 수집을 하는 Event 데이터 정보
-1. 적용 서버의 정보와(IP, HOST_NAME..등등), JVM MEMORY 사용정보
-2. 클라이언트 요청에 관한 모든 정보
-    * 모든 HEADER, COOKIE
-    * OS, BROWSER, DEVICE 정보
-    * Global Transaction ID발급으로 Applicaion상의 메서드 호출 순서,내용 추적가능
-    * Application상의 실행 메서드 및 파라메터
-    * Application상의 메서드 실행 시간
-    * Application상의 메서드 요청의 파라메터값 (GET, POST)
-    * Application상의 메서드 요청의 결과값
-    
-# illuminati는 쉽게 사용할 수 있습니다.
-1. 따로 데이터 타입을 만들 필요가 없습니다. (DTO가 필요 없음)
-2. Agent설치가 필요 없습니다.
-3. Annotation방식으로 간편한 적용이 가능합니다.
-
-# illuminati 사용방법
-1. MAVEN, GRADLE Dependency 추가
-2. illuminati-{**phase**}.yml, properties에 설정 추가 (queue주소... 등등)
-3. Application 실행시 -Dspring.profiles.active={**phase**} 추가
-3. 수집을 원하는 곳에 **@Illuminati** Annotation을 추가
-
-# illuminati는 본래의 Application 로직에 영향이 없습니다.
-1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
-2. 성능하락은 발생할수도 있지만 물리서버에서는 큰 차이는 없습니다. (가상 장비에서는 조금더 발생할수 있습니다.)
-3. 본래의 Application로직에서 Exception이 발생하는 경우에도 illuminati에서는 해당 Exception정보도 수집하여 파악이 가능합니다. 
-
-# illuminati 구조
-
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
+# 지원하는 메시지큐
+ * rabbitmq - 대용량 트래픽 테스트 완료 
+ * kafka - 테스트 중 
+ 
+## 현 버전 (0.7.2) 에서는 rabbitmq를 권장 합니다.
 
 ## Maven Dependency 추가 
     * Maven
@@ -123,14 +79,58 @@ public class ApiSampleController {
 }
 ```
 
-## Illuminati Consumer 추가 
-* Spring Cloud Stream을 이용하여 쉽게 Consumer를 추가할수 있음
-* Consumer에서 ElasticSearch나 MongoDB, MySQL, Hadoop등 원하는대로 데이터를 전송가능 (Sample은 ES만완성)
-   * 여러 컨슈머에서 동시에 같은 Event 데이터를 받을수 있음
-   * 여러 컨슈머에서 데이터를 나누어 받아 Throughput을 쉽게 늘릴수 있음 
+## yml 설정방법 - illuminati-{phase}.yml 또는 illuminati-{phase}.properties
+ * rabbitmq
 
-## Illuminati 데이타를 이용하여 Kibana에서 확인 가능 
-* 커머스 데이타 Sample 화면
+```java
+#rabbitmq
+broker: rabbitmq
+clusterList: 192.168.99.100:32789
+virtualHost: illuminatiLocal
+topic: local-illuminati-exchange
+queueName: local-illuminati-exchange.illuminati
+userName: illuminati-local
+password: illuminati-local
+isAsync: true
+isCompression: true
+parentModuleName: apisample
+samplingRate: 100
+debug: false
+```
 
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/kibana-sample.png)
+ * kafka
+```java
+#kafka
+broker: kafka
+clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
+topic: illuminati-local
+isAsync: true
+isCompression: true
+performance: 1
+parentModuleName: apisample
+samplingRate: 50
+debug: false
+```
 
+## sampling rate 기능 
+ * 설정파일중 samplingRate항목이 있는데 이는 요청중에 얼마나 일루미나티로 데이터를 수집할 것인지 설정하는 기능 입니다. 
+ * 예를들어 100을 설정하면 모든 요청을 다 수집하며 30으로 하면 요청중 30%만 수집을 합니다. 
+ * 성능상에 약간의 이득을 볼수는 있으나 그 차이가 크지 않으니 100%로 설정을 하는것을 권장 합니다.
+
+## 카오스 봄버 기능 
+ * 카오스 봄버는 illuminati를 적용한 메서드들중에 임의로 Exception을 발생시키는 기능 입니다. 
+ * 모든 코드는 Exception에 대비하고 Exception이 발생 했을때 복구를 할 수 있어야 합니다. 
+ * 해당 기능은 위험한 기능으로 설정 파일의 debug모드가 true일때만 동작 합니다.
+ 
+## 카오스 봄버는 application.properties 혹은 illuminati.yml에 따로 설정을 해야 합니다. 
+ * illuminati.yml
+```java
+# it is very dangerous function. it is activate when debug is true.
+# after using this function. you must have to re compile.(clean first)
+chaosBomber: true
+```
+
+## illuminati는 쉽게 비활성화 할수 있습니다. 
+ * 이미 @illuminati가 적용된 모든 소스를 수정하기는 어렵습니다. 
+ * pom.xml 혹은 build.gradle에서 illuminati-client-processor 부분만 주석처리를 하면 됩니다.
+ * 꼭 clean후 다시 컴파일을 하여 배포를 하면 소스 수정 없이 비활성화를 할수 있습니다.

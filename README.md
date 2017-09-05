@@ -21,6 +21,12 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 * Kibana
 * Spring Cloud Stream - Consumer 제작시
 
+## illuminati Project 구조
+   * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
+   * [illuminati-client-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-annotation)
+   * [illuminati-client-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-processor)
+   * [illuminati-client-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-elasticsearch)
+
 # illuminati에서 수집을 하는 Event 데이터 정보
 1. 적용 서버의 정보와(IP, HOST_NAME..등등), JVM MEMORY 사용정보
 2. 클라이언트 요청에 관한 모든 정보
@@ -56,25 +62,38 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
     * Maven
     
 ```java
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-annotation</artifactId>
-  <version>0.5</version>
-</dependency>
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
 
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-processor</artifactId>
-  <version>0.7.1</version>
-</dependency>
+<dependencies>
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-annotation</artifactId>
+      <version>0.5</version>
+   </dependency>
+
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-processor</artifactId>
+      <version>0.7.2</version>
+   </dependency>
+</dependencies>
 ```
 
 ## Gradle Dependency 추가 
     * Gradle
     
 ```java
+repositories {
+    jcenter()
+}
+
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.5'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.7.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.7.2'
 ```
 
 ## Class에 @Illuminati 추가 
