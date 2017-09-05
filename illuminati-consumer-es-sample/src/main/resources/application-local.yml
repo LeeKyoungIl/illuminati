@@ -1,0 +1,44 @@
+logging.level.root: INFO
+server.port: 8099
+
+management.security.enabled: false
+
+spring:
+  cloud:
+    stream:
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              bindQueue: true
+              exchangeType: fanout
+              durableSubscription: true
+              exchangeDurable: true
+              declareExchange: false
+              maxConcurrency: 2
+              prefetch: 1
+              autoBindDlq: false
+              dlqTtl: 5000
+      bindings:
+        input:
+          destination: local-illuminati-exchange
+          binder: illuminatiConsumer
+          group: illuminati
+          consumer:
+            headerMode: raw
+      binders:
+        illuminatiConsumer:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: 192.168.99.100
+                port: 32789
+                virtual-host: illuminatiLocal
+                username: illuminati-local
+                password: illuminati-local
+
+elasticsearchInfo:
+  master:
+    host: 192.168.99.100
+    port: 32799

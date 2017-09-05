@@ -1,0 +1,23 @@
+#rabbitmq
+broker: rabbitmq
+clusterList: 192.168.99.100:32789
+virtualHost: illuminatiLocal
+topic: local-illuminati-exchange
+queueName: local-illuminati-exchange.illuminati
+userName: illuminati-local
+password: illuminati-local
+isAsync: true
+isCompression: true
+parentModuleName: apisample
+samplingRate: 100
+debug: false
+
+#kafka
+#broker: kafka
+#clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
+#topic: illuminati-alpha
+#isAsync: true
+#isCompression: true
+#performance: 1
+#parentModuleName: apisample
+#samplingRate: 50
