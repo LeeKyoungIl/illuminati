@@ -118,6 +118,8 @@ debug: false
  * 성능상에 약간의 이득을 볼수는 있으나 그 차이가 크지 않으니 100%로 설정을 하는것을 권장 합니다.
 
 ## 카오스 봄버 기능 
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/chaos_bomber.png)
+
  * 카오스 봄버는 illuminati를 적용한 메서드들중에 임의로 Exception을 발생시키는 기능 입니다. 
  * 모든 코드는 Exception에 대비하고 Exception이 발생 했을때 복구를 할 수 있어야 합니다. 
  * 해당 기능은 위험한 기능으로 설정 파일의 debug모드가 true일때만 동작 합니다.
