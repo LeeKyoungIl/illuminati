@@ -183,11 +183,4 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>bintray-leekyoungil-illuminati</id>
-            <name>leekyoungil-illuminati</name>
-            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-client-processor/;publish=1</url>
-        </repository>
-    </distributionManagement>
 </project>
