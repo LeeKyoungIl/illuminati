@@ -78,3 +78,36 @@ public class ApiSampleController {
         }
 }
 ```
+
+## yml 설정방법 - illuminati-{phase}.yml 또는 illuminati-{phase}.properties
+ * rabbitmq
+
+```java
+#rabbitmq
+broker: rabbitmq
+clusterList: 192.168.99.100:32789
+virtualHost: illuminatiLocal
+topic: local-illuminati-exchange
+queueName: local-illuminati-exchange.illuminati
+userName: illuminati-local
+password: illuminati-local
+isAsync: true
+isCompression: true
+parentModuleName: apisample
+samplingRate: 100
+debug: false
+```
+
+ * kafka
+```java
+#kafka
+broker: kafka
+clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
+topic: illuminati-local
+isAsync: true
+isCompression: true
+performance: 1
+parentModuleName: apisample
+samplingRate: 50
+debug: false
+```
