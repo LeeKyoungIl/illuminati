@@ -153,3 +153,6 @@ public class ApiSampleController {
 
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/kibana-sample.png)
 
+# License
+illuminati is distributed under the [Apache Software License](https://www.apache.org/licenses/LICENSE-2.0) version 2.0.
+
