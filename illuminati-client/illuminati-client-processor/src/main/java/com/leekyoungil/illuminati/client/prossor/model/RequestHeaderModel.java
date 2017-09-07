@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -361,10 +362,10 @@ public class RequestHeaderModel {
 
     @Expose private Map<String, String> parsedCookie;
 
-    public RequestHeaderModel (HttpServletRequest request) {
+    public RequestHeaderModel (final HttpServletRequest request) {
         if (request != null) {
             this.init(request);
-            this.getIlluminatiProcId(request);
+            //this.getIlluminatiProcId(request);
 
             if ("post".equals(request.getMethod().toLowerCase())) {
                 try {
@@ -374,6 +375,10 @@ public class RequestHeaderModel {
                 }
             }
         }
+    }
+
+    public void generateIlluminatiProcId () {
+
     }
 
     /**
@@ -408,10 +413,9 @@ public class RequestHeaderModel {
                     key = methodKey.toString();
                 }
 
-                final String methodName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1);
-                final Method setNameMethod = this.getClass().getMethod(methodName, String.class);
-                setNameMethod.setAccessible(true);
-                setNameMethod.invoke(this, value);
+                final Field field = this.getClass().getDeclaredField(key);
+                field.setAccessible(true);
+                field.set(this, value);
             } catch (Exception ex) {
                 if (this.anotherHeader == null) {
                     this.anotherHeader = new HashMap<String, String>();
@@ -427,6 +431,7 @@ public class RequestHeaderModel {
 
     }
 
+    @Deprecated
     private void getIlluminatiProcId (HttpServletRequest request) {
         final Enumeration<String> enumeration = request.getAttributeNames();
 
@@ -469,5 +474,12 @@ public class RequestHeaderModel {
         }
 
         this.parsedCookie.put(key, value);
+    }
+
+    public void setGlobalTransactionId (String illuminatiProcId) {
+        if (StringUtils.isValid(illuminatiProcId) == false) {
+            return;
+        }
+        this.illuminatiProcId = illuminatiProcId;
     }
 }

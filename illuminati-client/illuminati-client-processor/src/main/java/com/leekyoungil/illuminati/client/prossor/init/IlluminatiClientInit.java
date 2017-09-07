@@ -8,9 +8,12 @@ import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.model.IlluminatiModel;
+import com.leekyoungil.illuminati.client.prossor.model.RequestHeaderModel;
 import com.leekyoungil.illuminati.client.prossor.model.ServerInfo;
+import com.leekyoungil.illuminati.client.prossor.util.ConvertUtil;
 import com.leekyoungil.illuminati.client.prossor.util.FileUtils;
 import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.client.prossor.util.SystemUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -68,7 +71,8 @@ public class IlluminatiClientInit {
 
         PARENT_MODULE_NAME = FileUtils.getPropertiesValueByKey(null, "illuminati", "parentModuleName");
         SERVER_INFO = new ServerInfo(true);
-        JVM_INFO = setJvmInfo();
+        // get basic JVM setting info only once.
+        JVM_INFO = SystemUtil.getJvmInfo();
         RUNTIME = Runtime.getRuntime();
 
         if (ILLUMINATI_TIME_THREAD == null) {
@@ -100,31 +104,6 @@ public class IlluminatiClientInit {
         }
     }
 
-    private static Map<String, Object> setJvmInfo () {
-        final Map<String, Object> jvmInfo = new HashMap<String, Object>();
-
-        final String[] includeJavaSystemProperties = new String[]{
-                "user.timezone",
-                "user.country.format",
-                "user.country",
-                "java.home",
-                "user.language",
-                "file.encoding",
-                "catalina.home",
-                "PID"};
-
-        final List<String> includeJavaSystemPropertiesList = Arrays.asList(includeJavaSystemProperties);
-
-        final Properties javaSystemProperties = System.getProperties();
-        for (final String name : javaSystemProperties.stringPropertyNames()) {
-            if (name.indexOf("java.vm.") > -1 || includeJavaSystemPropertiesList.contains(name)) {
-                jvmInfo.put(StringUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
-            }
-        }
-
-        return jvmInfo;
-    }
-
     private static boolean checkSamplingRate () {
         //SAMPLING_RATE_CHECKER.compareAndSet(100, 1);
 
@@ -142,7 +121,7 @@ public class IlluminatiClientInit {
         return false;
     }
 
-    public static Object executeIlluminati (ProceedingJoinPoint pjp, HttpServletRequest request) throws Throwable {
+    public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (ILLUMINATI_TEMPLATE == null || !IlluminatiClientInit.checkSamplingRate()) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
@@ -167,13 +146,26 @@ public class IlluminatiClientInit {
         return output;
     }
 
-    private static void sendToIlluminati (HttpServletRequest request, MethodSignature signature, Object[] args, long elapsedTime, Object output) {
+    private static void sendToIlluminati (final HttpServletRequest request, final MethodSignature signature, final Object[] args, long elapsedTime, final Object output) {
         try {
-            final IlluminatiModel illuminatiModel = new IlluminatiModel(request, elapsedTime, signature, output, args);
+            final IlluminatiModel illuminatiModel = new IlluminatiModel(new Date(), elapsedTime, signature, output, args);
+            addDataOnIlluminatiModel(illuminatiModel, request);
             IlluminatiExecutor.executeToIlluminati(illuminatiModel);
         } catch (Exception ex) {
             ILLUMINATI_INIT_LOGGER.debug("error : check your broker. ("+ex.toString()+")");
         }
+    }
+
+    private static void addDataOnIlluminatiModel (final IlluminatiModel illuminatiModel, final HttpServletRequest request) {
+        RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
+        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateGlobalTransactionId(request));
+
+        illuminatiModel.initReqHeaderInfo(requestHeaderModel);
+        illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
+        illuminatiModel.staticInfo(ConvertUtil.getStaticInfoFromHttpRequest(request));
+        illuminatiModel.isActiveChaosBomber(ConvertUtil.getChaosBomberFromHttpRequest(request));
+        illuminatiModel.initBasicJvmInfo(SystemUtil.getJvmInfo());
+        illuminatiModel.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
     }
 
     /**
@@ -185,7 +177,7 @@ public class IlluminatiClientInit {
      * @return
      * @throws Throwable
      */
-    public static Object executeIlluminatiByChaosBomber (ProceedingJoinPoint pjp, HttpServletRequest request) throws Throwable {
+    public static Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         // chaosBomber mode activate at debug mode.
         if (IlluminatiProperties.ILLUMINATI_DEBUG == false) {
             return IlluminatiClientInit.executeIlluminati(pjp, request);
@@ -218,7 +210,7 @@ public class IlluminatiClientInit {
         return output;
     }
 
-    private static Map<String, Object> getMethodExecuteResult (ProceedingJoinPoint pjp) {
+    private static Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {
         final Map<String, Object> originMethodExecute = new HashMap<String, Object>();
 
         try {
