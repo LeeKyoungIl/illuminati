@@ -6,7 +6,7 @@
  * rabbitmq - 대용량 트래픽 테스트 완료 
  * kafka - 테스트 중 
  
-## 현 버전 (0.7.2) 에서는 rabbitmq를 권장 합니다.
+## 현 버전 (0.8.2) 에서는 rabbitmq를 권장 합니다.
 
 ## Maven Dependency 추가 
     * Maven
@@ -15,13 +15,13 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>0.8</version>
+  <version>0.8.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.7.4</version>
+  <version>0.8.2</version>
 </dependency>
 ```
 
@@ -29,8 +29,8 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.7.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
 ```
 
 ## Class에 @Illuminati 추가 
