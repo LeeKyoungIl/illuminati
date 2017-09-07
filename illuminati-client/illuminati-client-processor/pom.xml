@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>illuminati-client-processor</artifactId>
-    <version>0.8</version>
+    <version>0.8.2</version>
 
     <repositories>
 
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-annotation</artifactId>
-            <version>0.5</version>
+            <version>0.8</version>
             <scope>compile</scope>
         </dependency>
 
