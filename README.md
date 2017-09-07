@@ -2,6 +2,76 @@
 
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/illuminati-logo.png)
 
+# This is a Platform that collects all the data accruing in your Application and shows the data in real time by using Kibana or other tools.
+
+# illuminati's intention to develop
+
+**There is no garbage data in your Application.**
+It is necessary to identify what data is the most important among the collecting data from your Applcation.
+Also collect and analysis must be performed in different processes. 
+The illuminati is desinged to make collect all data easily and it can be possible scalability working by separated analysis process.
+
+## required
+ * Java6 or higher. 
+ * Message queue (RabbitMQ or Kafka)
+ * Java Application that can use AspectJ
+
+## recommendations
+ * ElasticSearch
+ * Kibana
+ * Spring Cloud Stream - used to create a consumer application
+
+## struct of illuminati Project
+ * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
+ * [illuminati-client-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-annotation)
+ * [illuminati-client-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-processor)
+ * [illuminati-client-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-elasticsearch)
+ * [illuminati-consumer-es-sample	](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
+
+## data to collect of illuminati.
+ 1. Applied server information(IP, HOST_NAME...ETC), status of JVM MEMORY.
+ 2. All of client request information.
+    * All of Header and Cookie
+    * OS, BROWSER, DEVICE information
+    * Global Transaction ID generation enables application parent method call order and content traceability.
+    * Execution methods and parameters on the application.
+    * Method execution time in Application.
+    * Value of Method request parameter. (GET, POST)
+    * Result value of the method request on the application.
+    
+## illuminati is easy to use
+ 1. Do not need to create a data type. (No DTO required)
+ 2. Agent installation is not required.
+ 3. Annotation type is easy to apply.
+ 
+## illuminati operator method
+ 1. Add dependency of MAVEN or Gradle (illuminati)
+ 2. Add configuration in illuminati-{**phase**}.yml, properties에 (address of queue... etc)
+ 3. When execute application with add -Dspring.profiles.active={**phase**}
+ 4. Add "@Illuminat" Annotation to where you want to collect
+
+## illuminati does not affect the original application logic
+ 1. It was developed to have no influence on this logic by using a separate thread and Buffer.
+ 2. Drop in performance can occur, but there is no big difference in physical server. (It can happen a little more on virtual machines.)
+ 3. Even if an exception occurs in the original application logic, illuminati can also collect the corresponding exception information.
+
+## struct of illuminati
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
+
+## add illuminati consumer
+ 1. Easily add Consumer using Spring Cloud Stream
+ 2. Consumer can transfer data. (ElasticSearch, MongoDB, MySQL, Hadoop, etc.)
+    * Multiple consumers can receive the same Event data.
+    * It is easy to increase throughput by dividing data from many consumers.
+
+## Illuminati data can be used in Kibana
+ * Sample of Commerce Data.
+ 
+ 
+====================================================================================================================== 
+ 
+ 
+
 # Application 에서 일어나는 모든 EVENT 데이터를 수집하고 Kibana또는 다른툴을(어떤툴이든) 이용해서 보여주는 플랫폼 입니다.
 
 # illuminati 개발 의도
@@ -14,7 +84,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 ## 필수사항
 * Java6 이상
 * RabbitMQ 또는 Kafka
-* AspectJ를 사용할 수 있는 Java Web Application 
+* AspectJ를 사용할 수 있는 Java Application 
 
 ## 권장사항
 * ElasticSearch
