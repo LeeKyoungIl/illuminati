@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -55,9 +56,12 @@ public class ServerInfo {
         return true;
     }
 
-    public void setServerInfoFromRequest(HttpServletRequest request) {
-        this.domain = request.getServerName();
-        this.serverPort = request.getLocalPort();
-
+    public void setStaticInfoFromRequest(final Map<String, Object> staticInfo) {
+        if (staticInfo.containsKey("domain") && staticInfo.get("domain") != null) {
+            this.domain = (String) staticInfo.get("domain");
+        }
+        if (staticInfo.containsKey("serverPort") && staticInfo.get("serverPort") != null) {
+            this.serverPort = (Integer) staticInfo.get("serverPort");
+        }
     }
 }

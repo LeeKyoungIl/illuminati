@@ -5,9 +5,10 @@ import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,11 +27,9 @@ public class RequestGeneralModel {
 
     private Method method;
 
-    public RequestGeneralModel (HttpServletRequest request) {
-        if (request != null) {
-            this.initClientInfo(request);
-        }
-    }
+    private static final List<String> CLIENT_INFO_KEY_LIST = Arrays.asList(new String[]{"path", "queryString", "clientIp", "anotherPath"});
+
+    public RequestGeneralModel () {}
 
     public RequestGeneralModel (final Map<String, Object> requestMap) {
         if (requestMap == null || requestMap.isEmpty()) {
@@ -61,21 +60,29 @@ public class RequestGeneralModel {
         }
     }
 
-    private void initClientInfo (HttpServletRequest request) {
-        this.path = request.getRequestURI();
-        this.queryString = request.getQueryString();
-
-        this.clientIp = request.getHeader("X-FORWARDED-FOR");
-        if (this.clientIp == null) {
-            this.clientIp = request.getRemoteAddr();
+    public void initClientInfo (final Map<String, String> clientInfoMap) {
+        if (clientInfoMap == null) {
+            return;
         }
 
-        // some frameworks (ex. grails) we can't be find requestUri by getRequestURI.
-        // so add this line for get requestUri
-        try {
-            this.anotherPath = request.getAttribute("javax.servlet.forward.request_uri").toString();
-        } catch (Exception ex) {
-            // ignore this exception
+        for (String key : CLIENT_INFO_KEY_LIST) {
+            if (clientInfoMap.containsKey(key)) {
+                try {
+                    String value = clientInfoMap.get(key);
+
+                    if ("clientIp".equals(key) && StringUtils.isValid(value) == false) {
+                        value = clientInfoMap.get("remoteAddr");
+                    }
+
+                    if (StringUtils.isValid(value)) {
+                        final Field field = this.getClass().getDeclaredField(key);
+                        field.setAccessible(true);
+                        field.set(this, value);
+                    }
+                } catch (Exception e) {
+                    // ignore this exception
+                }
+            }
         }
     }
 
