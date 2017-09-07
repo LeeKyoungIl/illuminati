@@ -22,7 +22,7 @@ public class IlluminatiExecutor {
 
     private static Thread ILLUMINATI_SENDER_THREAD;
 
-    public final static BlockingQueue<IlluminatiModel> ILLUMINATI_MODEL_BLOCKING_QUEUE = new LinkedBlockingQueue<IlluminatiModel>(ILLUMINATI_BAK_LOG);
+    private final static BlockingQueue<IlluminatiModel> ILLUMINATI_MODEL_BLOCKING_QUEUE = new LinkedBlockingQueue<IlluminatiModel>(ILLUMINATI_BAK_LOG);
 
     public synchronized static void init () {
         final Runnable runnableFirst = new Runnable() {

@@ -45,9 +45,9 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
 
     public IlluminatiEsModelImpl () {}
 
-    public IlluminatiEsModelImpl(RequestGeneralModel general, RequestHeaderModel header, long elapsedTime, Object output, String id, long timestamp) {
-        super(general, header, elapsedTime, output, id, timestamp);
-    }
+//    public IlluminatiEsModelImpl(long elapsedTime, Object output, String id, long timestamp) {
+//        super(elapsedTime, output, id, timestamp);
+//    }
 
     @Override public String getJsonString () {
         this.settings = new Settings(this.getEsDocumentAnnotation().indexStoreType().getType());

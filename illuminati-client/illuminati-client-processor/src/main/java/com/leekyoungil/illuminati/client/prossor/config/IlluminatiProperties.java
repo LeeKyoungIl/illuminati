@@ -63,7 +63,7 @@ public class IlluminatiProperties {
             final String value = prop.getProperty(keys);
             if (prop.containsKey(keys) && !value.isEmpty()) {
                 try {
-                    final Field field = this.getClass().getField(keys);
+                    final Field field = this.getClass().getDeclaredField(keys);
                     field.setAccessible(true);
                     field.set(this, value);
                 } catch (IllegalAccessException e) {

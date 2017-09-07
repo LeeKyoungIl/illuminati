@@ -75,15 +75,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-logback</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-elasticsearch</artifactId>
-            <version>0.5</version>
+            <version>0.6.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

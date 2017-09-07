@@ -2,7 +2,9 @@ package com.leekyoungil.illuminati.client.prossor.model;
 
 import com.google.gson.annotations.Expose;
 import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
+import com.leekyoungil.illuminati.client.prossor.util.ConvertUtil;
 import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.client.prossor.util.SystemUtil;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,24 +40,14 @@ public class IlluminatiModel implements Serializable {
 
     @Expose private boolean isActiveChaosBomber = false;
 
-    private final Date localTime = new Date();
-
-    private final int mb = 1024*1024;
+    private Date localTime;
 
     public IlluminatiModel () {}
 
-    public IlluminatiModel (HttpServletRequest request, final long elapsedTime, final MethodSignature signature
-            , final Object output, final Object[] paramValues) {
+    public IlluminatiModel (final Date localTime
+            , final long elapsedTime, final MethodSignature signature, final Object output, final Object[] paramValues) {
+        this.localTime = localTime;
         this.generateAggregateId();
-
-        this.general = new RequestGeneralModel(request);
-
-        if (request != null) {
-            this.setIlluminatiId(request);
-            this.checkChaosBomber(request);
-            this.header = new RequestHeaderModel(request);
-            this.setStaticInfo(request);
-        }
 
         this.elapsedTime = elapsedTime;
         this.output = output;
@@ -63,67 +55,55 @@ public class IlluminatiModel implements Serializable {
         this.timestamp = localTime.getTime();
         this.logTime = DATE_FORMAT_EVENT.format(localTime);
 
-        this.getJvmMemoryStatus();
         this.setMethod(signature.getMethod(), signature.getParameterNames(), paramValues);
     }
 
-    /**
-     * for TestCase
-     *
-     * @param general
-     * @param header
-     * @param elapsedTime
-     * @param output
-     * @param id
-     * @param timestamp
-     */
-    public IlluminatiModel (RequestGeneralModel general, RequestHeaderModel header, long elapsedTime, Object output
-            , String id, long timestamp) {
-        this.general = general;
-        this.header = header;
-        this.elapsedTime = elapsedTime;
-        this.output = output;
-        this.id = id;
-        this.timestamp = timestamp;
+    public void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
+        this.header = requestHeaderModel;
     }
 
-    private void setStaticInfo (HttpServletRequest request) {
-        if (!IlluminatiClientInit.SERVER_INFO.isAreadySetServerDomainAndPort()) {
-            IlluminatiClientInit.SERVER_INFO.setServerInfoFromRequest(request);
+    public void initBasicJvmInfo (final Map<String, Object> jvmInfo) {
+        this.jvmInfo = jvmInfo;
+    }
+
+    public void addBasicJvmMemoryInfo (final Map<String, Object> jvmMemoryInfo) {
+        if (this.jvmInfo == null) {
+            this.jvmInfo = new HashMap<String, Object>();
         }
 
-        if (IlluminatiClientInit.JVM_INFO != null) {
-            this.jvmInfo = new HashMap<String, Object>(IlluminatiClientInit.JVM_INFO);
+        for (Map.Entry<String, Object> entry : jvmMemoryInfo.entrySet()) {
+            this.jvmInfo.put(entry.getKey(), entry.getValue());
         }
+    }
+
+    public void loadClientInfo (final Map<String, String> clientInfoMap) {
+        if (clientInfoMap == null) {
+            return;
+        }
+
+        if (this.general == null) {
+            this.general = new RequestGeneralModel();
+        }
+
+        this.general.initClientInfo(clientInfoMap);
+    }
+
+    public void staticInfo (final Map<String, Object> staticInfo) {
+        if (!IlluminatiClientInit.SERVER_INFO.isAreadySetServerDomainAndPort()) {
+            IlluminatiClientInit.SERVER_INFO.setStaticInfoFromRequest(staticInfo);
+        }
+    }
+
+    public void isActiveChaosBomber (boolean isActiveChaosBomber) {
+        this.isActiveChaosBomber = isActiveChaosBomber;
     }
 
     public String getJsonString () {
         return IlluminatiClientInit.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
-    public ByteBuffer toAMQPBuffer() {
-        final byte[] messageBytes = StringUtils.gzipMessage(getJsonString());
-        ByteBuffer buffer = ByteBuffer.allocate(messageBytes.length);
-        buffer.put(messageBytes);
-        buffer.flip();
-        return buffer;
-    }
-
     private void generateAggregateId () {
         this.id = StringUtils.generateId(this.localTime.getTime(), null);
-    }
-
-    private void setIlluminatiId (HttpServletRequest request) {
-        if (request.getAttribute("illuminatiProcId") == null) {
-            request.setAttribute("illuminatiProcId", StringUtils.generateId(this.localTime.getTime(), "illuminatiProcId"));
-        }
-    }
-
-    private void getJvmMemoryStatus () {
-        this.jvmInfo.put("jvmUsedMemory", (IlluminatiClientInit.RUNTIME.totalMemory() - IlluminatiClientInit.RUNTIME.freeMemory()) / mb);
-        this.jvmInfo.put("jvmFreeMemory", IlluminatiClientInit.RUNTIME.freeMemory() / mb);
-        this.jvmInfo.put("jvmTotalMemory", IlluminatiClientInit.RUNTIME.totalMemory() / mb);
-        this.jvmInfo.put("jvmMaxMemory", IlluminatiClientInit.RUNTIME.maxMemory() / mb);
     }
 
     protected String getId () {
@@ -135,15 +115,9 @@ public class IlluminatiModel implements Serializable {
     }
 
     private void setMethod (final Method method, final String[] paramNames, final Object[] paramValues) {
-        if (this.general != null) {
-            this.general.setMethod(method, paramNames, paramValues);
+        if (this.general == null) {
+            this.general = new RequestGeneralModel();
         }
-    }
-
-    private void checkChaosBomber (HttpServletRequest request) {
-        if (request.getAttribute("ChaosBomber") != null && "true".equals(request.getAttribute("ChaosBomber").toString())) {
-            this.isActiveChaosBomber = true;
-            request.setAttribute("ChaosBomber", null);
-        }
+        this.general.setMethod(method, paramNames, paramValues);
     }
 }
