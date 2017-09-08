@@ -1,5 +1,144 @@
 # Project illuminati : illuminati-client-processor
 
+# illuminati-client-processor is core module of illuminati
+
+# supported message queues
+ * RabbitMQ - completed test of heavy traffic
+ * Kafka - not yet complete
+
+## I recommend the RabbitMQ for the current version.(0.8.2)
+
+## add to Maven Dependency
+    * Maven
+    
+```java
+<dependency>
+  <groupId>com.leekyoungil.illuminati</groupId>
+  <artifactId>illuminati-client-annotation</artifactId>
+  <version>0.8.1</version>
+</dependency>
+
+<dependency>
+  <groupId>com.leekyoungil.illuminati</groupId>
+  <artifactId>illuminati-client-processor</artifactId>
+  <version>0.8.2</version>
+</dependency>
+```
+
+## add to Gradle Dependency
+    * Gradle
+    
+```java
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+```
+
+## add @Illuminati to Class
+    * apply to all sub methods
+    
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```
+
+## add @Illuminati to Method
+    * apply to all target method
+    
+```java
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @Illuminati
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```
+
+## how to set to yml - illuminati-{phase}.yml or illuminati-{phase}.properties
+ * rabbitmq
+
+```java
+#rabbitmq
+broker: rabbitmq
+clusterList: 192.168.99.100:32789
+virtualHost: illuminatiLocal
+topic: local-illuminati-exchange
+queueName: local-illuminati-exchange.illuminati
+userName: illuminati-local
+password: illuminati-local
+isAsync: true
+isCompression: true
+parentModuleName: apisample
+samplingRate: 100
+debug: false
+```
+
+ * kafka
+```java
+#kafka
+broker: kafka
+clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
+topic: illuminati-local
+isAsync: true
+isCompression: true
+performance: 1
+parentModuleName: apisample
+samplingRate: 50
+debug: false
+```
+# Sampling rate function
+ * you can find 'samplingRate' in configuration. it's   how much data should be collected during application working by the illuminati.
+ * For example if you set '100'. it's collect all of data during application working. Or '30' it's collect 30 percent of all request data.
+ * If you can set below 100. A little more performance than 100. But difference is not big. So I recommend set 100.   
+
+# Chaos Bomber function
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/chaos_bomber.png)
+ * The Chaos Bomber is generate exception during work application by random. 
+ * We must prepare for exception. And there should be no problem in application working.
+ * This function is dangerous. so the Chaos Bomber is activate on debug mode.
+ 
+## Chaos Bomber must set separately for application.yml or illuminati.yml
+ * illuminati.yml
+```java
+# it is very dangerous function. it is activate when debug is true.
+# after using this function. you must have to re compile.(clean first)
+chaosBomber: true
+```
+
+# illuminati is easy to disable in your application.
+ * if you already apply  illuminati in your application. if you want exclude it. it's hard to remove all illuminati in your code. 
+ * so you do exclude the illuminati-client-processor in pom.xml or build.gradle. it will be solved easily.
+ * must clean and compile re deploy.
+ 
+ 
+===============================================================================
+
+
 # illuminati client의 core 모듈입니다.
 
 # 지원하는 메시지큐

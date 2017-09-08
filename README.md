@@ -58,17 +58,102 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 ## struct of illuminati
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
 
+## add to Maven Dependency 
+    * Maven
+    
+```java
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
+
+<dependencies>
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-annotation</artifactId>
+      <version>0.8.1</version>
+   </dependency>
+
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-processor</artifactId>
+      <version>0.8.2</version>
+   </dependency>
+</dependencies>
+```
+
+## add to Gradle Dependency 
+    * Gradle
+    
+```java
+repositories {
+    jcenter()
+}
+
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+```
+
+## add @Illuminati  to Class
+    * apply to all sub methods
+    
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```
+
+## add @Illuminati to Method
+    * apply to all target method
+    
+```java
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @Illuminati
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```
+
 ## add illuminati consumer
  1. Easily add Consumer using Spring Cloud Stream
  2. Consumer can transfer data. (ElasticSearch, MongoDB, MySQL, Hadoop, etc.)
-    * Multiple consumers can receive the same Event data.
-    * It is easy to increase throughput by dividing data from many consumers.
+    * Multiple consumers can receive the same Event data.
+    * It is easy to increase throughput by dividing data from many consumers.
 
 ## Illuminati data can be used in Kibana
  * Sample of Commerce Data.
+
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/kibana-sample.png)
  
- 
-====================================================================================================================== 
+===============================================================================
  
  
 

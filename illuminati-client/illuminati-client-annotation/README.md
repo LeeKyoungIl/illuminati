@@ -1,5 +1,86 @@
 # Project illuminati : illuminati-client-annotation
 
+
+## illuminato-client-annotation is needed to use illuminati.
+
+## Illuminati is easily applied to the application code.
+ * It is not necessary to collect all the data in every class or method.
+ * Illuminati can be selectively applied to important and necessary areas using @Illuminati annotation.
+
+## add to Maven Dependency
+    * Maven
+    
+```java
+<dependency>
+  <groupId>com.leekyoungil.illuminati</groupId>
+  <artifactId>illuminati-client-annotation</artifactId>
+  <version>0.8.1</version>
+</dependency>
+
+<dependency>
+  <groupId>com.leekyoungil.illuminati</groupId>
+  <artifactId>illuminati-client-processor</artifactId>
+  <version>0.8.2</version>
+</dependency>
+```
+
+## add to Gradle Dependency
+    * Gradle
+    
+```java
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+```
+
+## add @Illuminati to Class
+    * apply to all sub methods
+    
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```
+
+## add @Illuminati to Method
+    * apply to all target method
+    
+```java
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @Illuminati
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```
+
+===============================================================================
+
+
 ## illuminati를 사용하기위해 필요한 annotation 모듈 입니다.
 
 ## illuminati는 유저가 필요한(원하는) 곳에 손쉽게 적용이 가능 합니다. 
