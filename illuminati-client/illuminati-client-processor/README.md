@@ -15,13 +15,13 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>0.8.1</version>
+  <version>1.0.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.3</version>
+  <version>0.8.6</version>
 </dependency>
 ```
 
@@ -29,8 +29,8 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.6'
 ```
 
 ## add @Illuminati to Class
@@ -154,13 +154,13 @@ chaosBomber: true
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>0.8.1</version>
+  <version>1.0.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.3</version>
+  <version>0.8.6</version>
 </dependency>
 ```
 
@@ -168,8 +168,8 @@ chaosBomber: true
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.6'
 ```
 
 ## Class에 @Illuminati 추가 
