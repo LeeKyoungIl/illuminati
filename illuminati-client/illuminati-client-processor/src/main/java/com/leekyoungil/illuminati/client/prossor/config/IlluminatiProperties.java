@@ -122,4 +122,8 @@ public class IlluminatiProperties {
     public String getChaosBomber() {
         return StringUtils.isValid(this.chaosBomber) ? this.chaosBomber : "";
     }
+
+    public String getParentModuleName() {
+        return StringUtils.isValid(this.parentModuleName) ? this.parentModuleName : "unknown";
+    }
 }
