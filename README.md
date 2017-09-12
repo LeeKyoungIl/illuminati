@@ -79,7 +79,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.8.2</version>
+      <version>0.8.3</version>
    </dependency>
 </dependencies>
 ```
@@ -93,7 +93,7 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
 ```
 
 ## add @Illuminati  to Class
@@ -235,7 +235,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.8.2</version>
+      <version>0.8.3</version>
    </dependency>
 </dependencies>
 ```
@@ -249,7 +249,7 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
 ```
 
 ## Class에 @Illuminati 추가 

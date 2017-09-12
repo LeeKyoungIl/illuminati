@@ -20,7 +20,7 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.2</version>
+  <version>0.8.3</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
 ```
 
 ## add @Illuminati to Class
@@ -100,7 +100,7 @@ public class ApiSampleController {
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.2</version>
+  <version>0.8.3</version>
 </dependency>
 ```
 
@@ -109,7 +109,7 @@ public class ApiSampleController {
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
 ```
 
 

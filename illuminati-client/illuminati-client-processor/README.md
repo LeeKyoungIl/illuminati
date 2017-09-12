@@ -6,7 +6,7 @@
  * RabbitMQ - completed test of heavy traffic
  * Kafka - not yet complete
 
-## I recommend the RabbitMQ for the current version.(0.8.2)
+## I recommend the RabbitMQ for the current version.(0.8.3)
 
 ## add to Maven Dependency
     * Maven
@@ -21,7 +21,7 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.2</version>
+  <version>0.8.3</version>
 </dependency>
 ```
 
@@ -30,7 +30,7 @@
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
 ```
 
 ## add @Illuminati to Class
@@ -145,7 +145,7 @@ chaosBomber: true
  * rabbitmq - 대용량 트래픽 테스트 완료 
  * kafka - 테스트 중 
  
-## 현 버전 (0.8.2) 에서는 rabbitmq를 권장 합니다.
+## 현 버전 (0.8.3) 에서는 rabbitmq를 권장 합니다.
 
 ## Maven Dependency 추가 
     * Maven
@@ -160,7 +160,7 @@ chaosBomber: true
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.2</version>
+  <version>0.8.3</version>
 </dependency>
 ```
 
@@ -169,7 +169,7 @@ chaosBomber: true
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:0.8.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.3'
 ```
 
 ## Class에 @Illuminati 추가 
