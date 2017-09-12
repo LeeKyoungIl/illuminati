@@ -25,6 +25,7 @@ public class FileUtils {
 
     private final static Logger FILEUTIL_LOGGER = LoggerFactory.getLogger(FileUtils.class);
     private final static List<String> CONFIG_FILE_EXTENSTIONS = Arrays.asList(new String[]{"properties", "yml", "yaml"});
+    private final static List<String> BASIC_CONFIG_FILES = Arrays.asList(new String[]{"application.properties", "application.yml", "application.yaml"});
     private final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
 
     public static String getPropertiesValueByKey (Messager messager, final String configPropertiesFileName, final String key) {
@@ -67,19 +68,32 @@ public class FileUtils {
         }
 
         if (illuminatiProperties == null) {
-            final String fullFileName = "application.properties";
-            illuminatiProperties = getIlluminatiPropertiesByFile(messager, fullFileName);
+            illuminatiProperties = getIlluminatiPropertiesFromBasicFiles(messager);
         }
 
         if (illuminatiProperties == null) {
             if (messager != null) {
-                messager.printMessage(Diagnostic.Kind.ERROR,"Sorry, unable to find " + configPropertiesFileName);
+                messager.printMessage(Diagnostic.Kind.WARNING,"Sorry, unable to find " + configPropertiesFileName);
             }
 
             FileUtils.FILEUTIL_LOGGER.debug("Sorry, unable to find " + configPropertiesFileName);
         }
 
         return illuminatiProperties;
+    }
+
+    private static IlluminatiProperties getIlluminatiPropertiesFromBasicFiles (Messager messager) {
+        IlluminatiProperties illuminatiProperties = null;
+
+        for (String fileName : BASIC_CONFIG_FILES) {
+            illuminatiProperties = getIlluminatiPropertiesByFile(messager, fileName);
+
+            if (illuminatiProperties != null) {
+                return illuminatiProperties;
+            }
+        }
+
+        return null;
     }
 
     private static IlluminatiProperties getIlluminatiPropertiesByFile (Messager messager, final String configPropertiesFileName) {

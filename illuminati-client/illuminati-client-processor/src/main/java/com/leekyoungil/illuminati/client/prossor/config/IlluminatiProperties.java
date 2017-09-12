@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.client.prossor.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -25,6 +26,7 @@ import java.util.Properties;
  *      illuminati.client.samplingRate=50
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiProperties {
 
     private String parentModuleName;

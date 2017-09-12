@@ -2,15 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>illuminati-client</artifactId>
-        <groupId>com.leekyoungil.illuminati</groupId>
-        <version>0.5</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-processor</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.6</version>
+    <packaging>jar</packaging>
+
+    <properties>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.6</java.version>
+
+    </properties>
 
     <repositories>
 
@@ -27,7 +32,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-annotation</artifactId>
-            <version>0.8</version>
+            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
 
@@ -167,10 +172,10 @@
             <scope>test</scope>
         </dependency>
 
-
     </dependencies>
 
     <build>
+
         <plugins>
 
             <plugin>
@@ -180,11 +185,6 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
             </plugin>
 
             <plugin>
@@ -204,7 +204,43 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
+
     </build>
-    
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-leekyoungil-illuminati</id>
+            <name>leekyoungil-illuminati</name>
+            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-client-processor/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
+
 </project>
