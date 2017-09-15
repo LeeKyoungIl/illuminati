@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Properties;
 
 /**
@@ -58,9 +56,9 @@ public class IlluminatiProperties {
                 , "isCompression", "performance", "debug", "chaosBomber"};
     }
 
-    public IlluminatiProperties () {}
+    public IlluminatiProperties() {}
 
-    public IlluminatiProperties (Properties prop) {
+    public IlluminatiProperties(Properties prop) {
         for (String keys : propertiesKeys) {
             final String value = prop.getProperty(keys);
             if (prop.containsKey(keys) && !value.isEmpty()) {

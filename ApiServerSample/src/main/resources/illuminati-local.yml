@@ -12,6 +12,8 @@ parentModuleName: apisample
 samplingRate: 100
 debug: false
 
+illuminatiSwitchValue: true
+
 #kafka
 #broker: kafka
 #clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789

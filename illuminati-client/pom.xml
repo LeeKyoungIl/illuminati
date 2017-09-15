@@ -11,6 +11,7 @@
         <module>illuminati-client-annotation</module>
         <module>illuminati-client-processor</module>
         <module>illuminati-client-elasticsearch</module>
+        <module>illuminati-client-switch</module>
     </modules>
     <packaging>pom</packaging>
 

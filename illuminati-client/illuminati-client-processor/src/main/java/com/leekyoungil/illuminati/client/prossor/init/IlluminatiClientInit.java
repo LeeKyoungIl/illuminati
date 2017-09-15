@@ -14,6 +14,7 @@ import com.leekyoungil.illuminati.client.prossor.util.ConvertUtil;
 import com.leekyoungil.illuminati.client.prossor.util.FileUtils;
 import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
 import com.leekyoungil.illuminati.client.prossor.util.SystemUtil;
+import com.leekyoungil.illuminati.client.switcher.config.IlluminatiSwitch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -122,6 +123,11 @@ public class IlluminatiClientInit {
     }
 
     public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+        if (FileUtils.isIlluminatiSwitcherActive() == true && IlluminatiSwitch.ILLUMINATI_SWITCH_VALUE == false) {
+            ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
+            return pjp.proceed();
+        }
+
         if (ILLUMINATI_TEMPLATE == null || !IlluminatiClientInit.checkSamplingRate()) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();

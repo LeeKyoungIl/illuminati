@@ -11,7 +11,6 @@ import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -27,6 +26,25 @@ public class FileUtils {
     private final static List<String> CONFIG_FILE_EXTENSTIONS = Arrays.asList(new String[]{"properties", "yml", "yaml"});
     private final static List<String> BASIC_CONFIG_FILES = Arrays.asList(new String[]{"application.properties", "application.yml", "application.yaml"});
     private final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
+    private final static String ILLUMINATI_SPRING_CLOUD_CONFIGURATION_CLASS_NAME = "com.leekyoungil.illuminati.client.switcher.config.IlluminatiSwitch";
+
+    /**
+     * Spring Cloud Config is active config.
+     *
+     * @return boolean
+     */
+    public static boolean isIlluminatiSwitcherActive () {
+        boolean isIlluminatiSwitcherActive = true;
+
+        try {
+            Class.forName(ILLUMINATI_SPRING_CLOUD_CONFIGURATION_CLASS_NAME);
+        } catch(ClassNotFoundException e) {
+            //my class isn't there!
+            isIlluminatiSwitcherActive = false;
+        }
+
+        return isIlluminatiSwitcherActive;
+    }
 
     public static String getPropertiesValueByKey (Messager messager, final String configPropertiesFileName, final String key) {
         final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(messager, configPropertiesFileName);
