@@ -8,6 +8,7 @@
     <artifactId>illuminati-client</artifactId>
     <version>0.6</version>
     <modules>
+        <module>illuminati-client-common</module>
         <module>illuminati-client-annotation</module>
         <module>illuminati-client-processor</module>
         <module>illuminati-client-elasticsearch</module>

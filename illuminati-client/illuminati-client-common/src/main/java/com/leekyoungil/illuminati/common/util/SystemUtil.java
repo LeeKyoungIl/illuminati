@@ -1,11 +1,11 @@
-package com.leekyoungil.illuminati.client.prossor.util;
-
-import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
+package com.leekyoungil.illuminati.common.util;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class SystemUtil {
+
+    private final static Runtime RUNTIME = Runtime.getRuntime();
 
     private static final String[] INCLUDE_JAVA_SYSTEM_PROPERTIES = new String[]{
             "user.timezone",
@@ -27,7 +27,7 @@ public class SystemUtil {
         final Properties javaSystemProperties = System.getProperties();
         for (final String name : javaSystemProperties.stringPropertyNames()) {
             if (name.indexOf("java.vm.") > -1 || includeJavaSystemPropertiesList.contains(name)) {
-                jvmInfo.put(StringUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
+                jvmInfo.put(StringObjectUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
             }
         }
 
@@ -36,21 +36,22 @@ public class SystemUtil {
 
     public static Map<String, Object> getJvmMemoryInfo () {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
-        jvmInfo.put("jvmUsedMemory", (IlluminatiClientInit.RUNTIME.totalMemory() - IlluminatiClientInit.RUNTIME.freeMemory()) / MB);
-        jvmInfo.put("jvmFreeMemory", IlluminatiClientInit.RUNTIME.freeMemory() / MB);
-        jvmInfo.put("jvmTotalMemory", IlluminatiClientInit.RUNTIME.totalMemory() / MB);
-        jvmInfo.put("jvmMaxMemory", IlluminatiClientInit.RUNTIME.maxMemory() / MB);
+        jvmInfo.put("jvmUsedMemory", (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / MB);
+        jvmInfo.put("jvmFreeMemory", RUNTIME.freeMemory() / MB);
+        jvmInfo.put("jvmTotalMemory", RUNTIME.totalMemory() / MB);
+        jvmInfo.put("jvmMaxMemory", RUNTIME.maxMemory() / MB);
 
         return jvmInfo;
     }
 
     public static String generateGlobalTransactionId (final HttpServletRequest request) {
         Object id = request.getAttribute("illuminatiProcId");
-        if (id == null || StringUtils.isValid(id.toString()) == false) {
-            id = StringUtils.generateId(new Date().getTime(), "illuminatiProcId");
+        if (id == null || StringObjectUtils.isValid(id.toString()) == false) {
+            id = StringObjectUtils
+                    .generateId(new Date().getTime(), "illuminatiProcId");
             request.setAttribute("illuminatiProcId", id);
         }
 
-        return StringUtils.isValid(id.toString()) ? (String) id : null;
+        return StringObjectUtils.isValid(id.toString()) ? (String) id : null;
     }
 }

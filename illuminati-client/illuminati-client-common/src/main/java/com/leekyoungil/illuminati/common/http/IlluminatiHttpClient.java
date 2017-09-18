@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.elasticsearch.config;
+package com.leekyoungil.illuminati.common.http;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -70,11 +70,11 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
         }
     }
 
-    @Override public HttpParams getParams() {
+    @Override @Deprecated public HttpParams getParams() {
         return null;
     }
 
-    @Override public ClientConnectionManager getConnectionManager() {
+    @Override @Deprecated public ClientConnectionManager getConnectionManager() {
         return null;
     }
 }

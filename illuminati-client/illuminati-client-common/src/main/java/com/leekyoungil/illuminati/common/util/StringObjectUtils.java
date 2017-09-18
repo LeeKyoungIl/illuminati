@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.client.prossor.util;
+package com.leekyoungil.illuminati.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -20,9 +20,9 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class StringUtils {
+public class StringObjectUtils {
 
-    private final static Logger STRINGUTIL_LOGGER = LoggerFactory.getLogger(StringUtils.class);
+    private final static Logger STRINGUTIL_LOGGER = LoggerFactory.getLogger(StringObjectUtils.class);
 
     public static boolean isValid (final String value) {
         if (value == null || value.equals("")) {
@@ -160,7 +160,7 @@ public class StringUtils {
     }
 
     public static String deleteKeywordInString (String origin, final String[] deleteKeyword, final int[] deleteKeywordLocationIndex) {
-        if (StringUtils.isValid(origin) && deleteKeyword != null && deleteKeyword.length > 0
+        if (StringObjectUtils.isValid(origin) && deleteKeyword != null && deleteKeyword.length > 0
                 && deleteKeyword.length == deleteKeywordLocationIndex.length) {
             for (int i=0; i<deleteKeyword.length; i++) {
                 if (origin.indexOf(deleteKeyword[i]) == deleteKeywordLocationIndex[i]) {
@@ -192,7 +192,7 @@ public class StringUtils {
         id.append(UUID.randomUUID().toString().replace("-", ""));
         id.append(String.valueOf(idTimestamp));
 
-        if (StringUtils.isValid(postfix)) {
+        if (StringObjectUtils.isValid(postfix)) {
             id.append("-");
             id.append(postfix);
         }

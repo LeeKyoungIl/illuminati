@@ -1,8 +1,8 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
-import com.leekyoungil.illuminati.client.prossor.config.IlluminatiProperties;
 import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
-import com.leekyoungil.illuminati.client.prossor.model.IlluminatiModel;
+import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
+import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class IlluminatiExecutor {
                     try {
                         final IlluminatiModel illuminatiModel = ILLUMINATI_MODEL_BLOCKING_QUEUE.poll(ILLUMINATI_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
                         if (illuminatiModel != null) {
-                            if (IlluminatiProperties.ILLUMINATI_DEBUG == false) {
+                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                                 ILLUMINATI_TEMPLATE.sendToIlluminati(illuminatiModel.getJsonString());
                             } else {
                                 IlluminatiExecutor.sendToIlluminatiByDebug(illuminatiModel);
@@ -55,7 +55,7 @@ public class IlluminatiExecutor {
     }
 
     public static void executeToIlluminati (final IlluminatiModel illuminatiModel) {
-        if (IlluminatiProperties.ILLUMINATI_DEBUG == false) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             try {
                 ILLUMINATI_MODEL_BLOCKING_QUEUE.offer(illuminatiModel, ILLUMINATI_ENQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
@@ -72,7 +72,7 @@ public class IlluminatiExecutor {
      */
     private static void executeToIlluminatiByDebug (final IlluminatiModel illuminatiModel) {
         // debug illuminati buffer queue
-        if (IlluminatiProperties.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             try {
                 final long start = IlluminatiClientInit.ILLUMINATI_TIME_DATA.get();
                 ILLUMINATI_MODEL_BLOCKING_QUEUE.offer(illuminatiModel, ILLUMINATI_ENQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
@@ -90,7 +90,7 @@ public class IlluminatiExecutor {
      */
     private static void sendToIlluminatiByDebug (final IlluminatiModel illuminatiModel) {
         // debug illuminati rabbitmq queue
-        if (IlluminatiProperties.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final long start = IlluminatiClientInit.ILLUMINATI_TIME_DATA.get();
             //## sendToIlluminati
             ILLUMINATI_TEMPLATE.sendToIlluminati(illuminatiModel.getJsonString());
@@ -101,7 +101,7 @@ public class IlluminatiExecutor {
 
     private static void createDebugThread () {
         // debug illuminati buffer queue
-        if (IlluminatiProperties.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final Runnable queueCheckThread = new Runnable() {
                 public void run() {
                     while (true) {

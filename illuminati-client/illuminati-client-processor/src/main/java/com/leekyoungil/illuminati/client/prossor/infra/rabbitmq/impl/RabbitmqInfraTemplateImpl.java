@@ -1,12 +1,13 @@
 package com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl;
 
-import com.leekyoungil.illuminati.client.prossor.config.IlluminatiProperties;
 import com.leekyoungil.illuminati.client.prossor.exception.PublishMessageException;
 import com.leekyoungil.illuminati.client.prossor.exception.ValidationException;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.common.BasicTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CommunicationType;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.rabbitmq.client.*;
 import com.rabbitmq.client.AMQP.BasicProperties;
 
@@ -56,12 +57,12 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     @Override protected void checkRequiredValuesForInit () {
-        if (!StringUtils.isValid(this.illuminatiProperties.getVirtualHost())) {
+        if (!StringObjectUtils.isValid(this.illuminatiProperties.getVirtualHost())) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : virtualHostName is empty.");
             throw new ValidationException("error : virtualHostName is empty.");
         }
 
-        if (!StringUtils.isValid(this.illuminatiProperties.getQueueName())) {
+        if (!StringObjectUtils.isValid(this.illuminatiProperties.getQueueName())) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : queueName is empty.");
             throw new ValidationException("error : queueName is empty.");
         }
@@ -113,12 +114,12 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                     amqpChannel.waitForConfirms(VALUE_CONNECTION_WAIT_CONFIRM_TIMEOUT_MS);
                 }
 
-                if (IlluminatiProperties.ILLUMINATI_DEBUG == true) {
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("successfully transferred data to Illuminati broker.");
+                if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
                 }
             }
         } catch (Exception ex) {
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("failed to publish message (don't worry about failed. illuminati will retry send again your data.) : " + ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : " + ex.toString());
             throw new PublishMessageException("failed to publish message : " + ex.toString());
         } finally {
             if (amqpChannel != null) {
@@ -234,7 +235,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     private void setTopicAndQueue () {
-        if (StringUtils.isValid(this.illuminatiProperties.getTopic()) && StringUtils.isValid(this.illuminatiProperties.getQueueName())) {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getTopic()) && StringObjectUtils
+                .isValid(this.illuminatiProperties.getQueueName())) {
             this.topic = this.illuminatiProperties.getTopic();
             this.queueName = this.illuminatiProperties.getQueueName();
             this.initPublisher();
@@ -244,7 +246,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     private void setConnectUserInfo () {
-        if (StringUtils.isValid(this.illuminatiProperties.getUserName()) && StringUtils.isValid(this.illuminatiProperties.getPassword())) {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getUserName()) && StringObjectUtils
+                .isValid(this.illuminatiProperties.getPassword())) {
             RABBITMQ_CONNECTION_FACTORY.setUsername(this.illuminatiProperties.getUserName());
             RABBITMQ_CONNECTION_FACTORY.setPassword(this.illuminatiProperties.getPassword());
         }

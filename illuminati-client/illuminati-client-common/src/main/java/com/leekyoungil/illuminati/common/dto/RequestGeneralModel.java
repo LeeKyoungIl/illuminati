@@ -1,7 +1,8 @@
-package com.leekyoungil.illuminati.client.prossor.model;
+package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +71,11 @@ public class RequestGeneralModel {
                 try {
                     String value = clientInfoMap.get(key);
 
-                    if ("clientIp".equals(key) && StringUtils.isValid(value) == false) {
+                    if ("clientIp".equals(key) && StringObjectUtils.isValid(value) == false) {
                         value = clientInfoMap.get("remoteAddr");
                     }
 
-                    if (StringUtils.isValid(value)) {
+                    if (StringObjectUtils.isValid(value)) {
                         final Field field = this.getClass().getDeclaredField(key);
                         field.setAccessible(true);
                         field.set(this, value);
@@ -103,9 +104,9 @@ public class RequestGeneralModel {
                     tmpParams.append(paramNames[i]);
                     tmpParams.append(" : ");
 
-                    String paramValue = StringUtils.objectToString(paramValues[i]);
+                    String paramValue = StringObjectUtils.objectToString(paramValues[i]);
 
-                    if (StringUtils.isValid(paramValue)) {
+                    if (StringObjectUtils.isValid(paramValue)) {
                         tmpParams.append(paramValue);
                     }
 
@@ -113,7 +114,7 @@ public class RequestGeneralModel {
                 }
 
                 if (param.length > 0) {
-                    this.methodParams = org.apache.commons.lang3.StringUtils.join(param, ", ");
+                    this.methodParams = StringUtils.join(param, ", ");
                 }
             }
         } catch (Exception ex) {
@@ -127,7 +128,7 @@ public class RequestGeneralModel {
     }
 
     private void setReplaceMethodName(final String replaceText) {
-        if (StringUtils.isValid(this.methodName)) {
+        if (StringObjectUtils.isValid(this.methodName)) {
             this.methodName = this.methodName.replace(replaceText, "");
         }
     }
@@ -137,7 +138,7 @@ public class RequestGeneralModel {
         //final String[] deleteKeyword = new String[]{"/grails", ".dispatch"};
         //final int[] deleteKeywordIndex = new int[]{0, -1};
 
-        //this.path = StringUtils.deleteKeywordInString(this.path, deleteKeyword, deleteKeywordIndex);
+        //this.path = StringObjectUtils.deleteKeywordInString(this.path, deleteKeyword, deleteKeywordIndex);
 
         // It should not affect anything other than grails. Fuxx grails
         if (this.path.indexOf("/grails") == 0 && this.path.indexOf(".dispatch") > -1

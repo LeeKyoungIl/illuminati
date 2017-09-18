@@ -19,16 +19,16 @@
 
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
-            <artifactId>illuminati-client-processor</artifactId>
-            <version>0.8.6</version>
+            <artifactId>illuminati-client-common</artifactId>
+            <version>0.1.0</version>
             <scope>compile</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3.4</version>
+            <groupId>com.leekyoungil.illuminati</groupId>
+            <artifactId>illuminati-client-processor</artifactId>
+            <version>0.8.7</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

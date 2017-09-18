@@ -1,13 +1,15 @@
-package com.leekyoungil.illuminati.client.prossor.config;
+package com.leekyoungil.illuminati.client.prossor.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
 
 /**
- * Created by leekyoungil (leekyoungil@gmail.com) on 06/07/2017.
+ * Created by leekyoungil (leekyoungil@gmail.com) on 09/17/2017.
  *
  * Sample
  *  - rabbitmq
@@ -25,7 +27,7 @@ import java.util.Properties;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IlluminatiProperties {
+public class IlluminatiPropertiesImpl extends IlluminatiConstant implements IlluminatiProperties {
 
     private String parentModuleName;
     private String broker;
@@ -47,19 +49,10 @@ public class IlluminatiProperties {
     // * after using this function. you must have to re compile.(clean first)
     private String chaosBomber;
 
-    public static boolean ILLUMINATI_DEBUG = false;
+    public IlluminatiPropertiesImpl() {}
 
-    private static final String[] propertiesKeys;
-
-    static {
-        propertiesKeys = new String[]{"parentModuleName", "samplingRate", "broker", "clusterList", "virtualHost", "topic", "queueName", "userName", "password", "isAsync"
-                , "isCompression", "performance", "debug", "chaosBomber"};
-    }
-
-    public IlluminatiProperties() {}
-
-    public IlluminatiProperties(Properties prop) {
-        for (String keys : propertiesKeys) {
+    public IlluminatiPropertiesImpl(Properties prop) {
+        for (String keys : PROPERTIES_KEYS) {
             final String value = prop.getProperty(keys);
             if (prop.containsKey(keys) && !value.isEmpty()) {
                 try {
@@ -75,55 +68,55 @@ public class IlluminatiProperties {
         }
     }
 
-    public String getBroker() {
-        return StringUtils.isValid(this.broker) ? this.broker.toLowerCase() : null;
+    @Override public String getBroker() {
+        return StringObjectUtils.isValid(this.broker) ? this.broker.toLowerCase() : null;
     }
 
-    public String getClusterList() {
+    @Override public String getClusterList() {
         return this.clusterList;
     }
 
-    public String getVirtualHost() {
+    @Override public String getVirtualHost() {
         return this.virtualHost;
     }
 
-    public String getTopic() {
-        return StringUtils.isValid(this.topic) ? this.topic : "";
+    @Override public String getTopic() {
+        return StringObjectUtils.isValid(this.topic) ? this.topic : "";
     }
 
-    public String getQueueName() {
-        return StringUtils.isValid(this.queueName) ? this.queueName : "";
+    @Override public String getQueueName() {
+        return StringObjectUtils.isValid(this.queueName) ? this.queueName : "";
     }
 
-    public String getUserName() {
-        return StringUtils.isValid(this.userName) ? this.userName : "";
+    @Override public String getUserName() {
+        return StringObjectUtils.isValid(this.userName) ? this.userName : "";
     }
 
-    public String getPassword() {
-        return StringUtils.isValid(this.password) ? this.password : "";
+    @Override public String getPassword() {
+        return StringObjectUtils.isValid(this.password) ? this.password : "";
     }
 
-    public String getIsAsync() {
-        return StringUtils.isValid(this.isAsync) ? this.isAsync : "";
+    @Override public String getIsAsync() {
+        return StringObjectUtils.isValid(this.isAsync) ? this.isAsync : "";
     }
 
-    public String getIsCompression() {
-        return StringUtils.isValid(this.isCompression) ? this.isCompression : "";
+    @Override public String getIsCompression() {
+        return StringObjectUtils.isValid(this.isCompression) ? this.isCompression : "";
     }
 
-    public String getPerformance() {
-        return StringUtils.isValid(this.performance) ? this.performance : "";
+    @Override public String getPerformance() {
+        return StringObjectUtils.isValid(this.performance) ? this.performance : "";
     }
 
-    public String getDebug() {
-        return StringUtils.isValid(this.debug) ? this.debug : "";
+    @Override public String getDebug() {
+        return StringObjectUtils.isValid(this.debug) ? this.debug : "";
     }
 
-    public String getChaosBomber() {
-        return StringUtils.isValid(this.chaosBomber) ? this.chaosBomber : "";
+    @Override public String getChaosBomber() {
+        return StringObjectUtils.isValid(this.chaosBomber) ? this.chaosBomber : "";
     }
 
-    public String getParentModuleName() {
-        return StringUtils.isValid(this.parentModuleName) ? this.parentModuleName : "unknown";
+    @Override public String getParentModuleName() {
+        return StringObjectUtils.isValid(this.parentModuleName) ? this.parentModuleName : "unknown";
     }
 }

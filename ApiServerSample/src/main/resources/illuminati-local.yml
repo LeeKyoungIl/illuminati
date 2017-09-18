@@ -1,6 +1,6 @@
 #rabbitmq
 broker: rabbitmq
-clusterList: 192.168.99.100:32777
+clusterList: localhost:32779
 virtualHost: illuminatiLocal
 topic: local-illuminati-exchange
 queueName: local-illuminati-exchange.illuminati
@@ -12,7 +12,7 @@ parentModuleName: apisample
 samplingRate: 100
 debug: false
 
-illuminatiSwitchValue: true
+illuminatiSwitchValueURL: https://github.com/LeeKyoungIl/properties-test/blob/master/illuminati-switch-local.yml
 
 #kafka
 #broker: kafka

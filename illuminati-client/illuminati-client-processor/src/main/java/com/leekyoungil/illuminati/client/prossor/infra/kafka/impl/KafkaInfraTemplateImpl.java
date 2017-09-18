@@ -5,7 +5,7 @@ import com.leekyoungil.illuminati.client.prossor.exception.ValidationException;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.common.BasicTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CommunicationType;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.constants.KafkaConstant;
 import org.apache.kafka.clients.producer.*;
 
@@ -23,7 +23,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     /**
      * This is for bootstrapping and the producer will only use it for getting metadata.
-     * the socket connections for sending the actual data will be established based on the broker informaion returned
+     * the socket connections for sending the actual dto will be established based on the broker informaion returned
      * is the metadata.
      *
      * The format is host1:port1,host2:port2,host3:port3 and the list can be a subset of brokers or a VIP pointing to
@@ -51,7 +51,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     }
 
     @Override protected void checkRequiredValuesForInit () {
-         if (!StringUtils.isValid(this.illuminatiProperties.getTopic())) {
+         if (!StringObjectUtils.isValid(this.illuminatiProperties.getTopic())) {
              KAFKA_TEMPLATE_IMPL_LOGGER.error("error : topic variable is empty.");
              throw new ValidationException("error : topic variable is empty.");
         }
@@ -111,7 +111,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, partition : " + sendResult.get().partition());
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, topic: " + sendResult.get().topic());
 
-            KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred data to Illuminati broker.");
+            KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
         } catch (Exception ex) {
             KAFKA_TEMPLATE_IMPL_LOGGER.error("failed to publish message : " + ex.toString());
             throw new PublishMessageException("failed to publish message : " + ex.toString());

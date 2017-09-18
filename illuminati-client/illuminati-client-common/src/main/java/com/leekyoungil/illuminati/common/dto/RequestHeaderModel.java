@@ -1,14 +1,13 @@
-package com.leekyoungil.illuminati.client.prossor.model;
+package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -369,7 +368,7 @@ public class RequestHeaderModel {
 
             if ("post".equals(request.getMethod().toLowerCase())) {
                 try {
-                    this.postContentBody = StringUtils.getPostBodyString(request);
+                    this.postContentBody = StringObjectUtils.getPostBodyString(request);
                 } catch (IOException ex) {
                     REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ("+ex.toString()+")");
                 }
@@ -455,7 +454,7 @@ public class RequestHeaderModel {
     }
 
     public void parsingCookie () {
-        if (!StringUtils.isValid(this.cookie)) {
+        if (!StringObjectUtils.isValid(this.cookie)) {
             return;
         }
 
@@ -477,7 +476,7 @@ public class RequestHeaderModel {
     }
 
     public void setGlobalTransactionId (String illuminatiProcId) {
-        if (StringUtils.isValid(illuminatiProcId) == false) {
+        if (StringObjectUtils.isValid(illuminatiProcId) == false) {
             return;
         }
         this.illuminatiProcId = illuminatiProcId;

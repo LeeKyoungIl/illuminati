@@ -31,12 +31,12 @@ public class SubscribeListener {
             String jsonString = (String) message.getPayload();
             sampleBuyEsModel = IlluminatiClientInit.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsModelImpl.class);
         } catch (Exception ex) {
-            SUB_LOGGER.error("Sorry. something is wrong in Parsing received data. ("+ex.toString()+")");
+            SUB_LOGGER.error("Sorry. something is wrong in Parsing received dto. ("+ex.toString()+")");
             return;
         }
 
         if (sampleBuyEsModel != null) {
-            // if your Application (an application that generates illuminati data) is using grails. have to this code activation.
+            // if your Application (an application that generates illuminati dto) is using grails. have to this code activation.
             //String[] excludeMethodName = new String[]{".getMetaClass()", ".getProperty(java.lang.String)"};
             //for (String excludeMethodNameData : excludeMethodName) {
             //    if (sampleBuyEsModel.getMethodName().indexOf(excludeMethodNameData) > -1) {
@@ -48,7 +48,7 @@ public class SubscribeListener {
             HttpResponse result = (HttpResponse) this.esClient.save(sampleBuyEsModel);
 
             if ("2".equals(String.valueOf(result.getStatusLine().getStatusCode()).substring(0, 1))) {
-                SUB_LOGGER.info("successfully transferred data to Elasticsearch.");
+                SUB_LOGGER.info("successfully transferred dto to Elasticsearch.");
             } else {
                 SUB_LOGGER.error("Sorry. something is wrong in send to Elasticsearch. (code : "+result.getStatusLine().getStatusCode()+")");
             }
