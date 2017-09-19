@@ -2,6 +2,7 @@ package com.leekyoungil.illuminati.client.prossor.processor;
 
 import com.google.auto.service.AutoService;
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
@@ -144,7 +145,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         final String illuminatiAnnotationName = "com.leekyoungil.illuminati.client.annotation.Illuminati";
         // step 4.  check chaosBomber is activated.
-        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(this.messager, "illuminati", "chaosBomber");
+        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, this.messager, "illuminati", "chaosBomber");
 
         String illuminatiExecuteMethod = "";
 

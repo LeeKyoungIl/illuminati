@@ -44,7 +44,7 @@ public class IlluminatiPropertiesHelper {
         return isIlluminatiSwitcherActive;
     }
 
-    public static String getPropertiesValueByKey(Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName, final String key) {
+    public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName, final String key) {
         final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(clazz, messager, configPropertiesFileName);
         String propertiesValue = null;
 
@@ -68,7 +68,7 @@ public class IlluminatiPropertiesHelper {
         return propertiesValue;
     }
 
-    public static IlluminatiProperties getIlluminatiProperties(Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
+    public static IlluminatiProperties getIlluminatiProperties(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
         IlluminatiProperties illuminatiProperties = null;
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
@@ -101,7 +101,7 @@ public class IlluminatiPropertiesHelper {
         return illuminatiProperties;
     }
 
-    private static IlluminatiProperties getIlluminatiPropertiesFromBasicFiles(Class<? extends IlluminatiProperties> clazz, Messager messager) {
+    private static IlluminatiProperties getIlluminatiPropertiesFromBasicFiles(final Class<? extends IlluminatiProperties> clazz, Messager messager) {
         IlluminatiProperties illuminatiProperties = null;
 
         for (String fileName : BASIC_CONFIG_FILES) {
@@ -115,7 +115,7 @@ public class IlluminatiPropertiesHelper {
         return null;
     }
 
-    private static IlluminatiProperties getIlluminatiPropertiesByFile(Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
+    private static IlluminatiProperties getIlluminatiPropertiesByFile(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
         final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
         IlluminatiProperties illuminatiProperties = null;
 
@@ -133,8 +133,7 @@ public class IlluminatiPropertiesHelper {
                         .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                         .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
                 illuminatiProperties = mapper.readValue(input, clazz);
-            }
-            else {
+            } else {
                 final Properties prop = new Properties();
                 prop.load(input);
 

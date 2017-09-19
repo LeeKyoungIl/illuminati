@@ -11,7 +11,7 @@ isCompression: true
 parentModuleName: apisample
 samplingRate: 100
 debug: false
-illuminatiSwitchValueURL: https://github.com/LeeKyoungIl/illuminati/blob/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
+illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
 
 #kafka
 #broker: kafka

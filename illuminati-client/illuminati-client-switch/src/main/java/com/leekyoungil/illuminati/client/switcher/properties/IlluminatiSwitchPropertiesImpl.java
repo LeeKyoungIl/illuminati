@@ -1,10 +1,13 @@
 package com.leekyoungil.illuminati.client.switcher.properties;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
 
     private String illuminatiSwitchValueURL;
@@ -93,8 +96,7 @@ public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
         return null;
     }
 
-    @Override
-    public String getIlluminatiSwitchValueURL() {
-        return null;
+    @Override public String getIlluminatiSwitchValueURL() {
+        return StringObjectUtils.isValid(this.illuminatiSwitchValueURL) ? this.illuminatiSwitchValueURL : "false";
     }
 }

@@ -4,6 +4,7 @@ import com.leekyoungil.illuminati.client.prossor.exception.ValidationException;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CommunicationType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CompressionCodecType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.PerformanceType;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
@@ -29,7 +30,7 @@ public abstract class BasicTemplate {
     abstract protected void publisherClose ();
 
     protected BasicTemplate (final String propertiesName) {
-        this.illuminatiProperties = IlluminatiPropertiesHelper.getIlluminatiProperties(null, propertiesName);
+        this.illuminatiProperties = IlluminatiPropertiesHelper.getIlluminatiProperties(IlluminatiPropertiesImpl.class, null, propertiesName);
 
         if (this.illuminatiProperties == null) {
             BASIC_TEMPLATE_LOGGER.error("error : Sorry, something is wrong in read Properties file.");
