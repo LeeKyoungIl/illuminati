@@ -1,6 +1,6 @@
 #rabbitmq
 broker: rabbitmq
-clusterList: localhost:32779
+clusterList: localhost:32769
 virtualHost: illuminatiLocal
 topic: local-illuminati-exchange
 queueName: local-illuminati-exchange.illuminati
