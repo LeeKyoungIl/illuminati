@@ -4,7 +4,7 @@ import com.leekyoungil.illuminati.client.prossor.exception.ValidationException;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CommunicationType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CompressionCodecType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.PerformanceType;
-import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;

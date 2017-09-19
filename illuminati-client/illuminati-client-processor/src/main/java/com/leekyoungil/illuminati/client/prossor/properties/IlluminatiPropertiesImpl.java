@@ -45,13 +45,15 @@ public class IlluminatiPropertiesImpl extends IlluminatiConstant implements Illu
 
     private String debug;
 
+    private String illuminatiSwitchValueURL;
+
     // * it is very dangerous function. it is activate when debug is true.
     // * after using this function. you must have to re compile.(clean first)
     private String chaosBomber;
 
     public IlluminatiPropertiesImpl() {}
 
-    public IlluminatiPropertiesImpl(Properties prop) {
+    @Override public void setProperties(final Properties prop) {
         for (String keys : PROPERTIES_KEYS) {
             final String value = prop.getProperty(keys);
             if (prop.containsKey(keys) && !value.isEmpty()) {
@@ -118,5 +120,9 @@ public class IlluminatiPropertiesImpl extends IlluminatiConstant implements Illu
 
     @Override public String getParentModuleName() {
         return StringObjectUtils.isValid(this.parentModuleName) ? this.parentModuleName : "unknown";
+    }
+
+    @Override public String getIlluminatiSwitchValueURL() {
+        return StringObjectUtils.isValid(this.illuminatiSwitchValueURL) ? this.illuminatiSwitchValueURL : "false";
     }
 }

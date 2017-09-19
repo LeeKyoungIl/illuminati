@@ -1,9 +1,8 @@
-package com.leekyoungil.illuminati.client.prossor.properties;
+package com.leekyoungil.illuminati.common.properties;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +44,8 @@ public class IlluminatiPropertiesHelper {
         return isIlluminatiSwitcherActive;
     }
 
-    public static String getPropertiesValueByKey(Messager messager, final String configPropertiesFileName, final String key) {
-        final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(messager, configPropertiesFileName);
+    public static String getPropertiesValueByKey(Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName, final String key) {
+        final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(clazz, messager, configPropertiesFileName);
         String propertiesValue = null;
 
         if (StringObjectUtils.isValid(key) && illuminatiProperties != null) {
@@ -69,7 +68,7 @@ public class IlluminatiPropertiesHelper {
         return propertiesValue;
     }
 
-    public static IlluminatiProperties getIlluminatiProperties(Messager messager, final String configPropertiesFileName) {
+    public static IlluminatiProperties getIlluminatiProperties(Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
         IlluminatiProperties illuminatiProperties = null;
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
@@ -80,7 +79,7 @@ public class IlluminatiPropertiesHelper {
             }
 
             final String fullFileName = configPropertiesFileName + dotBeforeExtension + extension;
-            illuminatiProperties = getIlluminatiPropertiesByFile(messager, fullFileName);
+            illuminatiProperties = getIlluminatiPropertiesByFile(clazz, messager, fullFileName);
 
             if (illuminatiProperties != null) {
                 break;
@@ -88,7 +87,7 @@ public class IlluminatiPropertiesHelper {
         }
 
         if (illuminatiProperties == null) {
-            illuminatiProperties = getIlluminatiPropertiesFromBasicFiles(messager);
+            illuminatiProperties = getIlluminatiPropertiesFromBasicFiles(clazz, messager);
         }
 
         if (illuminatiProperties == null) {
@@ -102,11 +101,11 @@ public class IlluminatiPropertiesHelper {
         return illuminatiProperties;
     }
 
-    private static IlluminatiProperties getIlluminatiPropertiesFromBasicFiles(Messager messager) {
+    private static IlluminatiProperties getIlluminatiPropertiesFromBasicFiles(Class<? extends IlluminatiProperties> clazz, Messager messager) {
         IlluminatiProperties illuminatiProperties = null;
 
         for (String fileName : BASIC_CONFIG_FILES) {
-            illuminatiProperties = getIlluminatiPropertiesByFile(messager, fileName);
+            illuminatiProperties = getIlluminatiPropertiesByFile(clazz, messager, fileName);
 
             if (illuminatiProperties != null) {
                 return illuminatiProperties;
@@ -116,7 +115,7 @@ public class IlluminatiPropertiesHelper {
         return null;
     }
 
-    private static IlluminatiProperties getIlluminatiPropertiesByFile(Messager messager, final String configPropertiesFileName) {
+    private static IlluminatiProperties getIlluminatiPropertiesByFile(Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
         final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
         IlluminatiProperties illuminatiProperties = null;
 
@@ -133,7 +132,7 @@ public class IlluminatiPropertiesHelper {
                         .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                         .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                         .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
-                illuminatiProperties = mapper.readValue(input, IlluminatiPropertiesImpl.class);
+                illuminatiProperties = mapper.readValue(input, clazz);
             }
             else {
                 final Properties prop = new Properties();
@@ -149,7 +148,14 @@ public class IlluminatiPropertiesHelper {
                     return null;
                 }
 
-                illuminatiProperties = new IlluminatiPropertiesImpl(prop);
+                try {
+                    illuminatiProperties = clazz.newInstance();
+                    illuminatiProperties.setProperties(prop);
+                } catch (InstantiationException e) {
+                    // ignore
+                } catch (IllegalAccessException e) {
+                    // ignore
+                }
             }
         }
         catch (IOException ex) {

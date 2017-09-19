@@ -7,7 +7,7 @@ import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInf
 import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
 import com.leekyoungil.illuminati.common.dto.RequestHeaderModel;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
-import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.ConvertUtil;
@@ -43,7 +43,7 @@ public class IlluminatiClientInit {
 
     public synchronized static void init () {
         if (ILLUMINATI_TEMPLATE == null) {
-            ILLUMINATI_BROKER = IlluminatiPropertiesHelper.getPropertiesValueByKey(null, "illuminati", "broker");
+            ILLUMINATI_BROKER = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker");
 
             if ("kafka".equals(ILLUMINATI_BROKER)) {
                 ILLUMINATI_TEMPLATE = new KafkaInfraTemplateImpl("illuminati");
@@ -61,10 +61,10 @@ public class IlluminatiClientInit {
             return;
         }
 
-        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(null, "illuminati", "samplingRate");
+        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
 
-        PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(null, "illuminati", "parentModuleName");
+        PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName");
         SERVER_INFO = new ServerInfo(true);
         // get basic JVM setting info only once.
         JVM_INFO = SystemUtil.getJvmInfo();
@@ -92,7 +92,7 @@ public class IlluminatiClientInit {
             ILLUMINATI_TIME_THREAD.start();
         }
 
-        String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(null, "illuminati", "debug");
+        String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "debug");
         if (StringObjectUtils.isValid(debug)) {
             IlluminatiConstant.ILLUMINATI_DEBUG = Boolean.valueOf(debug);
         }
@@ -120,7 +120,6 @@ public class IlluminatiClientInit {
     }
 
     public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        System.out.println("ILLUMINATI_SWITCH_VALUE : " + IlluminatiPropertiesImpl.ILLUMINATI_SWITCH_VALUE);
         if (IlluminatiConstant.ILLUMINATI_SWITCH_VALUE == false) {
             ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
             return pjp.proceed();

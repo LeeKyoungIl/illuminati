@@ -2,7 +2,7 @@ package com.leekyoungil.illuminati.client.prossor.processor;
 
 import com.google.auto.service.AutoService;
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
-import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
 import javax.annotation.processing.*;
