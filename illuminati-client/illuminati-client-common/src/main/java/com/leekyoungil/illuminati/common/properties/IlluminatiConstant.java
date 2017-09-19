@@ -4,13 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Modifier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class IlluminatiConstant {
 
     public static boolean ILLUMINATI_DEBUG = false;
 
     public static boolean ILLUMINATI_SWITCH_ACTIVATION = false;
-    public static boolean ILLUMINATI_SWITCH_VALUE = false;
+    public static AtomicBoolean ILLUMINATI_SWITCH_VALUE = new AtomicBoolean(false);
 
     protected static final String[] PROPERTIES_KEYS;
 

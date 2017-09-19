@@ -23,7 +23,10 @@ public class IlluminatiSwitch {
                     if (result != null) {
                         String[] illuminatiSwitchValueArray = ((String) result).split(":");
                         if (illuminatiSwitchValueArray.length == 2 && StringUtils.isNotEmpty(illuminatiSwitchValueArray[1])) {
-                            IlluminatiConstant.ILLUMINATI_SWITCH_VALUE = Boolean.valueOf(illuminatiSwitchValueArray[1].toLowerCase().indexOf("true") > -1 ? "true" : "false");
+                            boolean switchValue = Boolean.valueOf(illuminatiSwitchValueArray[1].toLowerCase().indexOf("true") > -1 ? "true" : "false");
+                            if (switchValue != IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get()) {
+                                IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.set(switchValue);
+                            }
                         }
                     }
 
