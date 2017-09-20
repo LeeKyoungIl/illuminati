@@ -38,9 +38,9 @@ public class IlluminatiExecutor {
                             }
                         }
                     } catch (InterruptedException e) {
-                        // ignore
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.warn("Failed to dequeing the rabbitmq queue.. ("+e.getMessage()+")");
                     } catch (Exception e) {
-                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.error("Failed to enqueuing the rabbitmq queue.. ("+e.getMessage()+")");
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.warn("Failed to send the rabbitmq queue.. ("+e.getMessage()+")");
                     }
                 }
             }
@@ -59,7 +59,7 @@ public class IlluminatiExecutor {
             try {
                 ILLUMINATI_MODEL_BLOCKING_QUEUE.offer(illuminatiModel, ILLUMINATI_ENQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
-                ILLUMINATI_TEMPLATE_IMPL_LOGGER.error("Failed to enqueuing the Illuminati queue.. ("+e.getMessage()+")");
+                ILLUMINATI_TEMPLATE_IMPL_LOGGER.warn("Failed to enqueuing the Illuminati queue.. ("+e.getMessage()+")");
             }
         } else {
             IlluminatiExecutor.executeToIlluminatiByDebug(illuminatiModel);

@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.client.switcher.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
@@ -11,6 +12,7 @@ import java.util.Properties;
 public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
 
     private String illuminatiSwitchValueURL;
+    private String illuminatiSwitchValueURLCheckInterval;
 
     public IlluminatiSwitchPropertiesImpl () { }
 
@@ -98,5 +100,11 @@ public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
 
     @Override public String getIlluminatiSwitchValueURL() {
         return StringObjectUtils.isValid(this.illuminatiSwitchValueURL) ? this.illuminatiSwitchValueURL : "false";
+    }
+
+    public String getIlluminatiSwitchValueURLCheckInterval() {
+        return StringObjectUtils.isValid(this.illuminatiSwitchValueURLCheckInterval)
+                ? this.illuminatiSwitchValueURLCheckInterval
+                : IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
     }
 }

@@ -83,7 +83,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             public void run() {
                 System.out.println("Illuminati BYE BYE");
                 try {
-                    AMQP_CONNECTION.close();
+                    RabbitmqInfraTemplateImpl.AMQP_CONNECTION.close();
                 } catch (IOException e) {
                     // ignore
                 }
