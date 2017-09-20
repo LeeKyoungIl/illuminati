@@ -2,7 +2,8 @@ package com.leekyoungil.illuminati.client.prossor.executor;
 
 import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
 import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
-import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +47,7 @@ public class IlluminatiExecutor {
             }
         };
 
-        ILLUMINATI_SENDER_THREAD = new Thread(runnableFirst);
-        ILLUMINATI_SENDER_THREAD.setName("ILLUMINATI_SENDER_THREAD");
-        ILLUMINATI_SENDER_THREAD.setDaemon(true);
-        ILLUMINATI_SENDER_THREAD.start();
+        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_SENDER_THREAD");
 
         IlluminatiExecutor.createDebugThread();
     }
@@ -102,7 +100,7 @@ public class IlluminatiExecutor {
     private static void createDebugThread () {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
-            final Runnable queueCheckThread = new Runnable() {
+            final Runnable queueCheckRunnable = new Runnable() {
                 public void run() {
                     while (true) {
                         ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("current queue count : "+ILLUMINATI_MODEL_BLOCKING_QUEUE.size());
@@ -116,10 +114,7 @@ public class IlluminatiExecutor {
                 }
             };
 
-            final Thread queueCheckerThread = new Thread(queueCheckThread);
-            queueCheckerThread.setName("ILLUMINATI_QUEUE_CHECK_THREAD");
-            queueCheckerThread.setDaemon(true);
-            queueCheckerThread.start();
+            SystemUtil.createSystemThread(queueCheckRunnable, "ILLUMINATI_QUEUE_CHECK_THREAD");
         }
     }
 }

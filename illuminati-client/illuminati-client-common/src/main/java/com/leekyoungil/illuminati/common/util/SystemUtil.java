@@ -1,9 +1,16 @@
 package com.leekyoungil.illuminati.common.util;
 
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class SystemUtil {
+
+    private static final Logger SYSTEM_UTIL_LOGGER = LoggerFactory.getLogger(SystemUtil.class);
 
     private final static Runtime RUNTIME = Runtime.getRuntime();
 
@@ -19,6 +26,12 @@ public class SystemUtil {
 
 
     private static final int MB = 1024*1024;
+
+    static {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+            SystemUtil.createThreadStatusDebugThread();
+        }
+    }
 
     public static Map<String, Object> getJvmInfo () {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
@@ -53,5 +66,50 @@ public class SystemUtil {
         }
 
         return StringObjectUtils.isValid(id.toString()) ? (String) id : null;
+    }
+
+    public static void createSystemThread (final Runnable runnable, final String threadName) {
+        if (runnable == null) {
+            SYSTEM_UTIL_LOGGER.warn("Runnable is required.");
+            return;
+        }
+
+        if (StringUtils.isEmpty(threadName)) {
+            SYSTEM_UTIL_LOGGER.warn("threadName is required.");
+            return;
+        }
+
+        final Thread newThread = new Thread(runnable);
+
+        if (!"debug".equalsIgnoreCase(threadName)) {
+            newThread.setName(threadName);
+        }
+        newThread.setDaemon(true);
+        newThread.start();
+
+        IlluminatiConstant.SYSTEM_THREAD_MAP.put(threadName, newThread);
+    }
+
+    public static void createThreadStatusDebugThread () {
+        // debug illuminati buffer queue
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+            final Runnable queueCheckRunnable = new Runnable() {
+                public void run() {
+                    while (true) {
+                        for(Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()){
+                            SYSTEM_UTIL_LOGGER.debug("threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
+                        }
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
+                    }
+                }
+            };
+
+            SystemUtil.createSystemThread(queueCheckRunnable, "debug");
+        }
     }
 }

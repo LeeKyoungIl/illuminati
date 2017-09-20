@@ -4,8 +4,9 @@ import com.leekyoungil.illuminati.client.switcher.http.IlluminatiSwitchHttp;
 import com.leekyoungil.illuminati.client.switcher.http.impl.IlluminatiSwitchHttpImpl;
 import com.leekyoungil.illuminati.client.switcher.properties.IlluminatiSwitchPropertiesImpl;
 import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient;
-import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +61,7 @@ public class IlluminatiSwitch {
             }
         };
 
-        ILLUMINATI_SWITCH_THREAD = new Thread(runnable);
-        ILLUMINATI_SWITCH_THREAD.setName("ILLUMINATI_SWITCH_THREAD");
-        ILLUMINATI_SWITCH_THREAD.setDaemon(true);
-        ILLUMINATI_SWITCH_THREAD.start();
+        SystemUtil.createSystemThread(runnable, "ILLUMINATI_SWITCH_THREAD");
     }
 
     private static void setIlluminatiSwitchValue (Object result) {

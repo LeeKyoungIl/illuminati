@@ -1,12 +1,16 @@
-package com.leekyoungil.illuminati.common.properties;
+package com.leekyoungil.illuminati.common.constant;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class IlluminatiConstant {
+
+    public static Map<String, Thread> SYSTEM_THREAD_MAP = new HashMap<String, Thread>();
 
     public static boolean ILLUMINATI_DEBUG = false;
 

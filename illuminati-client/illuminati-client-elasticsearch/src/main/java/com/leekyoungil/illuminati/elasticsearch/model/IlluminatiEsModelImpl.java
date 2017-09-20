@@ -2,9 +2,8 @@ package com.leekyoungil.illuminati.elasticsearch.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
 import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
-import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;

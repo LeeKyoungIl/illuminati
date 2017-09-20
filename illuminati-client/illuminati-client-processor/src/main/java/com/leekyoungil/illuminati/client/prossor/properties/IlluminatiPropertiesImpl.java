@@ -1,7 +1,7 @@
 package com.leekyoungil.illuminati.client.prossor.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 

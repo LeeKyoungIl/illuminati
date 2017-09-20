@@ -9,7 +9,7 @@ import com.leekyoungil.illuminati.common.dto.RequestHeaderModel;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
-import com.leekyoungil.illuminati.common.properties.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -86,10 +86,7 @@ public class IlluminatiClientInit {
                 }
             };
 
-            ILLUMINATI_TIME_THREAD = new Thread(runnable);
-            ILLUMINATI_TIME_THREAD.setName("ILLUMINATI_TIME_THREAD");
-            ILLUMINATI_TIME_THREAD.setDaemon(true);
-            ILLUMINATI_TIME_THREAD.start();
+            SystemUtil.createSystemThread(runnable, "ILLUMINATI_TIME_THREAD");
         }
 
         String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "debug");
