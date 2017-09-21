@@ -27,12 +27,6 @@ public class SystemUtil {
 
     private static final int MB = 1024*1024;
 
-    static {
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
-            SystemUtil.createThreadStatusDebugThread();
-        }
-    }
-
     public static Map<String, Object> getJvmInfo () {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
         final List<String> includeJavaSystemPropertiesList = Arrays.asList(INCLUDE_JAVA_SYSTEM_PROPERTIES);
@@ -79,6 +73,11 @@ public class SystemUtil {
             return;
         }
 
+        if (IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName)) {
+            SYSTEM_UTIL_LOGGER.warn(threadName + " thread is already exists.");
+            return;
+        }
+
         final Thread newThread = new Thread(runnable);
 
         if (!"debug".equalsIgnoreCase(threadName)) {
@@ -93,11 +92,11 @@ public class SystemUtil {
     public static void createThreadStatusDebugThread () {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
-            final Runnable queueCheckRunnable = new Runnable() {
+            final Runnable threadCheckRunnable = new Runnable() {
                 public void run() {
                     while (true) {
                         for(Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()){
-                            SYSTEM_UTIL_LOGGER.debug("threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
+                            SYSTEM_UTIL_LOGGER.info("threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
                         }
 
                         try {
@@ -109,7 +108,7 @@ public class SystemUtil {
                 }
             };
 
-            SystemUtil.createSystemThread(queueCheckRunnable, "debug");
+            SystemUtil.createSystemThread(threadCheckRunnable, "debug");
         }
     }
 }

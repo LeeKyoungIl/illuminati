@@ -27,7 +27,7 @@ import java.util.Properties;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IlluminatiPropertiesImpl extends IlluminatiConstant implements IlluminatiProperties {
+public class IlluminatiPropertiesImpl implements IlluminatiProperties {
 
     private String parentModuleName;
     private String broker;
@@ -54,7 +54,7 @@ public class IlluminatiPropertiesImpl extends IlluminatiConstant implements Illu
     public IlluminatiPropertiesImpl() {}
 
     @Override public void setProperties(final Properties prop) {
-        for (String keys : PROPERTIES_KEYS) {
+        for (String keys : IlluminatiConstant.PROPERTIES_KEYS) {
             final String value = prop.getProperty(keys);
             if (prop.containsKey(keys) && !value.isEmpty()) {
                 try {
@@ -111,7 +111,7 @@ public class IlluminatiPropertiesImpl extends IlluminatiConstant implements Illu
     }
 
     @Override public String getDebug() {
-        return StringObjectUtils.isValid(this.debug) ? this.debug : "";
+        return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
     }
 
     @Override public String getChaosBomber() {

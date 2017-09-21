@@ -4,6 +4,7 @@ import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
+import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
 import com.leekyoungil.illuminati.common.dto.RequestHeaderModel;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class IlluminatiClientInit {
 
@@ -31,15 +31,12 @@ public class IlluminatiClientInit {
     private static int SAMPLING_RATE = 20;
     private static int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
-    public static AtomicLong ILLUMINATI_TIME_DATA;
     public static IlluminatiInfraTemplate ILLUMINATI_TEMPLATE;
     public static String ILLUMINATI_BROKER;
 
     public static String PARENT_MODULE_NAME;
     public static ServerInfo SERVER_INFO;
     public static Map<String, Object> JVM_INFO;
-
-    public static Thread ILLUMINATI_TIME_THREAD;
 
     public synchronized static void init () {
         if (ILLUMINATI_TEMPLATE == null) {
@@ -61,6 +58,8 @@ public class IlluminatiClientInit {
             return;
         }
 
+        IlluminatiCommon.init();
+
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
 
@@ -68,31 +67,6 @@ public class IlluminatiClientInit {
         SERVER_INFO = new ServerInfo(true);
         // get basic JVM setting info only once.
         JVM_INFO = SystemUtil.getJvmInfo();
-
-        if (ILLUMINATI_TIME_THREAD == null) {
-            ILLUMINATI_TIME_DATA = new AtomicLong(0);
-
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    while (true) {
-                        ILLUMINATI_TIME_DATA.incrementAndGet();
-
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            ILLUMINATI_INIT_LOGGER.error("InterruptedException on ILLUMINATI_TIME_DATA. ("+e.toString()+")");
-                        }
-                    }
-                }
-            };
-
-            SystemUtil.createSystemThread(runnable, "ILLUMINATI_TIME_THREAD");
-        }
-
-        String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "debug");
-        if (StringObjectUtils.isValid(debug)) {
-            IlluminatiConstant.ILLUMINATI_DEBUG = Boolean.valueOf(debug);
-        }
 
         if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive() == true) {
             IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION = true;
@@ -127,9 +101,9 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        final long start = IlluminatiClientInit.ILLUMINATI_TIME_DATA.get();
+        final long start = System.currentTimeMillis();
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
-        final long elapsedTime = IlluminatiClientInit.ILLUMINATI_TIME_DATA.get() - start;
+        final long elapsedTime = System.currentTimeMillis() - start;
 
         final Object output = originMethodExecute.get("result");
         Throwable throwable = null;
@@ -179,7 +153,7 @@ public class IlluminatiClientInit {
      */
     public static Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         // chaosBomber mode activate at debug mode.
-        if (IlluminatiPropertiesImpl.ILLUMINATI_DEBUG == false) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             return IlluminatiClientInit.executeIlluminati(pjp, request);
         }
 
@@ -188,9 +162,9 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        final long start = IlluminatiClientInit.ILLUMINATI_TIME_DATA.get();
+        final long start = System.currentTimeMillis();
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
-        final long elapsedTime = IlluminatiClientInit.ILLUMINATI_TIME_DATA.get() - start;
+        final long elapsedTime = System.currentTimeMillis() - start;
 
         final Object output = originMethodExecute.get("result");
         Throwable throwable = null;

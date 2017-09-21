@@ -19,7 +19,7 @@ abstract public class IlluminatiConstant {
 
     public final static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = "5000";
 
-    protected static final String[] PROPERTIES_KEYS;
+    public static final String[] PROPERTIES_KEYS;
 
     static {
         PROPERTIES_KEYS = new String[]{"parentModuleName", "samplingRate"
