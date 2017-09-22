@@ -21,7 +21,15 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.6</version>
+  <version>0.9.0</version>
+</dependency>
+
+<!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
+<dependency>
+   <groupId>com.leekyoungil.illuminati</groupId>
+   <artifactId>illuminati-client-switch</artifactId>
+   <version>1.0.0</version>
+</dependency>
 </dependency>
 ```
 
@@ -30,7 +38,9 @@
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.6'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.0'
+// This is an option. If you add the module, you can turn it on and off without deploying it.
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.0'
 ```
 
 ## add @Illuminati to Class
@@ -158,9 +168,16 @@ chaosBomber: true
 </dependency>
 
 <dependency>
+ <groupId>com.leekyoungil.illuminati</groupId>
+ <artifactId>illuminati-client-processor</artifactId>
+ <version>0.9.0</version>
+</dependency>
+  
+<!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
+<dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.6</version>
+  <artifactId>illuminati-client-switch</artifactId>
+  <version>1.0.0</version>
 </dependency>
 ```
 
@@ -169,7 +186,8 @@ chaosBomber: true
     
 ```java
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.6'
+//이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:1.0.0'
 ```
 
 ## Class에 @Illuminati 추가 
