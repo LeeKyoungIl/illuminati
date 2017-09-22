@@ -32,8 +32,8 @@ spring:
           environment:
             spring:
               rabbitmq:
-                host: 192.168.99.100
-                port: 32771
+                host: localhost
+                port: 32769
                 virtual-host: illuminatiLocal
                 username: illuminati-local
                 password: illuminati-local

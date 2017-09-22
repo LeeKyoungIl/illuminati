@@ -2,8 +2,9 @@ package com.leekyoungil.illuminati.client.prossor.processor;
 
 import com.google.auto.service.AutoService;
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
-import com.leekyoungil.illuminati.client.prossor.util.FileUtils;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -110,7 +111,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
     /**
      * Generated the Illuminati Client class body.
      *
-     * @param basePackageName assign a properties file setting data. Can not be null
+     * @param basePackageName assign a properties file setting dto. Can not be null
      * @return boolean if failed is false and another is true.
      */
     private boolean setGeneratedIlluminatiTemplate (final String basePackageName) {
@@ -133,7 +134,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 + "         }\r\n"
                 + "     }\r\n";
 
-        // step 3.  config by broker
+        // step 3.  properties by broker
         String implClassName;
 
         //if (BrokerType.RABBITMQ != brokerType && BrokerType.KAFKA != brokerType) {
@@ -144,11 +145,11 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         final String illuminatiAnnotationName = "com.leekyoungil.illuminati.client.annotation.Illuminati";
         // step 4.  check chaosBomber is activated.
-        final String checkChaosBomber = FileUtils.getPropertiesValueByKey(this.messager, "illuminati", "chaosBomber");
+        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, this.messager, "illuminati", "chaosBomber");
 
         String illuminatiExecuteMethod = "";
 
-        if (StringUtils.isValid(checkChaosBomber) && "true".equals(checkChaosBomber.toLowerCase())) {
+        if (StringObjectUtils.isValid(checkChaosBomber) && "true".equals(checkChaosBomber.toLowerCase())) {
             illuminatiExecuteMethod = "ByChaosBomber";
         }
 

@@ -1,11 +1,10 @@
-package com.leekyoungil.illuminati.client.prossor.model;
+package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class ServerInfo {
     }
 
     public boolean isAreadySetServerDomainAndPort () {
-        if (!StringUtils.isValid(this.domain) || this.serverPort == 0) {
+        if (!StringObjectUtils.isValid(this.domain) || this.serverPort == 0) {
             return false;
         }
 

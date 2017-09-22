@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.client.prossor.util;
+package com.leekyoungil.illuminati.common.util;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;

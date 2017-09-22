@@ -1,16 +1,12 @@
-package com.leekyoungil.illuminati.client.prossor.model;
+package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
-import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
-import com.leekyoungil.illuminati.client.prossor.util.ConvertUtil;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
-import com.leekyoungil.illuminati.client.prossor.util.SystemUtil;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,8 +22,8 @@ public class IlluminatiModel implements Serializable {
 
     protected static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS");
 
-    @Expose private final String parentModuleName = IlluminatiClientInit.PARENT_MODULE_NAME;
-    @Expose private final ServerInfo serverInfo = IlluminatiClientInit.SERVER_INFO;
+    @Expose private String parentModuleName;
+    @Expose private ServerInfo serverInfo;
     @Expose private Map<String, Object> jvmInfo;
 
     @Expose private String id;
@@ -66,6 +62,11 @@ public class IlluminatiModel implements Serializable {
         this.jvmInfo = jvmInfo;
     }
 
+    public void initStaticInfo (final String parentModuleName, final ServerInfo serverInfo) {
+        this.parentModuleName= parentModuleName;
+        this.serverInfo = serverInfo;
+    }
+
     public void addBasicJvmMemoryInfo (final Map<String, Object> jvmMemoryInfo) {
         if (this.jvmInfo == null) {
             this.jvmInfo = new HashMap<String, Object>();
@@ -89,8 +90,8 @@ public class IlluminatiModel implements Serializable {
     }
 
     public void staticInfo (final Map<String, Object> staticInfo) {
-        if (!IlluminatiClientInit.SERVER_INFO.isAreadySetServerDomainAndPort()) {
-            IlluminatiClientInit.SERVER_INFO.setStaticInfoFromRequest(staticInfo);
+        if (this.serverInfo != null && !this.serverInfo.isAreadySetServerDomainAndPort()) {
+            this.serverInfo.setStaticInfoFromRequest(staticInfo);
         }
     }
 
@@ -99,11 +100,11 @@ public class IlluminatiModel implements Serializable {
     }
 
     public String getJsonString () {
-        return IlluminatiClientInit.ILLUMINATI_GSON_OBJ.toJson(this);
+        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
     private void generateAggregateId () {
-        this.id = StringUtils.generateId(this.localTime.getTime(), null);
+        this.id = StringObjectUtils.generateId(this.localTime.getTime(), null);
     }
 
     protected String getId () {

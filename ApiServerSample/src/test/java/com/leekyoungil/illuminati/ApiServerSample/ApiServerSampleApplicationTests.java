@@ -88,7 +88,7 @@ public class ApiServerSampleApplicationTests {
 //        long start1 = System.nanoTime();
 //
 //        for (int i=0; i<1; i++) {
-//            byte[] tmp = StringUtils.encode(testJson.toCharArray());
+//            byte[] tmp = StringObjectUtils.encode(testJson.toCharArray());
 //        }
 //
 //        long end1 = System.nanoTime();

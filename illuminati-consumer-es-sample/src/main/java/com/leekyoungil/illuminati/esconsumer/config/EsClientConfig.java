@@ -1,6 +1,6 @@
 package com.leekyoungil.illuminati.esconsumer.config;
 
-import com.leekyoungil.illuminati.elasticsearch.config.IlluminatiHttpClient;
+import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient;
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
 import com.leekyoungil.illuminati.esconsumer.config.model.ElasticsearchInfo;
