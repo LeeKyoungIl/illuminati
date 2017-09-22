@@ -2,11 +2,9 @@ package com.leekyoungil.illuminati.elasticsearch.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
-import com.leekyoungil.illuminati.client.prossor.model.IlluminatiModel;
-import com.leekyoungil.illuminati.client.prossor.model.RequestGeneralModel;
-import com.leekyoungil.illuminati.client.prossor.model.RequestHeaderModel;
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRefreshType;
@@ -56,11 +54,11 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
         this.setUserAgent();
         this.setPostContentResultData();
 
-        return IlluminatiClientInit.ILLUMINATI_GSON_OBJ.toJson(this);
+        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
     @Override public String getEsUrl(final String baseUrl) {
-        if (!StringUtils.isValid(baseUrl)) {
+        if (!StringObjectUtils.isValid(baseUrl)) {
             ES_CONSUMER_LOGGER.error("Sorry. baseUrl of Elasticsearch is required value.");
             return null;
         }
@@ -93,7 +91,7 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
     private void setPostContentResultData () {
         final String postContentBody = this.header.getPostContentBody();
 
-        if (StringUtils.isValid(postContentBody)) {
+        if (StringObjectUtils.isValid(postContentBody)) {
             try {
                 final String[] postContentBodyArray = URLDecoder.decode(postContentBody, "UTF-8").split("&");
 
@@ -117,16 +115,16 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
     private void setResultData () {
         if (this.output != null) {
             if (!(this.output instanceof String)) {
-                this.output = IlluminatiClientInit.ILLUMINATI_GSON_OBJ.toJson(this.output);
+                this.output = IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.output);
             }
 
-            if (!StringUtils.isValid((String) this.output)) {
+            if (!StringObjectUtils.isValid((String) this.output)) {
                 return;
             }
 
             Map<String, Object> tmpResultData = null;
             try {
-                tmpResultData = IlluminatiClientInit.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, new TypeToken<Map<String, Object>>(){}.getType());
+                tmpResultData = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, new TypeToken<Map<String, Object>>(){}.getType());
             } catch (Exception ex) {
                 ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. ("+ex.toString()+")");
             }
@@ -145,7 +143,7 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
         try {
             final String userAgent = this.header.getUserAgent();
 
-            if (StringUtils.isValid(userAgent)) {
+            if (StringObjectUtils.isValid(userAgent)) {
                 final ReadableUserAgent agent = UA_PARSER.parse(userAgent);
 
                 this.setUserBrower(agent);

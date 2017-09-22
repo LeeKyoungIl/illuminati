@@ -1,6 +1,4 @@
-import com.leekyoungil.illuminati.client.prossor.model.RequestHeaderModel;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,10 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import static org.easymock.EasyMock.expect;
 
 public class HttpRemoveTest {
 
