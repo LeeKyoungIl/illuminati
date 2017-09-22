@@ -12,31 +12,43 @@
     * Maven
     
 ```java
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.0.1</version>
-</dependency>
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
 
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.0</version>
-</dependency>
-
-<!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
-<dependency>
-   <groupId>com.leekyoungil.illuminati</groupId>
-   <artifactId>illuminati-client-switch</artifactId>
-   <version>1.0.0</version>
-</dependency>
-</dependency>
+<dependencies>
+    <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-annotation</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-processor</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+    
+    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
+    <dependency>
+       <groupId>com.leekyoungil.illuminati</groupId>
+       <artifactId>illuminati-client-switch</artifactId>
+       <version>1.0.0</version>
+    </dependency>
+</dependencies>
 ```
 
 ## add to Gradle Dependency
     * Gradle
     
 ```java
+repositories {
+    jcenter()
+}
+
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
 compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.0'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
@@ -161,30 +173,43 @@ chaosBomber: true
     * Maven
     
 ```java
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.0.1</version>
-</dependency>
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
 
-<dependency>
- <groupId>com.leekyoungil.illuminati</groupId>
- <artifactId>illuminati-client-processor</artifactId>
- <version>0.9.0</version>
-</dependency>
-  
-<!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
-<dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
-  <artifactId>illuminati-client-switch</artifactId>
-  <version>1.0.0</version>
-</dependency>
+<dependencies>
+    <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-annotation</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    
+    <dependency>
+     <groupId>com.leekyoungil.illuminati</groupId>
+     <artifactId>illuminati-client-processor</artifactId>
+     <version>0.9.0</version>
+    </dependency>
+      
+    <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
+    <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-switch</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+</dependencies>
 ```
 
 ## Gradle Dependency 추가 
     * Gradle
     
 ```java
+repositories {
+    jcenter()
+}
+
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
 compile 'com.leekyoungil.illuminati:illuminati-client-processor:1.0.0'
