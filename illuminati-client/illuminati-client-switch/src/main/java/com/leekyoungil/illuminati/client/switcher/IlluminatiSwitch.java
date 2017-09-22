@@ -15,8 +15,6 @@ public class IlluminatiSwitch {
 
     private static final Logger ILLUMINATI_SWITCH_LOGGER = LoggerFactory.getLogger(IlluminatiSwitch.class);
 
-    public static Thread ILLUMINATI_SWITCH_THREAD;
-
     private final static String ILLUMINATI_SWITCH_VALUE_GIT_URL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, null, "illuminati", "illuminatiSwitchValueURL");
     private static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
 
@@ -67,8 +65,10 @@ public class IlluminatiSwitch {
     private static void setIlluminatiSwitchValue (Object result) {
         if (result != null) {
             String[] illuminatiSwitchValueArray = ((String) result).split(":");
+
             if (illuminatiSwitchValueArray.length == 2 && StringUtils.isNotEmpty(illuminatiSwitchValueArray[1])) {
                 boolean switchValue = Boolean.valueOf(illuminatiSwitchValueArray[1].toLowerCase().indexOf("true") > -1 ? "true" : "false");
+
                 if (switchValue != IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get()) {
                     ILLUMINATI_SWITCH_LOGGER.debug("ILLUMINATI_SWITCH_VALUE has changed to " + switchValue);
                     IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.set(switchValue);

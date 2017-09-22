@@ -1,5 +1,7 @@
 package com.leekyoungil.illuminati.common.http;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
@@ -15,10 +17,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Properties;
 
 /**
@@ -60,7 +64,12 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
                 .setConnectionRequestTimeout(CONNECTION_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT);
 
         final RequestConfig requestConfig = requestConfigBuilder.build();
-        final HttpClientBuilder httpClientBuilder = HttpClients.custom().disableContentCompression();
+
+        HashSet<Header> defaultHeaders = new HashSet<Header>();
+        defaultHeaders.add(new BasicHeader(HttpHeaders.PRAGMA, "no-cache"));
+        defaultHeaders.add(new BasicHeader(HttpHeaders.CACHE_CONTROL, "no-cache"));
+
+        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).disableContentCompression();
         this.httpClient = httpClientBuilder.setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
     }
 

@@ -17,5 +17,9 @@ public class IlluminatiCommon {
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             SystemUtil.createThreadStatusDebugThread();
         }
+
+        if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive() == true) {
+            IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION = true;
+        }
     }
 }

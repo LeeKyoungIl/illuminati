@@ -1,6 +1,6 @@
 package com.leekyoungil.illuminati.esconsumer.config.model;
 
-import com.leekyoungil.illuminati.client.prossor.util.StringUtils;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRefreshType;
@@ -22,7 +22,7 @@ public class SampleEsModelImpl extends IlluminatiEsModelImpl {
     }
 
     public String getMethodName () {
-        if (this.general != null && StringUtils.isValid(this.general.getMethodName())) {
+        if (this.general != null && StringObjectUtils.isValid(this.general.getMethodName())) {
             return this.general.getMethodName();
         }
 

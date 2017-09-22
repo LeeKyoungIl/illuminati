@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.esconsumer.listener;
 
 import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
 import com.leekyoungil.illuminati.esconsumer.config.model.SampleEsModelImpl;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class SubscribeListener {
 
         try {
             String jsonString = (String) message.getPayload();
-            sampleBuyEsModel = IlluminatiClientInit.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsModelImpl.class);
+            sampleBuyEsModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsModelImpl.class);
         } catch (Exception ex) {
             SUB_LOGGER.error("Sorry. something is wrong in Parsing received dto. ("+ex.toString()+")");
             return;

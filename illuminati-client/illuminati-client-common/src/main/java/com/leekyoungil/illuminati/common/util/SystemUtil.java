@@ -96,7 +96,14 @@ public class SystemUtil {
                 public void run() {
                     while (true) {
                         for(Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()){
-                            SYSTEM_UTIL_LOGGER.info("threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
+                            SYSTEM_UTIL_LOGGER.info("#########################################################################################################");
+                            SYSTEM_UTIL_LOGGER.info("# debug info");
+                            SYSTEM_UTIL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
+                            SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_ACTIVATION : " + IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION);
+                            SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_VALUE : " + IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get());
+                            SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL : " + IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL + "ms");
+                            SYSTEM_UTIL_LOGGER.info("# threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
+                            SYSTEM_UTIL_LOGGER.info("#########################################################################################################");
                         }
 
                         try {

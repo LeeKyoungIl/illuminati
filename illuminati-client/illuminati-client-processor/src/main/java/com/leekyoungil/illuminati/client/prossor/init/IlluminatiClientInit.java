@@ -67,10 +67,6 @@ public class IlluminatiClientInit {
         SERVER_INFO = new ServerInfo(true);
         // get basic JVM setting info only once.
         JVM_INFO = SystemUtil.getJvmInfo();
-
-        if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive() == true) {
-            IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION = true;
-        }
     }
 
     private static boolean checkSamplingRate () {
@@ -152,7 +148,11 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public static Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        // chaosBomber mode activate at debug mode.
+        if (IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
+            ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
+            return pjp.proceed();
+        }
+
         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             return IlluminatiClientInit.executeIlluminati(pjp, request);
         }

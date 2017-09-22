@@ -100,7 +100,11 @@ public class IlluminatiExecutor {
             final Runnable queueCheckRunnable = new Runnable() {
                 public void run() {
                     while (true) {
-                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("current queue count : "+ILLUMINATI_MODEL_BLOCKING_QUEUE.size());
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("# queue buffer debug info");
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("# current queue count : "+ILLUMINATI_MODEL_BLOCKING_QUEUE.size());
+                        ILLUMINATI_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
 
                         try {
                             Thread.sleep(1000);

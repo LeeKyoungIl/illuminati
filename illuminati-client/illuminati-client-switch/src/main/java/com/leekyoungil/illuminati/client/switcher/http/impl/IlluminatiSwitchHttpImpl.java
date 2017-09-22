@@ -1,14 +1,11 @@
 package com.leekyoungil.illuminati.client.switcher.http.impl;
 
 import com.leekyoungil.illuminati.client.switcher.http.IlluminatiSwitchHttp;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.DefaultHttpResponseFactory;
-import org.apache.http.message.BasicStatusLine;
-
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +18,8 @@ public class IlluminatiSwitchHttpImpl implements IlluminatiSwitchHttp<String> {
 
     private HttpClient httpClient;
     private String url;
+
+    private final static int RETRY_COUNT = 3;
 
     public IlluminatiSwitchHttpImpl(final HttpClient httpClient, final String url) {
         this.httpClient = httpClient;
