@@ -27,6 +27,13 @@ illuminatiSwitchValueURLCheckInterval: 5000
     * Maven
     
 ```java
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
+
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-switch</artifactId>
@@ -38,6 +45,10 @@ illuminatiSwitchValueURLCheckInterval: 5000
     * Gradle
     
 ```java
+repositories {
+    jcenter()
+}
+
 compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.0'
 ```
 
@@ -71,6 +82,13 @@ illuminatiSwitchValueURLCheckInterval: 5000
     * Maven
     
 ```java
+<repositories>
+   <repository>
+   <id>jcenter</id>
+   <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
+
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-switch</artifactId>
@@ -82,5 +100,9 @@ illuminatiSwitchValueURLCheckInterval: 5000
     * Gradle
     
 ```java
+repositories {
+    jcenter()
+}
+
 compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.0'
 ```
