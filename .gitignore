@@ -1,0 +1,7 @@
+.idea/
+illuminati-client/illuminati-client-annotation/target/
+illuminati-client/illuminati-client-common/target/
+illuminati-client/illuminati-client-elasticsearch/target/
+illuminati-client/illuminati-client-processor/target/
+illuminati-client/illuminati-client-switch/target/
+*.iml

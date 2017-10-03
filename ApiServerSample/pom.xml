@@ -100,6 +100,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>springloaded</artifactId>
+                        <version>1.2.8.RELEASE</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
         <resources>
@@ -107,8 +114,8 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>static</directory>
-                <targetPath>static</targetPath>
+                <directory>/static</directory>
+                <targetPath>/static</targetPath>
             </resource>
         </resources>
     </build>

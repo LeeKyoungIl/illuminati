@@ -40,8 +40,7 @@ public class IlluminatiModel implements Serializable {
 
     public IlluminatiModel () {}
 
-    public IlluminatiModel (final Date localTime
-            , final long elapsedTime, final MethodSignature signature, final Object output, final Object[] paramValues) {
+    public IlluminatiModel (final Date localTime, final long elapsedTime, final MethodSignature signature, final Object output, final Object[] paramValues) {
         this.localTime = localTime;
         this.generateAggregateId();
 

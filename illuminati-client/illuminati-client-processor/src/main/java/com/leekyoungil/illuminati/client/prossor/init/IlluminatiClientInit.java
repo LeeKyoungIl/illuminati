@@ -128,7 +128,8 @@ public class IlluminatiClientInit {
 
     private static void addDataOnIlluminatiModel (final IlluminatiModel illuminatiModel, final HttpServletRequest request) {
         RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
-        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateGlobalTransactionId(request));
+        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, "illuminatiGProcId"));
+        requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, "illuminatiProcId"));
 
         illuminatiModel.initReqHeaderInfo(requestHeaderModel);
         illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
@@ -149,7 +150,7 @@ public class IlluminatiClientInit {
      */
     public static Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
+            ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
             return pjp.proceed();
         }
 

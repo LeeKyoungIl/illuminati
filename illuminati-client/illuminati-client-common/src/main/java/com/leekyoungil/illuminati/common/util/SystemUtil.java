@@ -51,12 +51,11 @@ public class SystemUtil {
         return jvmInfo;
     }
 
-    public static String generateGlobalTransactionId (final HttpServletRequest request) {
-        Object id = request.getAttribute("illuminatiProcId");
+    public static String generateTransactionIdByRequest (final HttpServletRequest request, final String keyInHeader) {
+        Object id = request.getAttribute(keyInHeader);
         if (id == null || StringObjectUtils.isValid(id.toString()) == false) {
-            id = StringObjectUtils
-                    .generateId(new Date().getTime(), "illuminatiProcId");
-            request.setAttribute("illuminatiProcId", id);
+            id = StringObjectUtils.generateId(new Date().getTime(), keyInHeader);
+            request.setAttribute(keyInHeader, id);
         }
 
         return StringObjectUtils.isValid(id.toString()) ? (String) id : null;
