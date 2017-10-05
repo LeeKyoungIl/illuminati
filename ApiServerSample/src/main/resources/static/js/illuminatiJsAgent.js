@@ -20,7 +20,8 @@ var illuminatiJsAgent = {
         return gTransactionId.join('')+'-illuminatiGProcId';
     },
 
-    getEventData : function (e) {
+    getScreenInfoAtEvent : function (e) {
+        console.log(e);
         var clientScreenInfo = {
             browserWidth: window.innerWidth || document.body.clientWidth,
             browserHeight: window.innerHeight || document.body.clientHeight,
@@ -36,39 +37,91 @@ var illuminatiJsAgent = {
             y: e.y
         };
 
+        return clientScreenInfo;
+    },
+
+    getEventData : function (e) {
         var eventObject = {};
         var objectAttributes = {};
 
         for (var i=0; i<e.target.attributes.length; i++) {
             var item = e.target.attributes.item(i);
+
             switch (item.name) {
                 case 'id' :
                     eventObject['id'] = item.value;
-                    break;
-
                 case 'name' :
                     eventObject['name'] = item.value;
-                    break;
 
                 default:
                     objectAttributes[item.name] = item.value;
                     break;
             }
-        };
+        }
 
         eventObject['attributes'] = objectAttributes;
-        eventObject['clientScreenInfo'] = clientScreenInfo;
 
-        console.log(eventObject);
         return eventObject;
+    },
+
+    getNewEventData : function (oldObject) {
+        var newObject = {};
+
+        newObject['id'] = oldObject.id;
+        newObject['name'] = oldObject.name;
+
+        var targetObject;
+        if (typeof newObject['id'] != 'undefined' && newObject['id'] != null && newObject['id'].trim() != '') {
+            targetObject = document.getElementById(newObject['id'].trim());
+        } else if (typeof newObject['name'] != 'undefined' && newObject['name'] != null && newObject['name'].trim() != '') {
+            targetObject = document.getElementsByName(newObject['name'].trim());
+        } else {
+            return;
+        }
+
+        var objectAttributes = {};
+        for (var i=0; i<targetObject.attributes.length; i++) {
+            var item = targetObject.attributes.item(i);
+            objectAttributes[item.name] = eval('targetObject.' + item.name);
+        }
+
+        Object.keys(objectAttributes).map(function(objectKey, index) {
+            var changedInfo = {};
+            var value = objectAttributes[objectKey];
+
+            if (oldObject.attributes.hasOwnProperty(objectKey) == true) {;
+                if (oldObject.attributes[objectKey] != objectAttributes[objectKey]) {
+                    changedInfo['changedValue'] = {};
+                    changedInfo['changedValue']['old'] = oldObject.attributes[objectKey];
+                    changedInfo['changedValue']['new'] = objectAttributes[objectKey];
+                }
+            } else {
+                changedInfo['removedKey'] = objectKey;
+            }
+
+            if (Object.keys(changedInfo).length > 0) {
+                if (objectAttributes.hasOwnProperty('changedInfo') == false) {
+                    objectAttributes['changedInfo'] = [];
+                }
+
+                objectAttributes['changedInfo'][objectAttributes['changedInfo'].length] = changedInfo;
+            }
+        });
+
+        return objectAttributes;
     }
 };
 
-document.addEventListener('keydown', function(e) {
-    illuminatiJsAgent.getEventData(e);
+document.addEventListener('keyup', function(e) {
+    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+    var oldObject = illuminatiJsAgent.getEventData(e);
+    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+
+    console.log(newObject);
+
+   // console.log(newObject);
 });
 
-document.addEventListener('keyup', function(e) {
-    var a = illuminatiJsAgent.getEventData(e);
-    console.log(document.getElementById(a['id']).value);
+document.addEventListener('click', function(e) {
+    //console.log(illuminatiJsAgent.getScreenInfoAtEvent(e));
 });
