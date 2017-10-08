@@ -31,7 +31,7 @@ var illuminatiJsAgent = {
     },
 
     getElementUniqueId : function (elementObj) {
-      return (elementObj.id !== 'undefined' && elementObj.id !== null && elementObj.id.trim() !== '') ? elementObj.id : elementObj.name;
+        return (elementObj.id !== 'undefined' && elementObj.id !== null && elementObj.id.trim() !== '') ? elementObj.id : elementObj.name;
     },
 
     checkPassElement : function (elem) {
@@ -199,6 +199,7 @@ var interval = setInterval(function() {
             }
 
             var elementObj = {
+                obj: elem,
                 type: elem.type,
                 id: elem.getAttribute('id'),
                 name: elem.getAttribute('name')
@@ -217,6 +218,7 @@ var interval = setInterval(function() {
                     radio[item.name] = item.value;
                 }
 
+                radio['obj'] = elem;
                 tempRadioStore[elementUniqueId][tempRadioStore[elementUniqueId].length] = radio;
 
                 continue;
@@ -250,6 +252,50 @@ var interval = setInterval(function() {
         for (var key in tempRadioStore) {
             elementStore[key] = tempRadioStore[key];
         };
+
+        console.log(elementStore);
+
+        for (var key in elementStore) {
+            //console.log(elementStore[key]);
+            var eventElem = elementStore[key]
+
+            // is radio element check
+            if (Array.isArray(eventElem) !== true) {
+                switch (eventElem.type) {
+                    case 'text' :
+                    case 'textarea' :
+                        eventElem['obj'].addEventListener('keypress', function (e) {
+                           console.log('keypress');
+                        });
+                        break;
+                    case 'select-one' :
+                        eventElem['obj'].addEventListener('change', function (e) {
+                            console.log('change');
+                        });
+                        break;
+
+                    default :
+                        eventElem['obj'].addEventListener('click', function (e) {
+                            console.log('click');
+                        });
+                        break;
+                }
+            } else {
+                for (var n=0; n<eventElem.length; n++) {
+                    var tmpRadioObj = eventElem[n];
+                    tmpRadioObj['obj'].addEventListener('click', function (e) {
+                        console.log('radio click');
+                    });
+                }
+            }
+            //console.log(eventElem.type, eventElem);
+
+            // if (elem.type !== 'radio') {
+            //     elem.addEventListener();
+            // } else {
+            //
+            // }
+        }
 
         sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
         //console.log(JSON.parse(sessionStorage.getItem('illuminati')));
