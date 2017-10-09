@@ -86,6 +86,15 @@ var illuminatiJsAgent = {
         return null;
     },
 
+    getChangedAttributeValue : function (attributeName, oldData, newData) {
+        var changedValue = {};
+        changedValue['attributeName'] = attributeName;
+        changedValue['old'] = oldData;
+        changedValue['new'] = newData;
+
+        return changedValue;
+    },
+
     getEventData : function (e) {
         var eventObject = {};
         var objectAttributes = {};
@@ -104,6 +113,13 @@ var illuminatiJsAgent = {
                     break;
             }
         }
+
+        if (e.target.type.indexOf('textarea') > -1) {
+            var tempTextareaObj = illuminatiJsAgent.getElementObj(eventObject);
+            objectAttributes['value'] = tempTextareaObj.value;
+        }
+
+        console.log(objectAttributes);
 
         eventObject['attributes'] = objectAttributes;
         eventObject['obj'] = illuminatiJsAgent.getElementObj(eventObject);
@@ -145,6 +161,9 @@ var illuminatiJsAgent = {
         var objectAttributes = {};
         var changedInfo = {};
 
+        objectAttributes['elementUniqueId'] = oldObject.elementUniqueId;
+        objectAttributes['type'] = oldObject.obj.type;
+
         if (typeof oldObject.obj.type !== 'undefined' && oldObject.obj.type.indexOf('select') > -1) {
             changedInfo['changedValue'] = [];
             for (var q=0; q<oldObject.obj.option.length; q++) {
@@ -152,29 +171,25 @@ var illuminatiJsAgent = {
 
                 if ((tempSelectOption.hasOwnProperty('selected') === true && targetObject[q].selected === false)
                     || (tempSelectOption.hasOwnProperty('selected') === false && targetObject[q].selected === true)) {
-                    var changedValue = {};
-                    changedValue['attributeName'] = 'selected';
-                    changedValue['old'] = tempSelectOption.hasOwnProperty('selected');
-                    changedValue['new'] = targetObject[q].selected;
-
-                    changedInfo['changedValue'][changedInfo['changedValue'].length] = changedValue;
+                    changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
 
                     Object.keys(tempSelectOption).map(function(objectKey, index) {
                         objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
                     });
                 }
             }
-            console.log(targetObject.options);
+
+            objectAttributes['obj'] = oldObject.obj;
+            objectAttributes['id'] = oldObject.id;
+            objectAttributes['name'] = oldObject.name;
         } else if (targetObject.length > 1 && oldObject.name.indexOf('radio') > -1) {
+            changedInfo['changedValue'] = [];
             for (var p=0; p<oldObject.obj.length; p++) {
                 var tempOldRadioObj = oldObject.obj[p];
 
                 if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject[p].checked === false)
                     || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject[p].checked === true)) {
-                    changedInfo['changedValue'] = {};
-                    changedInfo['changedValue']['attributeName'] = 'checked';
-                    changedInfo['changedValue']['old'] = tempOldRadioObj.hasOwnProperty('checked');
-                    changedInfo['changedValue']['new'] = targetObject[p].checked;
+                    changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked);
 
                     Object.keys(tempOldRadioObj).map(function(objectKey, index) {
                         objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
@@ -184,10 +199,7 @@ var illuminatiJsAgent = {
         } else if (oldObject.name.indexOf('checkbox') > -1) {
             if ((oldObject.checked === true && targetObject.checked === false)
                 || (oldObject.checked === false && targetObject.checked === true)) {
-                changedInfo['changedValue'] = {};
-                changedInfo['changedValue']['attributeName'] = 'checked';
-                changedInfo['changedValue']['old'] = oldObject.checked;
-                changedInfo['changedValue']['new'] = targetObject.checked;
+                changedInfo['changedValue'] = illuminatiJsAgent.getChangedAttributeValue('checked', oldObject.checked, targetObject.checked);
 
                 for (var i=0; i<targetObject.attributes.length; i++) {
                     var item = targetObject.attributes.item(i);
@@ -200,16 +212,16 @@ var illuminatiJsAgent = {
                 objectAttributes[item.name] = eval('targetObject.' + item.name);
             }
 
+            if (oldObject.name.indexOf('textarea') > -1) {
+                objectAttributes['value'] = targetObject.value;
+            }
+
             Object.keys(objectAttributes).map(function(objectKey, index) {
                 var value = objectAttributes[objectKey];
 
-                if (oldObject.attributes.hasOwnProperty(objectKey) === true) {
-                    if (oldObject.attributes[objectKey] !== objectAttributes[objectKey]) {
-                        changedInfo['changedValue'] = {};
-                        changedInfo['changedValue']['attributeName'] = objectKey;
-                        changedInfo['changedValue']['old'] = oldObject.attributes[objectKey];
-                        changedInfo['changedValue']['new'] = objectAttributes[objectKey];
-                    }
+                if (oldObject.attributes.hasOwnProperty(objectKey) === true
+                    && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
+                        changedInfo['changedValue'] = illuminatiJsAgent.getChangedAttributeValue(objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
                 } else {
                     changedInfo['removedKey'] = objectKey;
                 }
@@ -221,14 +233,23 @@ var illuminatiJsAgent = {
         }
 
         return objectAttributes;
+    },
+
+    setElementToSessionStorage : function (newObject) {
+        if (newObject.hasOwnProperty('changedInfo') === true) {
+            var elementStore = JSON.parse(sessionStorage.getItem('illuminati'));
+            var key = newObject.type + '-' + newObject.elementUniqueId;
+            elementStore[key]['changedInfo'] = newObject.changedInfo;
+            sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
+        }
+
+        console.log(JSON.parse(sessionStorage.getItem('illuminati')));
     }
 };
 
 var illuminatiGProcId = illuminatiJsAgent.generateGlobalTransactionId();
 
-var originElements = {};
-
-var lastClickObject;
+var lastCheckObject;
 
 var interval = setInterval(function() {
     if(document.readyState === 'complete') {
@@ -292,6 +313,10 @@ var interval = setInterval(function() {
                 }
             }
 
+            if (elem.localName === 'textarea') {
+                elementObj['value'] = elem.value;
+            }
+
             var key = elementObj.type + '-' + elementUniqueId;
 
             elementStore[key] = elementObj;
@@ -299,7 +324,7 @@ var interval = setInterval(function() {
 
         for (var key in tempRadioStore) {
             elementStore[key] = tempRadioStore[key];
-        };
+        }
 
         for (var key in elementStore) {
             var eventElem = elementStore[key]
@@ -308,35 +333,42 @@ var interval = setInterval(function() {
             if (Array.isArray(eventElem) !== true) {
                 switch (eventElem.type) {
                     case 'text' :
-                    case 'textarea' :
                         eventElem['obj'].addEventListener('keyup', function (e) {
                             var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             var oldObject = illuminatiJsAgent.getEventData(e);
                             var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                            console.log(newObject);
+                            illuminatiJsAgent.setElementToSessionStorage(newObject);
+                        });
+                        break;
+                    case 'textarea' :
+                        eventElem['obj'].addEventListener('focusin', function (e) {
+                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                            lastCheckObject = illuminatiJsAgent.getEventData(e);
+                        });
+                        eventElem['obj'].addEventListener('keyup', function (e) {
+                            var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                            illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
                         break;
                     case 'select-one' :
                         eventElem['obj'].addEventListener('change', function (e) {
                             var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             var oldObject = illuminatiJsAgent.getEventData(e);
-                            console.log('oldObject : ', oldObject);
                             var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-
-                            console.log('newObject : ', newObject);
+                            illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
                         break;
 
                     default :
                         eventElem['obj'].addEventListener('mouseup', function (e) {
-                            lastClickObject = illuminatiJsAgent.getEventData(e);
+                            lastCheckObject = illuminatiJsAgent.getEventData(e);
                         });
                         eventElem['obj'].addEventListener('click', function (e) {
                             var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                            var newObject = illuminatiJsAgent.getNewEventData(lastClickObject);
+                            var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
 
                             delete(lastClickObject);
-                            console.log('newObject : ', newObject);
+                            illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
                         break;
                 }
@@ -347,8 +379,7 @@ var interval = setInterval(function() {
                         var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                         var oldObject = illuminatiJsAgent.getEventData(e);
                         var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-
-                        console.log('newObject : ', newObject);
+                        illuminatiJsAgent.setElementToSessionStorage(newObject);
                     });
                 }
             }
