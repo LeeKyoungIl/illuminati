@@ -119,8 +119,6 @@ var illuminatiJsAgent = {
             objectAttributes['value'] = tempTextareaObj.value;
         }
 
-        console.log(objectAttributes);
-
         eventObject['attributes'] = objectAttributes;
         eventObject['obj'] = illuminatiJsAgent.getElementObj(eventObject);
 
@@ -242,8 +240,6 @@ var illuminatiJsAgent = {
             elementStore[key]['changedInfo'] = newObject.changedInfo;
             sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
         }
-
-        console.log(JSON.parse(sessionStorage.getItem('illuminati')));
     }
 };
 
@@ -329,7 +325,6 @@ var interval = setInterval(function() {
         for (var key in elementStore) {
             var eventElem = elementStore[key]
 
-            // is radio element check
             if (Array.isArray(eventElem) !== true) {
                 switch (eventElem.type) {
                     case 'text' :
@@ -337,16 +332,19 @@ var interval = setInterval(function() {
                             var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             var oldObject = illuminatiJsAgent.getEventData(e);
                             var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                            newObject['screenInfo'] = screenInfo;
                             illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
                         break;
                     case 'textarea' :
+                        var screenInfo;
                         eventElem['obj'].addEventListener('focusin', function (e) {
-                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                            screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             lastCheckObject = illuminatiJsAgent.getEventData(e);
                         });
                         eventElem['obj'].addEventListener('keyup', function (e) {
                             var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                            newObject['screenInfo'] = screenInfo;
                             illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
                         break;
@@ -355,18 +353,20 @@ var interval = setInterval(function() {
                             var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             var oldObject = illuminatiJsAgent.getEventData(e);
                             var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                            newObject['screenInfo'] = screenInfo;
                             illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
                         break;
 
                     default :
+                        var screenInfo;
                         eventElem['obj'].addEventListener('mouseup', function (e) {
+                            screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             lastCheckObject = illuminatiJsAgent.getEventData(e);
                         });
                         eventElem['obj'].addEventListener('click', function (e) {
-                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-
+                            newObject['screenInfo'] = screenInfo;
                             delete(lastClickObject);
                             illuminatiJsAgent.setElementToSessionStorage(newObject);
                         });
@@ -379,6 +379,7 @@ var interval = setInterval(function() {
                         var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                         var oldObject = illuminatiJsAgent.getEventData(e);
                         var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                        newObject['screenInfo'] = screenInfo;
                         illuminatiJsAgent.setElementToSessionStorage(newObject);
                     });
                 }
@@ -386,6 +387,5 @@ var interval = setInterval(function() {
         }
 
         sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
-        console.log(JSON.parse(sessionStorage.getItem('illuminati')));
     }
 }, 100);
