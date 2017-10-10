@@ -10,7 +10,8 @@ Array.prototype.inArrayCheck = function (needle, haystack) {
 
 var illuminatiJsAgent = {
 
-    passElementType : ['input', 'select', 'textarea'],
+    passElementType : ['form', 'input', 'select', 'textarea'],
+    illuminatiInputElementType : ['text', 'radio', 'checkbox'],
 
     init : function () {
     },
@@ -51,6 +52,10 @@ var illuminatiJsAgent = {
             isUniqueIdEmptyCheck = true;
         }
         if (isUniqueIdEmptyCheck === true) {
+            return true;
+        }
+
+        if (elem.localName === 'input' && Array.prototype.inArrayCheck(elem.type, this.illuminatiInputElementType) === false) {
             return true;
         }
 
@@ -160,73 +165,78 @@ var illuminatiJsAgent = {
         var changedInfo = {};
 
         objectAttributes['elementUniqueId'] = oldObject.elementUniqueId;
-        objectAttributes['type'] = oldObject.obj.type;
+        objectAttributes['type'] = oldObject.target.type;
+        objectAttributes['target'] = oldObject.target;
 
-        if (typeof oldObject.obj.type !== 'undefined' && oldObject.obj.type.indexOf('select') > -1) {
-            changedInfo['changedValue'] = [];
-            for (var q=0; q<oldObject.obj.option.length; q++) {
-                var tempSelectOption = oldObject.obj.option[q];
+        changedInfo['changedValue'] = [];
 
-                if ((tempSelectOption.hasOwnProperty('selected') === true && targetObject[q].selected === false)
-                    || (tempSelectOption.hasOwnProperty('selected') === false && targetObject[q].selected === true)) {
-                    changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
+        if (typeof oldObject.target.type !== 'undefined') {
+            if (oldObject.target.type.indexOf('select') > -1) {
+                for (var q=0; q<oldObject.obj.option.length; q++) {
+                    var tempSelectOption = oldObject.obj.option[q];
 
-                    Object.keys(tempSelectOption).map(function(objectKey, index) {
-                        objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
-                    });
+                    if ((tempSelectOption.hasOwnProperty('selected') === true && targetObject[q].selected === false)
+                        || (tempSelectOption.hasOwnProperty('selected') === false && targetObject[q].selected === true)) {
+                        changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
+
+                        Object.keys(tempSelectOption).map(function(objectKey, index) {
+                            objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
+                        });
+                    }
                 }
-            }
 
-            objectAttributes['obj'] = oldObject.obj;
-            objectAttributes['id'] = oldObject.id;
-            objectAttributes['name'] = oldObject.name;
-        } else if (targetObject.length > 1 && oldObject.name.indexOf('radio') > -1) {
-            changedInfo['changedValue'] = [];
-            for (var p=0; p<oldObject.obj.length; p++) {
-                var tempOldRadioObj = oldObject.obj[p];
+                objectAttributes['obj'] = oldObject.obj;
+                objectAttributes['id'] = oldObject.id;
+                objectAttributes['name'] = oldObject.name;
+            } else if (oldObject.target.type.indexOf('radio') > -1) {
+                objectAttributes['type'] = 'radio';
 
-                if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject[p].checked === false)
-                    || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject[p].checked === true)) {
-                    changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked);
+                for (var p=0; p<oldObject.obj.length; p++) {
+                    var tempOldRadioObj = oldObject.obj[p];
 
-                    Object.keys(tempOldRadioObj).map(function(objectKey, index) {
-                        objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
-                    });
+                    if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject[p].checked === false)
+                        || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject[p].checked === true)) {
+                        changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked);
+
+                        Object.keys(tempOldRadioObj).map(function(objectKey, index) {
+                            objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
+                        });
+                    }
                 }
-            }
-        } else if (oldObject.name.indexOf('checkbox') > -1) {
-            if ((oldObject.checked === true && targetObject.checked === false)
-                || (oldObject.checked === false && targetObject.checked === true)) {
-                changedInfo['changedValue'] = illuminatiJsAgent.getChangedAttributeValue('checked', oldObject.checked, targetObject.checked);
+            } else if (oldObject.target.type.indexOf('checkbox') > -1) {
+                if ((oldObject.checked === true && targetObject.checked === false)
+                    || (oldObject.checked === false && targetObject.checked === true)) {
+                    changedInfo['changedValue'][0] = illuminatiJsAgent.getChangedAttributeValue('checked', oldObject.checked, targetObject.checked);
 
+                    for (var i=0; i<targetObject.attributes.length; i++) {
+                        var item = targetObject.attributes.item(i);
+                        objectAttributes[item.name] = eval('targetObject.' + item.name);
+                    }
+                }
+            } else {
                 for (var i=0; i<targetObject.attributes.length; i++) {
                     var item = targetObject.attributes.item(i);
                     objectAttributes[item.name] = eval('targetObject.' + item.name);
                 }
-            }
-        } else {
-            for (var i=0; i<targetObject.attributes.length; i++) {
-                var item = targetObject.attributes.item(i);
-                objectAttributes[item.name] = eval('targetObject.' + item.name);
-            }
 
-            if (oldObject.name.indexOf('textarea') > -1) {
-                objectAttributes['value'] = targetObject.value;
-            }
-
-            Object.keys(objectAttributes).map(function(objectKey, index) {
-                var value = objectAttributes[objectKey];
-
-                if (oldObject.attributes.hasOwnProperty(objectKey) === true
-                    && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
-                        changedInfo['changedValue'] = illuminatiJsAgent.getChangedAttributeValue(objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
-                } else {
-                    changedInfo['removedKey'] = objectKey;
+                if (oldObject.obj.type.indexOf('textarea') > -1) {
+                    objectAttributes['value'] = targetObject.value;
                 }
-            });
+
+                Object.keys(objectAttributes).map(function(objectKey, index) {
+                    var value = objectAttributes[objectKey];
+
+                    if (oldObject.attributes.hasOwnProperty(objectKey) === true
+                        && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
+                        changedInfo['changedValue'][0] = illuminatiJsAgent.getChangedAttributeValue(objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
+                    } else {
+                        changedInfo['removedKey'] = objectKey;
+                    }
+                });
+            }
         }
 
-        if (Object.keys(changedInfo).length > 0) {
+        if (changedInfo['changedValue'].length > 0) {
             objectAttributes['changedInfo'] = changedInfo;
         }
 
@@ -236,8 +246,19 @@ var illuminatiJsAgent = {
     setElementToSessionStorage : function (newObject) {
         if (newObject.hasOwnProperty('changedInfo') === true) {
             var elementStore = JSON.parse(sessionStorage.getItem('illuminati'));
-            var key = newObject.type + '-' + newObject.elementUniqueId;
-            elementStore[key]['changedInfo'] = newObject.changedInfo;
+            var key = newObject.target.type + '-' + newObject.elementUniqueId
+
+            if (Array.isArray(elementStore[key]) === false) {
+                elementStore[key]['changedInfo'] = newObject.changedInfo;
+            } else {
+                var tempArray = elementStore[key];
+                elementStore[key] = {
+                    obj: tempArray,
+                    changedInfo: newObject.changedInfo
+                };
+            }
+
+            elementStore['alreadySent'] = 'ready';
             sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
         }
     }
@@ -269,6 +290,10 @@ var interval = setInterval(function() {
                 id: elem.getAttribute('id'),
                 name: elem.getAttribute('name')
             };
+
+            if (elem.localName === 'form') {
+                elementObj['type'] = 'form';
+            }
 
             var elementUniqueId = illuminatiJsAgent.getElementUniqueId(elementObj);
 
@@ -323,7 +348,7 @@ var interval = setInterval(function() {
         }
 
         for (var key in elementStore) {
-            var eventElem = elementStore[key]
+            var eventElem = elementStore[key];
 
             if (Array.isArray(eventElem) !== true) {
                 switch (eventElem.type) {
@@ -358,6 +383,19 @@ var interval = setInterval(function() {
                         });
                         break;
 
+                    case 'form' :
+                        eventElem['obj'].addEventListener('submit', function (e) {
+                            if (e.preventDefault) {
+                                e.preventDefault();
+                            }
+
+                            /* do something */
+
+                            // return false to prevent the default form behavior
+                            return false;
+                        });
+                        break;
+
                     default :
                         var screenInfo;
                         eventElem['obj'].addEventListener('mouseup', function (e) {
@@ -386,6 +424,18 @@ var interval = setInterval(function() {
             }
         }
 
+        elementStore['alreadySent'] = 'done';
+
         sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
     }
 }, 100);
+
+var sendToIlluminati = setInterval(function () {
+    var elementStore = JSON.parse(sessionStorage.getItem('illuminati'));
+    if (elementStore['alreadySent'] === 'ready') {
+        //sessionStorage.setItem('illuminati-buffer', JSON.stringify(elementStore));
+        elementStore['alreadySent'] = 'sending'
+        //sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
+        console.log(elementStore);
+    }
+}, 10000);
