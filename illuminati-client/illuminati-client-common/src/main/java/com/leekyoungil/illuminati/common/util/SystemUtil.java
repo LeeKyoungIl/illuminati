@@ -96,6 +96,7 @@ public class SystemUtil {
                 public void run() {
                     while (true) {
                         for(Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()){
+                            SYSTEM_UTIL_LOGGER.info("");
                             SYSTEM_UTIL_LOGGER.info("#########################################################################################################");
                             SYSTEM_UTIL_LOGGER.info("# debug info");
                             SYSTEM_UTIL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
