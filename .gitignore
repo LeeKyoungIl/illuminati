@@ -5,3 +5,4 @@ illuminati-client/illuminati-client-elasticsearch/target/
 illuminati-client/illuminati-client-processor/target/
 illuminati-client/illuminati-client-switch/target/
 *.iml
+illuminati-client/illuminati-client-jscollector/target/
