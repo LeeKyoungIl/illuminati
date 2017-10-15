@@ -6,7 +6,7 @@
 
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-processor</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-common</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
 
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
-            <version>1.0-rc1</version>
+            <version>1.0-rc2</version>
             <scope>compile</scope>
         </dependency>
 
