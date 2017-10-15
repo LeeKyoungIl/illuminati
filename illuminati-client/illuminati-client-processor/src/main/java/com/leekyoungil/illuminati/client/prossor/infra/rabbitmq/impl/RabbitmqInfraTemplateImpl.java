@@ -116,20 +116,46 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 }
 
                 if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# rabbitMq send log");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# successfully transferred dto to Illuminati broker.");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                 }
             }
         } catch (Exception ex) {
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : " + ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# rabbitMq send exception log");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# messages : "+ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+
             throw new PublishMessageException("failed to publish message : " + ex.toString());
         } finally {
             if (amqpChannel != null) {
+                String amqpChannelExceptionMessage = null;
+                String amqpChannelExceptionLog = null;
                 try {
                     amqpChannel.close();
                 } catch (IOException e) {
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("error : there was a problem close a nio channel (IO). " + e.toString());
+                    amqpChannelExceptionMessage = "there was a problem close a nio channel (IO).";
+                    amqpChannelExceptionLog = e.toString();
                 } catch (TimeoutException e) {
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("error : there was a problem close a nio channel (timeout). " + e.toString());
+                    amqpChannelExceptionMessage = "there was a problem close a nio channel (timeout).";
+                    amqpChannelExceptionLog = e.toString();
+                }
+
+                if (amqpChannelExceptionMessage != null && amqpChannelExceptionLog != null) {
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# amqp channel close exception log");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("# exception message : " + amqpChannelExceptionMessage);
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("# exception log : " + amqpChannelExceptionLog);
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                 }
             }
         }

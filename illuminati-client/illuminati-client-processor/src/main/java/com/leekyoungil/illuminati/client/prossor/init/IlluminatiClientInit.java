@@ -87,7 +87,8 @@ public class IlluminatiClientInit {
     }
 
     public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
+        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true
+                && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
             ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
             return pjp.proceed();
         }
