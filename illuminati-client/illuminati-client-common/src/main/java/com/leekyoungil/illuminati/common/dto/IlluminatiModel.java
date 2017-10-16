@@ -29,6 +29,7 @@ public class IlluminatiModel implements Serializable {
     @Expose private String id;
     @Expose protected RequestGeneralModel general;
     @Expose protected RequestHeaderModel header;
+    @Expose protected ChangedJsElement changedJsElement;
     @Expose private long elapsedTime;
     @Expose private long timestamp;
     @Expose private String logTime;
@@ -37,6 +38,7 @@ public class IlluminatiModel implements Serializable {
     @Expose private boolean isActiveChaosBomber = false;
 
     private Date localTime;
+    private Object[] paramValues;
 
     public IlluminatiModel () {}
 
@@ -49,8 +51,9 @@ public class IlluminatiModel implements Serializable {
 
         this.timestamp = localTime.getTime();
         this.logTime = DATE_FORMAT_EVENT.format(localTime);
+        this.paramValues = paramValues;
 
-        this.setMethod(signature.getMethod(), signature.getParameterNames(), paramValues);
+        this.setMethod(signature.getMethod(), signature.getParameterNames());
     }
 
     public void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
@@ -102,6 +105,22 @@ public class IlluminatiModel implements Serializable {
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
+    public void setJavascriptUserAction () {
+        if (this.paramValues != null && this.paramValues.length == 1
+                && this.paramValues[0] instanceof ChangedJsElement) {
+            ChangedJsElement changedJsElement = (ChangedJsElement) this.paramValues[0];
+
+            if (changedJsElement == null) {
+                return;
+            }
+
+            String illuminatiGProcId = this.header.getIlluminatiGProcId();
+            if (illuminatiGProcId != null && illuminatiGProcId.equals(changedJsElement.getIlluminatiGProcId()) == true) {
+                this.changedJsElement = changedJsElement;
+            }
+        }
+    }
+
     private void generateAggregateId () {
         this.id = StringObjectUtils.generateId(this.localTime.getTime(), null);
     }
@@ -114,10 +133,10 @@ public class IlluminatiModel implements Serializable {
         return this.parentModuleName;
     }
 
-    private void setMethod (final Method method, final String[] paramNames, final Object[] paramValues) {
+    private void setMethod (final Method method, final String[] paramNames) {
         if (this.general == null) {
             this.general = new RequestGeneralModel();
         }
-        this.general.setMethod(method, paramNames, paramValues);
+        this.general.setMethod(method, paramNames, this.paramValues);
     }
 }

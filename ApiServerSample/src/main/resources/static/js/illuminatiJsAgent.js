@@ -91,11 +91,13 @@ var illuminatiJsAgent = {
         return null;
     },
 
-    getChangedAttributeValue : function (attributeName, oldData, newData) {
+    getChangedAttributeValue : function (type, elementUniqueId, attributeName, oldData, newData) {
         var changedValue = {};
+        changedValue['elementType'] = type;
+        changedValue['elementUniqueId'] = elementUniqueId;
         changedValue['attributeName'] = attributeName;
-        changedValue['old'] = oldData;
-        changedValue['new'] = newData;
+        changedValue['oldData'] = String(oldData);
+        changedValue['newData'] = String(newData);
 
         return changedValue;
     },
@@ -168,7 +170,8 @@ var illuminatiJsAgent = {
         objectAttributes['type'] = oldObject.target.type;
         objectAttributes['target'] = oldObject.target;
 
-        changedInfo['changedValue'] = [];
+        changedInfo['changedValues'] = [];
+        var ignoreRemoveKeys = ['target', 'elementUniqueId'];
 
         if (typeof oldObject.target.type !== 'undefined') {
             if (oldObject.target.type.indexOf('select') > -1) {
@@ -177,7 +180,7 @@ var illuminatiJsAgent = {
 
                     if ((tempSelectOption.hasOwnProperty('selected') === true && targetObject[q].selected === false)
                         || (tempSelectOption.hasOwnProperty('selected') === false && targetObject[q].selected === true)) {
-                        changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('select', oldObject.elementUniqueId, 'selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
 
                         Object.keys(tempSelectOption).map(function(objectKey, index) {
                             objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
@@ -196,7 +199,8 @@ var illuminatiJsAgent = {
 
                     if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject[p].checked === false)
                         || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject[p].checked === true)) {
-                        changedInfo['changedValue'][changedInfo['changedValue'].length] = illuminatiJsAgent.getChangedAttributeValue('checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked);
+                        var radioElementUniqueId = this.getElementUniqueId(tempOldRadioObj);
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked);
 
                         Object.keys(tempOldRadioObj).map(function(objectKey, index) {
                             objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
@@ -206,7 +210,7 @@ var illuminatiJsAgent = {
             } else if (oldObject.target.type.indexOf('checkbox') > -1) {
                 if ((oldObject.checked === true && targetObject.checked === false)
                     || (oldObject.checked === false && targetObject.checked === true)) {
-                    changedInfo['changedValue'][0] = illuminatiJsAgent.getChangedAttributeValue('checked', oldObject.checked, targetObject.checked);
+                    changedInfo['changedValues'][0] = illuminatiJsAgent.getChangedAttributeValue('checkbox', oldObject.elementUniqueId, 'checked', oldObject.checked, targetObject.checked);
 
                     for (var i=0; i<targetObject.attributes.length; i++) {
                         var item = targetObject.attributes.item(i);
@@ -228,25 +232,50 @@ var illuminatiJsAgent = {
 
                     if (oldObject.attributes.hasOwnProperty(objectKey) === true
                         && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
-                        changedInfo['changedValue'][0] = illuminatiJsAgent.getChangedAttributeValue(objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
-                    } else {
+                        changedInfo['changedValues'][0] = illuminatiJsAgent.getChangedAttributeValue(oldObject.target.localName, oldObject.elementUniqueId, objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
+                    } else if ((oldObject.attributes.hasOwnProperty(objectKey) === false)
+                        && (Array.prototype.inArrayCheck(objectKey, ignoreRemoveKeys) === false)) {
                         changedInfo['removedKey'] = objectKey;
                     }
                 });
             }
         }
 
-        if (changedInfo['changedValue'].length > 0) {
+        if (changedInfo['changedValues'].length > 0) {
             objectAttributes['changedInfo'] = changedInfo;
         }
 
         return objectAttributes;
     },
 
+    tempBufferToBuffer : function () {
+        var elementTempBufferStore = sessionStorage.getItem('illuminati-buffer-temp');
+        if (elementTempBufferStore !== 'undefined' && elementTempBufferStore !== null) {
+            sessionStorage.setItem('illuminati-buffer', sessionStorage.getItem('illuminati-buffer-temp'));
+            sessionStorage.removeItem('illuminati-buffer-temp');
+
+            return true;
+        }
+
+        return false;
+    },
+
     setElementToSessionStorage : function (newObject) {
         if (newObject.hasOwnProperty('changedInfo') === true) {
             var elementStore = JSON.parse(sessionStorage.getItem('illuminati'));
-            var key = newObject.target.type + '-' + newObject.elementUniqueId
+            var key = newObject.target.type + '-' + newObject.elementUniqueId;
+
+            var sessionStorageName = 'illuminati-buffer';
+            // if illuminatiSendStatus is 'ready', data save to buffer.
+            if (illuminatiSendStatus === 'sending') {
+                sessionStorageName += '-temp';
+            }
+
+            var targetElementStore = JSON.parse(sessionStorage.getItem(sessionStorageName));
+
+            if (typeof targetElementStore !== 'undefined' && targetElementStore != null) {
+                elementStore = targetElementStore;
+            }
 
             if (Array.isArray(elementStore[key]) === false) {
                 elementStore[key]['changedInfo'] = newObject.changedInfo;
@@ -259,14 +288,56 @@ var illuminatiJsAgent = {
                 };
             }
 
-            elementStore['alreadySent'] = 'ready';
-            sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
+            sessionStorage.setItem(sessionStorageName, JSON.stringify(elementStore));
+        }
+    },
+
+    sendToIlluminati : function (isAsync) {
+        console.log(illuminatiSendStatus);
+        if (illuminatiSendStatus === 'done') {
+            var elementStore = JSON.parse(sessionStorage.getItem('illuminati-buffer'));
+            console.log(elementStore);
+            if (typeof elementStore === 'undefined' || elementStore === null) {
+                return;
+            }
+
+            illuminatiSendStatus = 'sending';
+
+            var illuminatiJsModel = {
+                illuminatiGProcId: sessionStorage.getItem('illuminatiGProcId')
+            };
+
+            var ignoreCheckEventStoreKeys = ['alreadySent'];
+            Object.keys(elementStore).map(function(objectKey, index) {
+                if (Array.prototype.inArrayCheck(objectKey, ignoreCheckEventStoreKeys) === false) {
+                    if (elementStore[objectKey].hasOwnProperty('changedInfo') === true) {
+                        var changedObj = elementStore[objectKey];
+
+                        if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {
+                            for (var l=0; l<changedObj['changedInfo']['changedValues'].length; l++) {
+                                illuminatiJsModel['changedValues'][illuminatiJsModel['changedValues'].length] = changedObj['changedInfo']['changedValues'][l];
+                            }
+                        } else {
+                            illuminatiJsModel['changedValues'] = changedObj['changedInfo']['changedValues'];
+                        }
+                    }
+                }
+            });
+
+            if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {
+                illuminatiAjax.sendByPost('/illuminati/js/collector', isAsync, illuminatiJsModel);
+                illuminatiSendStatus = 'done';
+                if (illuminatiJsAgent.tempBufferToBuffer() === false) {
+                    sessionStorage.removeItem('illuminati-buffer');
+                }
+            }
         }
     }
 };
 
-var illuminatiGProcId = illuminatiJsAgent.generateGlobalTransactionId();
+sessionStorage.setItem('illuminatiGProcId', illuminatiJsAgent.generateGlobalTransactionId());
 
+var illuminatiSendStatus = 'done';
 var lastCheckObject;
 
 var interval = setInterval(function() {
@@ -389,11 +460,11 @@ var interval = setInterval(function() {
                             if (e.preventDefault) {
                                 e.preventDefault();
                             }
+                            console.log('submit');
+                            illuminatiJsAgent.tempBufferToBuffer();
+                            illuminatiJsAgent.sendToIlluminati(false);
 
-                            /* do something */
-
-                            // return false to prevent the default form behavior
-                            return false;
+                            return true;
                         });
                         break;
 
@@ -425,21 +496,18 @@ var interval = setInterval(function() {
             }
         }
 
-        elementStore['illuminatiGProcId'] = illuminatiGProcId;
-        elementStore['alreadySent'] = 'done';
-
         sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
     }
 }, 100);
 
+var illuminatiXhr;
 var illuminatiAjax = {
-    xmlHttp : null,
     xmlHttpObjType : null,
-    isAsync : true,
+    timeoutMs : 5000,
 
     // IE browser check
     checkIEBrowser : function (vCheck) {
-        if(navigator.appName.toLowerCase() == "microsoft internet explorer") {
+        if(navigator.appName.toLowerCase() === "microsoft internet explorer") {
             var tmpAppVersion = navigator.appVersion.toLowerCase();
 
             var pos = tmpAppVersion.indexOf("msie");
@@ -460,122 +528,98 @@ var illuminatiAjax = {
     },
 
     init : function () {
-        // if (typeof XDomainRequest !== 'undefined'){
-        //     this.xmlHttp = new XDomainRequest();
-        //     this.xmlHttpObjType = 'XDomain';
-        // } else
-
-        if (window.XMLHttpRequest) {
-            this.xmlHttp = new XMLHttpRequest();
-            this.xmlHttpObjType = 'XML';
+        if(typeof XMLHttpRequest !== 'undefined'){
+            illuminatiXhr = new XMLHttpRequest();
         } else {
-            this.xmlHttpObjType = 'ActiveX';
-            try {
-                this.xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
+            var versions = ["MSXML2.XmlHttp.5.0",
+                "MSXML2.XmlHttp.4.0",
+                "MSXML2.XmlHttp.3.0",
+                "MSXML2.XmlHttp.2.0",
+                "Microsoft.XmlHttp"]
+
+            for(var i = 0, len = versions.length; i < len; i++) {
                 try {
-                    this.xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-                } catch (e) {
+                    illuminatiXhr = new ActiveXObject(versions[i]);
+                    break;
                 }
-            }
+                catch(e){}
+            } // end for
         }
     },
 
-    sendByPost : function (requestUrl, data) {
+    sendByPost : function (requestUrl, isAsync, data) {
         // IE 6, 7 does not support cross-domain request. because of send POST method using hidden iframe.
-        var msieVersion = new Array('msie 6.0', 'msie 7.0');
+        var msieVersion = ['msie 6.0', 'msie 7.0'];
 
-        if (this.checkIEBrowser(msieVersion) == true) {
+        if (this.checkIEBrowser(msieVersion) === true) {
             // not yet
         } else {
-            // if (xmlHttpObjType === 'XDomain') {
-            //     this.xmlHttp.onerror = this.error;
-            //     this.xmlHttp.ontimeout = this.timeout;
-            //     this.xmlHttp.contentType = ;
-            //     this.xmlHttp.onload = this.handleStateChange;
-            //     this.xmlHttp.timeout = 3000;
-            //     this.xmlHttp.open('POST', '/illuminati/js/collector');
-            //     this.xmlHttp.send(data);
-            // } else {
-                this.xmlHttp.open('POST', requestUrl, this.isAsync);
+            console.log(isAsync);
+            illuminatiXhr.open('POST', requestUrl, isAsync);
 
-                // if (this.ajaxSendCheck === true) {
-                //     this.xmlHttp.onreadystatechange = this.handleStateChange;
-                // }
+            if (isAsync === false) {
+                illuminatiXhr.onreadystatechange = this.handleStateChange();
+            }
 
-                this.xmlHttp.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                //xmlHttp.withCredentials = true;
-                this.xmlHttp.send(data);
+            illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            illuminatiXhr.setRequestHeader('illuminatiGProcId', sessionStorage.getItem('illuminatiGProcId'));
+            //xmlHttp.withCredentials = true;
+            illuminatiXhr.send(JSON.stringify(data));
 
-                // basic timeout check (tree second)
-                // if (ajaxSendCheck) {
-                //     setTimeout(function() {
-                //         xmlHttp.abort();
-                //
-                //         if (xmlHttpTimeoutChacker) {
-                //             sLogger.ajaxModule.errorLog("ajax target server timeout", 509, "target server has timeout to connect. please check target server.");
-                //             sLogger.ajaxModule.errorDebug();
-                //         }
-                //
-                //         executeQueue.splice(0, 1);
-                //         sLogger.logData.executeAjax(false);
-                //     }, ajaxTimeoutSec);
-                // }
-            //}
-
-            // if (!ajaxSendCheck) {
-            //     return this.handleStateChange();
-            // }
+            setTimeout(function () {
+                illuminatiXhr.abort();
+            }, this.timeoutMs);
         }
+    },
+
+    // ajax result handling
+    handleStateChange : function () {
+        /*
+         * 0 : open()
+         * 1 : loading..
+         * 2 : loading completed
+         * 3 : server processing
+         * 4 : Server processing is completed
+         */
+        switch (illuminatiXhr.readyState) {
+            case 0 :
+                break;
+            case 1 :
+                break;
+            case 2 :
+                break;
+            case 3 :
+                break;
+            case 4 :
+                /*
+                 * 200 : processing is completed
+                 * 403 : forbidden
+                 * 404 : not found error
+                 * 500 : internal server error
+                 */
+                switch (illuminatiXhr.status) {
+                    case 200 :
+                        console.log("ajax completed. ", "processing is completed");
+                        break;
+                    case 403 :
+                        console.log("ajax forbidden error. ", "forbidden");
+                        break;
+                    case 404 :
+                        console.log("ajax not found error.", "not found error");
+                        break;
+                    case 500 :
+                        console.log("ajax internal server error.", "internal server error");
+                        break;
+                }
+                break;
+        }
+
+        return false;
     }
 };
 
-var sendToIlluminati = setInterval(function () {
-    var elementStore = JSON.parse(sessionStorage.getItem('illuminati'));
-    if (elementStore['alreadySent'] === 'ready') {
-        //sessionStorage.setItem('illuminati-buffer', JSON.stringify(elementStore));
-        elementStore['alreadySent'] = 'sending'
-        //sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
-
-        var illuminatiJsModel = {
-            illuminatiGProcId: elementStore.illuminatiGProcId,
-            changedJsElement: []
-        };
-
-        var ignoreCheckEventStoreKeys = ['alreadySent', 'illuminatiGProcId'];
-        Object.keys(elementStore).map(function(objectKey, index) {
-            if (Array.prototype.inArrayCheck(objectKey, ignoreCheckEventStoreKeys) === false) {
-                if (elementStore[objectKey].hasOwnProperty('changedInfo') === true) {
-                    var changedObj = elementStore[objectKey];
-
-                    var changedElementInfo = {
-                        changedInfo: {
-                            value: changedObj['changedInfo'],
-                            obj: []
-                        }
-                    };
-
-                    if (Array.isArray(changedObj.obj) === true) {
-                        changedElementInfo.changedInfo.obj = changedObj.obj;
-                    } else {
-                        var ignoreKeyName = ['changedInfo', 'obj'];
-                        changedElementInfo.changedInfo.obj[0] = {};
-                        Object.keys(changedObj).map(function(objectInnerKey, InnerIndex) {
-                            if (Array.prototype.inArrayCheck(objectInnerKey, ignoreKeyName) === false) {
-                                changedElementInfo.changedInfo.obj[0][objectInnerKey] = changedObj[objectInnerKey];
-                            }
-                        });
-                    }
-
-                    illuminatiJsModel.changedJsElement[illuminatiJsModel.changedJsElement.length] = changedElementInfo;
-                }
-            }
-        });
-
-        console.log(illuminatiJsModel);
-    }
-}, 10000);
-
 illuminatiAjax.init();
-illuminatiAjax.sendByPost('/api/v1/test1', {test: 'a'});
-console.log(illuminatiAjax.xmlHttp);
+
+var sendToIlluminati = setInterval(function () {
+    illuminatiJsAgent.sendToIlluminati(true);
+}, 15000);

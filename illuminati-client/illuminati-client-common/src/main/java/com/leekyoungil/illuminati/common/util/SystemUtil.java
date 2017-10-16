@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.common.util;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +52,14 @@ public class SystemUtil {
         return jvmInfo;
     }
 
-    public static String generateTransactionIdByRequest (final HttpServletRequest request, final String keyInHeader) {
-        Object id = request.getAttribute(keyInHeader);
+    public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) {
+        String keyName = illuminatiTransactionIdType.getValue();
+        Object id = illuminatiTransactionIdType == IlluminatiTransactionIdType.ILLUMINATI_PROC_ID
+            ? request.getAttribute(illuminatiTransactionIdType.getValue())
+            : request.getHeader(illuminatiTransactionIdType.getValue());
         if (id == null || StringObjectUtils.isValid(id.toString()) == false) {
-            id = StringObjectUtils.generateId(new Date().getTime(), keyInHeader);
-            request.setAttribute(keyInHeader, id);
+            id = StringObjectUtils.generateId(new Date().getTime(), illuminatiTransactionIdType.getValue());
+            request.setAttribute(illuminatiTransactionIdType.getValue(), id);
         }
 
         return StringObjectUtils.isValid(id.toString()) ? (String) id : null;

@@ -13,6 +13,7 @@
         <module>illuminati-client-processor</module>
         <module>illuminati-client-elasticsearch</module>
         <module>illuminati-client-switch</module>
+        <module>illuminati-client-jscollector</module>
     </modules>
     <packaging>pom</packaging>
 

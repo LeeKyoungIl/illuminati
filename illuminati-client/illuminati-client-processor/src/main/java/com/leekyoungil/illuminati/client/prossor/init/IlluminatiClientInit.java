@@ -8,6 +8,7 @@ import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
 import com.leekyoungil.illuminati.common.dto.RequestHeaderModel;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -129,8 +130,8 @@ public class IlluminatiClientInit {
 
     private static void addDataOnIlluminatiModel (final IlluminatiModel illuminatiModel, final HttpServletRequest request) {
         RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
-        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, "illuminatiGProcId"));
-        requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, "illuminatiProcId"));
+        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID));
+        requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
 
         illuminatiModel.initReqHeaderInfo(requestHeaderModel);
         illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
@@ -138,6 +139,7 @@ public class IlluminatiClientInit {
         illuminatiModel.isActiveChaosBomber(ConvertUtil.getChaosBomberFromHttpRequest(request));
         illuminatiModel.initBasicJvmInfo(SystemUtil.getJvmInfo());
         illuminatiModel.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
+        illuminatiModel.setJavascriptUserAction();
     }
 
     /**

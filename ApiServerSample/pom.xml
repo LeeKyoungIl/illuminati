@@ -74,17 +74,24 @@
 
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
-            <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.0</version>
+            <artifactId>illuminati-client-jscollector</artifactId>
+            <version>0.1.0</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
-            <artifactId>illuminati-client-switch</artifactId>
-            <version>1.0.0</version>
+            <artifactId>illuminati-client-processor</artifactId>
+            <version>0.9.1</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>com.leekyoungil.illuminati</groupId>-->
+            <!--<artifactId>illuminati-client-switch</artifactId>-->
+            <!--<version>1.0.0</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.rabbitmq</groupId>

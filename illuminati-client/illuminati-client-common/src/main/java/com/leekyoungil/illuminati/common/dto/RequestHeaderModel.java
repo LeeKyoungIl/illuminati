@@ -489,4 +489,8 @@ public class RequestHeaderModel {
         }
         this.illuminatiProcId = illuminatiProcId;
     }
+
+    protected String getIlluminatiGProcId () {
+        return this.illuminatiGProcId;
+    }
 }
