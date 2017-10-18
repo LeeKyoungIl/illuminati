@@ -17,7 +17,7 @@ XMLHttpRequest.prototype.send = function() {
             callback.apply(this, arguments);
         }
         if (this.readyState == 4) {
-            if (this.responseURL.indexOf('/illuminati/js/collector') == -1) {
+            if (this.responseURL.indexOf(collectorUrl) == -1) {
                 illuminatiJsAgent.tempBufferToBuffer();
                 illuminatiJsAgent.sendToIlluminati(false);
             }
@@ -551,7 +551,7 @@ var illuminatiJsAgent = {
             });
 
             if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {
-                illuminatiAjax.sendByPost('/illuminati/js/collector', isAsync, illuminatiJsModel);
+                illuminatiAjax.sendByPost(collectorUrl, isAsync, illuminatiJsModel);
                 illuminatiSendStatus = 'done';
                 if (illuminatiJsAgent.tempBufferToBuffer() === false) {
                     window.sessionStorage.removeItem('illuminati-buffer');
@@ -630,6 +630,7 @@ var illuminatiSendStatus = 'done';
 var lastCheckObject;
 var isFirst = true;
 var collectIntervalTimeMs = 15000;
+var collectorUrl = '/illuminati/js/collector';
 
 illuminatiAjax.init();
 illuminatiJsAgent.init(1234);
