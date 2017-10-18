@@ -20,6 +20,7 @@ public class RequestHeaderModel {
     private static final Logger REQUEST_HEADER_MODEL_LOGGER = LoggerFactory.getLogger(RequestHeaderModel.class);
 
     @Expose private String illuminatiProcId;
+    @Expose private String illuminatiSProcId;
     @Expose private String illuminatiGProcId;
 
     /**
@@ -475,6 +476,13 @@ public class RequestHeaderModel {
 
         this.parsedCookie.put(key, value);
     }
+    public void setSessionTransactionId (String illuminatiSProcId) {
+        if (StringObjectUtils.isValid(illuminatiSProcId) == false) {
+            return;
+        }
+        this.illuminatiSProcId = illuminatiSProcId;
+    }
+
 
     public void setGlobalTransactionId (String illuminatiGProcId) {
         if (StringObjectUtils.isValid(illuminatiGProcId) == false) {
@@ -488,6 +496,10 @@ public class RequestHeaderModel {
             return;
         }
         this.illuminatiProcId = illuminatiProcId;
+    }
+
+    protected String getIlluminatiSProcId () {
+        return this.illuminatiSProcId;
     }
 
     protected String getIlluminatiGProcId () {

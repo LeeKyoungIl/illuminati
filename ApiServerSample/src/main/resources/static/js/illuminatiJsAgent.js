@@ -27,15 +27,21 @@ XMLHttpRequest.prototype.send = function() {
 };
 
 var illuminatiJsAgent = {
-
     passElementType : ['form', 'input', 'select', 'textarea'],
     illuminatiInputElementType : ['text', 'radio', 'checkbox'],
 
     init : function (illuminatiUniqueUserId) {
-        sessionStorage.setItem('illuminatiGProcId', illuminatiJsAgent.generateGlobalTransactionId());
-        console.log(illuminatiUniqueUserId);
+        // session transaction Id
+        window.sessionStorage.setItem('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
+
+        var gTransactionId = window.sessionStorage.getItem('illuminatiGProcId');
+
+        if (typeof gTransactionId === 'undefined' || gTransactionId === null) {
+            window.sessionStorage.setItem('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
+        }
+
         if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
-            sessionStorage.setItem('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
+            window.sessionStorage.setItem('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
         }
     },
 
@@ -45,13 +51,17 @@ var illuminatiJsAgent = {
             .substring(1);
     },
 
-    generateGlobalTransactionId : function () {
+    generateSumUDID : function () {
         var gTransactionId = [];
         for (var i=0; i<8; i++) {
             gTransactionId[gTransactionId.length] = this.generateUDID();
         }
 
-        return gTransactionId.join('')+'-illuminatiGProcId';
+        return gTransactionId;
+    },
+
+    generateTransactionId : function (type) {
+        return this.generateSumUDID().join('')+'-illuminati'+type+'ProcId';
     },
 
     getElementUniqueId : function (elementObj) {
@@ -153,7 +163,7 @@ var illuminatiJsAgent = {
         eventObject['obj'] = illuminatiJsAgent.getElementObj(eventObject);
 
         if (e.target.type.indexOf('select') > -1) {
-            var firstElementData = JSON.parse(sessionStorage.getItem('illuminati'));
+            var firstElementData = JSON.parse(window.sessionStorage.getItem('illuminati'));
             var key = e.target.type + '-' + this.getElementUniqueId(eventObject);
 
             eventObject['obj'] = firstElementData[key];
@@ -161,7 +171,7 @@ var illuminatiJsAgent = {
             if (eventObject['attributes']['type'] === 'checkbox') {
                 eventObject['checked'] = e.target.checked;
             } else if (eventObject['attributes']['type'] === 'radio') {
-                var firstElementData = JSON.parse(sessionStorage.getItem('illuminati'));
+                var firstElementData = JSON.parse(window.sessionStorage.getItem('illuminati'));
                 var key = e.target.type + '-' + this.getElementUniqueId(eventObject);
 
                 eventObject['obj'] = firstElementData[key];
@@ -272,10 +282,10 @@ var illuminatiJsAgent = {
     },
 
     tempBufferToBuffer : function () {
-        var elementTempBufferStore = sessionStorage.getItem('illuminati-buffer-temp');
+        var elementTempBufferStore = window.sessionStorage.getItem('illuminati-buffer-temp');
         if (elementTempBufferStore !== 'undefined' && elementTempBufferStore !== null) {
-            sessionStorage.setItem('illuminati-buffer', sessionStorage.getItem('illuminati-buffer-temp'));
-            sessionStorage.removeItem('illuminati-buffer-temp');
+            window.sessionStorage.setItem('illuminati-buffer', window.sessionStorage.getItem('illuminati-buffer-temp'));
+            window.sessionStorage.removeItem('illuminati-buffer-temp');
 
             return true;
         }
@@ -285,7 +295,7 @@ var illuminatiJsAgent = {
 
     setElementToSessionStorage : function (newObject) {
         if (newObject.hasOwnProperty('changedInfo') === true) {
-            var elementStore = JSON.parse(sessionStorage.getItem('illuminati'));
+            var elementStore = JSON.parse(window.sessionStorage.getItem('illuminati'));
             var key = newObject.target.type + '-' + newObject.elementUniqueId;
 
             var sessionStorageName = 'illuminati-buffer';
@@ -294,7 +304,7 @@ var illuminatiJsAgent = {
                 sessionStorageName += '-temp';
             }
 
-            var targetElementStore = JSON.parse(sessionStorage.getItem(sessionStorageName));
+            var targetElementStore = JSON.parse(window.sessionStorage.getItem(sessionStorageName));
 
             if (typeof targetElementStore !== 'undefined' && targetElementStore != null) {
                 elementStore = targetElementStore;
@@ -311,13 +321,14 @@ var illuminatiJsAgent = {
                 };
             }
 
-            sessionStorage.setItem(sessionStorageName, JSON.stringify(elementStore));
+            window.sessionStorage.setItem(sessionStorageName, JSON.stringify(elementStore));
         }
     },
 
     domElementInit : function () {
         if(document.readyState === 'complete') {
-            clearInterval(interval);
+            window.clearInterval(interval);
+
             // document ready
             var elems = document.body.getElementsByTagName("*");
 
@@ -436,6 +447,31 @@ var illuminatiJsAgent = {
                                     e.preventDefault();
                                 }
 
+                                var sTransactionId = window.sessionStorage.getItem('illuminatiSProcId');
+                                if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
+                                    var sInput = document.createElement('input');
+                                    sInput.type = 'hidden';
+                                    sInput.name = 'illuminatiSProcId';
+                                    sInput.value = String(sTransactionId);
+                                    this.appendChild(sInput);
+                                }
+                                var gTransactionId = window.sessionStorage.getItem('illuminatiGProcId');
+                                if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
+                                    var gInput = document.createElement('input');
+                                    gInput.type = 'hidden';
+                                    gInput.name = 'illuminatiGProcId';
+                                    gInput.value = String(gTransactionId);
+                                    this.appendChild(gInput);
+                                }
+                                var uniqueUserId = window.sessionStorage.getItem('illuminatiUniqueUserId');
+                                if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
+                                    var uInput = document.createElement('input');
+                                    uInput.type = 'hidden';
+                                    uInput.name = 'illuminatiUniqueUserId';
+                                    uInput.value = String(uniqueUserId);
+                                    this.appendChild(uInput);
+                                }
+
                                 illuminatiJsAgent.tempBufferToBuffer();
                                 illuminatiJsAgent.sendToIlluminati(false);
 
@@ -471,11 +507,11 @@ var illuminatiJsAgent = {
                 }
             }
 
-            sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
+            window.sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
 
             if (isFirst === true) {
                 isFirst = false;
-                setTimeout(function () {
+                window.setTimeout(function () {
                     illuminatiJsAgent.domElementInit();
                 }, 2000);
             }
@@ -484,7 +520,7 @@ var illuminatiJsAgent = {
 
     sendToIlluminati : function (isAsync) {
         if (illuminatiSendStatus === 'done') {
-            var elementStore = JSON.parse(sessionStorage.getItem('illuminati-buffer'));
+            var elementStore = JSON.parse(window.sessionStorage.getItem('illuminati-buffer'));
             if (typeof elementStore === 'undefined' || elementStore === null) {
                 return;
             }
@@ -492,8 +528,9 @@ var illuminatiJsAgent = {
             illuminatiSendStatus = 'sending';
 
             var illuminatiJsModel = {
-                illuminatiGProcId: sessionStorage.getItem('illuminatiGProcId'),
-                illuminatiUniqueUserId: sessionStorage.getItem('illuminatiUniqueUserId')
+                illuminatiGProcId: window.sessionStorage.getItem('illuminatiGProcId'),
+                illuminatiSProcId: window.sessionStorage.getItem('illuminatiSProcId'),
+                illuminatiUniqueUserId: window.sessionStorage.getItem('illuminatiUniqueUserId')
             };
 
             var ignoreCheckEventStoreKeys = ['alreadySent'];
@@ -517,7 +554,7 @@ var illuminatiJsAgent = {
                 illuminatiAjax.sendByPost('/illuminati/js/collector', isAsync, illuminatiJsModel);
                 illuminatiSendStatus = 'done';
                 if (illuminatiJsAgent.tempBufferToBuffer() === false) {
-                    sessionStorage.removeItem('illuminati-buffer');
+                    window.sessionStorage.removeItem('illuminati-buffer');
                 }
             }
         }
@@ -563,9 +600,16 @@ var illuminatiAjax = {
             // }
 
             illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            illuminatiXhr.setRequestHeader('illuminatiGProcId', sessionStorage.getItem('illuminatiGProcId'));
 
-            var illuminatiUniqueUserId = sessionStorage.getItem('illuminatiUniqueUserId');
+            var illuminatiGProcId = window.sessionStorage.getItem('illuminatiGProcId');
+            if (typeof illuminatiGProcId !== 'undefined' && illuminatiGProcId !== null) {
+                illuminatiXhr.setRequestHeader('illuminatiGProcId', illuminatiGProcId);
+            }
+            var illuminatiSProcId = window.sessionStorage.getItem('illuminatiSProcId');
+            if (typeof illuminatiSProcId !== 'undefined' && illuminatiSProcId !== null) {
+                illuminatiXhr.setRequestHeader('illuminatiSProcId', illuminatiSProcId);
+            }
+            var illuminatiUniqueUserId = window.sessionStorage.getItem('illuminatiUniqueUserId');
             if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
                 illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
             }
@@ -585,14 +629,15 @@ var illuminatiAjax = {
 var illuminatiSendStatus = 'done';
 var lastCheckObject;
 var isFirst = true;
+var collectIntervalTimeMs = 15000;
 
 illuminatiAjax.init();
 illuminatiJsAgent.init(1234);
 
-var interval = setInterval(function() {
+var interval = window.setInterval(function() {
     illuminatiJsAgent.domElementInit();
 }, 100);
 
-var sendToIlluminati = setInterval(function () {
+var sendToIlluminati = window.setInterval(function () {
     illuminatiJsAgent.sendToIlluminati(true);
-}, 15000);
+}, collectIntervalTimeMs);

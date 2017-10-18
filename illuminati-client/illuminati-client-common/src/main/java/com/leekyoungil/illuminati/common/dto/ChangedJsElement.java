@@ -6,11 +6,16 @@ import java.util.List;
 
 public class ChangedJsElement {
 
+    private String illuminatiSProcId;
     private String illuminatiGProcId;
     @Expose private List<ChangedValue> changedValues;
 
     public void setIlluminatiGProcId(String illuminatiGProcId) {
         this.illuminatiGProcId = illuminatiGProcId;
+    }
+
+    public void setIlluminatiSProcId(String illuminatiSProcId) {
+        this.illuminatiSProcId = illuminatiSProcId;
     }
 
     public void setChangedValues(List<ChangedValue> changedValues) {
@@ -19,5 +24,9 @@ public class ChangedJsElement {
 
     public String getIlluminatiGProcId() {
         return this.illuminatiGProcId;
+    }
+
+    public String getIlluminatiSProcId() {
+        return this.illuminatiSProcId;
     }
 }

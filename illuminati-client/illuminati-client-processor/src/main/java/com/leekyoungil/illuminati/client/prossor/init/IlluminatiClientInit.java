@@ -130,6 +130,7 @@ public class IlluminatiClientInit {
 
     private static void addDataOnIlluminatiModel (final IlluminatiModel illuminatiModel, final HttpServletRequest request) {
         RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
+        requestHeaderModel.setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID));
         requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID));
         requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
 
@@ -141,6 +142,7 @@ public class IlluminatiClientInit {
         illuminatiModel.isActiveChaosBomber(ConvertUtil.getChaosBomberFromHttpRequest(request));
         illuminatiModel.initBasicJvmInfo(SystemUtil.getJvmInfo());
         illuminatiModel.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
+        illuminatiModel.checkAndSetTransactionIdFromPostBody(requestHeaderModel.getPostContentBody());
         illuminatiModel.setJavascriptUserAction();
     }
 

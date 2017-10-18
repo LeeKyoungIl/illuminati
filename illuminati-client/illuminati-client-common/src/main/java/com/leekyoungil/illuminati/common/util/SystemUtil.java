@@ -55,10 +55,10 @@ public class SystemUtil {
     public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) {
         String keyName = illuminatiTransactionIdType.getValue();
 
-        String id = SystemUtil.getValueFromHeaderByKey(request, illuminatiTransactionIdType.getValue());
-        if (StringObjectUtils.isValid(id) == false) {
-            id = StringObjectUtils.generateId(new Date().getTime(), illuminatiTransactionIdType.getValue());
-            request.setAttribute(illuminatiTransactionIdType.getValue(), id);
+        String id = SystemUtil.getValueFromHeaderByKey(request, keyName);
+        if (StringObjectUtils.isValid(id) == false && illuminatiTransactionIdType == IlluminatiTransactionIdType.ILLUMINATI_PROC_ID) {
+            id = StringObjectUtils.generateId(new Date().getTime(), keyName);
+            request.setAttribute(keyName, id);
         }
 
         return StringObjectUtils.isValid(id) ? id : null;

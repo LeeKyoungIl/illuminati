@@ -3,6 +3,7 @@ package com.leekyoungil.illuminati.ApiServerSample.controller;
 import com.leekyoungil.illuminati.ApiServerSample.param.PostTest;
 import com.leekyoungil.illuminati.ApiServerSample.service.ApiSampleService;
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
+import com.leekyoungil.illuminati.common.dto.ChangedJsElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

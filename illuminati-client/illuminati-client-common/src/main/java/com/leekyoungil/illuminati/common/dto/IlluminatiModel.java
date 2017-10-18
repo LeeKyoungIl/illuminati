@@ -10,9 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -117,7 +115,9 @@ public class IlluminatiModel implements Serializable {
             }
 
             String illuminatiGProcId = this.header.getIlluminatiGProcId();
-            if (illuminatiGProcId != null && illuminatiGProcId.equals(changedJsElement.getIlluminatiGProcId()) == true) {
+            String illuminatiSProcId = this.header.getIlluminatiSProcId();
+            if (illuminatiGProcId != null && illuminatiGProcId.equals(changedJsElement.getIlluminatiGProcId()) == true
+                    && illuminatiSProcId != null && illuminatiSProcId.equals(changedJsElement.getIlluminatiSProcId()) == true) {
                 this.changedJsElement = changedJsElement;
             }
         }
@@ -125,6 +125,38 @@ public class IlluminatiModel implements Serializable {
 
     public void initUniqueUserId (String illuminatiUniqueUserId) {
         this.illuminatiUniqueUserId = illuminatiUniqueUserId;
+    }
+
+    public void checkAndSetTransactionIdFromPostBody (String postBody) {
+        if (StringObjectUtils.isValid(postBody) == false) {
+            return;
+        }
+
+        final String[] postArrayData = postBody.split("&");
+
+        if (postArrayData.length > 0) {
+            final List<String> transactionIds = Arrays.asList(new String[]{"illuminatiGProcId", "illuminatiSProcId", "illuminatiUniqueUserId"});
+
+            for (int i=0; i<postArrayData.length; i++) {
+                final String[] postElementArrayData = postArrayData[i].split("=");
+
+                for (final String keyValue : transactionIds) {
+                    if (postElementArrayData.length != 2) {
+                        continue;
+                    }
+
+                    if (keyValue.equals(postElementArrayData[0]) == true) {
+                        if ("illuminatiGProcId".equals(keyValue) == true && StringObjectUtils.isValid(this.header.getIlluminatiGProcId()) == false) {
+                            this.header.setGlobalTransactionId(postElementArrayData[1]);
+                        } else if ("illuminatiSProcId".equals(keyValue) == true && StringObjectUtils.isValid(this.header.getIlluminatiSProcId()) == false) {
+                            this.header.setSessionTransactionId(postElementArrayData[1]);
+                        } else if ("illuminatiUniqueUserId".equals(keyValue) == true && StringObjectUtils.isValid(this.illuminatiUniqueUserId) == false) {
+                            this.illuminatiUniqueUserId = postElementArrayData[1];
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void generateAggregateId () {
