@@ -133,6 +133,8 @@ public class IlluminatiClientInit {
         requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID));
         requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
 
+        final String illuminatiUniqueUserIdKeyName = "illuminatiUniqueUserId";
+        illuminatiModel.initUniqueUserId(SystemUtil.getValueFromHeaderByKey(request, illuminatiUniqueUserIdKeyName));
         illuminatiModel.initReqHeaderInfo(requestHeaderModel);
         illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
         illuminatiModel.staticInfo(ConvertUtil.getStaticInfoFromHttpRequest(request));

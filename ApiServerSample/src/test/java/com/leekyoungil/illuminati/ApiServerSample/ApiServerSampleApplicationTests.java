@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.ApiServerSample;
 
+import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
 import org.junit.Test;
 
 import java.util.concurrent.ArrayBlockingQueue;

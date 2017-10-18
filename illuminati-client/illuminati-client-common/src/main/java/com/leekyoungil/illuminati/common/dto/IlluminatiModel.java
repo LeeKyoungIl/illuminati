@@ -3,6 +3,7 @@ package com.leekyoungil.illuminati.common.dto;
 import com.google.gson.annotations.Expose;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
+import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import java.io.Serializable;
@@ -27,6 +28,7 @@ public class IlluminatiModel implements Serializable {
     @Expose private Map<String, Object> jvmInfo;
 
     @Expose private String id;
+    @Expose private String illuminatiUniqueUserId;
     @Expose protected RequestGeneralModel general;
     @Expose protected RequestHeaderModel header;
     @Expose protected ChangedJsElement changedJsElement;
@@ -119,6 +121,10 @@ public class IlluminatiModel implements Serializable {
                 this.changedJsElement = changedJsElement;
             }
         }
+    }
+
+    public void initUniqueUserId (String illuminatiUniqueUserId) {
+        this.illuminatiUniqueUserId = illuminatiUniqueUserId;
     }
 
     private void generateAggregateId () {

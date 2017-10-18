@@ -54,15 +54,28 @@ public class SystemUtil {
 
     public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) {
         String keyName = illuminatiTransactionIdType.getValue();
-        Object id = illuminatiTransactionIdType == IlluminatiTransactionIdType.ILLUMINATI_PROC_ID
-            ? request.getAttribute(illuminatiTransactionIdType.getValue())
-            : request.getHeader(illuminatiTransactionIdType.getValue());
-        if (id == null || StringObjectUtils.isValid(id.toString()) == false) {
+
+        String id = SystemUtil.getValueFromHeaderByKey(request, illuminatiTransactionIdType.getValue());
+        if (StringObjectUtils.isValid(id) == false) {
             id = StringObjectUtils.generateId(new Date().getTime(), illuminatiTransactionIdType.getValue());
             request.setAttribute(illuminatiTransactionIdType.getValue(), id);
         }
 
-        return StringObjectUtils.isValid(id.toString()) ? (String) id : null;
+        return StringObjectUtils.isValid(id) ? id : null;
+    }
+
+    public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) {
+        if (request == null || keyName == null) {
+            return null;
+        }
+
+        Object value = request.getHeader(keyName);
+
+        if (value == null) {
+            value = request.getAttribute(keyName);
+        }
+
+        return (value != null) ? value.toString() : null;
     }
 
     public static void createSystemThread (final Runnable runnable, final String threadName) {

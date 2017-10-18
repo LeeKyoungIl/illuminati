@@ -8,12 +8,35 @@ Array.prototype.inArrayCheck = function (needle, haystack) {
     return false;
 };
 
+var _send = XMLHttpRequest.prototype.send;
+XMLHttpRequest.prototype.send = function() {
+    /* Wrap onreadystaechange callback */
+    var callback = typeof this.onreadystatechange == 'function' ? this.onreadystatechange : null;
+    this.onreadystatechange = function() {
+        if (callback) {
+            callback.apply(this, arguments);
+        }
+        if (this.readyState == 4) {
+            if (this.responseURL.indexOf('/illuminati/js/collector') == -1) {
+                illuminatiJsAgent.tempBufferToBuffer();
+                illuminatiJsAgent.sendToIlluminati(false);
+            }
+        }
+    }
+    _send.apply(this, arguments);
+};
+
 var illuminatiJsAgent = {
 
     passElementType : ['form', 'input', 'select', 'textarea'],
     illuminatiInputElementType : ['text', 'radio', 'checkbox'],
 
-    init : function () {
+    init : function (illuminatiUniqueUserId) {
+        sessionStorage.setItem('illuminatiGProcId', illuminatiJsAgent.generateGlobalTransactionId());
+        console.log(illuminatiUniqueUserId);
+        if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
+            sessionStorage.setItem('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
+        }
     },
 
     generateUDID : function () {
@@ -292,11 +315,176 @@ var illuminatiJsAgent = {
         }
     },
 
+    domElementInit : function () {
+        if(document.readyState === 'complete') {
+            clearInterval(interval);
+            // document ready
+            var elems = document.body.getElementsByTagName("*");
+
+            var tempRadioStore = {};
+            var elementStore = {};
+
+            for (var i=0; i<elems.length; i++) {
+                var elem = elems[i];
+
+                if (illuminatiJsAgent.checkPassElement(elem) == true) {
+                    continue;
+                }
+
+                var elementObj = {
+                    obj: elem,
+                    type: elem.type,
+                    id: elem.getAttribute('id'),
+                    name: elem.getAttribute('name')
+                };
+
+                if (elem.localName === 'form') {
+                    elementObj['type'] = 'form';
+                }
+
+                var elementUniqueId = illuminatiJsAgent.getElementUniqueId(elementObj);
+
+                if (elem.localName === 'input' && elem.getAttribute('type') === 'radio') {
+                    if (tempRadioStore.hasOwnProperty(elementObj.type + '-' + elementUniqueId) === false) {
+                        tempRadioStore[elementObj.type + '-' + elementUniqueId] = [];
+                    }
+
+                    var radio = {};
+                    for (var j = 0; j < elem.attributes.length; j++) {
+                        var item = elem.attributes.item(j);
+                        radio[item.name] = item.value;
+                    }
+
+                    radio['obj'] = elem;
+                    tempRadioStore[elementObj.type + '-' + elementUniqueId][tempRadioStore[elementObj.type + '-' + elementUniqueId].length] = radio;
+
+                    continue;
+                }
+
+                for (var j = 0; j < elem.attributes.length; j++) {
+                    var item = elem.attributes.item(j);
+
+                    if (elem.localName === 'select') {
+                        elementObj['option'] = [];
+
+                        for (var k=0; k<elem.childElementCount; k++) {
+                            var option = {};
+                            for (var m=0; m<elem[k].attributes.length; m++) {
+                                var optionItem = elem[k].attributes.item(m);
+                                option[optionItem.name] = optionItem.value;
+                            }
+
+                            elementObj['option'][elementObj['option'].length] = option;
+                        }
+                    } else {
+                        elementObj[item.name] = item.value;
+                    }
+                }
+
+                if (elem.localName === 'textarea') {
+                    elementObj['value'] = elem.value;
+                }
+
+                var key = elementObj.type + '-' + elementUniqueId;
+
+                elementStore[key] = elementObj;
+            }
+
+            for (var key in tempRadioStore) {
+                elementStore[key] = tempRadioStore[key];
+            }
+
+            for (var key in elementStore) {
+                var eventElem = elementStore[key];
+
+                if (Array.isArray(eventElem) !== true) {
+                    switch (eventElem.type) {
+                        case 'text' :
+                            eventElem['obj'].addEventListener('keyup', function (e) {
+                                var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                                var oldObject = illuminatiJsAgent.getEventData(e);
+                                var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                                newObject['screenInfo'] = screenInfo;
+                                illuminatiJsAgent.setElementToSessionStorage(newObject);
+                            });
+                            break;
+                        case 'textarea' :
+                            var screenInfo;
+                            eventElem['obj'].addEventListener('focusin', function (e) {
+                                screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                                lastCheckObject = illuminatiJsAgent.getEventData(e);
+                            });
+                            eventElem['obj'].addEventListener('keyup', function (e) {
+                                var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                                newObject['screenInfo'] = screenInfo;
+                                illuminatiJsAgent.setElementToSessionStorage(newObject);
+                            });
+                            break;
+                        case 'select-one' :
+                            eventElem['obj'].addEventListener('change', function (e) {
+                                var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                                var oldObject = illuminatiJsAgent.getEventData(e);
+                                var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                                newObject['screenInfo'] = screenInfo;
+                                illuminatiJsAgent.setElementToSessionStorage(newObject);
+                            });
+                            break;
+
+                        case 'form' :
+                            eventElem['obj'].addEventListener('submit', function (e) {
+                                if (e.preventDefault) {
+                                    e.preventDefault();
+                                }
+
+                                illuminatiJsAgent.tempBufferToBuffer();
+                                illuminatiJsAgent.sendToIlluminati(false);
+
+                                this.submit();
+                            });
+                            break;
+
+                        default :
+                            var screenInfo;
+                            eventElem['obj'].addEventListener('mouseup', function (e) {
+                                screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                                lastCheckObject = illuminatiJsAgent.getEventData(e);
+                            });
+                            eventElem['obj'].addEventListener('click', function (e) {
+                                var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                                newObject['screenInfo'] = screenInfo;
+                                delete(lastClickObject);
+                                illuminatiJsAgent.setElementToSessionStorage(newObject);
+                            });
+                            break;
+                    }
+                } else {
+                    for (var n=0; n<eventElem.length; n++) {
+                        var tmpRadioObj = eventElem[n];
+                        tmpRadioObj['obj'].addEventListener('click', function (e) {
+                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                            var oldObject = illuminatiJsAgent.getEventData(e);
+                            var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                            newObject['screenInfo'] = screenInfo;
+                            illuminatiJsAgent.setElementToSessionStorage(newObject);
+                        });
+                    }
+                }
+            }
+
+            sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
+
+            if (isFirst === true) {
+                isFirst = false;
+                setTimeout(function () {
+                    illuminatiJsAgent.domElementInit();
+                }, 2000);
+            }
+        }
+    },
+
     sendToIlluminati : function (isAsync) {
-        console.log(illuminatiSendStatus);
         if (illuminatiSendStatus === 'done') {
             var elementStore = JSON.parse(sessionStorage.getItem('illuminati-buffer'));
-            console.log(elementStore);
             if (typeof elementStore === 'undefined' || elementStore === null) {
                 return;
             }
@@ -304,7 +492,8 @@ var illuminatiJsAgent = {
             illuminatiSendStatus = 'sending';
 
             var illuminatiJsModel = {
-                illuminatiGProcId: sessionStorage.getItem('illuminatiGProcId')
+                illuminatiGProcId: sessionStorage.getItem('illuminatiGProcId'),
+                illuminatiUniqueUserId: sessionStorage.getItem('illuminatiUniqueUserId')
             };
 
             var ignoreCheckEventStoreKeys = ['alreadySent'];
@@ -335,209 +524,22 @@ var illuminatiJsAgent = {
     }
 };
 
-sessionStorage.setItem('illuminatiGProcId', illuminatiJsAgent.generateGlobalTransactionId());
-
-var illuminatiSendStatus = 'done';
-var lastCheckObject;
-
-var interval = setInterval(function() {
-    if(document.readyState === 'complete') {
-        clearInterval(interval);
-        // document ready
-        var elems = document.body.getElementsByTagName("*");
-
-        var tempRadioStore = {};
-        var elementStore = {};
-
-        for (var i=0; i<elems.length; i++) {
-            var elem = elems[i];
-
-            if (illuminatiJsAgent.checkPassElement(elem) == true) {
-                continue;
-            }
-
-            var elementObj = {
-                obj: elem,
-                type: elem.type,
-                id: elem.getAttribute('id'),
-                name: elem.getAttribute('name')
-            };
-
-            if (elem.localName === 'form') {
-                elementObj['type'] = 'form';
-            }
-
-            var elementUniqueId = illuminatiJsAgent.getElementUniqueId(elementObj);
-
-            if (elem.localName === 'input' && elem.getAttribute('type') === 'radio') {
-                if (tempRadioStore.hasOwnProperty(elementObj.type + '-' + elementUniqueId) === false) {
-                    tempRadioStore[elementObj.type + '-' + elementUniqueId] = [];
-                }
-
-                var radio = {};
-                for (var j = 0; j < elem.attributes.length; j++) {
-                    var item = elem.attributes.item(j);
-                    radio[item.name] = item.value;
-                }
-
-                radio['obj'] = elem;
-                tempRadioStore[elementObj.type + '-' + elementUniqueId][tempRadioStore[elementObj.type + '-' + elementUniqueId].length] = radio;
-
-                continue;
-            }
-
-            for (var j = 0; j < elem.attributes.length; j++) {
-                var item = elem.attributes.item(j);
-
-                if (elem.localName === 'select') {
-                    elementObj['option'] = [];
-
-                    for (var k=0; k<elem.childElementCount; k++) {
-                        var option = {};
-                        for (var m=0; m<elem[k].attributes.length; m++) {
-                            var optionItem = elem[k].attributes.item(m);
-                            option[optionItem.name] = optionItem.value;
-                        }
-
-                        elementObj['option'][elementObj['option'].length] = option;
-                    }
-                } else {
-                    elementObj[item.name] = item.value;
-                }
-            }
-
-            if (elem.localName === 'textarea') {
-                elementObj['value'] = elem.value;
-            }
-
-            var key = elementObj.type + '-' + elementUniqueId;
-
-            elementStore[key] = elementObj;
-        }
-
-        for (var key in tempRadioStore) {
-            elementStore[key] = tempRadioStore[key];
-        }
-
-        for (var key in elementStore) {
-            var eventElem = elementStore[key];
-
-            if (Array.isArray(eventElem) !== true) {
-                switch (eventElem.type) {
-                    case 'text' :
-                        eventElem['obj'].addEventListener('keyup', function (e) {
-                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                            var oldObject = illuminatiJsAgent.getEventData(e);
-                            var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                            newObject['screenInfo'] = screenInfo;
-                            illuminatiJsAgent.setElementToSessionStorage(newObject);
-                        });
-                        break;
-                    case 'textarea' :
-                        var screenInfo;
-                        eventElem['obj'].addEventListener('focusin', function (e) {
-                            screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                            lastCheckObject = illuminatiJsAgent.getEventData(e);
-                        });
-                        eventElem['obj'].addEventListener('keyup', function (e) {
-                            var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                            newObject['screenInfo'] = screenInfo;
-                            illuminatiJsAgent.setElementToSessionStorage(newObject);
-                        });
-                        break;
-                    case 'select-one' :
-                        eventElem['obj'].addEventListener('change', function (e) {
-                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                            var oldObject = illuminatiJsAgent.getEventData(e);
-                            var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                            newObject['screenInfo'] = screenInfo;
-                            illuminatiJsAgent.setElementToSessionStorage(newObject);
-                        });
-                        break;
-
-                    case 'form' :
-                        eventElem['obj'].addEventListener('submit', function (e) {
-                            if (e.preventDefault) {
-                                e.preventDefault();
-                            }
-                            console.log('submit');
-                            illuminatiJsAgent.tempBufferToBuffer();
-                            illuminatiJsAgent.sendToIlluminati(false);
-
-                            return true;
-                        });
-                        break;
-
-                    default :
-                        var screenInfo;
-                        eventElem['obj'].addEventListener('mouseup', function (e) {
-                            screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                            lastCheckObject = illuminatiJsAgent.getEventData(e);
-                        });
-                        eventElem['obj'].addEventListener('click', function (e) {
-                            var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                            newObject['screenInfo'] = screenInfo;
-                            delete(lastClickObject);
-                            illuminatiJsAgent.setElementToSessionStorage(newObject);
-                        });
-                        break;
-                }
-            } else {
-                for (var n=0; n<eventElem.length; n++) {
-                    var tmpRadioObj = eventElem[n];
-                    tmpRadioObj['obj'].addEventListener('click', function (e) {
-                        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                        var oldObject = illuminatiJsAgent.getEventData(e);
-                        var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                        newObject['screenInfo'] = screenInfo;
-                        illuminatiJsAgent.setElementToSessionStorage(newObject);
-                    });
-                }
-            }
-        }
-
-        sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
-    }
-}, 100);
-
 var illuminatiXhr;
 var illuminatiAjax = {
     xmlHttpObjType : null,
     timeoutMs : 5000,
 
-    // IE browser check
-    checkIEBrowser : function (vCheck) {
-        if(navigator.appName.toLowerCase() === "microsoft internet explorer") {
-            var tmpAppVersion = navigator.appVersion.toLowerCase();
-
-            var pos = tmpAppVersion.indexOf("msie");
-            var ver = tmpAppVersion.substr(pos,8);
-
-            if (vCheck == null || vCheck == 'undefined') {
-                return true;
-            } else {
-                if (sLogger.utils.includeArrayData(vCheck, ver)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        return false;
-    },
-
     init : function () {
         if(typeof XMLHttpRequest !== 'undefined'){
             illuminatiXhr = new XMLHttpRequest();
         } else {
-            var versions = ["MSXML2.XmlHttp.5.0",
-                "MSXML2.XmlHttp.4.0",
-                "MSXML2.XmlHttp.3.0",
-                "MSXML2.XmlHttp.2.0",
-                "Microsoft.XmlHttp"]
+            var versions = ['MSXML2.XmlHttp.5.0',
+                'MSXML2.XmlHttp.4.0',
+                'MSXML2.XmlHttp.3.0',
+                'MSXML2.XmlHttp.2.0',
+                'Microsoft.XmlHttp']
 
-            for(var i = 0, len = versions.length; i < len; i++) {
+            for(var i=0, len=versions.length; i<len; i++) {
                 try {
                     illuminatiXhr = new ActiveXObject(versions[i]);
                     break;
@@ -548,77 +550,48 @@ var illuminatiAjax = {
     },
 
     sendByPost : function (requestUrl, isAsync, data) {
-        // IE 6, 7 does not support cross-domain request. because of send POST method using hidden iframe.
-        var msieVersion = ['msie 6.0', 'msie 7.0'];
+        // todo : IE 6, 7 does not support cross-domain request. because of send POST method using hidden iframe.
+        //var msieVersion = ['msie 6.0', 'msie 7.0'];
 
-        if (this.checkIEBrowser(msieVersion) === true) {
-            // not yet
-        } else {
-            console.log(isAsync);
+        // if (this.checkIEBrowser(msieVersion) === true) {
+        //     // not yet
+        // } else {
             illuminatiXhr.open('POST', requestUrl, isAsync);
 
-            if (isAsync === false) {
-                illuminatiXhr.onreadystatechange = this.handleStateChange();
-            }
+            // if (isAsync === false) {
+            //     illuminatiXhr.onreadystatechange = this.handleStateChange();
+            // }
 
             illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
             illuminatiXhr.setRequestHeader('illuminatiGProcId', sessionStorage.getItem('illuminatiGProcId'));
+
+            var illuminatiUniqueUserId = sessionStorage.getItem('illuminatiUniqueUserId');
+            if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
+                illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
+            }
             //xmlHttp.withCredentials = true;
             illuminatiXhr.send(JSON.stringify(data));
 
             setTimeout(function () {
                 illuminatiXhr.abort();
             }, this.timeoutMs);
-        }
-    },
 
-    // ajax result handling
-    handleStateChange : function () {
-        /*
-         * 0 : open()
-         * 1 : loading..
-         * 2 : loading completed
-         * 3 : server processing
-         * 4 : Server processing is completed
-         */
-        switch (illuminatiXhr.readyState) {
-            case 0 :
-                break;
-            case 1 :
-                break;
-            case 2 :
-                break;
-            case 3 :
-                break;
-            case 4 :
-                /*
-                 * 200 : processing is completed
-                 * 403 : forbidden
-                 * 404 : not found error
-                 * 500 : internal server error
-                 */
-                switch (illuminatiXhr.status) {
-                    case 200 :
-                        console.log("ajax completed. ", "processing is completed");
-                        break;
-                    case 403 :
-                        console.log("ajax forbidden error. ", "forbidden");
-                        break;
-                    case 404 :
-                        console.log("ajax not found error.", "not found error");
-                        break;
-                    case 500 :
-                        console.log("ajax internal server error.", "internal server error");
-                        break;
-                }
-                break;
-        }
-
-        return false;
+            if (isAsync === false && illuminatiXhr.readyState === 4 && illuminatiXhr.status === 200) {
+                return true;
+            }
     }
 };
 
+var illuminatiSendStatus = 'done';
+var lastCheckObject;
+var isFirst = true;
+
 illuminatiAjax.init();
+illuminatiJsAgent.init(1234);
+
+var interval = setInterval(function() {
+    illuminatiJsAgent.domElementInit();
+}, 100);
 
 var sendToIlluminati = setInterval(function () {
     illuminatiJsAgent.sendToIlluminati(true);
