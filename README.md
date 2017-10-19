@@ -190,7 +190,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
    * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
    * [illuminati-client-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-annotation)
    * [illuminati-client-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-processor)
-     * [illuminati-client-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-switch)
+   * [illuminati-client-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-switch)
    * [illuminati-client-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-elasticsearch)
    * [illuminati-consumer-es-sample	](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
 

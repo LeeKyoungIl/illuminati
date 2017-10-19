@@ -131,6 +131,7 @@ public class IlluminatiClientInit {
         RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
         requestHeaderModel.setGlobalTransactionId(SystemUtil.generateGlobalTransactionId(request));
 
+        illuminatiModel.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
         illuminatiModel.initReqHeaderInfo(requestHeaderModel);
         illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
         illuminatiModel.staticInfo(ConvertUtil.getStaticInfoFromHttpRequest(request));
