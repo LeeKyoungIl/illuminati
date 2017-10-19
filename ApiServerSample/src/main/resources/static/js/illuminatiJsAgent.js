@@ -231,10 +231,10 @@ var illuminatiJsAgent = {
                 for (var p=0; p<oldObject.obj.length; p++) {
                     var tempOldRadioObj = oldObject.obj[p];
 
-                    if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject[p].checked === false)
-                        || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject[p].checked === true)) {
+                    if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject.checked === false)
+                        || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject.checked === true)) {
                         var radioElementUniqueId = this.getElementUniqueId(tempOldRadioObj);
-                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked, p);
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject.checked, p);
 
                         Object.keys(tempOldRadioObj).map(function(objectKey, index) {
                             objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
