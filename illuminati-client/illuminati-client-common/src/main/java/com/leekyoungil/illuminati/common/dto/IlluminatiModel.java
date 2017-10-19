@@ -119,6 +119,7 @@ public class IlluminatiModel implements Serializable {
             if (illuminatiGProcId != null && illuminatiGProcId.equals(changedJsElement.getIlluminatiGProcId()) == true
                     && illuminatiSProcId != null && illuminatiSProcId.equals(changedJsElement.getIlluminatiSProcId()) == true) {
                 this.changedJsElement = changedJsElement;
+                this.changedJsElement.convertListToMap();
             }
         }
     }

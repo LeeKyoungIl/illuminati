@@ -21,6 +21,6 @@ public class RabbitmqConstant {
      * - 1 : (TRUE) DONT USE NAGEL
      * - 2 : (FALSE) USE NAGEL
      */
-    public final static boolean VALUE_DONT_USE_NAGLE = false;
+    public final static boolean VALUE_DONT_USE_NAGLE = true;
     public final static boolean VALUE_TCP_KEELALIVE = false;
 }

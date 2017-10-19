@@ -124,13 +124,14 @@ var illuminatiJsAgent = {
         return null;
     },
 
-    getChangedAttributeValue : function (type, elementUniqueId, attributeName, oldData, newData) {
+    getChangedAttributeValue : function (type, elementUniqueId, attributeName, oldData, newData, index) {
         var changedValue = {};
         changedValue['elementType'] = type;
         changedValue['elementUniqueId'] = elementUniqueId;
         changedValue['attributeName'] = attributeName;
         changedValue['oldData'] = String(oldData);
         changedValue['newData'] = String(newData);
+        changedValue['index'] = (typeof index !== 'undefined' && index !== null) ? index : 0;
 
         return changedValue;
     },
@@ -233,7 +234,7 @@ var illuminatiJsAgent = {
                     if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject[p].checked === false)
                         || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject[p].checked === true)) {
                         var radioElementUniqueId = this.getElementUniqueId(tempOldRadioObj);
-                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked);
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject[p].checked, p);
 
                         Object.keys(tempOldRadioObj).map(function(objectKey, index) {
                             objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
@@ -265,7 +266,7 @@ var illuminatiJsAgent = {
 
                     if (oldObject.attributes.hasOwnProperty(objectKey) === true
                         && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
-                        changedInfo['changedValues'][0] = illuminatiJsAgent.getChangedAttributeValue(oldObject.target.localName, oldObject.elementUniqueId, objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue(oldObject.target.localName, oldObject.elementUniqueId, objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
                     } else if ((oldObject.attributes.hasOwnProperty(objectKey) === false)
                         && (Array.prototype.inArrayCheck(objectKey, ignoreRemoveKeys) === false)) {
                         changedInfo['removedKey'] = objectKey;

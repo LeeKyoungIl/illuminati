@@ -135,6 +135,7 @@ public class IlluminatiClientInit {
         requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
 
         final String illuminatiUniqueUserIdKeyName = "illuminatiUniqueUserId";
+        illuminatiModel.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
         illuminatiModel.initUniqueUserId(SystemUtil.getValueFromHeaderByKey(request, illuminatiUniqueUserIdKeyName));
         illuminatiModel.initReqHeaderInfo(requestHeaderModel);
         illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
