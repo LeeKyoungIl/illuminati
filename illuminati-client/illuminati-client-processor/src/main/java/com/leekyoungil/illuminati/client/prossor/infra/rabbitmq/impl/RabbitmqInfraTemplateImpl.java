@@ -241,6 +241,10 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         RABBITMQ_CONNECTION_FACTORY.setConnectionTimeout(VALUE_CONNECTION_TIMEOUT_MS);
         RABBITMQ_CONNECTION_FACTORY.setChannelRpcTimeout(VALUE_RPC_CALL_TIMEOUT_MS);
         RABBITMQ_CONNECTION_FACTORY.setHandshakeTimeout(VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS);
+
+        ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor();
+        RABBITMQ_CONNECTION_FACTORY.setShutdownExecutor(shutdownExecutor);
+
         RABBITMQ_CONNECTION_FACTORY.setShutdownTimeout(VALUE_SHUTDOWN_TIMEOUT_MS);
         RABBITMQ_CONNECTION_FACTORY.setRequestedHeartbeat(VALUE_REQUESTED_HEART_BEAT);
         RABBITMQ_CONNECTION_FACTORY.setAutomaticRecoveryEnabled(VALUE_AUTOMATIC_RECOVERY);

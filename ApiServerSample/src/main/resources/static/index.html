@@ -1,12 +1,18 @@
 <html>
 <head>
     <script src="/js/illuminatiJsAgent.js"></script>
+    <script>
+        function clickTestEvent () {
+            console.log('test');
+        }
 
+        illuminatiJsAgent.init();
+    </script>
 </head>
 <body>
 <a href="http://www.daum.net">test12</a>
 <form action="/api/v1/form/test1" method="post">
-<input type="text" name="name_test" id="id_test" value="234"/>
+<input type="text" name="name_test" id="id_test" value="234" onkeyup="javascript:clickTestEvent();"/>
 <input type="checkbox" name="name_checkbox" id="id_checkbox" />
 1 : <input type="radio" name="radio_test">, 2 : <input type="radio" name="radio_test">
 <select id="selectbox_test">

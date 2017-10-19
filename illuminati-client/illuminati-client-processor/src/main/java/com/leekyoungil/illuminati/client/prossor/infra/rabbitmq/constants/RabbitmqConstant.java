@@ -10,10 +10,10 @@ public class RabbitmqConstant {
     public final static int VALUE_CONNECTION_TIMEOUT_MS = 3000;
     public final static int VALUE_RPC_CALL_TIMEOUT_MS = 3000;
     public final static int VALUE_SHUTDOWN_TIMEOUT_MS = 3000;
-    public final static int VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS = 10000;
-    public final static int VALUE_REQUESTED_HEART_BEAT = 30;
+    public final static int VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS = 20000;
+    public final static int VALUE_REQUESTED_HEART_BEAT = 5;
     public final static boolean VALUE_AUTOMATIC_RECOVERY = true;
-    public final static int VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS = 5000;
+    public final static long VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS = 5000L;
     public final static int VALUE_SET_WRITE_BUFFER_SIZE = 65536;
     public final static int VALUE_SET_SEND_BUFFER_SIZE = 65536;
     /**

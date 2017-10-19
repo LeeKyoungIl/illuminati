@@ -270,7 +270,8 @@ var illuminatiJsAgent = {
             } else {
                 for (var i=0; i<targetObject.attributes.length; i++) {
                     var item = targetObject.attributes.item(i);
-                    if (targetObject.hasOwnProperty(item.name) === true) {
+
+                    if (targetObject.attributes.hasOwnProperty(item.name) === true) {
                         objectAttributes[item.name] = eval('targetObject.' + item.name);
                     }
                 }
@@ -655,7 +656,6 @@ var lastCheckObject;
 var isFirst = true;
 var collectIntervalTimeMs = 15000;
 var collectorUrl = '/illuminati/js/collector';
-
 
 if (illuminatiJsAgent.checkIsIe() === true) {
     alert('IE is not yet supported.');
