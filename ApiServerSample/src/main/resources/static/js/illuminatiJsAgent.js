@@ -47,6 +47,14 @@ var illuminatiJsAgent = {
         }
     },
 
+    checkIsIe : function () {
+        if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv:11/))) {
+            return true;
+        }
+
+        return false;
+    },
+
     generateUDID : function () {
         return Math.floor((1 + Math.random()) * 0x10000)
             .toString(16)
@@ -609,36 +617,36 @@ var illuminatiAjax = {
         // if (this.checkIEBrowser(msieVersion) === true) {
         //     // not yet
         // } else {
-            illuminatiXhr.open('POST', requestUrl, isAsync);
+        illuminatiXhr.open('POST', requestUrl, isAsync);
 
-            // if (isAsync === false) {
-            //     illuminatiXhr.onreadystatechange = this.handleStateChange();
-            // }
+        // if (isAsync === false) {
+        //     illuminatiXhr.onreadystatechange = this.handleStateChange();
+        // }
 
-            illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
-            var illuminatiGProcId = window.sessionStorage.getItem('illuminatiGProcId');
-            if (typeof illuminatiGProcId !== 'undefined' && illuminatiGProcId !== null) {
-                illuminatiXhr.setRequestHeader('illuminatiGProcId', illuminatiGProcId);
-            }
-            var illuminatiSProcId = window.sessionStorage.getItem('illuminatiSProcId');
-            if (typeof illuminatiSProcId !== 'undefined' && illuminatiSProcId !== null) {
-                illuminatiXhr.setRequestHeader('illuminatiSProcId', illuminatiSProcId);
-            }
-            var illuminatiUniqueUserId = window.sessionStorage.getItem('illuminatiUniqueUserId');
-            if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
-                illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
-            }
-            //xmlHttp.withCredentials = true;
-            illuminatiXhr.send(JSON.stringify(data));
+        var illuminatiGProcId = window.sessionStorage.getItem('illuminatiGProcId');
+        if (typeof illuminatiGProcId !== 'undefined' && illuminatiGProcId !== null) {
+            illuminatiXhr.setRequestHeader('illuminatiGProcId', illuminatiGProcId);
+        }
+        var illuminatiSProcId = window.sessionStorage.getItem('illuminatiSProcId');
+        if (typeof illuminatiSProcId !== 'undefined' && illuminatiSProcId !== null) {
+            illuminatiXhr.setRequestHeader('illuminatiSProcId', illuminatiSProcId);
+        }
+        var illuminatiUniqueUserId = window.sessionStorage.getItem('illuminatiUniqueUserId');
+        if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
+            illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
+        }
+        //xmlHttp.withCredentials = true;
+        illuminatiXhr.send(JSON.stringify(data));
 
-            setTimeout(function () {
-                illuminatiXhr.abort();
-            }, this.timeoutMs);
+        setTimeout(function () {
+            illuminatiXhr.abort();
+        }, this.timeoutMs);
 
-            if (isAsync === false && illuminatiXhr.readyState === 4 && illuminatiXhr.status === 200) {
-                return true;
-            }
+        if (isAsync === false && illuminatiXhr.readyState === 4 && illuminatiXhr.status === 200) {
+            return true;
+        }
     }
 };
 
@@ -648,12 +656,18 @@ var isFirst = true;
 var collectIntervalTimeMs = 15000;
 var collectorUrl = '/illuminati/js/collector';
 
-illuminatiAjax.init();
 
-var interval = window.setInterval(function() {
-    illuminatiJsAgent.domElementInit();
-}, 100);
+if (illuminatiJsAgent.checkIsIe() === true) {
+    alert('IE is not yet supported.');
+    console.info('IE is not yet supported.');
+} else {
+    illuminatiAjax.init();
 
-var sendToIlluminati = window.setInterval(function () {
-    illuminatiJsAgent.sendToIlluminati(true);
-}, collectIntervalTimeMs);
+    var interval = window.setInterval(function() {
+        illuminatiJsAgent.domElementInit();
+    }, 100);
+
+    var sendToIlluminati = window.setInterval(function () {
+        illuminatiJsAgent.sendToIlluminati(true);
+    }, collectIntervalTimeMs);
+}

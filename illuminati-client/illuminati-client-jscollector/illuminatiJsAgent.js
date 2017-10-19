@@ -47,6 +47,14 @@ var illuminatiJsAgent = {
         }
     },
 
+    checkIsIe : function () {
+        if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv:11/))) {
+            return true;
+        }
+
+        return false;
+    },
+
     generateUDID : function () {
         return Math.floor((1 + Math.random()) * 0x10000)
             .toString(16)
@@ -648,12 +656,18 @@ var isFirst = true;
 var collectIntervalTimeMs = 15000;
 var collectorUrl = '/illuminati/js/collector';
 
-illuminatiAjax.init();
 
-var interval = window.setInterval(function() {
-    illuminatiJsAgent.domElementInit();
-}, 100);
+if (illuminatiJsAgent.checkIsIe() === true) {
+    alert('IE is not yet supported.');
+    console.info('IE is not yet supported.');
+} else {
+    illuminatiAjax.init();
 
-var sendToIlluminati = window.setInterval(function () {
-    illuminatiJsAgent.sendToIlluminati(true);
-}, collectIntervalTimeMs);
+    var interval = window.setInterval(function() {
+        illuminatiJsAgent.domElementInit();
+    }, 100);
+
+    var sendToIlluminati = window.setInterval(function () {
+        illuminatiJsAgent.sendToIlluminati(true);
+    }, collectIntervalTimeMs);
+}
