@@ -18,8 +18,10 @@ XMLHttpRequest.prototype.send = function() {
         }
         if (this.readyState == 4) {
             if (this.responseURL.indexOf(collectorUrl) == -1) {
-                illuminatiJsAgent.tempBufferToBuffer();
-                illuminatiJsAgent.sendToIlluminati(false);
+                try {
+                    illuminatiJsAgent.tempBufferToBuffer();
+                    illuminatiJsAgent.sendToIlluminati(false);
+                } catch (e) {}
             }
         }
     }
@@ -217,7 +219,9 @@ var illuminatiJsAgent = {
                         changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('select', oldObject.elementUniqueId, 'selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
 
                         Object.keys(tempSelectOption).map(function(objectKey, index) {
-                            objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
+                            if (tempSelectOption.hasOwnProperty(objectKey) === true) {
+                                objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
+                            }
                         });
                     }
                 }
@@ -237,7 +241,9 @@ var illuminatiJsAgent = {
                         changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject.checked, p);
 
                         Object.keys(tempOldRadioObj).map(function(objectKey, index) {
-                            objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
+                            if (tempOldRadioObj.hasOwnProperty(objectKey) === true) {
+                                objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
+                            }
                         });
                     }
                 }
@@ -248,13 +254,17 @@ var illuminatiJsAgent = {
 
                     for (var i=0; i<targetObject.attributes.length; i++) {
                         var item = targetObject.attributes.item(i);
-                        objectAttributes[item.name] = eval('targetObject.' + item.name);
+                        if (targetObject.hasOwnProperty(item.name) === true) {
+                            objectAttributes[item.name] = eval('targetObject.' + item.name);
+                        }
                     }
                 }
             } else {
                 for (var i=0; i<targetObject.attributes.length; i++) {
                     var item = targetObject.attributes.item(i);
-                    objectAttributes[item.name] = eval('targetObject.' + item.name);
+                    if (targetObject.hasOwnProperty(item.name) === true) {
+                        objectAttributes[item.name] = eval('targetObject.' + item.name);
+                    }
                 }
 
                 if (oldObject.obj.type.indexOf('textarea') > -1) {
@@ -473,8 +483,10 @@ var illuminatiJsAgent = {
                                     this.appendChild(uInput);
                                 }
 
-                                illuminatiJsAgent.tempBufferToBuffer();
-                                illuminatiJsAgent.sendToIlluminati(false);
+                                try {
+                                    illuminatiJsAgent.tempBufferToBuffer();
+                                    illuminatiJsAgent.sendToIlluminati(false);
+                                } catch (e) {}
 
                                 this.submit();
                             });
@@ -552,7 +564,10 @@ var illuminatiJsAgent = {
             });
 
             if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {
-                illuminatiAjax.sendByPost(collectorUrl, isAsync, illuminatiJsModel);
+                try {
+                    illuminatiAjax.sendByPost(collectorUrl, isAsync, illuminatiJsModel);
+                } catch (e) {}
+
                 illuminatiSendStatus = 'done';
                 if (illuminatiJsAgent.tempBufferToBuffer() === false) {
                     window.sessionStorage.removeItem('illuminati-buffer');
@@ -634,7 +649,6 @@ var collectIntervalTimeMs = 15000;
 var collectorUrl = '/illuminati/js/collector';
 
 illuminatiAjax.init();
-illuminatiJsAgent.init(1234);
 
 var interval = window.setInterval(function() {
     illuminatiJsAgent.domElementInit();
