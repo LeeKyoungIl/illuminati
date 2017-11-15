@@ -2,6 +2,7 @@ package com.leekyoungil.illuminati.elasticsearch.infra.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.

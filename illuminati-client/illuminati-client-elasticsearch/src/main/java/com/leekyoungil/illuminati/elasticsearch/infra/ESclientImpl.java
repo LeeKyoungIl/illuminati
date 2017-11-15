@@ -1,18 +1,29 @@
 package com.leekyoungil.illuminati.elasticsearch.infra;
 
 import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsModel;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.*;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.DefaultHttpResponseFactory;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.message.BasicStatusLine;
+import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -36,6 +47,15 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     @Override public HttpResponse save (final IlluminatiEsModel entity) {
         final HttpRequestBase httpPutRequest = new HttpPut(entity.getEsUrl(this.esUrl));
+
+        if (entity.isSetUserAuth() == true) {
+            try {
+                httpPutRequest.setHeader("Authorization", "Basic " + entity.getEsAuthString());
+            } catch (Exception ex) {
+                this.logger.error("Sorry. something is wrong in encoding es user auth info. ("+ex.toString()+")");
+            }
+        }
+
         ((HttpPut) httpPutRequest).setEntity(this.getHttpEntity(entity));
 
         HttpResponse httpResponse = null;

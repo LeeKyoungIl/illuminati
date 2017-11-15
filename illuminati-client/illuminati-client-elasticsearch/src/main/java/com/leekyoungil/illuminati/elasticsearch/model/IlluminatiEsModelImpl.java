@@ -14,10 +14,13 @@ import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.VersionNumber;
 import net.sf.uadetector.service.UADetectorServiceFactory;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +43,11 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
     @Expose private Map<String, String> clientBrower;
     @Expose private Map<String, String> clientOs;
     @Expose private String clientDevice;
+
+    private String esUserName;
+    private String esUserPass;
+
+    private final String encodingCharset = "UTF-8";
 
     public IlluminatiEsModelImpl () {}
 
@@ -81,6 +89,13 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
         } catch (Exception ex) {
             ES_CONSUMER_LOGGER.error("Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")");
             return null;
+        }
+    }
+
+    @Override public void setEsUserAuth (String esUserName, String esUserPass) {
+        if (StringObjectUtils.isValid(esUserName) == true && StringObjectUtils.isValid(esUserPass) == true) {
+            this.esUserName = esUserName;
+            this.esUserPass = esUserPass;
         }
     }
 
@@ -187,5 +202,27 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
 
     private void setUserDevice (final ReadableUserAgent agent) {
         this.clientDevice = agent.getDeviceCategory().getName();
+    }
+
+    @Override public boolean isSetUserAuth () {
+        if (StringObjectUtils.isValid(this.esUserName) == true && StringObjectUtils.isValid(this.esUserPass) == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override public String getEsAuthString () {
+        if (this.isSetUserAuth() == true) {
+            StringBuilder authInfo = new StringBuilder();
+            authInfo.append(this.esUserName);
+            authInfo.append(":");
+            authInfo.append(this.esUserPass);
+
+            byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(this.encodingCharset))));
+            return new String(credentials, Charset.forName(this.encodingCharset));
+        }
+
+        return null;
     }
 }

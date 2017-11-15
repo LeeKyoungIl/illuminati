@@ -19,7 +19,7 @@ public class IlluminatiModel implements Serializable {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
-    protected static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS");
+    protected static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault());
 
     @Expose private String parentModuleName;
     @Expose private ServerInfo serverInfo;

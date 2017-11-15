@@ -56,9 +56,14 @@ public class SystemUtil {
         String keyName = illuminatiTransactionIdType.getValue();
 
         String id = SystemUtil.getValueFromHeaderByKey(request, keyName);
-        if (StringObjectUtils.isValid(id) == false && illuminatiTransactionIdType == IlluminatiTransactionIdType.ILLUMINATI_PROC_ID) {
-            id = StringObjectUtils.generateId(new Date().getTime(), keyName);
-            request.setAttribute(keyName, id);
+        if (StringObjectUtils.isValid(id) == false) {
+            switch (illuminatiTransactionIdType) {
+                case ILLUMINATI_PROC_ID :
+                case ILLUMINATI_G_PROC_ID :
+                    id = StringObjectUtils.generateId(new Date().getTime(), keyName);
+                    request.setAttribute(keyName, id);
+                    break;
+            }
         }
 
         return StringObjectUtils.isValid(id) ? id : null;

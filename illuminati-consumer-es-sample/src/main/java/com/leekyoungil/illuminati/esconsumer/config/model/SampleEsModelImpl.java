@@ -7,13 +7,14 @@ import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRefreshType;
 import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsModelImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 @EsDocument(indexName = "sample-illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
 public class SampleEsModelImpl extends IlluminatiEsModelImpl {
 
     private static final long serialVersionUID = 7526472295622776147L;
     private final static Logger SAMPLE_ES_CONSUMER_LOGGER = LoggerFactory.getLogger(SampleEsModelImpl.class);
-
+    
     public SampleEsModelImpl() {}
 
     public void customData () {

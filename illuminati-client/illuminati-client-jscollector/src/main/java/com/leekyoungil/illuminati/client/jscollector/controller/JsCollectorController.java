@@ -15,6 +15,6 @@ public class JsCollectorController {
     @Illuminati
     @PostMapping
     public void getByPot (@RequestBody ChangedJsElement changedJsElement) {
-        System.out.println("test");
+
     }
 }

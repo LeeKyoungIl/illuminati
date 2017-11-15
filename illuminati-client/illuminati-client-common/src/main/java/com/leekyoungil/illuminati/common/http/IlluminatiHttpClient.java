@@ -4,7 +4,10 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.config.Registry;
@@ -13,6 +16,7 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -69,7 +73,11 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
         defaultHeaders.add(new BasicHeader(HttpHeaders.PRAGMA, "no-cache"));
         defaultHeaders.add(new BasicHeader(HttpHeaders.CACHE_CONTROL, "no-cache"));
 
-        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).disableContentCompression();
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials("es_admin", "dlruddlfWkd"));
+
+        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).setDefaultCredentialsProvider(credentialsProvider).disableAuthCaching().disableContentCompression();
         this.httpClient = httpClientBuilder.setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
     }
 

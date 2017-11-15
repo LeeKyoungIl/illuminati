@@ -502,7 +502,7 @@ public class RequestHeaderModel {
         return this.illuminatiSProcId;
     }
 
-    protected String getIlluminatiGProcId () {
+    public String getIlluminatiGProcId () {
         return this.illuminatiGProcId;
     }
 }

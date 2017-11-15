@@ -34,16 +34,41 @@ var illuminatiJsAgent = {
 
     init : function (illuminatiUniqueUserId) {
         // session transaction Id
-        window.sessionStorage.setItem('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
+        illuminatiJsAgent.setSessionStorage('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
 
-        var gTransactionId = window.sessionStorage.getItem('illuminatiGProcId');
+        var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
 
         if (typeof gTransactionId === 'undefined' || gTransactionId === null) {
-            window.sessionStorage.setItem('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
+            illuminatiJsAgent.setSessionStorage('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
         }
 
         if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
-            window.sessionStorage.setItem('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
+            illuminatiJsAgent.setSessionStorage('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
+        }
+    },
+
+    setSessionStorage : function (key, value) {
+        try {
+            window.sessionStorage.setItem(key, value);
+        } catch (e) {
+            console.debug("This browser is not support session storage.");
+        }
+    },
+
+    getSessionStorage : function (key) {
+        try {
+            return window.sessionStorage.getItem(key);
+        } catch (e) {
+            console.debug("This browser is not support session storage.");
+            return null;
+        }
+    },
+
+    removeSessionStorage : function (key) {
+        try {
+            window.sessionStorage.removeItem(key);
+        } catch (e) {
+            console.debug("This browser is not support session storage.");
         }
     },
 
@@ -72,6 +97,23 @@ var illuminatiJsAgent = {
 
     generateTransactionId : function (type) {
         return this.generateSumUDID().join('')+'-illuminati'+type+'ProcId';
+    },
+
+    generateHiddenInputElement : function (form, name, value, id) {
+        try {
+            var sInput = document.createElement('input');
+            sInput.type = 'hidden';
+            sInput.name = name;
+            sInput.value = String(value);
+
+            if (typeof id !== 'undefined' && id !== null) {
+                sInput.id = id;
+            }
+
+            form.appendChild(sInput);
+        } catch (e) {
+            console.debug('create hidden input element exception : ', e);
+        }
     },
 
     getElementUniqueId : function (elementObj) {
@@ -174,7 +216,7 @@ var illuminatiJsAgent = {
         eventObject['obj'] = illuminatiJsAgent.getElementObj(eventObject);
 
         if (e.target.type.indexOf('select') > -1) {
-            var firstElementData = JSON.parse(window.sessionStorage.getItem('illuminati'));
+            var firstElementData = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati'));
             var key = e.target.type + '-' + this.getElementUniqueId(eventObject);
 
             eventObject['obj'] = firstElementData[key];
@@ -182,7 +224,7 @@ var illuminatiJsAgent = {
             if (eventObject['attributes']['type'] === 'checkbox') {
                 eventObject['checked'] = e.target.checked;
             } else if (eventObject['attributes']['type'] === 'radio') {
-                var firstElementData = JSON.parse(window.sessionStorage.getItem('illuminati'));
+                var firstElementData = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati'));
                 var key = e.target.type + '-' + this.getElementUniqueId(eventObject);
 
                 eventObject['obj'] = firstElementData[key];
@@ -262,17 +304,13 @@ var illuminatiJsAgent = {
 
                     for (var i=0; i<targetObject.attributes.length; i++) {
                         var item = targetObject.attributes.item(i);
-                        if (targetObject.hasOwnProperty(item.name) === true) {
-                            objectAttributes[item.name] = eval('targetObject.' + item.name);
-                        }
+                        objectAttributes[item.name] = eval('targetObject.' + item.name);
                     }
                 }
             } else {
                 for (var i=0; i<targetObject.attributes.length; i++) {
                     var item = targetObject.attributes.item(i);
-                    if (targetObject.hasOwnProperty(item.name) === true) {
-                        objectAttributes[item.name] = eval('targetObject.' + item.name);
-                    }
+                    objectAttributes[item.name] = eval('targetObject.' + item.name);
                 }
 
                 if (oldObject.obj.type.indexOf('textarea') > -1) {
@@ -280,8 +318,6 @@ var illuminatiJsAgent = {
                 }
 
                 Object.keys(objectAttributes).map(function(objectKey, index) {
-                    var value = objectAttributes[objectKey];
-
                     if (oldObject.attributes.hasOwnProperty(objectKey) === true
                         && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
                         changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue(oldObject.target.localName, oldObject.elementUniqueId, objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
@@ -301,10 +337,10 @@ var illuminatiJsAgent = {
     },
 
     tempBufferToBuffer : function () {
-        var elementTempBufferStore = window.sessionStorage.getItem('illuminati-buffer-temp');
+        var elementTempBufferStore = illuminatiJsAgent.getSessionStorage('illuminati-buffer-temp');
         if (elementTempBufferStore !== 'undefined' && elementTempBufferStore !== null) {
-            window.sessionStorage.setItem('illuminati-buffer', window.sessionStorage.getItem('illuminati-buffer-temp'));
-            window.sessionStorage.removeItem('illuminati-buffer-temp');
+            illuminatiJsAgent.setSessionStorage('illuminati-buffer', illuminatiJsAgent.getSessionStorage('illuminati-buffer-temp'));
+            illuminatiJsAgent.removeSessionStorage('illuminati-buffer-temp');
 
             return true;
         }
@@ -314,8 +350,8 @@ var illuminatiJsAgent = {
 
     setElementToSessionStorage : function (newObject) {
         if (newObject.hasOwnProperty('changedInfo') === true) {
-            var elementStore = JSON.parse(window.sessionStorage.getItem('illuminati'));
-            var key = newObject.target.type + '-' + newObject.elementUniqueId;
+            var elementStore = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati'));
+            var key = newObject.target.type + '-' + newObject.elementUniqueId
 
             var sessionStorageName = 'illuminati-buffer';
             // if illuminatiSendStatus is 'ready', data save to buffer.
@@ -323,7 +359,7 @@ var illuminatiJsAgent = {
                 sessionStorageName += '-temp';
             }
 
-            var targetElementStore = JSON.parse(window.sessionStorage.getItem(sessionStorageName));
+            var targetElementStore = JSON.parse(illuminatiJsAgent.getSessionStorage(sessionStorageName));
 
             if (typeof targetElementStore !== 'undefined' && targetElementStore != null) {
                 elementStore = targetElementStore;
@@ -340,7 +376,7 @@ var illuminatiJsAgent = {
                 };
             }
 
-            window.sessionStorage.setItem(sessionStorageName, JSON.stringify(elementStore));
+            illuminatiJsAgent.setSessionStorage(sessionStorageName, JSON.stringify(elementStore));
         }
     },
 
@@ -362,7 +398,7 @@ var illuminatiJsAgent = {
                 }
 
                 var elementObj = {
-                    obj: elem,
+                    originElement: elem,
                     type: elem.type,
                     id: elem.getAttribute('id'),
                     name: elem.getAttribute('name')
@@ -385,7 +421,7 @@ var illuminatiJsAgent = {
                         radio[item.name] = item.value;
                     }
 
-                    radio['obj'] = elem;
+                    radio['originElement'] = elem;
                     tempRadioStore[elementObj.type + '-' + elementUniqueId][tempRadioStore[elementObj.type + '-' + elementUniqueId].length] = radio;
 
                     continue;
@@ -430,7 +466,7 @@ var illuminatiJsAgent = {
                 if (Array.isArray(eventElem) !== true) {
                     switch (eventElem.type) {
                         case 'text' :
-                            eventElem['obj'].addEventListener('keyup', function (e) {
+                            eventElem['originElement'].addEventListener('keyup', function (e) {
                                 var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                                 var oldObject = illuminatiJsAgent.getEventData(e);
                                 var newObject = illuminatiJsAgent.getNewEventData(oldObject);
@@ -440,18 +476,18 @@ var illuminatiJsAgent = {
                             break;
                         case 'textarea' :
                             var screenInfo;
-                            eventElem['obj'].addEventListener('focusin', function (e) {
+                            eventElem['originElement'].addEventListener('focusin', function (e) {
                                 screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                                 lastCheckObject = illuminatiJsAgent.getEventData(e);
                             });
-                            eventElem['obj'].addEventListener('keyup', function (e) {
+                            eventElem['originElement'].addEventListener('keyup', function (e) {
                                 var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
                                 newObject['screenInfo'] = screenInfo;
                                 illuminatiJsAgent.setElementToSessionStorage(newObject);
                             });
                             break;
                         case 'select-one' :
-                            eventElem['obj'].addEventListener('change', function (e) {
+                            eventElem['originElement'].addEventListener('change', function (e) {
                                 var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                                 var oldObject = illuminatiJsAgent.getEventData(e);
                                 var newObject = illuminatiJsAgent.getNewEventData(oldObject);
@@ -461,34 +497,22 @@ var illuminatiJsAgent = {
                             break;
 
                         case 'form' :
-                            eventElem['obj'].addEventListener('submit', function (e) {
+                            eventElem['originElement'].addEventListener('submit', function (e) {
                                 if (e.preventDefault) {
                                     e.preventDefault();
                                 }
 
-                                var sTransactionId = window.sessionStorage.getItem('illuminatiSProcId');
+                                var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
                                 if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
-                                    var sInput = document.createElement('input');
-                                    sInput.type = 'hidden';
-                                    sInput.name = 'illuminatiSProcId';
-                                    sInput.value = String(sTransactionId);
-                                    this.appendChild(sInput);
+                                    this.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
                                 }
-                                var gTransactionId = window.sessionStorage.getItem('illuminatiGProcId');
+                                var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
                                 if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
-                                    var gInput = document.createElement('input');
-                                    gInput.type = 'hidden';
-                                    gInput.name = 'illuminatiGProcId';
-                                    gInput.value = String(gTransactionId);
-                                    this.appendChild(gInput);
+                                    this.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
                                 }
-                                var uniqueUserId = window.sessionStorage.getItem('illuminatiUniqueUserId');
+                                var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
                                 if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
-                                    var uInput = document.createElement('input');
-                                    uInput.type = 'hidden';
-                                    uInput.name = 'illuminatiUniqueUserId';
-                                    uInput.value = String(uniqueUserId);
-                                    this.appendChild(uInput);
+                                    this.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
                                 }
 
                                 try {
@@ -502,11 +526,11 @@ var illuminatiJsAgent = {
 
                         default :
                             var screenInfo;
-                            eventElem['obj'].addEventListener('mouseup', function (e) {
+                            eventElem['originElement'].addEventListener('mouseup', function (e) {
                                 screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                                 lastCheckObject = illuminatiJsAgent.getEventData(e);
                             });
-                            eventElem['obj'].addEventListener('click', function (e) {
+                            eventElem['originElement'].addEventListener('click', function (e) {
                                 var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
                                 newObject['screenInfo'] = screenInfo;
                                 delete(lastClickObject);
@@ -517,7 +541,7 @@ var illuminatiJsAgent = {
                 } else {
                     for (var n=0; n<eventElem.length; n++) {
                         var tmpRadioObj = eventElem[n];
-                        tmpRadioObj['obj'].addEventListener('click', function (e) {
+                        tmpRadioObj['originElement'].addEventListener('click', function (e) {
                             var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
                             var oldObject = illuminatiJsAgent.getEventData(e);
                             var newObject = illuminatiJsAgent.getNewEventData(oldObject);
@@ -528,7 +552,11 @@ var illuminatiJsAgent = {
                 }
             }
 
-            window.sessionStorage.setItem('illuminati', JSON.stringify(elementStore));
+            for (var key in elementStore) {
+                delete elementStore[key]['originElement'];
+            }
+
+            illuminatiJsAgent.setSessionStorage('illuminati', JSON.stringify(elementStore));
 
             if (isFirst === true) {
                 isFirst = false;
@@ -541,7 +569,7 @@ var illuminatiJsAgent = {
 
     sendToIlluminati : function (isAsync) {
         if (illuminatiSendStatus === 'done') {
-            var elementStore = JSON.parse(window.sessionStorage.getItem('illuminati-buffer'));
+            var elementStore = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati-buffer'));
             if (typeof elementStore === 'undefined' || elementStore === null) {
                 return;
             }
@@ -549,9 +577,9 @@ var illuminatiJsAgent = {
             illuminatiSendStatus = 'sending';
 
             var illuminatiJsModel = {
-                illuminatiGProcId: window.sessionStorage.getItem('illuminatiGProcId'),
-                illuminatiSProcId: window.sessionStorage.getItem('illuminatiSProcId'),
-                illuminatiUniqueUserId: window.sessionStorage.getItem('illuminatiUniqueUserId')
+                illuminatiGProcId: illuminatiJsAgent.getSessionStorage('illuminatiGProcId'),
+                illuminatiSProcId: illuminatiJsAgent.getSessionStorage('illuminatiSProcId'),
+                illuminatiUniqueUserId: illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId')
             };
 
             var ignoreCheckEventStoreKeys = ['alreadySent'];
@@ -578,7 +606,7 @@ var illuminatiJsAgent = {
 
                 illuminatiSendStatus = 'done';
                 if (illuminatiJsAgent.tempBufferToBuffer() === false) {
-                    window.sessionStorage.removeItem('illuminati-buffer');
+                    illuminatiJsAgent.removeSessionStorage('illuminati-buffer');
                 }
             }
         }
@@ -625,15 +653,15 @@ var illuminatiAjax = {
 
         illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
-        var illuminatiGProcId = window.sessionStorage.getItem('illuminatiGProcId');
+        var illuminatiGProcId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
         if (typeof illuminatiGProcId !== 'undefined' && illuminatiGProcId !== null) {
             illuminatiXhr.setRequestHeader('illuminatiGProcId', illuminatiGProcId);
         }
-        var illuminatiSProcId = window.sessionStorage.getItem('illuminatiSProcId');
+        var illuminatiSProcId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
         if (typeof illuminatiSProcId !== 'undefined' && illuminatiSProcId !== null) {
             illuminatiXhr.setRequestHeader('illuminatiSProcId', illuminatiSProcId);
         }
-        var illuminatiUniqueUserId = window.sessionStorage.getItem('illuminatiUniqueUserId');
+        var illuminatiUniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
         if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
             illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
         }
