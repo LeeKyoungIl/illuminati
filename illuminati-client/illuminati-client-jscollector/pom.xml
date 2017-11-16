@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-common</artifactId>
-            <version>1.1.3</version>
+            <version>1.1.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -53,6 +53,22 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warSourceDirectory>webapp</warSourceDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- YUI Compressor 에서 배포된 *.js 소스를 받도록 하기 위해 exploded만 phase변경 -->
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -101,17 +117,27 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>1.5.1</version>
+                <version>1.3.0</version>
                 <executions>
                     <execution>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>compress</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <nosuffix>true</nosuffix>
-                    <webappDirectory>${project.build.directory}/min</webappDirectory>
+                    <encoding>utf-8</encoding>
+                    <force>true</force>
+                    <sourceDirectory>${project.build.directory}/${project.build.finalName}/js</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}/js</outputDirectory>
+                    <disableOptimizations>false</disableOptimizations>
+                    <nomunge>false</nomunge>
+                    <linebreakpos>50000</linebreakpos>
+                    <suffix>.min</suffix>
+                    <excludes>
+                        <exclude>**/*.min.js</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 
@@ -121,7 +147,7 @@
             <resource>
                 <directory>.</directory>
                 <includes>
-                    <include>javascript/dist/*.js</include>
+                    <include>javascript/*</include>
                 </includes>
             </resource>
         </resources>

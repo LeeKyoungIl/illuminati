@@ -34,16 +34,16 @@ var illuminatiJsAgent = {
 
     init : function (illuminatiUniqueUserId) {
         // session transaction Id
-       illuminatiJsAgent.setSessionStorage('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
+        illuminatiJsAgent.setSessionStorage('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
 
         var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
 
         if (typeof gTransactionId === 'undefined' || gTransactionId === null) {
-           illuminatiJsAgent.setSessionStorage('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
+            illuminatiJsAgent.setSessionStorage('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
         }
 
         if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
-           illuminatiJsAgent.setSessionStorage('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
+            illuminatiJsAgent.setSessionStorage('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
         }
     },
 
@@ -339,7 +339,7 @@ var illuminatiJsAgent = {
     tempBufferToBuffer : function () {
         var elementTempBufferStore = illuminatiJsAgent.getSessionStorage('illuminati-buffer-temp');
         if (elementTempBufferStore !== 'undefined' && elementTempBufferStore !== null) {
-           illuminatiJsAgent.setSessionStorage('illuminati-buffer', illuminatiJsAgent.getSessionStorage('illuminati-buffer-temp'));
+            illuminatiJsAgent.setSessionStorage('illuminati-buffer', illuminatiJsAgent.getSessionStorage('illuminati-buffer-temp'));
             illuminatiJsAgent.removeSessionStorage('illuminati-buffer-temp');
 
             return true;
@@ -376,7 +376,7 @@ var illuminatiJsAgent = {
                 };
             }
 
-           illuminatiJsAgent.setSessionStorage(sessionStorageName, JSON.stringify(elementStore));
+            illuminatiJsAgent.setSessionStorage(sessionStorageName, JSON.stringify(elementStore));
         }
     },
 
@@ -556,7 +556,7 @@ var illuminatiJsAgent = {
                 delete elementStore[key]['originElement'];
             }
 
-           illuminatiJsAgent.setSessionStorage('illuminati', JSON.stringify(elementStore));
+            illuminatiJsAgent.setSessionStorage('illuminati', JSON.stringify(elementStore));
 
             if (isFirst === true) {
                 isFirst = false;
@@ -684,18 +684,12 @@ var isFirst = true;
 var collectIntervalTimeMs = 15000;
 var collectorUrl = '/illuminati/js/collector';
 
+illuminatiAjax.init();
 
-if (illuminatiJsAgent.checkIsIe() === true) {
-    alert('IE is not yet supported.');
-    console.info('IE is not yet supported.');
-} else {
-    illuminatiAjax.init();
+var interval = window.setInterval(function() {
+    illuminatiJsAgent.domElementInit();
+}, 100);
 
-    var interval = window.setInterval(function() {
-        illuminatiJsAgent.domElementInit();
-    }, 100);
-
-    var sendToIlluminati = window.setInterval(function () {
-        illuminatiJsAgent.sendToIlluminati(true);
-    }, collectIntervalTimeMs);
-}
+var sendToIlluminati = window.setInterval(function () {
+    illuminatiJsAgent.sendToIlluminati(true);
+}, collectIntervalTimeMs);

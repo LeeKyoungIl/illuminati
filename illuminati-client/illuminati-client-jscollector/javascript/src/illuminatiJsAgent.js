@@ -684,18 +684,12 @@ var isFirst = true;
 var collectIntervalTimeMs = 15000;
 var collectorUrl = '/illuminati/js/collector';
 
+illuminatiAjax.init();
 
-if (illuminatiJsAgent.checkIsIe() === true) {
-    alert('IE is not yet supported.');
-    console.info('IE is not yet supported.');
-} else {
-    illuminatiAjax.init();
+var interval = window.setInterval(function() {
+    illuminatiJsAgent.domElementInit();
+}, 100);
 
-    var interval = window.setInterval(function() {
-        illuminatiJsAgent.domElementInit();
-    }, 100);
-
-    var sendToIlluminati = window.setInterval(function () {
-        illuminatiJsAgent.sendToIlluminati(true);
-    }, collectIntervalTimeMs);
-}
+var sendToIlluminati = window.setInterval(function () {
+    illuminatiJsAgent.sendToIlluminati(true);
+}, collectIntervalTimeMs);
