@@ -10,6 +10,9 @@ Array.prototype.inArrayCheck = function (needle, haystack) {
 
 var _send = XMLHttpRequest.prototype.send;
 XMLHttpRequest.prototype.send = function() {
+    if (this.responseURL.indexOf(collectorUrl) == -1) {
+        illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
+    }
     /* Wrap onreadystaechange callback */
     var callback = typeof this.onreadystatechange == 'function' ? this.onreadystatechange : null;
     this.onreadystatechange = function() {
@@ -32,7 +35,7 @@ var illuminatiJsAgent = {
     passElementType : ['form', 'input', 'select', 'textarea'],
     illuminatiInputElementType : ['text', 'radio', 'checkbox'],
 
-    init : function (illuminatiUniqueUserId) {
+    init : function () {
         // session transaction Id
         illuminatiJsAgent.setSessionStorage('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
 
@@ -41,7 +44,9 @@ var illuminatiJsAgent = {
         if (typeof gTransactionId === 'undefined' || gTransactionId === null) {
             illuminatiJsAgent.setSessionStorage('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
         }
+    },
 
+    setUniqueUserId : function (illuminatiUniqueUserId) {
         if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
             illuminatiJsAgent.setSessionStorage('illuminatiUniqueUserId', String(illuminatiUniqueUserId));
         }
@@ -89,14 +94,14 @@ var illuminatiJsAgent = {
     generateSumUDID : function () {
         var gTransactionId = [];
         for (var i=0; i<8; i++) {
-            gTransactionId[gTransactionId.length] = this.generateUDID();
+            gTransactionId[gTransactionId.length] = illuminatiJsAgent.generateUDID();
         }
 
         return gTransactionId;
     },
 
     generateTransactionId : function (type) {
-        return this.generateSumUDID().join('')+'-illuminati'+type+'ProcId';
+        return illuminatiJsAgent.generateSumUDID().join('')+'-illuminati'+type+'ProcId';
     },
 
     generateHiddenInputElement : function (form, name, value, id) {
@@ -121,7 +126,7 @@ var illuminatiJsAgent = {
     },
 
     checkPassElement : function (elem) {
-        if (Array.prototype.inArrayCheck(elem.localName, this.passElementType) === false) {
+        if (Array.prototype.inArrayCheck(elem.localName, illuminatiJsAgent.passElementType) === false) {
             return true;
         }
 
@@ -140,7 +145,7 @@ var illuminatiJsAgent = {
             return true;
         }
 
-        if (elem.localName === 'input' && Array.prototype.inArrayCheck(elem.type, this.illuminatiInputElementType) === false) {
+        if (elem.localName === 'input' && Array.prototype.inArrayCheck(elem.type, illuminatiJsAgent.illuminatiInputElementType) === false) {
             return true;
         }
 
@@ -217,7 +222,7 @@ var illuminatiJsAgent = {
 
         if (e.target.type.indexOf('select') > -1) {
             var firstElementData = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati'));
-            var key = e.target.type + '-' + this.getElementUniqueId(eventObject);
+            var key = e.target.type + '-' + illuminatiJsAgent.getElementUniqueId(eventObject);
 
             eventObject['obj'] = firstElementData[key];
         } else if (eventObject['attributes'].hasOwnProperty('type') === true) {
@@ -225,13 +230,13 @@ var illuminatiJsAgent = {
                 eventObject['checked'] = e.target.checked;
             } else if (eventObject['attributes']['type'] === 'radio') {
                 var firstElementData = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati'));
-                var key = e.target.type + '-' + this.getElementUniqueId(eventObject);
+                var key = e.target.type + '-' + illuminatiJsAgent.getElementUniqueId(eventObject);
 
                 eventObject['obj'] = firstElementData[key];
             }
         }
 
-        eventObject['elementUniqueId'] = this.getElementUniqueId(eventObject);
+        eventObject['elementUniqueId'] = illuminatiJsAgent.getElementUniqueId(eventObject);
         eventObject['target'] = e.target;
 
         return eventObject;
@@ -270,7 +275,9 @@ var illuminatiJsAgent = {
 
                         Object.keys(tempSelectOption).map(function(objectKey, index) {
                             if (tempSelectOption.hasOwnProperty(objectKey) === true) {
-                                objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
+                                try {
+                                    objectAttributes[objectKey] = eval('tempSelectOption.' + objectKey);
+                                } catch (e) {}
                             }
                         });
                     }
@@ -287,12 +294,14 @@ var illuminatiJsAgent = {
 
                     if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject.checked === false)
                         || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject.checked === true)) {
-                        var radioElementUniqueId = this.getElementUniqueId(tempOldRadioObj);
+                        var radioElementUniqueId = illuminatiJsAgent.getElementUniqueId(tempOldRadioObj);
                         changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject.checked, p);
 
                         Object.keys(tempOldRadioObj).map(function(objectKey, index) {
                             if (tempOldRadioObj.hasOwnProperty(objectKey) === true) {
-                                objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
+                                try {
+                                    objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
+                                } catch (e) {}
                             }
                         });
                     }
@@ -303,14 +312,18 @@ var illuminatiJsAgent = {
                     changedInfo['changedValues'][0] = illuminatiJsAgent.getChangedAttributeValue('checkbox', oldObject.elementUniqueId, 'checked', oldObject.checked, targetObject.checked);
 
                     for (var i=0; i<targetObject.attributes.length; i++) {
-                        var item = targetObject.attributes.item(i);
-                        objectAttributes[item.name] = eval('targetObject.' + item.name);
+                        try {
+                            var item = targetObject.attributes.item(i);
+                            objectAttributes[item.name] = eval('targetObject.' + item.name);
+                        } catch (e) {}
                     }
                 }
             } else {
                 for (var i=0; i<targetObject.attributes.length; i++) {
-                    var item = targetObject.attributes.item(i);
-                    objectAttributes[item.name] = eval('targetObject.' + item.name);
+                    try {
+                        var item = targetObject.attributes.item(i);
+                        objectAttributes[item.name] = eval('targetObject.' + item.name);
+                    } catch (e) {}
                 }
 
                 if (oldObject.obj.type.indexOf('textarea') > -1) {
@@ -504,23 +517,23 @@ var illuminatiJsAgent = {
 
                                 var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
                                 if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
-                                    this.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
+                                    illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
                                 }
                                 var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
                                 if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
-                                    this.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
+                                    illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
                                 }
                                 var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
                                 if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
-                                    this.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
+                                    illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
                                 }
 
                                 try {
                                     illuminatiJsAgent.tempBufferToBuffer();
                                     illuminatiJsAgent.sendToIlluminati(false);
-                                } catch (e) {}
 
-                                this.submit();
+                                    this.submit();
+                                } catch (e) {}
                             });
                             break;
 
@@ -562,7 +575,7 @@ var illuminatiJsAgent = {
                 isFirst = false;
                 window.setTimeout(function () {
                     illuminatiJsAgent.domElementInit();
-                }, 2000);
+                }, 3000);
             }
         }
     },
@@ -638,6 +651,21 @@ var illuminatiAjax = {
         }
     },
 
+    setRequestHeaderOnAjaxEvent : function (illuminatiXhr) {
+        var illuminatiGProcId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
+        if (typeof illuminatiGProcId !== 'undefined' && illuminatiGProcId !== null) {
+            illuminatiXhr.setRequestHeader('illuminatiGProcId', illuminatiGProcId);
+        }
+        var illuminatiSProcId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
+        if (typeof illuminatiSProcId !== 'undefined' && illuminatiSProcId !== null) {
+            illuminatiXhr.setRequestHeader('illuminatiSProcId', illuminatiSProcId);
+        }
+        var illuminatiUniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
+        if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
+            illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
+        }
+    },
+
     sendByPost : function (requestUrl, isAsync, data) {
         // todo : IE 6, 7 does not support cross-domain request. because of send POST method using hidden iframe.
         //var msieVersion = ['msie 6.0', 'msie 7.0'];
@@ -652,19 +680,8 @@ var illuminatiAjax = {
         // }
 
         illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
-        var illuminatiGProcId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
-        if (typeof illuminatiGProcId !== 'undefined' && illuminatiGProcId !== null) {
-            illuminatiXhr.setRequestHeader('illuminatiGProcId', illuminatiGProcId);
-        }
-        var illuminatiSProcId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
-        if (typeof illuminatiSProcId !== 'undefined' && illuminatiSProcId !== null) {
-            illuminatiXhr.setRequestHeader('illuminatiSProcId', illuminatiSProcId);
-        }
-        var illuminatiUniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
-        if (typeof illuminatiUniqueUserId !== 'undefined' && illuminatiUniqueUserId !== null) {
-            illuminatiXhr.setRequestHeader('illuminatiUniqueUserId', illuminatiUniqueUserId);
-        }
+        // set header
+        illuminatiAjax.setRequestHeaderOnAjaxEvent(illuminatiXhr);
         //xmlHttp.withCredentials = true;
         illuminatiXhr.send(JSON.stringify(data));
 
