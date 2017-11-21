@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.client.prossor.init;
 
+import com.leekyoungil.illuminati.client.annotation.Illuminati;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
@@ -21,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -85,6 +87,28 @@ public class IlluminatiClientInit {
         }
 
         return false;
+    }
+
+    public static boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
+        try {
+            final MethodSignature signature = (MethodSignature) pjp.getSignature();
+            final Method method = signature.getMethod();
+
+            Illuminati illuminati = method.getAnnotation(Illuminati.class);
+
+            if (illuminati == null) {
+                illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
+            }
+
+            if (illuminati == null) {
+                return true;
+            }
+
+            return illuminati.ignore();
+        } catch (Exception ex) {
+            // ignore
+            return true;
+        }
     }
 
     public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
