@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-annotation</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.5</version>
+            <version>0.9.6</version>
             <scope>compile</scope>
         </dependency>
 

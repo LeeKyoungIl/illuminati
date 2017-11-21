@@ -10,24 +10,13 @@ Array.prototype.inArrayCheck = function (needle, haystack) {
 
 var _send = XMLHttpRequest.prototype.send;
 XMLHttpRequest.prototype.send = function() {
-    if (this.responseURL.indexOf(collectorUrl) == -1) {
+    if (this.responseURL.indexOf(collectorUrl) === -1) {
         illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
+
+        illuminatiJsAgent.tempBufferToBuffer();
+        illuminatiJsAgent.sendToIlluminati(false);
     }
-    /* Wrap onreadystaechange callback */
-    var callback = typeof this.onreadystatechange == 'function' ? this.onreadystatechange : null;
-    this.onreadystatechange = function() {
-        if (callback) {
-            callback.apply(this, arguments);
-        }
-        if (this.readyState == 4) {
-            if (this.responseURL.indexOf(collectorUrl) == -1) {
-                try {
-                    illuminatiJsAgent.tempBufferToBuffer();
-                    illuminatiJsAgent.sendToIlluminati(false);
-                } catch (e) {}
-            }
-        }
-    }
+
     _send.apply(this, arguments);
 };
 
@@ -43,6 +32,12 @@ var illuminatiJsAgent = {
 
         if (typeof gTransactionId === 'undefined' || gTransactionId === null) {
             illuminatiJsAgent.setSessionStorage('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
+        }
+
+        if (typeof isAutoCollect !== 'undefined' && isAutoCollect === true) {
+            autoSendToIlluminati = window.setInterval(function () {
+                illuminatiJsAgent.sendToIlluminati(true);
+            }, collectIntervalTimeMs);
         }
     },
 
@@ -615,7 +610,9 @@ var illuminatiJsAgent = {
             if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {
                 try {
                     illuminatiAjax.sendByPost(collectorUrl, isAsync, illuminatiJsModel);
-                } catch (e) {}
+                } catch (e) {
+                    console.log(e);
+                }
 
                 illuminatiSendStatus = 'done';
                 if (illuminatiJsAgent.tempBufferToBuffer() === false) {
@@ -699,14 +696,13 @@ var illuminatiSendStatus = 'done';
 var lastCheckObject;
 var isFirst = true;
 var collectIntervalTimeMs = 15000;
+var autoSendToIlluminati;
 var collectorUrl = '/illuminati/js/collector';
-
-illuminatiAjax.init();
+var isAutoCollect = false;
 
 var interval = window.setInterval(function() {
     illuminatiJsAgent.domElementInit();
 }, 100);
 
-var sendToIlluminati = window.setInterval(function () {
-    illuminatiJsAgent.sendToIlluminati(true);
-}, collectIntervalTimeMs);
+illuminatiAjax.init();
+

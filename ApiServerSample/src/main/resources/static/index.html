@@ -1,9 +1,19 @@
 <html>
 <head>
-    <script src="/js/illuminatiJsAgent.min.js"></script>
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/illuminatiJsAgent.js"></script>
     <script>
         function clickTestEvent () {
             console.log('test');
+        }
+
+        function ajaxTest () {
+            $.ajax({
+                url:'/api/v1/test2',
+                success:function(data){
+                    console.log(data);
+                }
+            })
         }
 
         illuminatiJsAgent.init();
@@ -20,7 +30,8 @@
     <option value="2" selected>2</option>
 </select>
 <textarea id="textarea_test">ddd</textarea>
-    <input type="submit" value="전송">
+    <input type="submit" value="submit">
+    <input type="button" value="ajax send" onclick="ajaxTest();" />
 </form>
 </body>
 </html>

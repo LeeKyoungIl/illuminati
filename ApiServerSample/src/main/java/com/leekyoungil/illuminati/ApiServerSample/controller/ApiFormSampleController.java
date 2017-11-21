@@ -1,7 +1,6 @@
 package com.leekyoungil.illuminati.ApiServerSample.controller;
 
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
-import com.leekyoungil.illuminati.common.dto.ChangedJsElement;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
