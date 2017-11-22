@@ -1,7 +1,7 @@
-# Project illuminati : illuminati-client-switch
+# Project illuminati : illuminati-client-jscollector
 
-## illuminati-client-switch is module of illuminati. it's helps Illuminati to be easy to use.
-* If you add the module, you can turn it on and off without deploying it.
+## illuminati-client-jscollector is client browser side module of illuminati. it's help to collect User event data.
+* If you add the module, you can easy to collect User event data from browser. (keyboard press or mouse click)
 
 ## you can turn ON or OFF illuminati by reading the configuration file you uploaded on the web.
 * [click](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-config-properties) Here is a sample configuration of illuminati switch.
@@ -55,8 +55,8 @@ compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.2'
 ===============================================================================
 
 
-## illuminati client의 switch 모듈입니다.
- * illuminati를 다시 배포할 필요없이 쉽게 켜고 끌수 있습니다.
+## illuminati client의 jscollector 모듈입니다.
+ * 쉽게 브라우저상애서 발생하는 event data를 수집할수 있습니다. (키보드를 누르거나 마우스를 클릭하여 값을 바꾸는경우)
  
 ## illuminati 설정파일을 웹에 업로드해두고 사용할수 있습니다.
  * [이곳](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-config-properties)에는 illuminati-swith의 설정파일 sample이 있습니다.

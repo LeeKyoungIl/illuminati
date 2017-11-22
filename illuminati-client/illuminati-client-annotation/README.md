@@ -14,13 +14,13 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.6</version>
+  <version>0.9.6</version>
 </dependency>
 ```
 
@@ -28,8 +28,8 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.6'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.6'
 ```
 
 ## add @Illuminati to Class
@@ -94,13 +94,13 @@ public class ApiSampleController {
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.8.6</version>
+  <version>0.9.6</version>
 </dependency>
 ```
 
@@ -108,8 +108,8 @@ public class ApiSampleController {
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.8.6'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.6'
 ```
 
 
