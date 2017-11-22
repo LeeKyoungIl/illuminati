@@ -56,16 +56,14 @@ compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.2'
 
 
 ## illuminati client의 jscollector 모듈입니다.
- * 쉽게 브라우저상애서 발생하는 event data를 수집할수 있습니다. (키보드를 누르거나 마우스를 클릭하여 값을 바꾸는경우)
+ * 브라우저상애서 발생하는 event data를 쉽게 수집할수 있습니다. (키보드를 누르거나 마우스를 클릭하여 값을 바꾸는경우)
  
-## illuminati 설정파일을 웹에 업로드해두고 사용할수 있습니다.
- * [이곳](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-config-properties)에는 illuminati-swith의 설정파일 sample이 있습니다.
- * 확장자는 어떤것을 사용하던 상관이 없습니다.
- * 'illuminatiSwitchValue' key값은 꼭 필요합니다.
- * 'illuminatiSwitchValue'의 값은 true나 false여야 합니다.
-    * true : illuminati를 사용합니다.
-    * false : illuminati를 끕니다.
-    
+## 브라우저에서부터 시작한 이벤트를 서버를 거쳐 결과가 올때까지 동알한 트랜젝션 아이디로 데이터를 추적할수 있습니다.
+ * 'illuminatiUniqueUserId'를 설정할수 있습니다. 해당 값은 유저 단위로 데이터를 확인해야 할때 쉽게 확인할수 있도록 도와줍니다.
+ * 'illuminatiGProcId' 는 Global Transaction Id 로 브라우저를 닫거나 특정 시간이 지날때까지 유지하기 때문에 유저가 발생시킨 모든 이벤트를 Web browser 부터 'illuminati processor'와 함께 서버단까지 추적할수 있도록 해줍니다. 해당값은 페이지를 이동해도 변하지 않습니다.
+ * 'illuminatiSProcId' 는 Single Transaction Id 로 페이지를 이동하면 값이 변합니다 따라서 페이지 이동전 페이지 내에서 Ajax 요청을 하거나 submit 요청까지 동일한 값을 유지 합니다. 
+ * 이 3가지의 값들은 당신의 ajax 요청이나 submit 요청에 같이 포함되어 요청이 되기 때문에 'illuminati-processor'가 자동으로 해당 데이터들을 연결해 줍니다.
+     
 ## illuminati-switch를 사용하기 위한 규칙이 있습니다.
 * [이곳](https://github.com/LeeKyoungIl/illuminati/blob/master/ApiServerSample/src/main/resources/illuminati-local.yml) 이곳에 설정파일 sample이 있습니다.
 * 'illuminatiSwitchValueURL', 'illuminatiSwitchValueURLCheckInterval' 키값을 설정파일에 추가해야 합니다. (illuminati-{phase}.yml or properties)
