@@ -25,6 +25,9 @@ var illuminatiJsAgent = {
     illuminatiInputElementType : ['text', 'radio', 'checkbox'],
 
     init : function () {
+        if (isEventListener === false && isAttachEvent === false) {
+            return;
+        }
         // session transaction Id
         illuminatiJsAgent.setSessionStorage('illuminatiSProcId', illuminatiJsAgent.generateTransactionId('S'));
 
@@ -388,6 +391,206 @@ var illuminatiJsAgent = {
         }
     },
 
+    addEventInputText : function (element, eventName) {
+        if (isEventListener === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[0], function (e) {
+                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    var oldObject = illuminatiJsAgent.getEventData(e);
+                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        } else if (isAttachEvent === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[0], function (e) {
+                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    var oldObject = illuminatiJsAgent.getEventData(e);
+                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        }
+    },
+
+    addEventTextarea : function (element, eventName) {
+        var screenInfo;
+        if (isEventListener === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[0], function (e) {
+                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    lastCheckObject = illuminatiJsAgent.getEventData(e);
+                });
+            }
+            if (typeof eventName[1] !== 'undefined' && eventName[1] !== null) {
+                element.addEventListener(eventName[1], function (e) {
+                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        } else if (isAttachEvent === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[0], function (e) {
+                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    lastCheckObject = illuminatiJsAgent.getEventData(e);
+                });
+            }
+            if (typeof eventName[1] !== 'undefined' && eventName[1] !== null) {
+                element.attachEvent('on'+eventName[1], function (e) {
+                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        }
+    },
+
+    addEventSelectBox : function (element, eventName) {
+        if (isEventListener === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[0], function (e) {
+                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    var oldObject = illuminatiJsAgent.getEventData(e);
+                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        } else if (isAttachEvent === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[0], function (e) {
+                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    var oldObject = illuminatiJsAgent.getEventData(e);
+                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        }
+    },
+
+    addEventForm : function (element, eventName) {
+        if (isEventListener === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[0], function (e) {
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    }
+
+                    var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
+                    if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
+                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
+                    }
+                    var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
+                    if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
+                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
+                    }
+                    var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
+                    if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
+                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
+                    }
+
+                    try {
+                        illuminatiJsAgent.tempBufferToBuffer();
+                        illuminatiJsAgent.sendToIlluminati(false);
+
+                        this.submit();
+                    } catch (e) {}
+                });
+            }
+        } else if (isAttachEvent === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[0], function (e) {
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    }
+
+                    var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
+                    if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
+                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
+                    }
+                    var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
+                    if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
+                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
+                    }
+                    var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
+                    if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
+                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
+                    }
+
+                    try {
+                        illuminatiJsAgent.tempBufferToBuffer();
+                        illuminatiJsAgent.sendToIlluminati(false);
+
+                        this.submit();
+                    } catch (e) {}
+                });
+            }
+        }
+    },
+
+    addEventClick : function (element, eventName) {
+        var screenInfo;
+        if (isEventListener === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[0], function (e) {
+                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    lastCheckObject = illuminatiJsAgent.getEventData(e);
+                });
+            }
+            if (typeof eventName[1] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[1], function (e) {
+                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                    newObject['screenInfo'] = screenInfo;
+                    delete(lastCheckObject);
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        } else if (isAttachEvent === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[0], function (e) {
+                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    lastCheckObject = illuminatiJsAgent.getEventData(e);
+                });
+            }
+            if (typeof eventName[1] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[1], function (e) {
+                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+                    newObject['screenInfo'] = screenInfo;
+                    delete(lastCheckObject);
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        }
+    },
+
+    addEventBaseClick : function (element, eventName) {
+        if (isEventListener === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.addEventListener(eventName[0], function (e) {
+                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    var oldObject = illuminatiJsAgent.getEventData(e);
+                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        } else if (isAttachEvent === true) {
+            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
+                element.attachEvent('on'+eventName[0], function (e) {
+                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
+                    var oldObject = illuminatiJsAgent.getEventData(e);
+                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+                    newObject['screenInfo'] = screenInfo;
+                    illuminatiJsAgent.setElementToSessionStorage(newObject);
+                });
+            }
+        }
+    },
+
     domElementInit : function () {
         if(document.readyState === 'complete') {
             window.clearInterval(interval);
@@ -468,94 +671,35 @@ var illuminatiJsAgent = {
                 elementStore[key] = tempRadioStore[key];
             }
 
-            for (var key in elementStore) {
-                var eventElem = elementStore[key];
+            if (isEventListener === true || isAttachEvent === true) {
+                for (var key in elementStore) {
+                    var eventElem = elementStore[key];
 
-                if (Array.isArray(eventElem) !== true) {
-                    switch (eventElem.type) {
-                        case 'text' :
-                            eventElem['originElement'].addEventListener('keyup', function (e) {
-                                var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                                var oldObject = illuminatiJsAgent.getEventData(e);
-                                var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                                newObject['screenInfo'] = screenInfo;
-                                illuminatiJsAgent.setElementToSessionStorage(newObject);
-                            });
-                            break;
-                        case 'textarea' :
-                            var screenInfo;
-                            eventElem['originElement'].addEventListener('focusin', function (e) {
-                                screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                                lastCheckObject = illuminatiJsAgent.getEventData(e);
-                            });
-                            eventElem['originElement'].addEventListener('keyup', function (e) {
-                                var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                                newObject['screenInfo'] = screenInfo;
-                                illuminatiJsAgent.setElementToSessionStorage(newObject);
-                            });
-                            break;
-                        case 'select-one' :
-                            eventElem['originElement'].addEventListener('change', function (e) {
-                                var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                                var oldObject = illuminatiJsAgent.getEventData(e);
-                                var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                                newObject['screenInfo'] = screenInfo;
-                                illuminatiJsAgent.setElementToSessionStorage(newObject);
-                            });
-                            break;
+                    if (Array.isArray(eventElem) !== true) {
+                        switch (eventElem.type) {
+                            case 'text' :
+                                illuminatiJsAgent.addEventInputText(eventElem['originElement'], ['keyup']);
+                                break;
+                            case 'textarea' :
+                                illuminatiJsAgent.addEventTextarea(eventElem['originElement'], ['focusin', 'keyup']);
+                                break;
+                            case 'select-one' :
+                                illuminatiJsAgent.addEventSelectBox(eventElem['originElement'], ['change']);
+                                break;
 
-                        case 'form' :
-                            eventElem['originElement'].addEventListener('submit', function (e) {
-                                if (e.preventDefault) {
-                                    e.preventDefault();
-                                }
+                            case 'form' :
+                                illuminatiJsAgent.addEventForm(eventElem['originElement'], ['submit']);
+                                break;
 
-                                var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
-                                if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
-                                    illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
-                                }
-                                var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
-                                if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
-                                    illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
-                                }
-                                var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
-                                if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
-                                    illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
-                                }
-
-                                try {
-                                    illuminatiJsAgent.tempBufferToBuffer();
-                                    illuminatiJsAgent.sendToIlluminati(false);
-
-                                    this.submit();
-                                } catch (e) {}
-                            });
-                            break;
-
-                        default :
-                            var screenInfo;
-                            eventElem['originElement'].addEventListener('mouseup', function (e) {
-                                screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                                lastCheckObject = illuminatiJsAgent.getEventData(e);
-                            });
-                            eventElem['originElement'].addEventListener('click', function (e) {
-                                var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                                newObject['screenInfo'] = screenInfo;
-                                delete(lastClickObject);
-                                illuminatiJsAgent.setElementToSessionStorage(newObject);
-                            });
-                            break;
-                    }
-                } else {
-                    for (var n=0; n<eventElem.length; n++) {
-                        var tmpRadioObj = eventElem[n];
-                        tmpRadioObj['originElement'].addEventListener('click', function (e) {
-                            var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                            var oldObject = illuminatiJsAgent.getEventData(e);
-                            var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                            newObject['screenInfo'] = screenInfo;
-                            illuminatiJsAgent.setElementToSessionStorage(newObject);
-                        });
+                            default :
+                                illuminatiJsAgent.addEventClick(eventElem['originElement'], ['mouseup', 'click']);
+                                break;
+                        }
+                    } else {
+                        for (var n=0; n<eventElem.length; n++) {
+                            var tmpRadioObj = eventElem[n];
+                            illuminatiJsAgent.addEventBaseClick(tmpRadioObj['originElement'], ['click']);
+                        }
                     }
                 }
             }
@@ -678,7 +822,7 @@ var illuminatiAjax = {
 
         illuminatiXhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         // set header
-        illuminatiAjax.setRequestHeaderOnAjaxEvent(illuminatiXhr);
+        //illuminatiAjax.setRequestHeaderOnAjaxEvent(illuminatiXhr);
         //xmlHttp.withCredentials = true;
         illuminatiXhr.send(JSON.stringify(data));
 
@@ -699,10 +843,19 @@ var collectIntervalTimeMs = 15000;
 var autoSendToIlluminati;
 var collectorUrl = '/illuminati/js/collector';
 var isAutoCollect = false;
+var isEventListener = false;
+var isAttachEvent = false;
 
-var interval = window.setInterval(function() {
-    illuminatiJsAgent.domElementInit();
-}, 100);
+if (document.addEventListener) {
+    isEventListener = true;
+} else if (document.attachEvent) {
+    isAttachEvent = true;
+}
 
-illuminatiAjax.init();
+if (isEventListener === true || isAttachEvent === true) {
+    var interval = window.setInterval(function() {
+        illuminatiJsAgent.domElementInit();
+    }, 100);
 
+    illuminatiAjax.init();
+}
