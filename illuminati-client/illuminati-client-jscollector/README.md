@@ -9,7 +9,7 @@
  * The 'illuminatiSProcId' is a Single Transaction Id. it change value when move to another page, so it can be retain same value when request Ajax or submit before move on the page.
  * This kind of 3 values are included that your request of Ajax or submit, so the 'illuminati-processor' connect that event data.
      
-## 1. Maven Dependency 추가 
+## 1. add to Maven Dependency 
     * Maven
     
 ```java
@@ -28,7 +28,7 @@
 </dependency>
 ```
 
-## Gradle Dependency 추가 
+## add to Gradle Dependency
     * Gradle
     
 ```java
@@ -39,7 +39,7 @@ repositories {
 compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
 ```
 
-## 2. Javascript 추가 & 초기화
+## 2. add to Javascript in HTML & initialization
     * javascript
 
 ```java
@@ -49,11 +49,11 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
 </script>   
 ```   
 
-## 옵션 기능 
- * 2번까지 마치면 추가로 어떠한 작업없이 자동으로 서버에 요청 하기전 유저의 event data 가 기록됩니다.
- * 다만 서버에 요청을 하지 않으면 유저의 event data 가 기록되지 않기때문에 자동으로 수집하는 기능을 제공합니다.
+## Optional features
+ * When you finished by the step2 that you can collect event data of user by automatically.
+ * But Anything request to server, then The event data of user can't collect, so provided auto collection feature.
 
-## isAutoCollect : 자동수집 기능
+## isAutoCollect : auto collection feature.
 * javascript
 
 ```java
@@ -63,7 +63,7 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
     illuminatiJsAgent.init();
 </script>   
 ```  
- * isAutoCollect 값을 true 로 설정하면 15초마다 수집한 event data 가 기록됩니다.
+ * 'isAutoCollect' value is set 'true' then it collect event data of user every 15 second by automatically.
  
 
 ===============================================================================
