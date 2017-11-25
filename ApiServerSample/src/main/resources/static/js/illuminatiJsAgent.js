@@ -10,12 +10,10 @@ Array.prototype.inArrayCheck = function (needle, haystack) {
 
 var _send = XMLHttpRequest.prototype.send;
 XMLHttpRequest.prototype.send = function() {
-    if (this.responseURL.indexOf(collectorUrl) === -1) {
-        illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
+    illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
 
-        illuminatiJsAgent.tempBufferToBuffer();
-        illuminatiJsAgent.sendToIlluminati(false);
-    }
+    illuminatiJsAgent.tempBufferToBuffer();
+    illuminatiJsAgent.sendToIlluminati(false);
 
     _send.apply(this, arguments);
 };
