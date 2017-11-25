@@ -3,11 +3,11 @@
 ## illuminati-client-jscollector is client browser side module of illuminati. it's help to collect User event data.
 * If you add the module, you can easy to collect User event data from browser. (keyboard press or mouse click)
 
-## 브라우저에서 시작한 유저 이벤트를 서버를 거쳐 특정한 프로세스가 실행 되는동안 동알한 트랜젝션 아이디로 이벤트 데이터를 추적할수 있습니다.
- * 'illuminatiUniqueUserId'를 설정할수 있습니다. 해당 값은 유저 단위로 데이터를 확인해야 할때 쉽게 확인할수 있도록 도와줍니다.
- * 'illuminatiGProcId' 는 Global Transaction Id 로 브라우저를 닫거나 특정 시간이 지날때까지 유지하기 때문에 유저가 발생시킨 모든 이벤트를 Web browser 부터 'illuminati processor'와 함께 서버단까지 추적할수 있도록 해줍니다. 해당값은 페이지를 이동해도 변하지 않습니다.
- * 'illuminatiSProcId' 는 Single Transaction Id 로 페이지를 이동하면 값이 변합니다 따라서 페이지 이동전 페이지 내에서 Ajax 요청을 하거나 submit 요청까지 동일한 값을 유지 합니다. 
- * 이 3가지의 값들은 당신의 ajax 요청이나 submit 요청에 같이 포함되어 요청이 되기 때문에 'illuminati-processor'가 자동으로 해당 데이터들을 연결해 줍니다.
+## You can be collected a User event data from browser to server end of result response by one transaction id.
+ * You can set the 'illuminatiUniqueUserId', that this value is easy to check data per user.
+ * The illuminatiGProcId is a Global Transaction id. it can be collected event data occured by user with the 'illuminati-processor' from browser to server end of result response. this value is immutable when you move to another page.
+ * The 'illuminatiSProcId' is a Single Transaction Id. it change value when move to another page, so it can be retain same value when request Ajax or submit before move on the page.
+ * This kind of 3 values are included that your request of Ajax or submit, so the 'illuminati-processor' connect that event data.
      
 ## 1. Maven Dependency 추가 
     * Maven
