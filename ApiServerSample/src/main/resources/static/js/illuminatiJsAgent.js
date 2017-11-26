@@ -12,13 +12,16 @@ var _send = XMLHttpRequest.prototype.send;
 XMLHttpRequest.prototype.send = function() {
     illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
 
-    illuminatiJsAgent.tempBufferToBuffer();
-    illuminatiJsAgent.sendToIlluminati(false);
+    if (isIlluminatiRequest == false) {
+        illuminatiJsAgent.tempBufferToBuffer();
+        illuminatiJsAgent.sendToIlluminati(false);
+    }
 
     _send.apply(this, arguments);
 };
 
 var illuminatiJsAgent = {
+    addedListeners : {},
     passElementType : ['form', 'input', 'select', 'textarea'],
     illuminatiInputElementType : ['text', 'radio', 'checkbox'],
 
@@ -118,7 +121,16 @@ var illuminatiJsAgent = {
     },
 
     getElementUniqueId : function (elementObj) {
-        return (typeof elementObj.id !== 'undefined' && elementObj.id !== null && elementObj.id.trim() !== '') ? elementObj.id : elementObj.name;
+        var uniqueId = null;
+        try {
+            uniqueId = (typeof elementObj.id !== 'undefined' && elementObj.id !== null && elementObj.id.trim() !== '') ? elementObj.id : elementObj.name;
+        } catch (e) {}
+
+        if (uniqueId !== null && uniqueId.trim() === '') {
+            uniqueId = '';
+        }
+
+        return uniqueId;
     },
 
     checkPassElement : function (elem) {
@@ -267,7 +279,7 @@ var illuminatiJsAgent = {
 
                     if ((tempSelectOption.hasOwnProperty('selected') === true && targetObject[q].selected === false)
                         || (tempSelectOption.hasOwnProperty('selected') === false && targetObject[q].selected === true)) {
-                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('select', oldObject.elementUniqueId, 'selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected);
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('select', oldObject.elementUniqueId, 'selected', tempSelectOption.hasOwnProperty('selected'), targetObject[q].selected, q);
 
                         Object.keys(tempSelectOption).map(function(objectKey, index) {
                             if (tempSelectOption.hasOwnProperty(objectKey) === true) {
@@ -287,16 +299,19 @@ var illuminatiJsAgent = {
 
                 for (var p=0; p<oldObject.obj.length; p++) {
                     var tempOldRadioObj = oldObject.obj[p];
+                    var tempTargetObject = targetObject[p];
 
-                    if ((tempOldRadioObj.hasOwnProperty('checked') === true && targetObject.checked === false)
-                        || (tempOldRadioObj.hasOwnProperty('checked') === false && targetObject.checked === true)) {
+                    if ((tempOldRadioObj.hasOwnProperty('checked') === true && tempOldRadioObj.checked === false)
+                        || (tempTargetObject.hasOwnProperty('checked') === false) || (tempOldRadioObj.hasOwnProperty('checked') === true && tempTargetObject.checked === true)) {
                         var radioElementUniqueId = illuminatiJsAgent.getElementUniqueId(tempOldRadioObj);
-                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', tempOldRadioObj.hasOwnProperty('checked'), targetObject.checked, p);
+                        var oldChecked = (typeof tempOldRadioObj === 'undefined' || tempOldRadioObj === null) ? '' : tempOldRadioObj.checked;
+                        var newChecked = (typeof tempTargetObject === 'undefined' || tempTargetObject === null) ? '' : tempTargetObject.checked;
+                        changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue('radio', radioElementUniqueId, 'checked', oldChecked, newChecked, p);
 
                         Object.keys(tempOldRadioObj).map(function(objectKey, index) {
-                            if (tempOldRadioObj.hasOwnProperty(objectKey) === true) {
+                            if (tempTargetObject.hasOwnProperty('checked') === true) {
                                 try {
-                                    objectAttributes[objectKey] = eval('tempOldRadioObj.' + objectKey);
+                                    objectAttributes[objectKey] = eval('tempTargetObject.' + objectKey);
                                 } catch (e) {}
                             }
                         });
@@ -389,204 +404,272 @@ var illuminatiJsAgent = {
         }
     },
 
-    addEventInputText : function (element, eventName) {
-        if (isEventListener === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[0], function (e) {
-                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    var oldObject = illuminatiJsAgent.getEventData(e);
-                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
-        } else if (isAttachEvent === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[0], function (e) {
-                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    var oldObject = illuminatiJsAgent.getEventData(e);
-                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
+    isValidateAddEventListener : function (element, eventName) {
+        if (typeof element === 'undefined' || element === null || Array.isArray(eventName) === false || eventName.length === 0) {
+            return null;
         }
+        return illuminatiJsAgent.getElementUniqueId(element);
+    },
+
+    addEventInputText : function (element, eventName) {
+        var elementUniqueValue = illuminatiJsAgent.isValidateAddEventListener(element, eventName);
+        if (elementUniqueValue === '') {
+            return;
+        }
+
+        try {
+            if (isEventListener === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_input_text_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.addEventListener(eventName[0], function (e) {
+                        illuminatiJsAgent.addEventInputTextFunction(e);
+                    });
+                    element.addEventListener('illuminati_input_text_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            } else if (isAttachEvent === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_input_text_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.attachEvent('on'+eventName[0], function (e) {
+                        illuminatiJsAgent.addEventInputTextFunction(e);
+                    });
+                    element.attachEvent('illuminati_input_text_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            }
+        } catch (e) {
+            console.debug(e);
+        }
+    },
+
+    addEventInputTextFunction : function (event) {
+        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        var oldObject = illuminatiJsAgent.getEventData(event);
+        var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+        newObject['screenInfo'] = screenInfo;
+        illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
     addEventTextarea : function (element, eventName) {
-        var screenInfo;
-        if (isEventListener === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[0], function (e) {
-                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    lastCheckObject = illuminatiJsAgent.getEventData(e);
-                });
-            }
-            if (typeof eventName[1] !== 'undefined' && eventName[1] !== null) {
-                element.addEventListener(eventName[1], function (e) {
-                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
-        } else if (isAttachEvent === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[0], function (e) {
-                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    lastCheckObject = illuminatiJsAgent.getEventData(e);
-                });
-            }
-            if (typeof eventName[1] !== 'undefined' && eventName[1] !== null) {
-                element.attachEvent('on'+eventName[1], function (e) {
-                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
+        var elementUniqueValue = illuminatiJsAgent.isValidateAddEventListener(element, eventName);
+        if (elementUniqueValue === '') {
+            return;
         }
+
+        try {
+            var screenInfo;
+            if (isEventListener === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_lastcheck_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.addEventListener(eventName[0], function (e) {
+                        illuminatiJsAgent.addEventTextareaLastCheckFunction(e);
+                    });
+                    element.addEventListener('illuminati_textarea_lastcheck_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+                if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1]) === false) {
+                    element.addEventListener(eventName[1], function (e) {
+                        illuminatiJsAgent.addEventTextareaFunction();
+                    });
+                    element.addEventListener('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1], true);
+                }
+            } else if (isAttachEvent === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_lastcheck_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.attachEvent('on'+eventName[0], function (e) {
+                        illuminatiJsAgent.addEventTextareaLastCheckFunction(e);
+                    });
+                    element.attachEvent('illuminati_textarea_lastcheck_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+                if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1]) === false) {
+                    element.attachEvent('on'+eventName[1], function (e) {
+                        illuminatiJsAgent.addEventTextareaFunction();
+                    });
+                    element.attachEvent('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1], true);
+                }
+            }
+        } catch (e) {
+            console.debug(e);
+        }
+    },
+
+    addEventTextareaLastCheckFunction : function (event) {
+        screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        lastCheckObject = illuminatiJsAgent.getEventData(event);
+    },
+    addEventTextareaFunction : function () {
+        var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+        delete(lastCheckObject);
+        newObject['screenInfo'] = screenInfo;
+        illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
     addEventSelectBox : function (element, eventName) {
-        if (isEventListener === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[0], function (e) {
-                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    var oldObject = illuminatiJsAgent.getEventData(e);
-                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
-        } else if (isAttachEvent === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[0], function (e) {
-                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    var oldObject = illuminatiJsAgent.getEventData(e);
-                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
+        var elementUniqueValue = illuminatiJsAgent.isValidateAddEventListener(element, eventName);
+        if (elementUniqueValue === '') {
+            return;
         }
+
+        try {
+            if (isEventListener === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_selectbox_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.addEventListener(eventName[0], function (e) {
+                        illuminatiJsAgent.addEventSelectBoxFunction(e);
+                    });
+                    element.addEventListener('illuminati_selectbox_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            } else if (isAttachEvent === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_selectbox_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.attachEvent('on'+eventName[0], function (e) {
+                        illuminatiJsAgent.addEventSelectBoxFunction(e);
+                    });
+                    element.attachEvent('illuminati_selectbox_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            }
+        } catch (e) {
+            console.debug(e);
+        }
+    },
+
+    addEventSelectBoxFunction : function (event) {
+        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        var oldObject = illuminatiJsAgent.getEventData(event);
+        var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+        newObject['screenInfo'] = screenInfo;
+        illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
     addEventForm : function (element, eventName) {
-        if (isEventListener === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[0], function (e) {
-                    if (e.preventDefault) {
-                        e.preventDefault();
-                    }
-
-                    var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
-                    if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
-                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
-                    }
-                    var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
-                    if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
-                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
-                    }
-                    var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
-                    if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
-                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
-                    }
-
-                    try {
-                        illuminatiJsAgent.tempBufferToBuffer();
-                        illuminatiJsAgent.sendToIlluminati(false);
-
-                        this.submit();
-                    } catch (e) {}
-                });
-            }
-        } else if (isAttachEvent === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[0], function (e) {
-                    if (e.preventDefault) {
-                        e.preventDefault();
-                    }
-
-                    var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
-                    if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
-                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
-                    }
-                    var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
-                    if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
-                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
-                    }
-                    var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
-                    if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
-                        illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
-                    }
-
-                    try {
-                        illuminatiJsAgent.tempBufferToBuffer();
-                        illuminatiJsAgent.sendToIlluminati(false);
-
-                        this.submit();
-                    } catch (e) {}
-                });
-            }
+        var elementUniqueValue = illuminatiJsAgent.isValidateAddEventListener(element, eventName);
+        if (elementUniqueValue === '') {
+            return;
         }
+
+        try {
+            if (isEventListener === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_form_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.addEventListener(eventName[0], function (e) {
+                        illuminatiJsAgent.addEventFormFunction(e);
+                    });
+                    element.addEventListener('illuminati_form_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            } else if (isAttachEvent === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_form_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.attachEvent('on'+eventName[0], function (e) {
+                        illuminatiJsAgent.addEventFormFunction(e);
+                    });
+                    element.attachEvent('illuminati_form_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            }
+        } catch (e) {
+            console.debug(e);
+        }
+    },
+
+    addEventFormFunction : function (event) {
+        if (event.preventDefault) {
+            event.preventDefault();
+        }
+
+        var sTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiSProcId');
+        if (typeof sTransactionId !== 'undefined' && sTransactionId !== null) {
+            illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiSProcId', sTransactionId);
+        }
+        var gTransactionId = illuminatiJsAgent.getSessionStorage('illuminatiGProcId');
+        if (typeof gTransactionId !== 'undefined' && gTransactionId !== null) {
+            illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiGProcId', gTransactionId);
+        }
+        var uniqueUserId = illuminatiJsAgent.getSessionStorage('illuminatiUniqueUserId');
+        if (typeof uniqueUserId !== 'undefined' && uniqueUserId !== null) {
+            illuminatiJsAgent.generateHiddenInputElement(this, 'illuminatiUniqueUserId', uniqueUserId)
+        }
+
+        try {
+            illuminatiJsAgent.tempBufferToBuffer();
+            illuminatiJsAgent.sendToIlluminati(false);
+
+            this.submit();
+        } catch (e) {}
     },
 
     addEventClick : function (element, eventName) {
-        var screenInfo;
-        if (isEventListener === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[0], function (e) {
-                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    lastCheckObject = illuminatiJsAgent.getEventData(e);
-                });
+        var elementUniqueValue = illuminatiJsAgent.isValidateAddEventListener(element, eventName);
+        if (elementUniqueValue === '') {
+            return;
+        }
+
+        try {
+            var screenInfo;
+            if (isEventListener === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.addEventListener(eventName[0], function (e) {
+                        illuminatiJsAgent.addEventClickLastCheckFunction(e);
+                    });
+                    element.addEventListener('illuminati_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+                if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[1]) === false) {
+                    element.addEventListener(eventName[1], function (e) {
+                        illuminatiJsAgent.addEventClickFunction();
+                    });
+                    element.addEventListener('illuminati_'+elementUniqueValue+'_'+eventName[1], true);
+                }
+            } else if (isAttachEvent === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.attachEvent('on'+eventName[0], function (e) {
+                        illuminatiJsAgent.addEventClickLastCheckFunction(e);
+                    });
+                    element.attachEvent('illuminati_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+                if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[1]) === false) {
+                    element.attachEvent('on'+eventName[1], function (e) {
+                        illuminatiJsAgent.addEventClickFunction();
+                    });
+                    element.attachEvent('illuminati_'+elementUniqueValue+'_'+eventName[1], true);
+                }
             }
-            if (typeof eventName[1] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[1], function (e) {
-                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                    newObject['screenInfo'] = screenInfo;
-                    delete(lastCheckObject);
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
-        } else if (isAttachEvent === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[0], function (e) {
-                    screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    lastCheckObject = illuminatiJsAgent.getEventData(e);
-                });
-            }
-            if (typeof eventName[1] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[1], function (e) {
-                    var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-                    newObject['screenInfo'] = screenInfo;
-                    delete(lastCheckObject);
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
+        } catch (e) {
+            console.debug(e);
         }
     },
 
-    addEventBaseClick : function (element, eventName) {
-        if (isEventListener === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.addEventListener(eventName[0], function (e) {
-                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    var oldObject = illuminatiJsAgent.getEventData(e);
-                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
-        } else if (isAttachEvent === true) {
-            if (typeof eventName[0] !== 'undefined' && eventName[0] !== null) {
-                element.attachEvent('on'+eventName[0], function (e) {
-                    var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(e);
-                    var oldObject = illuminatiJsAgent.getEventData(e);
-                    var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-                    newObject['screenInfo'] = screenInfo;
-                    illuminatiJsAgent.setElementToSessionStorage(newObject);
-                });
-            }
+    addEventClickLastCheckFunction : function (event) {
+        screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        lastCheckObject = illuminatiJsAgent.getEventData(event);
+    },
+    addEventClickFunction : function () {
+        var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
+        delete(lastCheckObject);
+        newObject['screenInfo'] = screenInfo;
+        illuminatiJsAgent.setElementToSessionStorage(newObject);
+    },
+
+    addEventBaseClick : function (element, eventName, index) {
+        var elementUniqueValue = illuminatiJsAgent.isValidateAddEventListener(element, eventName);
+        if (elementUniqueValue === '') {
+            return;
         }
+        elementUniqueValue += '_' + String(index);
+
+        try {
+            if (isEventListener === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.addEventListener(eventName[0], function (e) {
+                        illuminatiJsAgent.addEventBaseClickFunction(e);
+                    });
+                    element.addEventListener('illuminati_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            } else if (isAttachEvent === true) {
+                if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[0]) === false) {
+                    element.attachEvent('on'+eventName[0], function (e) {
+                        illuminatiJsAgent.addEventBaseClickFunction(e);
+                    });
+                    element.attachEvent('illuminati_'+elementUniqueValue+'_'+eventName[0], true);
+                }
+            }
+        } catch (e) {
+            console.debug(e);
+        }
+    },
+
+    addEventBaseClickFunction : function (event) {
+        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        var oldObject = illuminatiJsAgent.getEventData(event);
+        var newObject = illuminatiJsAgent.getNewEventData(oldObject);
+        newObject['screenInfo'] = screenInfo;
+        illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
     domElementInit : function () {
@@ -631,8 +714,8 @@ var illuminatiJsAgent = {
                     }
 
                     radio['originElement'] = elem;
+                    radio['checked'] = elem.checked;
                     tempRadioStore[elementObj.type + '-' + elementUniqueId][tempRadioStore[elementObj.type + '-' + elementUniqueId].length] = radio;
-
                     continue;
                 }
 
@@ -696,7 +779,7 @@ var illuminatiJsAgent = {
                     } else {
                         for (var n=0; n<eventElem.length; n++) {
                             var tmpRadioObj = eventElem[n];
-                            illuminatiJsAgent.addEventBaseClick(tmpRadioObj['originElement'], ['click']);
+                            illuminatiJsAgent.addEventBaseClick(tmpRadioObj['originElement'], ['click'], n);
                         }
                     }
                 }
@@ -753,7 +836,7 @@ var illuminatiJsAgent = {
                 try {
                     illuminatiAjax.sendByPost(collectorUrl, isAsync, illuminatiJsModel);
                 } catch (e) {
-                    console.log(e);
+                    console.debug(e);
                 }
 
                 illuminatiSendStatus = 'done';
@@ -822,13 +905,16 @@ var illuminatiAjax = {
         // set header
         //illuminatiAjax.setRequestHeaderOnAjaxEvent(illuminatiXhr);
         //xmlHttp.withCredentials = true;
+        isIlluminatiRequest = true;
         illuminatiXhr.send(JSON.stringify(data));
 
         setTimeout(function () {
+            isIlluminatiRequest = false;
             illuminatiXhr.abort();
         }, this.timeoutMs);
 
         if (isAsync === false && illuminatiXhr.readyState === 4 && illuminatiXhr.status === 200) {
+            isIlluminatiRequest = false
             return true;
         }
     }
@@ -840,9 +926,10 @@ var isFirst = true;
 var collectIntervalTimeMs = 15000;
 var autoSendToIlluminati;
 var collectorUrl = '/illuminati/js/collector';
-var isAutoCollect = false;
+var isAutoCollect = true;
 var isEventListener = false;
 var isAttachEvent = false;
+var isIlluminatiRequest = false;
 
 if (document.addEventListener) {
     isEventListener = true;
