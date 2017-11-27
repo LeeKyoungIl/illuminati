@@ -14,13 +14,13 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.2</version>
+  <version>0.9.6</version>
 </dependency>
 ```
 
@@ -28,8 +28,8 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.6'
 ```
 
 ## add @Illuminati to Class
@@ -54,6 +54,27 @@ public class ApiSampleController {
         }
 }
 ```
+    * apply to all sub methods, but if you want to exclude some method.
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @Illuminati(ignore=true)
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+``` 
 
 ## add @Illuminati to Method
     * apply to all target method
@@ -94,13 +115,13 @@ public class ApiSampleController {
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.1</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.2</version>
+  <version>0.9.6</version>
 </dependency>
 ```
 
@@ -108,8 +129,8 @@ public class ApiSampleController {
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.6'
 ```
 
 
@@ -135,6 +156,27 @@ public class ApiSampleController {
         }
 }
 ```
+    * 하위 모든 Method에 적용했는데 특정 메서드만 제외시키고 싶을 경우
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    @RequestMapping(value = "test1")
+    public String test1 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 1}";
+        return testJson;
+    }
+    
+    @Illuminati(ignore=true)
+    @RequestMapping(value = "test2")
+        public String test2 (String a, Integer b) throws Exception {
+            String testJson = "{\"test\" : 2}";
+            return testJson;
+        }
+}
+```    
 
 ## Method에 @Illuminati 추가 
     * 해당 Method에 적용

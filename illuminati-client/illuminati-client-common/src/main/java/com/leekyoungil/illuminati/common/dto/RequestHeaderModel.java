@@ -20,6 +20,8 @@ public class RequestHeaderModel {
     private static final Logger REQUEST_HEADER_MODEL_LOGGER = LoggerFactory.getLogger(RequestHeaderModel.class);
 
     @Expose private String illuminatiProcId;
+    @Expose private String illuminatiSProcId;
+    @Expose private String illuminatiGProcId;
 
     /**
      *   The Accept request-header field can be used to specify certain media types which are acceptable for the response.
@@ -474,11 +476,33 @@ public class RequestHeaderModel {
 
         this.parsedCookie.put(key, value);
     }
+    public void setSessionTransactionId (String illuminatiSProcId) {
+        if (StringObjectUtils.isValid(illuminatiSProcId) == false) {
+            return;
+        }
+        this.illuminatiSProcId = illuminatiSProcId;
+    }
 
-    public void setGlobalTransactionId (String illuminatiProcId) {
+
+    public void setGlobalTransactionId (String illuminatiGProcId) {
+        if (StringObjectUtils.isValid(illuminatiGProcId) == false) {
+            return;
+        }
+        this.illuminatiGProcId = illuminatiGProcId;
+    }
+
+    public void setTransactionId (String illuminatiProcId) {
         if (StringObjectUtils.isValid(illuminatiProcId) == false) {
             return;
         }
         this.illuminatiProcId = illuminatiProcId;
+    }
+
+    protected String getIlluminatiSProcId () {
+        return this.illuminatiSProcId;
+    }
+
+    public String getIlluminatiGProcId () {
+        return this.illuminatiGProcId;
     }
 }

@@ -164,6 +164,9 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
+                + "         if (IlluminatiClientInit.checkIlluminatiIsIgnore(pjp) == true) {\r\n"
+                + "             return pjp.proceed();\r\n"
+                + "         }\r\n"
                 + "         HttpServletRequest request = null;\r\n"
                 + "         try {\r\n"
                 + "             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();\r\n"

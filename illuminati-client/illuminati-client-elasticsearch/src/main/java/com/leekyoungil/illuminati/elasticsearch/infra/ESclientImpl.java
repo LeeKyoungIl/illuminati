@@ -36,6 +36,15 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     @Override public HttpResponse save (final IlluminatiEsModel entity) {
         final HttpRequestBase httpPutRequest = new HttpPut(entity.getEsUrl(this.esUrl));
+
+        if (entity.isSetUserAuth() == true) {
+            try {
+                httpPutRequest.setHeader("Authorization", "Basic " + entity.getEsAuthString());
+            } catch (Exception ex) {
+                this.logger.error("Sorry. something is wrong in encoding es user auth info. ("+ex.toString()+")");
+            }
+        }
+
         ((HttpPut) httpPutRequest).setEntity(this.getHttpEntity(entity));
 
         HttpResponse httpResponse = null;

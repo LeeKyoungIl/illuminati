@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.common.util;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,15 +52,35 @@ public class SystemUtil {
         return jvmInfo;
     }
 
-    public static String generateGlobalTransactionId (final HttpServletRequest request) {
-        Object id = request.getAttribute("illuminatiProcId");
-        if (id == null || StringObjectUtils.isValid(id.toString()) == false) {
-            id = StringObjectUtils
-                    .generateId(new Date().getTime(), "illuminatiProcId");
-            request.setAttribute("illuminatiProcId", id);
+    public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) {
+        String keyName = illuminatiTransactionIdType.getValue();
+
+        String id = SystemUtil.getValueFromHeaderByKey(request, keyName);
+        if (StringObjectUtils.isValid(id) == false) {
+            switch (illuminatiTransactionIdType) {
+                case ILLUMINATI_PROC_ID :
+                case ILLUMINATI_G_PROC_ID :
+                    id = StringObjectUtils.generateId(new Date().getTime(), keyName);
+                    request.setAttribute(keyName, id);
+                    break;
+            }
         }
 
-        return StringObjectUtils.isValid(id.toString()) ? (String) id : null;
+        return StringObjectUtils.isValid(id) ? id : null;
+    }
+
+    public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) {
+        if (request == null || keyName == null) {
+            return null;
+        }
+
+        Object value = request.getHeader(keyName);
+
+        if (value == null) {
+            value = request.getAttribute(keyName);
+        }
+
+        return (value != null) ? value.toString() : null;
     }
 
     public static void createSystemThread (final Runnable runnable, final String threadName) {

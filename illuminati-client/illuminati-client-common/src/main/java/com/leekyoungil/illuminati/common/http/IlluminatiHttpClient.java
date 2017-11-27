@@ -69,7 +69,7 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
         defaultHeaders.add(new BasicHeader(HttpHeaders.PRAGMA, "no-cache"));
         defaultHeaders.add(new BasicHeader(HttpHeaders.CACHE_CONTROL, "no-cache"));
 
-        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).disableContentCompression();
+        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).disableAuthCaching().disableContentCompression();
         this.httpClient = httpClientBuilder.setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
     }
 

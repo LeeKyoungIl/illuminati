@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.METHOD, ElementType.TYPE})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Illuminati {
+
+    boolean ignore () default false;
 }

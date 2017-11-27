@@ -1,5 +1,7 @@
 package com.leekyoungil.illuminati.common.util;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
@@ -150,6 +152,7 @@ public class StringObjectUtils {
 
             final ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+            objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
             objectMapper.writeValue(stringWriter, object);
 
             return stringWriter.toString().replaceAll(System.getProperty("line.separator"), "");

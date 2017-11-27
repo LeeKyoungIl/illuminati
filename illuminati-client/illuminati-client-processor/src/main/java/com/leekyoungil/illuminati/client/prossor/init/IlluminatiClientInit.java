@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.client.prossor.init;
 
+import com.leekyoungil.illuminati.client.annotation.Illuminati;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
@@ -8,6 +9,7 @@ import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
 import com.leekyoungil.illuminati.common.dto.RequestHeaderModel;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -20,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -86,6 +89,28 @@ public class IlluminatiClientInit {
         return false;
     }
 
+    public static boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
+        try {
+            final MethodSignature signature = (MethodSignature) pjp.getSignature();
+            final Method method = signature.getMethod();
+
+            Illuminati illuminati = method.getAnnotation(Illuminati.class);
+
+            if (illuminati == null) {
+                illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
+            }
+
+            if (illuminati == null) {
+                return true;
+            }
+
+            return illuminati.ignore();
+        } catch (Exception ex) {
+            // ignore
+            return true;
+        }
+    }
+
     public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true
                 && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
@@ -129,15 +154,21 @@ public class IlluminatiClientInit {
 
     private static void addDataOnIlluminatiModel (final IlluminatiModel illuminatiModel, final HttpServletRequest request) {
         RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
-        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateGlobalTransactionId(request));
+        requestHeaderModel.setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID));
+        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID));
+        requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
 
+        final String illuminatiUniqueUserIdKeyName = "illuminatiUniqueUserId";
         illuminatiModel.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
+        illuminatiModel.initUniqueUserId(SystemUtil.getValueFromHeaderByKey(request, illuminatiUniqueUserIdKeyName));
         illuminatiModel.initReqHeaderInfo(requestHeaderModel);
         illuminatiModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
         illuminatiModel.staticInfo(ConvertUtil.getStaticInfoFromHttpRequest(request));
         illuminatiModel.isActiveChaosBomber(ConvertUtil.getChaosBomberFromHttpRequest(request));
         illuminatiModel.initBasicJvmInfo(SystemUtil.getJvmInfo());
         illuminatiModel.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
+        illuminatiModel.checkAndSetTransactionIdFromPostBody(requestHeaderModel.getPostContentBody());
+        illuminatiModel.setJavascriptUserAction();
     }
 
     /**
@@ -151,7 +182,7 @@ public class IlluminatiClientInit {
      */
     public static Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
+            ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
             return pjp.proceed();
         }
 

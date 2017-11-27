@@ -25,7 +25,8 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
  * [illuminati-client-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-annotation)
  * [illuminati-client-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-processor)
-  * [illuminati-client-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-switch)
+ * [illuminati-client-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-switch)
+ * [illuminati-client-jscollector](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-jscollector)
  * [illuminati-client-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-elasticsearch)
  * [illuminati-consumer-es-sample	](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
 
@@ -39,6 +40,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
     * Method execution time in Application.
     * Value of Method request parameter. (GET, POST)
     * Result value of the method request on the application.
+ 3. Collect User Event data from Browser by User action. (Key board press or mouse click)
     
 ## illuminati is easy to use
  1. Do not need to create a data type. (No DTO required)
@@ -51,7 +53,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  3. When execute application with add -Dspring.profiles.active={**phase**}
  4. Add "@Illuminat" Annotation to where you want to collect
 
-## illuminati does not affect the original application logic
+## illuminati does not affect the origin application logic
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
  2. Drop in performance can occur, but there is no big difference in physical server. (It can happen a little more on virtual machines.)
  3. Even if an exception occurs in the original application logic, illuminati can also collect the corresponding exception information.
@@ -74,7 +76,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-annotation</artifactId>
-      <version>1.0.1</version>
+      <version>1.1.1</version>
    </dependency>
 
    <dependency>
