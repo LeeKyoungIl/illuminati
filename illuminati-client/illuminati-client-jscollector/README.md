@@ -23,7 +23,7 @@
 <dependency>
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
-    <version>0.1.0</version>
+    <version>0.5.0</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,7 +36,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.0'
 ```
 
 ## 2. add to Javascript in HTML & initialization
@@ -49,9 +49,9 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
 </script>   
 ```   
 
-## Optional features
- * When you finished by the step2 that you can collect event data of user by automatically.
- * But Anything request to server, then The event data of user can't collect, so provided auto collection feature.
+## Optional features : isAutoCollect : auto collection feature.
+ * When you finished by the step2 that you can collect event data of user by automatically per 15 second.
+ * But if it feel uncomfortable, that it can provide collect event data only once when something request to server (submit or ajax).
 
 ## isAutoCollect : auto collection feature.
 * javascript
@@ -59,12 +59,27 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
 ```java
 <script src="/js/illuminatiJsAgent.js"></script>
 <script type="text/javascript">
-    isAutoCollect = true;
+    illuminatiJsAgent.setIsAutoCollect(false);
     illuminatiJsAgent.init();
 </script>   
 ```  
- * 'isAutoCollect' value is set 'true' then it collect event data of user every 15 second by automatically.
+ * 'isAutoCollect' value is set 'true' then it collect event data of user every 15 second by automatically. (default)
+ * 'isAutoCollect' value is set 'false' then it can provide collect event data only once when something request to server (submit or ajax).
  
+## Optional features : illuminatiUniqueUserId (User distinguishable value)
+ * 유져별로 event data 를 보고 싶은경우 해당 값을 설정해 주면 유저별로 데이터를 검색할수 있습니다.
+ * If you want to see event data per user, then it set something (id or user number..), you can search data per user.
+
+## illuminatiUniqueUserId sample
+* javascript
+
+```java
+<script src="/js/illuminatiJsAgent.js"></script>
+<script type="text/javascript">
+    illuminatiJsAgent.setUniqueUserId('id');
+    illuminatiJsAgent.init();
+</script>   
+```  
 
 ===============================================================================
 
@@ -92,7 +107,7 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
 <dependency>
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
-    <version>0.1.0</version>
+    <version>0.5.0</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -105,7 +120,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.0'
 ```
 
 ## 2. Javascript 추가 & 초기화
@@ -118,18 +133,33 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.1.0'
 </script>   
 ```   
 
-## 옵션 기능 
- * 2번까지 마치면 추가로 어떠한 작업없이 자동으로 서버에 요청 하기전 유저의 event data 가 기록됩니다.
- * 다만 서버에 요청을 하지 않으면 유저의 event data 가 기록되지 않기때문에 자동으로 수집하는 기능을 제공합니다.
+## 옵션 기능 : isAutoCollect (자동수집 기능)
+ * 2번까지 마치면 추가로 어떠한 작업없이 자동으로 illuminati에 유저의 event data 가 매 15초마다 변경점이 있을경우 기록됩니다.
+ * 다만 자동수집이 부담스러울경우 서버에 어떠한 (submit, ajax)요청을 할때 같이 event data 가 수집되는 기능을 제공합니다.
 
-## isAutoCollect : 자동수집 기능
+## isAutoCollect 설정법
 * javascript
 
 ```java
 <script src="/js/illuminatiJsAgent.js"></script>
 <script type="text/javascript">
-    isAutoCollect = true;
+    illuminatiJsAgent.setIsAutoCollect(false);
     illuminatiJsAgent.init();
 </script>   
 ```  
- * isAutoCollect 값을 true 로 설정하면 15초마다 수집한 event data 가 기록됩니다.
+ * isAutoCollect 값을 true 로 설정하면 15초마다 수집한 event data 가 기록됩니다. (기본값)
+ * isAutoCollect 값을 false 로 설정하면 서버에 어떠한 (submit, ajax)요청을 할때 event data 가 기록됩니다.
+ 
+## 옵션 기능 : illuminatiUniqueUserId (유저 구분자 설정 기능)
+ * 유져별로 event data 를 보고 싶은경우 해당 값을 설정해 주면 유저별로 데이터를 검색할수 있습니다.
+
+## illuminatiUniqueUserId 설정법
+* javascript
+
+```java
+<script src="/js/illuminatiJsAgent.js"></script>
+<script type="text/javascript">
+    illuminatiJsAgent.setUniqueUserId('id');
+    illuminatiJsAgent.init();
+</script>   
+```  
