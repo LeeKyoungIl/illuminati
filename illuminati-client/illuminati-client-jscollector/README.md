@@ -81,6 +81,13 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.0'
 </script>   
 ```  
 
+## illuminati-client-jscollector tested browser.
+ * Chrome - Mac, Windows 
+ * Firefox - Mac, Windows
+ * safari - Mac
+ * Internet Explorer 11 - Windows 
+ * Internet Explorer Edge - Windows 
+
 ===============================================================================
 
 
@@ -163,3 +170,10 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.0'
     illuminatiJsAgent.init();
 </script>   
 ```  
+
+## illuminati-client-jscollector 테스트가 완료된 브라우저 
+ * Chrome - Mac, Windows 
+ * Firefox - Mac, Windows
+ * safari - Mac
+ * Internet Explorer 11 - Windows 
+ * Internet Explorer Edge - Windows 
