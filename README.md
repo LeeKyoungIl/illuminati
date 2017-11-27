@@ -41,6 +41,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
     * Value of Method request parameter. (GET, POST)
     * Result value of the method request on the application.
  3. Collect User Event data from Browser by User action. (Key board press or mouse click)
+ 4. It can collect Event data from Browser to Server to Response by One Transaction Id.
     
 ## illuminati is easy to use
  1. Do not need to create a data type. (No DTO required)
@@ -52,6 +53,8 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  2. Add configuration in illuminati-{**phase**}.yml, properties에 (address of queue... etc)
  3. When execute application with add -Dspring.profiles.active={**phase**}
  4. Add "@Illuminat" Annotation to where you want to collect
+ 4. Add to Html in **<script></script>** in **illuminatiJsAgent.min.js** script file.
+ 4. 수잡을 원하는 Html의 **<script></script>** 안에 **illuminatiJsAgent.min.js** script 파일을 추가
 
 ## illuminati does not affect the origin application logic
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
@@ -91,6 +94,13 @@ The illuminati is desinged to make collect all data easily and it can be possibl
        <artifactId>illuminati-client-switch</artifactId>
        <version>1.0.0</version>
    </dependency>
+
+   <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
+   <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-jscollector</artifactId>
+      <version>0.5.0</version>
+   </dependency>
 </dependencies>
 ```
 
@@ -106,6 +116,8 @@ compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
 compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.2'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
 compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.0'
+<!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollectorswitch:0.5.0'
 ```
 
 ## add @Illuminati  to Class
@@ -153,6 +165,16 @@ public class ApiSampleController {
         }
 }
 ```
+
+## (Optional) add to Javascript in HTML & initialization
+    * javascript
+
+```java
+<script src="/js/illuminatiJsAgent.js"></script>
+<script type="text/javascript">
+    illuminatiJsAgent.init();
+</script>   
+```   
 
 ## add illuminati consumer
  1. Easily add Consumer using Spring Cloud Stream
@@ -206,6 +228,8 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
     * Application상의 메서드 실행 시간
     * Application상의 메서드 요청의 파라메터값 (GET, POST)
     * Application상의 메서드 요청의 결과값
+3. 브라우저 상에서 발생한 모든 event data 정보 
+4. 브라우저 시작되어 서버까지 이어지는 요청의 Event data를 한 Transaction id 로 수집이 가능 
     
 # illuminati는 쉽게 사용할 수 있습니다.
 1. 따로 데이터 타입을 만들 필요가 없습니다. (DTO가 필요 없음)
@@ -217,6 +241,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 2. illuminati-{**phase**}.yml, properties에 설정 추가 (queue주소... 등등)
 3. Application 실행시 -Dspring.profiles.active={**phase**} 추가
 3. 수집을 원하는 곳에 **@Illuminati** Annotation을 추가
+4. 수잡을 원하는 Html의 **<script></script>** 안에 **illuminatiJsAgent.min.js** script 파일을 추가
 
 # illuminati는 본래의 Application 로직에 영향이 없습니다.
 1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
@@ -257,6 +282,13 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
       <artifactId>illuminati-client-switch</artifactId>
       <version>1.0.0</version>
   </dependency>
+
+  <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다. -->
+  <dependency>
+      <groupId>com.leekyoungil.illuminati</groupId>
+      <artifactId>illuminati-client-jscollector</artifactId>
+      <version>0.5.0</version>
+  </dependency>
 </dependencies>
 ```
 
@@ -272,6 +304,8 @@ compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.0.1'
 compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.2'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
 compile 'com.leekyoungil.illuminati:illuminati-client-processor:1.0.0'
+//이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다.
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.0'
 ```
 
 ## Class에 @Illuminati 추가 
@@ -319,6 +353,16 @@ public class ApiSampleController {
         }
 }
 ```
+
+## (Optional) HTML 안에 Javascript 추가 & 초기화 
+    * javascript
+
+```java
+<script src="/js/illuminatiJsAgent.js"></script>
+<script type="text/javascript">
+    illuminatiJsAgent.init();
+</script>   
+```   
 
 ## Illuminati Consumer 추가 
 * Spring Cloud Stream을 이용하여 쉽게 Consumer를 추가할수 있음
