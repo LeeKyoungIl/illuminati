@@ -12,7 +12,7 @@ var _send = XMLHttpRequest.prototype.send;
 XMLHttpRequest.prototype.send = function() {
     illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
 
-    if (isIlluminatiRequest == false) {
+    if (isIlluminatiRequest === false) {
         illuminatiJsAgent.tempBufferToBuffer();
         illuminatiJsAgent.sendToIlluminati(false);
     }
@@ -24,6 +24,14 @@ var illuminatiJsAgent = {
     addedListeners : {},
     passElementType : ['form', 'input', 'select', 'textarea'],
     illuminatiInputElementType : ['text', 'radio', 'checkbox'],
+    collectorUrl : '/illuminati/js/collector',
+    collectIntervalTimeMs : 15000, // per 15 sec
+    isAutoCollect : true,
+    isFirstInitDomElement: true,
+    illuminatiSendStatus: 'done',
+    lastCheckObject : null,
+    autoSendToIlluminati : null,
+    screenInfo : null,
 
     init : function () {
         if (isEventListener === false && isAttachEvent === false) {
@@ -38,11 +46,23 @@ var illuminatiJsAgent = {
             illuminatiJsAgent.setSessionStorage('illuminatiGProcId', String(illuminatiJsAgent.generateTransactionId('G')));
         }
 
-        if (typeof isAutoCollect !== 'undefined' && isAutoCollect === true) {
-            autoSendToIlluminati = window.setInterval(function () {
+        if (illuminatiJsAgent.isAutoCollect === true) {
+            illuminatiJsAgent.autoSendToIlluminati = window.setInterval(function () {
                 illuminatiJsAgent.sendToIlluminati(true);
-            }, collectIntervalTimeMs);
+            }, illuminatiJsAgent.collectIntervalTimeMs);
         }
+    },
+
+    setIsAutoCollect : function (isAutoCollect) {
+        illuminatiJsAgent.isAutoCollect = isAutoCollect;
+    },
+
+    setCollectorUrl : function (collectorUrl) {
+        illuminatiJsAgent.collectorUrl = collectorUrl;
+    },
+
+    setcollectIntervalTimeMs : function (collectIntervalTimeMs) {
+        illuminatiJsAgent.collectIntervalTimeMs = collectIntervalTimeMs;
     },
 
     setUniqueUserId : function (illuminatiUniqueUserId) {
@@ -387,7 +407,7 @@ var illuminatiJsAgent = {
 
             var sessionStorageName = 'illuminati-buffer';
             // if illuminatiSendStatus is 'ready', data save to buffer.
-            if (illuminatiSendStatus === 'sending') {
+            if (illuminatiJsAgent.illuminatiSendStatus === 'sending') {
                 sessionStorageName += '-temp';
             }
 
@@ -448,10 +468,10 @@ var illuminatiJsAgent = {
     },
 
     addEventInputTextFunction : function (event) {
-        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        illuminatiJsAgent.screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
         var oldObject = illuminatiJsAgent.getEventData(event);
         var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-        newObject['screenInfo'] = screenInfo;
+        newObject['screenInfo'] = illuminatiJsAgent.screenInfo;
         illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
@@ -463,7 +483,6 @@ var illuminatiJsAgent = {
         elementUniqueValue += '_' + String(objIndex);
 
         try {
-            var screenInfo;
             if (isEventListener === true) {
                 if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_lastcheck_'+elementUniqueValue+'_'+eventName[0]) === false) {
                     element.addEventListener(eventName[0], function (e) {
@@ -473,7 +492,7 @@ var illuminatiJsAgent = {
                 }
                 if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1]) === false) {
                     element.addEventListener(eventName[1], function (e) {
-                        illuminatiJsAgent.addEventTextareaFunction();
+                        illuminatiJsAgent.addEventTextareaFunction(e);
                     });
                     element.addEventListener('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1], true);
                 }
@@ -486,7 +505,7 @@ var illuminatiJsAgent = {
                 }
                 if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1]) === false) {
                     element.attachEvent('on'+eventName[1], function (e) {
-                        illuminatiJsAgent.addEventTextareaFunction();
+                        illuminatiJsAgent.addEventTextareaFunction(e);
                     });
                     element.attachEvent('illuminati_textarea_'+elementUniqueValue+'_'+eventName[1], true);
                 }
@@ -497,13 +516,17 @@ var illuminatiJsAgent = {
     },
 
     addEventTextareaLastCheckFunction : function (event) {
-        screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
-        lastCheckObject = illuminatiJsAgent.getEventData(event);
+        illuminatiJsAgent.screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        illuminatiJsAgent.lastCheckObject = illuminatiJsAgent.getEventData(event);
     },
-    addEventTextareaFunction : function () {
-        var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-        delete(lastCheckObject);
-        newObject['screenInfo'] = screenInfo;
+    addEventTextareaFunction : function (e) {
+        if (typeof illuminatiJsAgent.lastCheckObject === 'undefined') {
+            illuminatiJsAgent.addEventTextareaLastCheckFunction(e);
+        }
+
+        var newObject = illuminatiJsAgent.getNewEventData(illuminatiJsAgent.lastCheckObject);
+        delete(illuminatiJsAgent.lastCheckObject);
+        newObject['screenInfo'] = illuminatiJsAgent.screenInfo;
         illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
@@ -536,10 +559,10 @@ var illuminatiJsAgent = {
     },
 
     addEventSelectBoxFunction : function (event) {
-        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        illuminatiJsAgent.screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
         var oldObject = illuminatiJsAgent.getEventData(event);
         var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-        newObject['screenInfo'] = screenInfo;
+        newObject['screenInfo'] = illuminatiJsAgent.screenInfo;
         illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
@@ -601,7 +624,6 @@ var illuminatiJsAgent = {
         elementUniqueValue += '_' + String(objIndex);
 
         try {
-            var screenInfo;
             if (isEventListener === true) {
                 if (typeof eventName[0] !== 'undefined' && eventName[0] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[0]) === false) {
                     element.addEventListener(eventName[0], function (e) {
@@ -611,7 +633,7 @@ var illuminatiJsAgent = {
                 }
                 if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[1]) === false) {
                     element.addEventListener(eventName[1], function (e) {
-                        illuminatiJsAgent.addEventClickFunction();
+                        illuminatiJsAgent.addEventClickFunction(e);
                     });
                     element.addEventListener('illuminati_'+elementUniqueValue+'_'+eventName[1], true);
                 }
@@ -624,7 +646,7 @@ var illuminatiJsAgent = {
                 }
                 if (typeof eventName[1] !== 'undefined' && eventName[1] !== null && illuminatiJsAgent.addedListeners.hasOwnProperty('illuminati_'+elementUniqueValue+'_'+eventName[1]) === false) {
                     element.attachEvent('on'+eventName[1], function (e) {
-                        illuminatiJsAgent.addEventClickFunction();
+                        illuminatiJsAgent.addEventClickFunction(e);
                     });
                     element.attachEvent('illuminati_'+elementUniqueValue+'_'+eventName[1], true);
                 }
@@ -635,13 +657,17 @@ var illuminatiJsAgent = {
     },
 
     addEventClickLastCheckFunction : function (event) {
-        screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
-        lastCheckObject = illuminatiJsAgent.getEventData(event);
+        illuminatiJsAgent.screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        illuminatiJsAgent.lastCheckObject = illuminatiJsAgent.getEventData(event);
     },
-    addEventClickFunction : function () {
-        var newObject = illuminatiJsAgent.getNewEventData(lastCheckObject);
-        delete(lastCheckObject);
-        newObject['screenInfo'] = screenInfo;
+    addEventClickFunction : function (e) {
+        if (typeof illuminatiJsAgent.lastCheckObject === 'undefined') {
+            illuminatiJsAgent.addEventClickLastCheckFunction(e);
+        }
+
+        var newObject = illuminatiJsAgent.getNewEventData(illuminatiJsAgent.lastCheckObject);
+        delete(illuminatiJsAgent.lastCheckObject);
+        newObject['screenInfo'] = illuminatiJsAgent.screenInfo;
         illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
@@ -674,10 +700,10 @@ var illuminatiJsAgent = {
     },
 
     addEventBaseClickFunction : function (event) {
-        var screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
+        illuminatiJsAgent.screenInfo = illuminatiJsAgent.getScreenInfoAtEvent(event);
         var oldObject = illuminatiJsAgent.getEventData(event);
         var newObject = illuminatiJsAgent.getNewEventData(oldObject);
-        newObject['screenInfo'] = screenInfo;
+        newObject['screenInfo'] = illuminatiJsAgent.screenInfo;
         illuminatiJsAgent.setElementToSessionStorage(newObject);
     },
 
@@ -803,8 +829,8 @@ var illuminatiJsAgent = {
 
             illuminatiJsAgent.setSessionStorage('illuminati', JSON.stringify(elementStore));
 
-            if (isFirst === true) {
-                isFirst = false;
+            if (illuminatiJsAgent.isFirstInitDomElement === true) {
+                illuminatiJsAgent.isFirstInitDomElement = false;
                 window.setTimeout(function () {
                     illuminatiJsAgent.domElementInit();
                 }, 3000);
@@ -813,13 +839,13 @@ var illuminatiJsAgent = {
     },
 
     sendToIlluminati : function (isAsync) {
-        if (illuminatiSendStatus === 'done') {
+        if (illuminatiJsAgent.illuminatiSendStatus === 'done') {
             var elementStore = JSON.parse(illuminatiJsAgent.getSessionStorage('illuminati-buffer'));
             if (typeof elementStore === 'undefined' || elementStore === null) {
                 return;
             }
 
-            illuminatiSendStatus = 'sending';
+            illuminatiJsAgent.illuminatiSendStatus = 'sending';
 
             var illuminatiJsModel = {
                 illuminatiGProcId: illuminatiJsAgent.getSessionStorage('illuminatiGProcId'),
@@ -846,12 +872,12 @@ var illuminatiJsAgent = {
 
             if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {
                 try {
-                    illuminatiAjax.sendByPost(collectorUrl, isAsync, illuminatiJsModel);
+                    illuminatiAjax.sendByPost(illuminatiJsAgent.collectorUrl, isAsync, illuminatiJsModel);
                 } catch (e) {
                     console.debug(e);
                 }
 
-                illuminatiSendStatus = 'done';
+                illuminatiJsAgent.illuminatiSendStatus = 'done';
                 if (illuminatiJsAgent.tempBufferToBuffer() === false) {
                     illuminatiJsAgent.removeSessionStorage('illuminati-buffer');
                 }
@@ -925,20 +951,11 @@ var illuminatiAjax = {
             illuminatiXhr.abort();
         }, this.timeoutMs);
 
-        if (isAsync === false && illuminatiXhr.readyState === 4 && illuminatiXhr.status === 200) {
-            isIlluminatiRequest = false
-            return true;
-        }
+        isIlluminatiRequest = false;
+        return true;
     }
 };
 
-var illuminatiSendStatus = 'done';
-var lastCheckObject;
-var isFirst = true;
-var collectIntervalTimeMs = 15000;
-var autoSendToIlluminati;
-var collectorUrl = '/illuminati/js/collector';
-var isAutoCollect = true;
 var isEventListener = false;
 var isAttachEvent = false;
 var isIlluminatiRequest = false;
