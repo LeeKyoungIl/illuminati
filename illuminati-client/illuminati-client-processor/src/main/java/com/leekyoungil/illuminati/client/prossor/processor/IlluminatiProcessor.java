@@ -128,7 +128,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 + "     static {\r\n"
                 + "         try {\r\n"
                 + "             IlluminatiClientInit.init();\r\n"
-                + "             IlluminatiExecutor.init();\r\n"
+                + "             IlluminatiTemplateExecutorImpl.init();\r\n"
                 + "         } catch (Exception ex) {\r\n"
                 + "             // ignore\r\n"
                 + "         }\r\n"
@@ -184,7 +184,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
     private String getImport () {
         final String[] illuminatis = {
                 "init.IlluminatiClientInit",
-                "executor.IlluminatiExecutor"
+                "executor.IlluminatiTemplateExecutorImpl"
         };
 
         final String[] aspectjs = {

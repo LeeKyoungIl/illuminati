@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class IlluminatiModel implements Serializable {
+public class IlluminatiTemplateInterfaceModel implements Serializable {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
@@ -40,20 +40,20 @@ public class IlluminatiModel implements Serializable {
     private Date localTime;
     private Object[] paramValues;
 
-    public IlluminatiModel () {}
+    public IlluminatiTemplateInterfaceModel() {}
 
-    public IlluminatiModel (final Date localTime, final long elapsedTime, final MethodSignature signature, final Object output, final Object[] paramValues) {
-        this.localTime = localTime;
+    public IlluminatiTemplateInterfaceModel(final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
+        this.localTime = new Date();
         this.generateAggregateId();
 
-        this.elapsedTime = elapsedTime;
-        this.output = output;
+        this.elapsedTime = illuminatiDataInterfaceModel.getElapsedTime();
+        this.output = illuminatiDataInterfaceModel.getOutput();
 
         this.timestamp = localTime.getTime();
         this.logTime = DATE_FORMAT_EVENT.format(localTime);
-        this.paramValues = paramValues;
+        this.paramValues = illuminatiDataInterfaceModel.getParamValues();
 
-        this.setMethod(signature.getMethod(), signature.getParameterNames());
+        this.setMethod(illuminatiDataInterfaceModel.getSignature());
     }
 
     public void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
@@ -172,10 +172,10 @@ public class IlluminatiModel implements Serializable {
         return this.parentModuleName;
     }
 
-    private void setMethod (final Method method, final String[] paramNames) {
+    private void setMethod (final MethodSignature methodSignature) {
         if (this.general == null) {
             this.general = new RequestGeneralModel();
         }
-        this.general.setMethod(method, paramNames, this.paramValues);
+        this.general.setMethod(methodSignature.getMethod(), methodSignature.getParameterNames(), this.paramValues);
     }
 }
