@@ -12,6 +12,8 @@ public interface IlluminatiExecutor<T> {
 
     void sendToNextStep (final T t);
 
+    void createSystemThread ();
+
     // have to make the createSystemThread method in implements Class.
     //private void createSystemThread ();
 }

@@ -25,7 +25,7 @@ class IlluminatiDataExecutorImplTest extends Specification {
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
-        IlluminatiDataExecutorImpl.getQueueSize() == 1;
+        illuminatiExecutor.getQueueSize() == 1;
     }
 
     def "process illuminati model from queue" () {
@@ -43,8 +43,27 @@ class IlluminatiDataExecutorImplTest extends Specification {
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
-        illuminatiExecutor.getQueueSize() == 1;
+        illuminatiExecutor.getQueueSize() == 2;
         illuminatiExecutor.deQueue() != null;
+        illuminatiExecutor.getQueueSize() == 1;
+    }
+
+    def "illuminati data thread test" () {
+        setup:
+        final HttpServletRequest request = Mock(HttpServletRequest.class);
+        final MethodSignature signature = Mock(MethodSignature.class);
+        final Object[] args = null;
+        long elapsedTime = 3l;
+        final Object output = "test";
+
+        IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModel(request, signature, args, elapsedTime, output);
+        IlluminatiExecutor<IlluminatiDataInterfaceModel> illuminatiExecutor = new IlluminatiDataExecutorImpl();
+        illuminatiExecutor.createSystemThread();
+
+        when:
+        illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
+
+        then:
         illuminatiExecutor.getQueueSize() == 0;
     }
 }

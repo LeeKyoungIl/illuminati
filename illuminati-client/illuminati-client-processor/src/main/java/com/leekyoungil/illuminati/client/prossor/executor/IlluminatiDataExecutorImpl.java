@@ -1,8 +1,5 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
-import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
-import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
-import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -14,12 +11,10 @@ import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,7 +25,7 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
     private static final Logger ILLUMINATI_DATA_EXECUTOR_LOGGER = LoggerFactory.getLogger(IlluminatiDataExecutorImpl.class);
 
     // ################################################################################################################
-    // ### init illuminati data queue                                                                               ###
+    // ### init illuminati data queue                                 z                                              ###
     // ################################################################################################################
     private static final int ILLUMINATI_DATA_BAK_LOG = 10000;
     private static final long ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS = 1000;
@@ -39,50 +34,29 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
     private final static BlockingQueue<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_BLOCKING_QUEUE = new LinkedBlockingQueue<IlluminatiDataInterfaceModel>(ILLUMINATI_DATA_BAK_LOG);
 
     // ################################################################################################################
-    // ### init illuminati broker                                                                                   ###
-    // ################################################################################################################
-    public static IlluminatiInfraTemplate ILLUMINATI_TEMPLATE;
-    public static String ILLUMINATI_BROKER;
-
-    public static String PARENT_MODULE_NAME;
-    public static ServerInfo SERVER_INFO;
-    public static Map<String, Object> JVM_INFO;
-
-    // ################################################################################################################
     // ### init illuminati template executor                                                                        ###
     // ################################################################################################################
     private static IlluminatiExecutor<IlluminatiTemplateInterfaceModel> ILLUMINATI_TEMPLATE_EXECUTOR = new IlluminatiTemplateExecutorImpl();
 
+    // ################################################################################################################
+    // ### init illuminati basic system variables                                                                   ###
+    // ################################################################################################################
+    private static String PARENT_MODULE_NAME;
+    private static ServerInfo SERVER_INFO;
+    private static Map<String, Object> JVM_INFO;
+
     @Override public synchronized void init () {
-        if (ILLUMINATI_TEMPLATE == null) {
-            ILLUMINATI_BROKER = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker");
+        IlluminatiCommon.init();
 
-            if ("kafka".equals(ILLUMINATI_BROKER)) {
-                ILLUMINATI_TEMPLATE = new KafkaInfraTemplateImpl("illuminati");
-            } else if ("rabbitmq".equals(ILLUMINATI_BROKER)) {
-                ILLUMINATI_TEMPLATE = new RabbitmqInfraTemplateImpl("illuminati");
-            } else {
-                ILLUMINATI_TEMPLATE = null;
-                ILLUMINATI_DATA_EXECUTOR_LOGGER.error("Sorry. check your properties of Illuminati");
-                new Exception("Sorry. check your properties of Illuminati");
-                return;
-            }
+        ILLUMINATI_TEMPLATE_EXECUTOR.init();
 
-            if (ILLUMINATI_TEMPLATE == null || ILLUMINATI_TEMPLATE.canIConnect() == false) {
-                return;
-            }
+        PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName");
+        SERVER_INFO = new ServerInfo(true);
+        // get basic JVM setting info only once.
+        JVM_INFO = SystemUtil.getJvmInfo();
 
-            IlluminatiCommon.init();
-
-            PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName");
-            SERVER_INFO = new ServerInfo(true);
-            // get basic JVM setting info only once.
-            JVM_INFO = SystemUtil.getJvmInfo();
-            // create illuminati template queue thread for send to the IlluminatiDataInterfaceModel.
-            this.createSystemThread();
-            // ILLUMINATI_TEMPLATE_EXECUTOR initialization
-            ILLUMINATI_TEMPLATE_EXECUTOR.init();
-        }
+        // create illuminati template queue thread for send to the IlluminatiDataInterfaceModel.
+        this.createSystemThread();
     }
 
     // ################################################################################################################
@@ -128,12 +102,23 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
         return ILLUMINATI_DATA_BLOCKING_QUEUE.size();
     }
 
-    public static boolean illuminatiTemplateIsNull () {
-        if (ILLUMINATI_TEMPLATE == null) {
-            return true;
-        }
+    @Override public void createSystemThread () {
+        final Runnable runnableFirst = new Runnable() {
+            public void run() {
+                while (true) {
+                    final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = deQueue();
+                    if (illuminatiDataInterfaceModel != null) {
+                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                            sendToNextStep(illuminatiDataInterfaceModel);
+                        } else {
+                            //IlluminatiTemplateExecutorImpl.sendToIlluminatiByDebug(illuminatiTemplateInterfaceModel);
+                        }
+                    }
+                }
+            }
+        };
 
-        return false;
+        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_SEND_TO_TEMPLATE_QUEUE_THREAD");
     }
 
     // ################################################################################################################
@@ -167,24 +152,5 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
         } catch (Exception ex) {
             ILLUMINATI_DATA_EXECUTOR_LOGGER.debug("error : check your broker. ("+ex.toString()+")");
         }
-    }
-
-    private void createSystemThread () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (true) {
-                    final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = deQueue();
-                    if (illuminatiDataInterfaceModel != null) {
-                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-                            sendToNextStep(illuminatiDataInterfaceModel);
-                        } else {
-                            //IlluminatiTemplateExecutorImpl.sendToIlluminatiByDebug(illuminatiTemplateInterfaceModel);
-                        }
-                    }
-                }
-            }
-        };
-
-        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_SEND_TO_TEMPLATE_QUEUE_THREAD");
     }
 }

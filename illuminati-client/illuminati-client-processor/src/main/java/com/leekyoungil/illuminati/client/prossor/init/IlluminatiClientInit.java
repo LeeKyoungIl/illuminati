@@ -30,6 +30,8 @@ public class IlluminatiClientInit {
     private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = new IlluminatiDataExecutorImpl();
 
     public synchronized static void init () {
+        ILLUMINATI_DATA_EXECUTOR.init();
+
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
     }
@@ -80,7 +82,7 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        if (IlluminatiDataExecutorImpl.illuminatiTemplateIsNull() == true || !IlluminatiClientInit.checkSamplingRate()) {
+        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsNull() == true || !IlluminatiClientInit.checkSamplingRate()) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -125,7 +127,7 @@ public class IlluminatiClientInit {
             return IlluminatiClientInit.executeIlluminati(pjp, request);
         }
 
-        if (IlluminatiDataExecutorImpl.illuminatiTemplateIsNull() == true) {
+        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsNull() == true) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }

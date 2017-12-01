@@ -1,17 +1,23 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
+import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
+import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
+import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
+import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
 import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.ServerInfo;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import static com.leekyoungil.illuminati.client.prossor.executor.IlluminatiDataExecutorImpl.ILLUMINATI_TEMPLATE;
 
 public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<IlluminatiTemplateInterfaceModel> {
 
@@ -26,31 +32,19 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
 
     private final static BlockingQueue<IlluminatiTemplateInterfaceModel> ILLUMINATI_MODEL_BLOCKING_QUEUE = new LinkedBlockingQueue<IlluminatiTemplateInterfaceModel>(ILLUMINATI_BAK_LOG);
 
+    // ################################################################################################################
+    // ### init illuminati broker                                                                                   ###
+    // ################################################################################################################
+    private static IlluminatiInfraTemplate ILLUMINATI_TEMPLATE;
+
     @Override public synchronized void init () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel = ILLUMINATI_MODEL_BLOCKING_QUEUE.poll(ILLUMINATI_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-                        if (illuminatiTemplateInterfaceModel != null) {
-                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-                                sendToNextStep(illuminatiTemplateInterfaceModel);
-                            } else {
-                                IlluminatiTemplateExecutorImpl.sendToIlluminatiByDebug(illuminatiTemplateInterfaceModel);
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to dequeing the rabbitmq queue.. ("+e.getMessage()+")");
-                    } catch (Exception e) {
-                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to send the rabbitmq queue.. ("+e.getMessage()+")");
-                    }
-                }
-            }
-        };
+        if (ILLUMINATI_TEMPLATE == null) {
+            ILLUMINATI_TEMPLATE = this.initIlluminatiTemplate();
+        }
 
-        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_SENDER_THREAD");
-
-        IlluminatiTemplateExecutorImpl.createDebugThread();
+        if (ILLUMINATI_TEMPLATE != null) {
+            this.createSystemThread();
+        }
     }
 
     // ################################################################################################################
@@ -78,6 +72,12 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
     }
 
     @Override public IlluminatiTemplateInterfaceModel deQueue() {
+        try {
+            return ILLUMINATI_MODEL_BLOCKING_QUEUE.poll(ILLUMINATI_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to dequeing the rabbitmq queue.. ("+e.getMessage()+")");
+        }
+
         return null;
     }
 
@@ -90,10 +90,64 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
         ILLUMINATI_TEMPLATE.sendToIlluminati(illuminatiTemplateInterfaceModel.getJsonString());
     }
 
+    @Override public void createSystemThread () {
+        final Runnable runnableFirst = new Runnable() {
+            public void run() {
+                while (true) {
+                    try {
+                        final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel = deQueue();
+                        if (illuminatiTemplateInterfaceModel != null) {
+                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                                sendToNextStep(illuminatiTemplateInterfaceModel);
+                            } else {
+                                IlluminatiTemplateExecutorImpl.sendToIlluminatiByDebug(illuminatiTemplateInterfaceModel);
+                            }
+                        }
+                    } catch (Exception e) {
+                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to send the rabbitmq queue.. ("+e.getMessage()+")");
+                    }
+                }
+            }
+        };
+
+        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_SENDER_THREAD");
+
+        IlluminatiTemplateExecutorImpl.createDebugThread();
+    }
+
+    public static boolean illuminatiTemplateIsNull () {
+        if (ILLUMINATI_TEMPLATE == null) {
+            return true;
+        }
+
+        return false;
+    }
+
     // ################################################################################################################
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
+    private IlluminatiInfraTemplate initIlluminatiTemplate () {
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker");
+        IlluminatiInfraTemplate illuminatiInfraTemplate;
+
+        if ("kafka".equals(illuminatiBroker)) {
+            illuminatiInfraTemplate = new KafkaInfraTemplateImpl("illuminati");
+        } else if ("rabbitmq".equals(illuminatiBroker)) {
+            illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
+        } else {
+            illuminatiInfraTemplate = null;
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.error("Sorry. check your properties of Illuminati");
+            new Exception("Sorry. check your properties of Illuminati");
+            return null;
+        }
+
+        if (illuminatiInfraTemplate == null || illuminatiInfraTemplate.canIConnect() == false) {
+            return null;
+        }
+
+        return illuminatiInfraTemplate;
+    }
     /**
      * only execute at debug
      * @param illuminatiTemplateInterfaceModel
