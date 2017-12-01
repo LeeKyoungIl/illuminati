@@ -125,29 +125,17 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private void addDataOnIlluminatiModel (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel, final HttpServletRequest request) {
-        RequestHeaderModel requestHeaderModel = new RequestHeaderModel(request);
-        requestHeaderModel.setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID));
-        requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID));
-        requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
-
-        final String illuminatiUniqueUserIdKeyName = "illuminatiUniqueUserId";
+    private void addDataOnIlluminatiModel (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
         illuminatiTemplateInterfaceModel.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
-        illuminatiTemplateInterfaceModel.initUniqueUserId(SystemUtil.getValueFromHeaderByKey(request, illuminatiUniqueUserIdKeyName));
-        illuminatiTemplateInterfaceModel.initReqHeaderInfo(requestHeaderModel);
-        illuminatiTemplateInterfaceModel.loadClientInfo(ConvertUtil.getClientInfoFromHttpRequest(request));
-        illuminatiTemplateInterfaceModel.staticInfo(ConvertUtil.getStaticInfoFromHttpRequest(request));
-        illuminatiTemplateInterfaceModel.isActiveChaosBomber(ConvertUtil.getChaosBomberFromHttpRequest(request));
-        illuminatiTemplateInterfaceModel.initBasicJvmInfo(SystemUtil.getJvmInfo());
+        illuminatiTemplateInterfaceModel.initBasicJvmInfo(JVM_INFO);
         illuminatiTemplateInterfaceModel.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
-        illuminatiTemplateInterfaceModel.checkAndSetTransactionIdFromPostBody(requestHeaderModel.getPostContentBody());
         illuminatiTemplateInterfaceModel.setJavascriptUserAction();
     }
 
     private void sendToIlluminatiTemplateQueue (final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
         try {
             final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel = new IlluminatiTemplateInterfaceModel(illuminatiDataInterfaceModel);
-            this.addDataOnIlluminatiModel(illuminatiTemplateInterfaceModel, illuminatiDataInterfaceModel.getRequest());
+            this.addDataOnIlluminatiModel(illuminatiTemplateInterfaceModel);
             ILLUMINATI_TEMPLATE_EXECUTOR.addToQueue(illuminatiTemplateInterfaceModel);
         } catch (Exception ex) {
             ILLUMINATI_DATA_EXECUTOR_LOGGER.debug("error : check your broker. ("+ex.toString()+")");

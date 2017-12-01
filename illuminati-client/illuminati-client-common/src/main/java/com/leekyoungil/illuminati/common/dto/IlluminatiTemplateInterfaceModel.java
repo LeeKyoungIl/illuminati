@@ -54,11 +54,17 @@ public class IlluminatiTemplateInterfaceModel implements Serializable {
         this.paramValues = illuminatiDataInterfaceModel.getParamValues();
 
         this.setMethod(illuminatiDataInterfaceModel.getSignature());
+        this.initReqHeaderInfo(illuminatiDataInterfaceModel.getRequestHeaderModel());
+        this.checkAndSetTransactionIdFromPostBody(this.header.getPostContentBody());
+        this.initUniqueUserId(illuminatiDataInterfaceModel.getIlluminatiUniqueUserId());
+        this.loadClientInfo(illuminatiDataInterfaceModel.getClientInfoMap());
+        this.staticInfo(illuminatiDataInterfaceModel.getStaticInfo());
+        this.isActiveChaosBomber(illuminatiDataInterfaceModel.isActiveChaosBomber());
     }
 
-    public void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
-        this.header = requestHeaderModel;
-    }
+    // ################################################################################################################
+    // ### public methods                                                                                           ###
+    // ################################################################################################################
 
     public void initBasicJvmInfo (final Map<String, Object> jvmInfo) {
         this.jvmInfo = jvmInfo;
@@ -77,28 +83,6 @@ public class IlluminatiTemplateInterfaceModel implements Serializable {
         for (Map.Entry<String, Object> entry : jvmMemoryInfo.entrySet()) {
             this.jvmInfo.put(entry.getKey(), entry.getValue());
         }
-    }
-
-    public void loadClientInfo (final Map<String, String> clientInfoMap) {
-        if (clientInfoMap == null) {
-            return;
-        }
-
-        if (this.general == null) {
-            this.general = new RequestGeneralModel();
-        }
-
-        this.general.initClientInfo(clientInfoMap);
-    }
-
-    public void staticInfo (final Map<String, Object> staticInfo) {
-        if (this.serverInfo != null && !this.serverInfo.isAreadySetServerDomainAndPort()) {
-            this.serverInfo.setStaticInfoFromRequest(staticInfo);
-        }
-    }
-
-    public void isActiveChaosBomber (boolean isActiveChaosBomber) {
-        this.isActiveChaosBomber = isActiveChaosBomber;
     }
 
     public String getJsonString () {
@@ -124,11 +108,53 @@ public class IlluminatiTemplateInterfaceModel implements Serializable {
         }
     }
 
-    public void initUniqueUserId (String illuminatiUniqueUserId) {
+    // ################################################################################################################
+    // ### protected methods                                                                                        ###
+    // ################################################################################################################
+
+    protected String getId () {
+        return this.id;
+    }
+
+    protected String getParentModuleName () {
+        return this.parentModuleName;
+    }
+
+    // ################################################################################################################
+    // ### private methods                                                                                          ###
+    // ################################################################################################################
+
+    private void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
+        this.header = requestHeaderModel;
+    }
+
+    private void loadClientInfo (final Map<String, String> clientInfoMap) {
+        if (clientInfoMap == null) {
+            return;
+        }
+
+        if (this.general == null) {
+            this.general = new RequestGeneralModel();
+        }
+
+        this.general.initClientInfo(clientInfoMap);
+    }
+
+    private void staticInfo (final Map<String, Object> staticInfo) {
+        if (this.serverInfo != null && !this.serverInfo.isAreadySetServerDomainAndPort()) {
+            this.serverInfo.setStaticInfoFromRequest(staticInfo);
+        }
+    }
+
+    private void isActiveChaosBomber (boolean isActiveChaosBomber) {
+        this.isActiveChaosBomber = isActiveChaosBomber;
+    }
+
+    private void initUniqueUserId (String illuminatiUniqueUserId) {
         this.illuminatiUniqueUserId = illuminatiUniqueUserId;
     }
 
-    public void checkAndSetTransactionIdFromPostBody (String postBody) {
+    private void checkAndSetTransactionIdFromPostBody (String postBody) {
         if (StringObjectUtils.isValid(postBody) == false) {
             return;
         }
@@ -162,14 +188,6 @@ public class IlluminatiTemplateInterfaceModel implements Serializable {
 
     private void generateAggregateId () {
         this.id = StringObjectUtils.generateId(this.localTime.getTime(), null);
-    }
-
-    protected String getId () {
-        return this.id;
-    }
-
-    protected String getParentModuleName () {
-        return this.parentModuleName;
     }
 
     private void setMethod (final MethodSignature methodSignature) {

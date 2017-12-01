@@ -367,8 +367,7 @@ public class RequestHeaderModel {
         if (request != null) {
             this.init(request);
             //this.getIlluminatiProcId(request);
-
-            if ("post".equals(request.getMethod().toLowerCase())) {
+            if ("post".equalsIgnoreCase(request.getMethod())) {
                 try {
                     this.postContentBody = StringObjectUtils.getPostBodyString(request);
                 } catch (IOException ex) {
@@ -429,7 +428,6 @@ public class RequestHeaderModel {
                 REQUEST_HEADER_MODEL_LOGGER.debug("Sorry. check your header (There Exception is no problem in operation). ("+ex.toString()+")");
             }
         }
-
     }
 
     @Deprecated
