@@ -1,6 +1,6 @@
 # Project illuminati : illuminati-client-jscollector
 
-## illuminati-client-jscollector is client browser side module of illuminati. it's help to collect User event data.
+## illuminati-client-jscollector is client browser side module of illuminati. it help to collect User event data.
 * If you add the module, you can easy to collect User event data from browser. (keyboard press or mouse click)
 
 ## You can be collected a User event data from browser to server end of result response by one transaction id.
@@ -63,11 +63,10 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.0'
     illuminatiJsAgent.init();
 </script>   
 ```  
- * 'isAutoCollect' value is set 'true' then it collect event data of user every 15 second by automatically. (default)
- * 'isAutoCollect' value is set 'false' then it can provide collect event data only once when something request to server (submit or ajax).
+ * 'isAutoCollect' value set 'true' then it collect event data of user every 15 second by automatically. (default)
+ * 'isAutoCollect' value set 'false' then it can provide collect event data only once when something request to server (submit or ajax).
  
 ## Optional features : illuminatiUniqueUserId (User distinguishable value)
- * 유져별로 event data 를 보고 싶은경우 해당 값을 설정해 주면 유저별로 데이터를 검색할수 있습니다.
  * If you want to see event data per user, then it set something (id or user number..), you can search data per user.
 
 ## illuminatiUniqueUserId sample
