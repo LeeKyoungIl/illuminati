@@ -1,5 +1,6 @@
-package com.leekyoungil.illuminati.client.prossor.executor;
+package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
