@@ -4,27 +4,26 @@ import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
-import com.leekyoungil.illuminati.common.IlluminatiCommon;
-import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
-import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
-import com.leekyoungil.illuminati.common.dto.ServerInfo;
+import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
+ */
 public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<IlluminatiTemplateInterfaceModel> {
 
     private static final Logger ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER = LoggerFactory.getLogger(IlluminatiTemplateExecutorImpl.class);
 
     // ################################################################################################################
-    // ### init illuminati data queue                                                                               ###
+    // ### init illuminati template queue                                                                           ###
     // ################################################################################################################
     private static final int ILLUMINATI_BAK_LOG = 10000;
     private static final long ILLUMINATI_DEQUEUING_TIMEOUT_MS = 1000;
@@ -59,26 +58,36 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
                 ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to enqueuing the Illuminati queue.. ("+e.getMessage()+")");
             }
         } else {
-            IlluminatiTemplateExecutorImpl.executeToIlluminatiByDebug(illuminatiTemplateInterfaceModel);
+            this.addToQueueByDebug(illuminatiTemplateInterfaceModel);
         }
     }
 
     @Override public int getQueueSize () {
         if (ILLUMINATI_MODEL_BLOCKING_QUEUE == null) {
-            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("ILLUMINATI_DATA_BLOCKING_QUEUE is must not null.");
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("ILLUMINATI_TEMPLATE_BLOCKING_QUEUE is must not null.");
             return 0;
         }
         return ILLUMINATI_MODEL_BLOCKING_QUEUE.size();
     }
 
     @Override public IlluminatiTemplateInterfaceModel deQueue() {
-        try {
-            return ILLUMINATI_MODEL_BLOCKING_QUEUE.poll(ILLUMINATI_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to dequeing the rabbitmq queue.. ("+e.getMessage()+")");
-        }
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+            try {
+                return ILLUMINATI_MODEL_BLOCKING_QUEUE.poll(ILLUMINATI_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to dequeing the rabbitmq queue.. ("+e.getMessage()+")");
+            }
 
-        return null;
+            return null;
+        } else {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+
+            return this.deQueueByDebug();
+        }
     }
 
     @Override public void sendToNextStep(IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
@@ -100,7 +109,12 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
                             if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                                 sendToNextStep(illuminatiTemplateInterfaceModel);
                             } else {
-                                IlluminatiTemplateExecutorImpl.sendToIlluminatiByDebug(illuminatiTemplateInterfaceModel);
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    // ignore
+                                }
+                                sendToNextStepByDebug(illuminatiTemplateInterfaceModel);
                             }
                         }
                     } catch (Exception e) {
@@ -112,11 +126,11 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
 
         SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_SENDER_THREAD");
 
-        IlluminatiTemplateExecutorImpl.createDebugThread();
+        this.createDebugThread();
     }
 
-    public static boolean illuminatiTemplateIsNull () {
-        if (ILLUMINATI_TEMPLATE == null) {
+    public static boolean illuminatiTemplateIsActive () {
+        if (ILLUMINATI_TEMPLATE != null && ILLUMINATI_TEMPLATE.canIConnect() == true) {
             return true;
         }
 
@@ -136,8 +150,7 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
         } else if ("rabbitmq".equals(illuminatiBroker)) {
             illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
         } else {
-            illuminatiInfraTemplate = null;
-            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.error("Sorry. check your properties of Illuminati");
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Sorry. check your properties of Illuminati");
             new Exception("Sorry. check your properties of Illuminati");
             return null;
         }
@@ -152,16 +165,18 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
      * only execute at debug
      * @param illuminatiTemplateInterfaceModel
      */
-    private static void executeToIlluminatiByDebug (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
+    @Override public void addToQueueByDebug (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             try {
+                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("template queue current size is "+String.valueOf(this.getQueueSize()));
                 final long start = System.currentTimeMillis();
                 ILLUMINATI_MODEL_BLOCKING_QUEUE.offer(illuminatiTemplateInterfaceModel, ILLUMINATI_ENQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
                 final long elapsedTime = System.currentTimeMillis() - start;
-                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("elapsed time of enqueueing queue is "+elapsedTime+" millisecond");
+                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("template queue after inserted size is "+String.valueOf(this.getQueueSize()));
+                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("elapsed time of enqueueing template queue is "+elapsedTime+" millisecond");
             } catch (InterruptedException e) {
-                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.error("Failed to enqueuing the Illuminati queue.. ("+e.getMessage()+")");
+                ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.error("Failed to enqueuing the template queue.. ("+e.getMessage()+")");
             }
         }
     }
@@ -170,18 +185,50 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
      * only execute at debug
      * @param illuminatiTemplateInterfaceModel
      */
-    private static void sendToIlluminatiByDebug (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
+    private void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
+        // something to check validation.. but.. now not exists.
+        if (ILLUMINATI_TEMPLATE == null) {
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("ILLUMINATI_TEMPLATE is must not null.");
+            return;
+        }
         // debug illuminati rabbitmq queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final long start = System.currentTimeMillis();
             //## sendToIlluminati
             ILLUMINATI_TEMPLATE.sendToIlluminati(illuminatiTemplateInterfaceModel.getJsonString());
             final long elapsedTime = System.currentTimeMillis() - start;
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("template queue current size is "+String.valueOf(this.getQueueSize()));
             ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("elapsed time of Illuminati sent is "+elapsedTime+" millisecond");
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                // ignore
+            }
         }
     }
 
-    private static void createDebugThread () {
+    @Override public IlluminatiTemplateInterfaceModel deQueueByDebug () {
+        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("template queue current size is "+String.valueOf(this.getQueueSize()));
+
+        if (ILLUMINATI_MODEL_BLOCKING_QUEUE == null || this.getQueueSize() == 0) {
+            return null;
+        }
+        try {
+            final long start = System.currentTimeMillis();
+            IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel = ILLUMINATI_MODEL_BLOCKING_QUEUE.poll(ILLUMINATI_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            final long elapsedTime = System.currentTimeMillis() - start;
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("template queue after inserted size is "+String.valueOf(this.getQueueSize()));
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("elapsed time of dequeueing template queue is "+elapsedTime+" millisecond");
+            return illuminatiTemplateInterfaceModel;
+        } catch (InterruptedException e) {
+            ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Failed to dequeing the rabbitmq queue.. ("+e.getMessage()+")");
+        }
+
+        return null;
+    }
+
+    private void createDebugThread () {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final Runnable queueCheckRunnable = new Runnable() {
@@ -189,13 +236,13 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
                     while (true) {
                         ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("");
                         ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("#########################################################################################################");
-                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("# queue buffer debug info");
-                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
-                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("# current queue count : "+ILLUMINATI_MODEL_BLOCKING_QUEUE.size());
+                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("## template queue buffer debug info");
+                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
+                        ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("## current template queue count : "+String.valueOf(getQueueSize()));
                         ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.info("#########################################################################################################");
 
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(15000);
                         } catch (InterruptedException e) {
                             // ignore
                         }
@@ -203,7 +250,7 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
                 }
             };
 
-            SystemUtil.createSystemThread(queueCheckRunnable, "ILLUMINATI_QUEUE_CHECK_THREAD");
+            SystemUtil.createSystemThread(queueCheckRunnable, "ILLUMINATI_TEMPLATE_QUEUE_CHECK_THREAD");
         }
     }
 }

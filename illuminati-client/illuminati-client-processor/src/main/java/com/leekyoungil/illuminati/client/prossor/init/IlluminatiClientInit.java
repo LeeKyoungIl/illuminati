@@ -4,6 +4,7 @@ import com.leekyoungil.illuminati.client.annotation.Illuminati;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiDataExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiTemplateExecutorImpl;
+import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
@@ -19,6 +20,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
+ */
 public class IlluminatiClientInit {
 
     private static final Logger ILLUMINATI_INIT_LOGGER = LoggerFactory.getLogger(IlluminatiClientInit.class);
@@ -30,28 +34,16 @@ public class IlluminatiClientInit {
     private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = new IlluminatiDataExecutorImpl();
 
     public synchronized static void init () {
+        IlluminatiCommon.init();
         ILLUMINATI_DATA_EXECUTOR.init();
 
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
     }
 
-    private static boolean checkSamplingRate () {
-        //SAMPLING_RATE_CHECKER.compareAndSet(100, 1);
-
-        // sometimes compareAndSet does not work.
-        // So add this code. This code forces a reset to 1 if greater than 100.
-        if (SAMPLING_RATE_CHECKER.get() > 100) {
-            SAMPLING_RATE_CHECKER.set(1);
-            return true;
-        }
-
-        if (SAMPLING_RATE_CHECKER.getAndIncrement() <= SAMPLING_RATE) {
-            return true;
-        }
-
-        return false;
-    }
+    // ################################################################################################################
+    // ### public methods                                                                                           ###
+    // ################################################################################################################
 
     public static boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
         try {
@@ -76,13 +68,12 @@ public class IlluminatiClientInit {
     }
 
     public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true
-                && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
+        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
             ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
             return pjp.proceed();
         }
 
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsNull() == true || !IlluminatiClientInit.checkSamplingRate()) {
+        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false || !IlluminatiClientInit.checkSamplingRate()) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -97,9 +88,7 @@ public class IlluminatiClientInit {
             throwable = (Throwable) originMethodExecute.get("throwable");
         }
 
-        IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output);
-
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(illuminatiDataInterfaceModel);
+        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
 
         if (throwable != null) {
             throw throwable;
@@ -127,7 +116,7 @@ public class IlluminatiClientInit {
             return IlluminatiClientInit.executeIlluminati(pjp, request);
         }
 
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsNull() == true) {
+        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -145,15 +134,34 @@ public class IlluminatiClientInit {
             request.setAttribute("ChaosBomber", "true");
         }
 
-        IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output);
-
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(illuminatiDataInterfaceModel);
+        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
 
         if (throwable != null) {
             throw throwable;
         }
 
         return output;
+    }
+
+    // ################################################################################################################
+    // ### private methods                                                                                          ###
+    // ################################################################################################################
+
+    private static boolean checkSamplingRate () {
+        //SAMPLING_RATE_CHECKER.compareAndSet(100, 1);
+
+        // sometimes compareAndSet does not work.
+        // So add this code. This code forces a reset to 1 if greater than 100.
+        if (SAMPLING_RATE_CHECKER.get() > 100) {
+            SAMPLING_RATE_CHECKER.set(1);
+            return true;
+        }
+
+        if (SAMPLING_RATE_CHECKER.getAndIncrement() <= SAMPLING_RATE) {
+            return true;
+        }
+
+        return false;
     }
 
     private static Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {

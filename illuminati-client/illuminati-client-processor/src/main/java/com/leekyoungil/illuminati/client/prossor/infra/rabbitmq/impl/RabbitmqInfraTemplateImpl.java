@@ -118,19 +118,19 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# rabbitMq send log");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# successfully transferred dto to Illuminati broker.");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send log");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## successfully transferred dto to Illuminati broker.");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                 }
             }
         } catch (Exception ex) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# rabbitMq send exception log");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# messages : "+ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send exception log");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : "+ex.toString());
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
 
             throw new PublishMessageException("failed to publish message : " + ex.toString());
@@ -151,10 +151,10 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 if (amqpChannelExceptionMessage != null && amqpChannelExceptionLog != null) {
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# amqp channel close exception log");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("# exception message : " + amqpChannelExceptionMessage);
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("# exception log : " + amqpChannelExceptionLog);
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## amqp channel close exception log");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("## exception message : " + amqpChannelExceptionMessage);
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("## exception log : " + amqpChannelExceptionLog);
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                 }
             }
@@ -248,7 +248,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         RABBITMQ_CONNECTION_FACTORY.setShutdownTimeout(VALUE_SHUTDOWN_TIMEOUT_MS);
         RABBITMQ_CONNECTION_FACTORY.setRequestedHeartbeat(VALUE_REQUESTED_HEART_BEAT);
         RABBITMQ_CONNECTION_FACTORY.setAutomaticRecoveryEnabled(VALUE_AUTOMATIC_RECOVERY);
-        RABBITMQ_CONNECTION_FACTORY.setTopologyRecoveryEnabled(VALUE_AUTOMATIC_RECOVERY);
+        RABBITMQ_CONNECTION_FACTORY.setTopologyRecoveryEnabled(VALUE_AUTOMATIC_EXCHANGE_RECOVERY);
         RABBITMQ_CONNECTION_FACTORY.setNetworkRecoveryInterval(VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS);
         RABBITMQ_CONNECTION_FACTORY.setVirtualHost(this.virtualHost);
         RABBITMQ_CONNECTION_FACTORY.setSocketConfigurator(new DefaultSocketConfigurator() {
