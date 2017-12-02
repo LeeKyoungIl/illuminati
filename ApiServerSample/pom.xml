@@ -82,7 +82,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.6</version>
+            <version>0.9.7</version>
             <scope>compile</scope>
         </dependency>
 
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>4.2.2</version>
+            <version>4.3.0</version>
             <scope>compile</scope>
         </dependency>
 

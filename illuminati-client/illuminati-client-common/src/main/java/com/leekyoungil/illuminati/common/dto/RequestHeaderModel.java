@@ -367,8 +367,7 @@ public class RequestHeaderModel {
         if (request != null) {
             this.init(request);
             //this.getIlluminatiProcId(request);
-
-            if ("post".equals(request.getMethod().toLowerCase())) {
+            if ("post".equalsIgnoreCase(request.getMethod())) {
                 try {
                     this.postContentBody = StringObjectUtils.getPostBodyString(request);
                 } catch (IOException ex) {
@@ -418,18 +417,21 @@ public class RequestHeaderModel {
                 field.setAccessible(true);
                 field.set(this, value);
             } catch (Exception ex) {
-                if (this.anotherHeader == null) {
-                    this.anotherHeader = new HashMap<String, String>();
-                }
+                try {
+                    if (this.anotherHeader == null) {
+                        this.anotherHeader = new HashMap<String, String>();
+                    }
 
-                final String key = (String) headerNames.nextElement();
-                final String value = request.getHeader(key);
-                this.anotherHeader.put(key, value);
+                    final String key = (String) headerNames.nextElement();
+                    final String value = request.getHeader(key);
+                    this.anotherHeader.put(key, value);
+                } catch (Exception ex1) {
+                    // ignore
+                }
 
                 REQUEST_HEADER_MODEL_LOGGER.debug("Sorry. check your header (There Exception is no problem in operation). ("+ex.toString()+")");
             }
         }
-
     }
 
     @Deprecated

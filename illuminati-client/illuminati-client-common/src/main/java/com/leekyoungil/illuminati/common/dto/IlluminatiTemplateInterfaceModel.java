@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class IlluminatiModel implements Serializable {
+public class IlluminatiTemplateInterfaceModel implements Serializable {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
@@ -40,25 +40,31 @@ public class IlluminatiModel implements Serializable {
     private Date localTime;
     private Object[] paramValues;
 
-    public IlluminatiModel () {}
+    public IlluminatiTemplateInterfaceModel() {}
 
-    public IlluminatiModel (final Date localTime, final long elapsedTime, final MethodSignature signature, final Object output, final Object[] paramValues) {
-        this.localTime = localTime;
+    public IlluminatiTemplateInterfaceModel(final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
+        this.localTime = new Date();
         this.generateAggregateId();
 
-        this.elapsedTime = elapsedTime;
-        this.output = output;
+        this.elapsedTime = illuminatiDataInterfaceModel.getElapsedTime();
+        this.output = illuminatiDataInterfaceModel.getOutput();
 
         this.timestamp = localTime.getTime();
         this.logTime = DATE_FORMAT_EVENT.format(localTime);
-        this.paramValues = paramValues;
+        this.paramValues = illuminatiDataInterfaceModel.getParamValues();
 
-        this.setMethod(signature.getMethod(), signature.getParameterNames());
+        this.setMethod(illuminatiDataInterfaceModel.getSignature());
+        this.initReqHeaderInfo(illuminatiDataInterfaceModel.getRequestHeaderModel());
+        this.checkAndSetTransactionIdFromPostBody(this.header.getPostContentBody());
+        this.initUniqueUserId(illuminatiDataInterfaceModel.getIlluminatiUniqueUserId());
+        this.loadClientInfo(illuminatiDataInterfaceModel.getClientInfoMap());
+        this.staticInfo(illuminatiDataInterfaceModel.getStaticInfo());
+        this.isActiveChaosBomber(illuminatiDataInterfaceModel.isActiveChaosBomber());
     }
 
-    public void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
-        this.header = requestHeaderModel;
-    }
+    // ################################################################################################################
+    // ### public methods                                                                                           ###
+    // ################################################################################################################
 
     public void initBasicJvmInfo (final Map<String, Object> jvmInfo) {
         this.jvmInfo = jvmInfo;
@@ -77,28 +83,6 @@ public class IlluminatiModel implements Serializable {
         for (Map.Entry<String, Object> entry : jvmMemoryInfo.entrySet()) {
             this.jvmInfo.put(entry.getKey(), entry.getValue());
         }
-    }
-
-    public void loadClientInfo (final Map<String, String> clientInfoMap) {
-        if (clientInfoMap == null) {
-            return;
-        }
-
-        if (this.general == null) {
-            this.general = new RequestGeneralModel();
-        }
-
-        this.general.initClientInfo(clientInfoMap);
-    }
-
-    public void staticInfo (final Map<String, Object> staticInfo) {
-        if (this.serverInfo != null && !this.serverInfo.isAreadySetServerDomainAndPort()) {
-            this.serverInfo.setStaticInfoFromRequest(staticInfo);
-        }
-    }
-
-    public void isActiveChaosBomber (boolean isActiveChaosBomber) {
-        this.isActiveChaosBomber = isActiveChaosBomber;
     }
 
     public String getJsonString () {
@@ -124,11 +108,53 @@ public class IlluminatiModel implements Serializable {
         }
     }
 
-    public void initUniqueUserId (String illuminatiUniqueUserId) {
+    // ################################################################################################################
+    // ### protected methods                                                                                        ###
+    // ################################################################################################################
+
+    protected String getId () {
+        return this.id;
+    }
+
+    protected String getParentModuleName () {
+        return this.parentModuleName;
+    }
+
+    // ################################################################################################################
+    // ### private methods                                                                                          ###
+    // ################################################################################################################
+
+    private void initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
+        this.header = requestHeaderModel;
+    }
+
+    private void loadClientInfo (final Map<String, String> clientInfoMap) {
+        if (clientInfoMap == null) {
+            return;
+        }
+
+        if (this.general == null) {
+            this.general = new RequestGeneralModel();
+        }
+
+        this.general.initClientInfo(clientInfoMap);
+    }
+
+    private void staticInfo (final Map<String, Object> staticInfo) {
+        if (this.serverInfo != null && !this.serverInfo.isAreadySetServerDomainAndPort()) {
+            this.serverInfo.setStaticInfoFromRequest(staticInfo);
+        }
+    }
+
+    private void isActiveChaosBomber (boolean isActiveChaosBomber) {
+        this.isActiveChaosBomber = isActiveChaosBomber;
+    }
+
+    private void initUniqueUserId (String illuminatiUniqueUserId) {
         this.illuminatiUniqueUserId = illuminatiUniqueUserId;
     }
 
-    public void checkAndSetTransactionIdFromPostBody (String postBody) {
+    private void checkAndSetTransactionIdFromPostBody (String postBody) {
         if (StringObjectUtils.isValid(postBody) == false) {
             return;
         }
@@ -164,18 +190,10 @@ public class IlluminatiModel implements Serializable {
         this.id = StringObjectUtils.generateId(this.localTime.getTime(), null);
     }
 
-    protected String getId () {
-        return this.id;
-    }
-
-    protected String getParentModuleName () {
-        return this.parentModuleName;
-    }
-
-    private void setMethod (final Method method, final String[] paramNames) {
+    private void setMethod (final MethodSignature methodSignature) {
         if (this.general == null) {
             this.general = new RequestGeneralModel();
         }
-        this.general.setMethod(method, paramNames, this.paramValues);
+        this.general.setMethod(methodSignature.getMethod(), methodSignature.getParameterNames(), this.paramValues);
     }
 }

@@ -129,7 +129,7 @@ public class SystemUtil {
                         }
 
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(10000);
                         } catch (InterruptedException e) {
                             // ignore
                         }
@@ -137,7 +137,7 @@ public class SystemUtil {
                 }
             };
 
-            SystemUtil.createSystemThread(threadCheckRunnable, "debug");
+            SystemUtil.createSystemThread(threadCheckRunnable, "ILLUMINATI_DEBUG_THREAD");
         }
     }
 }

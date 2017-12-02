@@ -1,12 +1,10 @@
 package com.leekyoungil.illuminati.esconsumer.listener;
 
-import com.leekyoungil.illuminati.client.prossor.init.IlluminatiClientInit;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
-import com.leekyoungil.illuminati.esconsumer.config.model.SampleEsModelImpl;
+import com.leekyoungil.illuminati.esconsumer.config.model.SampleEsTemplateInterfaceModelImpl;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +32,11 @@ public class SubscribeListener {
 
     @StreamListener(Sink.INPUT)
     public void subscribe (Message<?> message) {
-        SampleEsModelImpl sampleBuyEsModel = null;
+        SampleEsTemplateInterfaceModelImpl sampleBuyEsModel = null;
 
         try {
             String jsonString = (String) message.getPayload();
-            sampleBuyEsModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsModelImpl.class);
+            sampleBuyEsModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsTemplateInterfaceModelImpl.class);
         } catch (Exception ex) {
             SUB_LOGGER.error("Sorry. something is wrong in Parsing received dto. ("+ex.toString()+")");
             return;
