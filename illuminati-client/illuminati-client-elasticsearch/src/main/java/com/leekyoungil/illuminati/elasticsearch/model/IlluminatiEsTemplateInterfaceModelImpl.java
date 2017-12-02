@@ -2,7 +2,7 @@ package com.leekyoungil.illuminati.elasticsearch.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.common.dto.IlluminatiModel;
+import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
@@ -15,7 +15,6 @@ import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.VersionNumber;
 import net.sf.uadetector.service.UADetectorServiceFactory;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +28,10 @@ import java.util.Map;
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
 @EsDocument(indexName = "illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
-public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements IlluminatiEsModel {
+public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiTemplateInterfaceModel implements IlluminatiEsModel {
 
     private static final long serialVersionUID = 7526472295622776147L;
-    private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsModelImpl.class);
+    private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImpl.class);
 
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();
 
@@ -49,9 +48,9 @@ public abstract class IlluminatiEsModelImpl extends IlluminatiModel implements I
 
     private final String encodingCharset = "UTF-8";
 
-    public IlluminatiEsModelImpl () {}
+    public IlluminatiEsTemplateInterfaceModelImpl() {}
 
-//    public IlluminatiEsModelImpl(long elapsedTime, Object output, String id, long timestamp) {
+//    public IlluminatiEsTemplateInterfaceModelImpl(long elapsedTime, Object output, String id, long timestamp) {
 //        super(elapsedTime, output, id, timestamp);
 //    }
 

@@ -14,7 +14,7 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.7.5</version>
+  <version>0.7.7</version>
 </dependency>
 ```
 
@@ -22,7 +22,7 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.7.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.7.7'
 ```
 
 ===============================================================================
@@ -42,7 +42,7 @@ compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.7.5'
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.7.5</version>
+  <version>0.7.7</version>
 </dependency>
 ```
 
@@ -50,5 +50,5 @@ compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.7.5'
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.7.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.7.7'
 ```
