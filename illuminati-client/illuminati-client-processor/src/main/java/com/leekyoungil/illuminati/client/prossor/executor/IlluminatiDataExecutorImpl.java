@@ -135,7 +135,7 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
             }
         };
 
-        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_TEMPLATE_QUEUE_THREAD");
+        SystemUtil.createSystemThread(runnableFirst, "ILLUMINATI_ADD_TO_TEMPLATE_QUEUE_THREAD");
     }
 
     // ################################################################################################################
