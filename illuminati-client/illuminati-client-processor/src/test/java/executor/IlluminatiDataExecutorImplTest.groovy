@@ -1,6 +1,6 @@
 package executor
 
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiDataExecutorImpl
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
 import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel
 import org.aspectj.lang.reflect.MethodSignature

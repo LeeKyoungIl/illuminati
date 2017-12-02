@@ -1,9 +1,9 @@
 package com.leekyoungil.illuminati.client.prossor.init;
 
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiDataExecutorImpl;
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiTemplateExecutorImpl;
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
