@@ -37,7 +37,7 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
     // ################################################################################################################
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
-    private static IlluminatiInfraTemplate ILLUMINATI_TEMPLATE;
+    private static final IlluminatiInfraTemplate ILLUMINATI_TEMPLATE = initIlluminatiTemplate();
 
     private IlluminatiTemplateExecutorImpl () { }
 
@@ -54,10 +54,6 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
     }
 
     @Override public synchronized void init () {
-        if (ILLUMINATI_TEMPLATE == null) {
-            ILLUMINATI_TEMPLATE = this.initIlluminatiTemplate();
-        }
-
         if (ILLUMINATI_TEMPLATE != null) {
             this.createSystemThread();
         }
@@ -158,7 +154,7 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private IlluminatiInfraTemplate initIlluminatiTemplate () {
+    private static IlluminatiInfraTemplate initIlluminatiTemplate () {
         final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
@@ -168,7 +164,6 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
             illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
         } else {
             ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER.warn("Sorry. check your properties of Illuminati");
-            new Exception("Sorry. check your properties of Illuminati");
             return null;
         }
 
