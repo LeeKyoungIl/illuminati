@@ -23,8 +23,10 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
 
     private static final Logger ILLUMINATI_DATA_EXECUTOR_LOGGER = LoggerFactory.getLogger(IlluminatiDataExecutorImpl.class);
 
+    private static IlluminatiDataExecutorImpl ILLUMINATI_DATA_EXECUTOR_IMPL;
+
     // ################################################################################################################
-    // ### init illuminati data queue                                 z                                              ###
+    // ### init illuminati data queue                                                                               ###
     // ################################################################################################################
     private static final int ILLUMINATI_DATA_BAK_LOG = 10000;
     private static final long ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS = 1000;
@@ -35,22 +37,32 @@ public class IlluminatiDataExecutorImpl implements IlluminatiExecutor<Illuminati
     // ################################################################################################################
     // ### init illuminati template executor                                                                        ###
     // ################################################################################################################
-    private static IlluminatiExecutor<IlluminatiTemplateInterfaceModel> ILLUMINATI_TEMPLATE_EXECUTOR = new IlluminatiTemplateExecutorImpl();
+    private static IlluminatiExecutor<IlluminatiTemplateInterfaceModel> ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance();
 
     // ################################################################################################################
     // ### init illuminati basic system variables                                                                   ###
     // ################################################################################################################
-    private static String PARENT_MODULE_NAME;
-    private static ServerInfo SERVER_INFO;
-    private static Map<String, Object> JVM_INFO;
+    private final static String PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName");
+    private final static ServerInfo SERVER_INFO = new ServerInfo(true);;
+    // get basic JVM setting info only once.
+    private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();;
+
+    private IlluminatiDataExecutorImpl () { }
+
+    public static IlluminatiDataExecutorImpl getInstance () {
+        if (ILLUMINATI_DATA_EXECUTOR_IMPL == null) {
+            synchronized (IlluminatiDataExecutorImpl.class) {
+                if (ILLUMINATI_DATA_EXECUTOR_IMPL == null) {
+                    ILLUMINATI_DATA_EXECUTOR_IMPL = new IlluminatiDataExecutorImpl();
+                }
+            }
+        }
+
+        return ILLUMINATI_DATA_EXECUTOR_IMPL;
+    }
 
     @Override public synchronized void init () {
         ILLUMINATI_TEMPLATE_EXECUTOR.init();
-
-        PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName");
-        SERVER_INFO = new ServerInfo(true);
-        // get basic JVM setting info only once.
-        JVM_INFO = SystemUtil.getJvmInfo();
 
         // create illuminati template queue thread for send to the IlluminatiDataInterfaceModel.
         this.createSystemThread();
