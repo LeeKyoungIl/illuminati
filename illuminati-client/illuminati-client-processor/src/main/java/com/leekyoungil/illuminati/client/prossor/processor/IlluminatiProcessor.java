@@ -124,14 +124,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         //BrokerType brokerType = BrokerType.getEnumType(illuminatiProperties.getBroker());
 
-        final String staticConfigurationTemplate = ""
-                + "     static {\r\n"
-                + "         try {\r\n"
-                + "             IlluminatiClientInit.init();\r\n"
-                + "         } catch (Exception ex) {\r\n"
-                + "             // ignore\r\n"
-                + "         }\r\n"
-                + "     }\r\n";
+        final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n";
 
         // step 3.  properties by broker
         String implClassName;
@@ -163,7 +156,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
-                + "         if (IlluminatiClientInit.checkIlluminatiIsIgnore(pjp) == true) {\r\n"
+                + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp) == true) {\r\n"
                 + "             return pjp.proceed();\r\n"
                 + "         }\r\n"
                 + "         HttpServletRequest request = null;\r\n"
@@ -172,7 +165,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 + "         } catch (Exception ex) {\r\n"
                 + "             //ignore this exception.\r\n"
                 + "         }\r\n"
-                + "         return IlluminatiClientInit.executeIlluminati"+illuminatiExecuteMethod+"(pjp, request);\r\n"
+                + "         return illuminatiClientInit.executeIlluminati"+illuminatiExecuteMethod+"(pjp, request);\r\n"
                 + "     }\r\n"
                 + "}\r\n"
                 ;

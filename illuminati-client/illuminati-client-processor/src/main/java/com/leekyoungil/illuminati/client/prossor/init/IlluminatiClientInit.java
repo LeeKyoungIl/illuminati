@@ -27,13 +27,15 @@ public class IlluminatiClientInit {
 
     private static final Logger ILLUMINATI_INIT_LOGGER = LoggerFactory.getLogger(IlluminatiClientInit.class);
 
+    private static IlluminatiClientInit ILLUMINATI_CLIENT_INIT_INSTANCE;
+
     private static final AtomicInteger SAMPLING_RATE_CHECKER = new AtomicInteger(1);
     private static int SAMPLING_RATE = 20;
     private static int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
-    private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = new IlluminatiDataExecutorImpl();
+    private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance();
 
-    public synchronized static void init () {
+    static {
         IlluminatiCommon.init();
         ILLUMINATI_DATA_EXECUTOR.init();
 
@@ -41,11 +43,25 @@ public class IlluminatiClientInit {
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
     }
 
+    private IlluminatiClientInit () {}
+
+    public static IlluminatiClientInit getInstance () {
+        if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
+            synchronized (IlluminatiClientInit.class) {
+                if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
+                    ILLUMINATI_CLIENT_INIT_INSTANCE = new  IlluminatiClientInit();
+                }
+            }
+        }
+
+        return ILLUMINATI_CLIENT_INIT_INSTANCE;
+    }
+
     // ################################################################################################################
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public static boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
+    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
         try {
             final MethodSignature signature = (MethodSignature) pjp.getSignature();
             final Method method = signature.getMethod();
@@ -67,34 +83,17 @@ public class IlluminatiClientInit {
         }
     }
 
-    public static Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("iilluminati processor is now off.");
+    public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+        if (this.isOnIlluminatiSwitch() == false) {
             return pjp.proceed();
         }
 
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false || !IlluminatiClientInit.checkSamplingRate()) {
+        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false || !this.checkSamplingRate()) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
 
-        final long start = System.currentTimeMillis();
-        final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
-        final long elapsedTime = System.currentTimeMillis() - start;
-
-        final Object output = originMethodExecute.get("result");
-        Throwable throwable = null;
-        if (originMethodExecute.containsKey("throwable")) {
-            throwable = (Throwable) originMethodExecute.get("throwable");
-        }
-
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
-
-        if (throwable != null) {
-            throw throwable;
-        }
-
-        return output;
+        return addToQueue(pjp, request, false);
     }
 
     /**
@@ -106,21 +105,37 @@ public class IlluminatiClientInit {
      * @return
      * @throws Throwable
      */
-    public static Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
+    public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+        if (this.isOnIlluminatiSwitch() == false) {
+            return pjp.proceed();
+        }
+
+        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false) {
+            ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor and the ChaosBomber mode is not effect of sampling rate.");
             return pjp.proceed();
         }
 
         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-            return IlluminatiClientInit.executeIlluminati(pjp, request);
+            return addToQueue(pjp, request, false);
         }
 
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
-            return pjp.proceed();
+        return addToQueue(pjp, request, true);
+    }
+
+    // ################################################################################################################
+    // ### private methods                                                                                          ###
+    // ################################################################################################################
+
+    private boolean isOnIlluminatiSwitch () {
+        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
+            ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
+            return false;
         }
 
+        return true;
+    }
+
+    private Object addToQueue (final ProceedingJoinPoint pjp, final HttpServletRequest request, final boolean isActiveChaosBomber) throws Throwable {
         final long start = System.currentTimeMillis();
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
         final long elapsedTime = System.currentTimeMillis() - start;
@@ -129,7 +144,9 @@ public class IlluminatiClientInit {
         Throwable throwable = null;
         if (originMethodExecute.containsKey("throwable")) {
             throwable = (Throwable) originMethodExecute.get("throwable");
-        } else if (CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
+        }
+
+        if (isActiveChaosBomber == true && throwable == null && CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
             throwable = new Throwable("Illuminati ChaosBomber Exception Activate");
             request.setAttribute("ChaosBomber", "true");
         }
@@ -143,11 +160,7 @@ public class IlluminatiClientInit {
         return output;
     }
 
-    // ################################################################################################################
-    // ### private methods                                                                                          ###
-    // ################################################################################################################
-
-    private static boolean checkSamplingRate () {
+    private boolean checkSamplingRate () {
         //SAMPLING_RATE_CHECKER.compareAndSet(100, 1);
 
         // sometimes compareAndSet does not work.
@@ -164,7 +177,7 @@ public class IlluminatiClientInit {
         return false;
     }
 
-    private static Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {
+    private Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {
         final Map<String, Object> originMethodExecute = new HashMap<String, Object>();
 
         try {
