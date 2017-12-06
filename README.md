@@ -84,7 +84,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.8</version>
+      <version>0.9.8.1</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
@@ -112,7 +112,7 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8.1'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
 compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.0'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
@@ -272,7 +272,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
    <dependency>
      <groupId>com.leekyoungil.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.8</version>
+     <version>0.9.8.1</version>
   </dependency>
       
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
@@ -300,7 +300,7 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8.1'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
 compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.0'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다.
