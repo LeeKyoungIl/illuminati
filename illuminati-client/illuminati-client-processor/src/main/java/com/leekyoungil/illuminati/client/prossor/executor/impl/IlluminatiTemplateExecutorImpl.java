@@ -23,6 +23,8 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
 
     private static final Logger ILLUMINATI_TEMPLATE_EXECUTOR_LOGGER = LoggerFactory.getLogger(IlluminatiTemplateExecutorImpl.class);
 
+    private static IlluminatiTemplateExecutorImpl ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
+
     // ################################################################################################################
     // ### init illuminati template queue                                                                           ###
     // ################################################################################################################
@@ -36,6 +38,20 @@ public class IlluminatiTemplateExecutorImpl implements IlluminatiExecutor<Illumi
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
     private static IlluminatiInfraTemplate ILLUMINATI_TEMPLATE;
+
+    private IlluminatiTemplateExecutorImpl () { }
+
+    public static IlluminatiTemplateExecutorImpl getInstance () {
+        if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
+            synchronized (IlluminatiTemplateExecutorImpl.class) {
+                if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
+                    ILLUMINATI_TEMPLATE_EXECUTOR_IMPL = new IlluminatiTemplateExecutorImpl();
+                }
+            }
+        }
+
+        return ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
+    }
 
     @Override public synchronized void init () {
         if (ILLUMINATI_TEMPLATE == null) {

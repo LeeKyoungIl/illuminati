@@ -6,7 +6,7 @@
  * RabbitMQ - completed test of heavy traffic
  * Kafka - not yet complete
 
-## I recommend the RabbitMQ for the current version.(0.8.3)
+## I recommend the RabbitMQ for the current version.(0.9.8)
 
 ## add to Maven Dependency
     * Maven
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.8</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
@@ -50,7 +50,7 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.7'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
 compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.2'
 ```
@@ -190,7 +190,7 @@ chaosBomber: true
     <dependency>
      <groupId>com.leekyoungil.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.7</version>
+     <version>0.9.8</version>
     </dependency>
       
     <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
@@ -212,7 +212,7 @@ repositories {
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.7'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8'
 ```
 
 ## Class에 @Illuminati 추가 
