@@ -53,8 +53,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  2. Add configuration in illuminati-{**phase**}.yml, properties에 (address of queue... etc)
  3. When execute application with add -Dspring.profiles.active={**phase**}
  4. Add "@Illuminat" Annotation to where you want to collect
- 4. Add to Html in **<script></script>** in **illuminatiJsAgent.min.js** script file.
- 4. 수잡을 원하는 Html의 **<script></script>** 안에 **illuminatiJsAgent.min.js** script 파일을 추가
+ 5. Add to Html in **<script></script>** in **illuminatiJsAgent.min.js** script file.
 
 ## illuminati does not affect the origin application logic
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
@@ -240,8 +239,8 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 1. MAVEN, GRADLE Dependency 추가
 2. illuminati-{**phase**}.yml, properties에 설정 추가 (queue주소... 등등)
 3. Application 실행시 -Dspring.profiles.active={**phase**} 추가
-3. 수집을 원하는 곳에 **@Illuminati** Annotation을 추가
-4. 수잡을 원하는 Html의 **<script></script>** 안에 **illuminatiJsAgent.min.js** script 파일을 추가
+4. 수집을 원하는 곳에 **@Illuminati** Annotation을 추가
+5. 수잡을 원하는 Html의 **<script></script>** 안에 **illuminatiJsAgent.min.js** script 파일을 추가
 
 # illuminati는 본래의 Application 로직에 영향이 없습니다.
 1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
