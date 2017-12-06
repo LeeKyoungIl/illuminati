@@ -124,7 +124,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         //BrokerType brokerType = BrokerType.getEnumType(illuminatiProperties.getBroker());
 
-        final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n";
+        final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n \r\n";
 
         // step 3.  properties by broker
         String implClassName;

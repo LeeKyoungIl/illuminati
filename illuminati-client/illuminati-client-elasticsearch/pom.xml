@@ -6,7 +6,7 @@
 
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-elasticsearch</artifactId>
-    <version>0.7.8</version>
+    <version>0.7.9</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -19,8 +19,8 @@
 
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
-            <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.8</version>
+            <artifactId>illuminati-client-common</artifactId>
+            <version>1.2.0</version>
             <scope>compile</scope>
         </dependency>
 

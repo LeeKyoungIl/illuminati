@@ -31,7 +31,7 @@ public class IlluminatiClientInit {
 
     private static final AtomicInteger SAMPLING_RATE_CHECKER = new AtomicInteger(1);
     private static int SAMPLING_RATE = 20;
-    private static int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
+    private static final int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
     private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance();
 
