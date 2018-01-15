@@ -1,4 +1,4 @@
-package executor
+package executor.impl
 
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
@@ -43,9 +43,9 @@ class IlluminatiDataExecutorImplTest extends Specification {
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
-        illuminatiExecutor.getQueueSize() == 2;
-        illuminatiExecutor.deQueue() != null;
         illuminatiExecutor.getQueueSize() == 1;
+        illuminatiExecutor.deQueue() != null;
+        illuminatiExecutor.getQueueSize() == 0;
     }
 
     def "illuminati data thread test" () {

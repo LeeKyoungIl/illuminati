@@ -389,6 +389,10 @@ public class RequestHeaderModel {
      */
     private void init (HttpServletRequest request) {
         final Enumeration headerNames = request.getHeaderNames();
+        if (headerNames == null) {
+            return;
+        }
+
         while (headerNames.hasMoreElements()) {
             try {
                 String key = (String) headerNames.nextElement();

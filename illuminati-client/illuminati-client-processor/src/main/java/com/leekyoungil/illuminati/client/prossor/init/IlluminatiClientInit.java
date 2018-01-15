@@ -6,6 +6,7 @@ import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -33,9 +34,13 @@ public class IlluminatiClientInit {
     private static int SAMPLING_RATE = 20;
     private static final int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
-    private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance();
+    private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR;
 
     static {
+        final IlluminatiExecutor<IlluminatiTemplateInterfaceModel> illuminatiTemplateExecutor = IlluminatiTemplateExecutorImpl.getInstance();
+        illuminatiTemplateExecutor.init();
+        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(illuminatiTemplateExecutor);
+
         IlluminatiCommon.init();
         ILLUMINATI_DATA_EXECUTOR.init();
 
@@ -88,7 +93,7 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false || !this.checkSamplingRate()) {
+        if (this.checkSamplingRate() == false) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -107,11 +112,6 @@ public class IlluminatiClientInit {
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (this.isOnIlluminatiSwitch() == false) {
-            return pjp.proceed();
-        }
-
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor and the ChaosBomber mode is not effect of sampling rate.");
             return pjp.proceed();
         }
 

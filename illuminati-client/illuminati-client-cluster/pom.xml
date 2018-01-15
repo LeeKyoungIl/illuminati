@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.leekyoungil.illuminati</groupId>
-    <artifactId>illuminati-client-elasticsearch</artifactId>
-    <version>0.7.9.1</version>
+    <artifactId>illuminati-client-cluster</artifactId>
+    <version>0.5.0</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.6</java.version>
+        <spring.version>4.3.11.RELEASE</spring.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-common</artifactId>
-            <version>1.2.1</version>
-            <scope>compile</scope>
+            <version>1.2.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>net.sf.uadetector</groupId>
-            <artifactId>uadetector-resources</artifactId>
-            <version>2014.10</version>
+            <groupId>com.leekyoungil.illuminati</groupId>
+            <artifactId>illuminati-client-annotation</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
-
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -96,17 +92,45 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>1.5.1</version>
+                <configuration>
+                    <jswarn>false</jswarn>
+                    <sourceDirectory>${project.basedir}/javascript/src</sourceDirectory>
+                    <outputDirectory>${project.basedir}/javascript/dist</outputDirectory>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <suffix>.min</suffix>
+                    <disableOptimizations>false</disableOptimizations>
+                    <nomunge>false</nomunge>
+                    <linebreakpos>50000</linebreakpos>
+                    <force>true</force>
+                    <excludes>
+                        <exclude>**/*min.js</exclude>
+                        <exclude>**/*min.css</exclude>
+                        <exclude>**/*.xml</exclude>
+                        <exclude>**/*.properties</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
-
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>.</directory>-->
+                <!--<includes>-->
+                    <!--<include>javascript/*</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+        <!--</resources>-->
     </build>
 
     <distributionManagement>
         <repository>
             <id>bintray-leekyoungil-illuminati</id>
             <name>leekyoungil-illuminati</name>
-            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-client-elasticsearch/;publish=1</url>
+            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-client-cluster/;publish=1</url>
         </repository>
     </distributionManagement>
-
-
+    
 </project>

@@ -79,4 +79,30 @@ public class FileUtil {
         long end = System.currentTimeMillis();
         FILE_UTIL_LOGGER.info("Time spent writing files : " + ((end - start) / 1000f) + " seconds (" + dataList.size() + " line)");
     }
+
+    public static boolean isDirectoryExists(String directoryName) {
+        File file = new File(directoryName);
+
+        if (file.exists() == true && file.isDirectory() == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean createDirectory(String directoryName) {
+        if (isDirectoryExists(directoryName) == true) {
+            FILE_UTIL_LOGGER.info(directoryName + " is already exists.");
+            return false;
+        }
+
+        try {
+            File file = new File(directoryName);
+            return file.mkdir();
+        } catch (SecurityException ex) {
+            FILE_UTIL_LOGGER.info("check your dir permission.");
+            return false;
+        }
+
+    }
 }

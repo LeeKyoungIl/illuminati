@@ -11,15 +11,13 @@ public interface IlluminatiExecutor<T> {
 
     T deQueue ();
 
-    void addToQueueByDebug (final T t);
-
-    T deQueueByDebug ();
-
-    int getQueueSize ();
+//    void addToQueueByDebug (final T t);
+//
+//    T deQueueByDebug ();
 
     void sendToNextStep (final T t);
 
-    void createSystemThread ();
+//    void createSystemThread ();
 
     // have to make the createSystemThread method in implements Class.
     //private void createSystemThread ();

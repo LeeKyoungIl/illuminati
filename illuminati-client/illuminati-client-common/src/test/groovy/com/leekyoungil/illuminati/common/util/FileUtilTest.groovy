@@ -9,6 +9,33 @@ class FileUtilTest extends Specification {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TODAY = DATE_FORMAT.format(new Date());
 
+    def "directory exists check" () {
+        setup:
+        String directoryName = "./log";
+
+        when:
+        boolean directoryIsExists = FileUtil.isDirectoryExists(directoryName);
+
+        then:
+        directoryIsExists == false;
+    }
+
+    def "make directory" () {
+        setup:
+        String directoryName = "./log";
+
+        when:
+        boolean directoryIsExists = FileUtil.isDirectoryExists(directoryName);
+        boolean madeDirectory = false;
+        if (directoryIsExists == false) {
+            madeDirectory = FileUtil.createDirectory(directoryName);
+        }
+
+        then:
+        directoryIsExists == false;
+        madeDirectory == true;
+    }
+
     def "file name generate test" () {
         setup:
         String fileName;
