@@ -11,7 +11,7 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "data add to file backup queue" () {
         setup:
-        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = new IlluminatiFileBackupExecutorImpl();
+        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
         IlluminatiFileBackupInterfaceModel illuminatiFileBackupInterfaceModel = new IlluminatiFileBackupInterfaceModel();
 
         when:
@@ -23,7 +23,7 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "get data from file backup queue" () {
         setup:
-        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = new IlluminatiFileBackupExecutorImpl();
+        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
         IlluminatiFileBackupInterfaceModel illuminatiFileBackupInterfaceModel = new IlluminatiFileBackupInterfaceModel();
 
         illuminatiExecutor.addToQueue(illuminatiFileBackupInterfaceModel);
@@ -38,7 +38,7 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "create system thread" () {
         setup:
-        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = new IlluminatiFileBackupExecutorImpl();
+        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
         String threadName = "com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiFileBackupExecutorImpl : ILLUMINATI_SENDER_THREAD";
 
         when:
@@ -50,16 +50,17 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "add data to file by thread" () {
         setup:
-        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = new IlluminatiFileBackupExecutorImpl();
-        IlluminatiFileBackupInterfaceModel illuminatiFileBackupInterfaceModel = new IlluminatiFileBackupInterfaceModel();
+        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
+        String textData = "text file test";
 
-        String basePath = "./";
-        String fileName = "test.log";
+        String basePath = "./log";
 
         when:
-        illuminatiExecutor.sendToNextStep(illuminatiFileBackupInterfaceModel);
+        illuminatiExecutor.sendToNextStep(textData);
 
         then:
-        FileUtil.isFileExists(basePath, fileName) == true;
+        FileUtil.isFileExists(basePath, FileUtil.generateFileName()) == true;
     }
+
+
 }

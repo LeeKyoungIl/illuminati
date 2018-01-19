@@ -1,19 +1,18 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T> {
 
     protected final Logger illuminatiExecutorLogger = LoggerFactory.getLogger(this.getClass());
 
-    protected final BlockingQueue<T> illuminatiBlockingQueue;
+    protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 
     private long enQueuingTimeout = 0l;
     private long deQueuingTimeout = 0l;
@@ -21,11 +20,11 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
     public abstract void sendToNextStep(final T t);
     protected abstract void sendToNextStepByDebug(final T t);
 
-    protected IlluminatiBasicExecutor (int capacity, long enQueuingTimeout, long deQueuingTimeout) {
+    protected IlluminatiBasicExecutor (int capacity, long enQueuingTimeout, long deQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
         this.enQueuingTimeout = enQueuingTimeout;
         this.deQueuingTimeout = deQueuingTimeout;
 
-        illuminatiBlockingQueue = new LinkedBlockingQueue<T>(capacity);
+        this.illuminatiBlockingQueue = blockingQueue;
     }
 
     public int getQueueSize () {
@@ -91,7 +90,7 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
             }
         }
     }
-    private T deQueueByDebug () {
+    protected T deQueueByDebug () {
         illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE current size is "+String.valueOf(this.getQueueSize()));
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
@@ -142,7 +141,7 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
         this.createDebugThread();
     }
 
-    private void createDebugThread () {
+    protected void createDebugThread () {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final Runnable queueCheckRunnable = new Runnable() {

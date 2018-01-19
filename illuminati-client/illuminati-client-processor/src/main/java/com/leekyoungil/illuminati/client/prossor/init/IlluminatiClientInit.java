@@ -44,7 +44,7 @@ public class IlluminatiClientInit {
         IlluminatiCommon.init();
         ILLUMINATI_DATA_EXECUTOR.init();
 
-        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate");
+        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
     }
 

@@ -33,13 +33,13 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
     // ### init illuminati basic system variables                                                                   ###
     // ################################################################################################################
-    private final static String PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName");
+    private final static String PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName", "no Name");
     private final static ServerInfo SERVER_INFO = new ServerInfo(true);
     // get basic JVM setting info only once.
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();
 
     private IlluminatiDataExecutorImpl (final IlluminatiExecutor illuminatiExecutor) {
-        super(ILLUMINATI_DATA_BAK_LOG, ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS);
+        super(ILLUMINATI_DATA_BAK_LOG, ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModel>());
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 

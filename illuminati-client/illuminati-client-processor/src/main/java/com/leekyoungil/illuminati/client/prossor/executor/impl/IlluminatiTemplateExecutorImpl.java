@@ -29,7 +29,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
 
     private IlluminatiTemplateExecutorImpl () {
-        super(ILLUMINATI_BAK_LOG, ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS);
+        super(ILLUMINATI_BAK_LOG, ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModel>());
     }
 
     public static IlluminatiTemplateExecutorImpl getInstance () {
@@ -95,7 +95,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ################################################################################################################
 
     private IlluminatiInfraTemplate initIlluminatiTemplate () {
-        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker");
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker", "no broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
         if ("kafka".equals(illuminatiBroker)) {

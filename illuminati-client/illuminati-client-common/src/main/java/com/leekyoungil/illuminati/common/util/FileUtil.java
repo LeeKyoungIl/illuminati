@@ -56,6 +56,24 @@ public class FileUtil {
         return false;
     }
 
+    public static void appendDataToFileByOnce(File file, String textData) {
+        if (file.canWrite() == true) {
+            try {
+                long start = System.currentTimeMillis();
+                FileWriter writer = new FileWriter(file);
+                writer.write(textData);
+                writer.flush();
+                writer.close();
+                long end = System.currentTimeMillis();
+                FILE_UTIL_LOGGER.info("Time spent writing files : " + ((end - start) / 1000f) + " seconds");
+            } catch (IOException e) {
+                FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
+            }
+        } else {
+            FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
+        }
+    }
+
     public static void appendDataToFile(File file, List<String> dataList) {
         if (file.canWrite() == true) {
             try {
@@ -93,7 +111,7 @@ public class FileUtil {
     public static boolean createDirectory(String directoryName) {
         if (isDirectoryExists(directoryName) == true) {
             FILE_UTIL_LOGGER.info(directoryName + " is already exists.");
-            return false;
+            return true;
         }
 
         try {
