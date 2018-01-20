@@ -75,7 +75,7 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
      * only execute at debug
      * @param Type illuminatiInterfaceModel
      */
-    private void addToQueueByDebug (final T illuminatiInterfaceModel) {
+    protected void addToQueueByDebug (final T illuminatiInterfaceModel) {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             try {

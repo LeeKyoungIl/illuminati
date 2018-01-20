@@ -56,8 +56,8 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
     @Override public String deQueue() {
         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             List<String> fileTextDataList = illuminatiBlockingQueue.pollToList(ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-            StringBuilder fileTextString = new StringBuilder();
 
+            StringBuilder fileTextString = new StringBuilder();
             for (String textData : fileTextDataList) {
                 fileTextString.append(textData);
                 fileTextString.append("\r\n");
@@ -131,7 +131,7 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
                                 sendToNextStep(textData);
                             } else {
                                 try {
-                                    Thread.sleep(5000);
+                                    Thread.sleep(300000);
                                 } catch (InterruptedException e) {
                                     // ignore
                                 }

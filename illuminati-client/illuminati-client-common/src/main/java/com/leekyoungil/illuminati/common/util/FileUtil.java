@@ -60,8 +60,8 @@ public class FileUtil {
         if (file.canWrite() == true) {
             try {
                 long start = System.currentTimeMillis();
-                FileWriter writer = new FileWriter(file);
-                writer.write(textData);
+                FileWriter writer = new FileWriter(file, true);
+                writer.append(textData);
                 writer.flush();
                 writer.close();
                 long end = System.currentTimeMillis();
@@ -77,7 +77,7 @@ public class FileUtil {
     public static void appendDataToFile(File file, List<String> dataList) {
         if (file.canWrite() == true) {
             try {
-                FileWriter writer = new FileWriter(file);
+                FileWriter writer = new FileWriter(file, true);
                 write(dataList, writer);
             } catch (IOException e) {
                 FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
@@ -90,7 +90,7 @@ public class FileUtil {
     private static void write(List<String> dataList, Writer writer) throws IOException {
         long start = System.currentTimeMillis();
         for (String data: dataList) {
-            writer.write(data);
+            writer.append(data);
         }
         writer.flush();
         writer.close();

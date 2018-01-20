@@ -50,13 +50,15 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "add data to file by thread" () {
         setup:
-        IlluminatiExecutor<IlluminatiFileBackupInterfaceModel> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
-        String textData = "text file test";
+        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
+        String textData = "text file test\r\ntext file test1";
 
         String basePath = "./log";
 
         when:
-        illuminatiExecutor.sendToNextStep(textData);
+        illuminatiExecutor.addToQueue(textData);
+        String data = illuminatiExecutor.deQueue();
+        illuminatiExecutor.sendToNextStep(data);
 
         then:
         FileUtil.isFileExists(basePath, FileUtil.generateFileName()) == true;

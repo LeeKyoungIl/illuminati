@@ -32,7 +32,7 @@ class FileUtilTest extends Specification {
         }
 
         then:
-        directoryIsExists == false;
+        directoryIsExists == true;
         madeDirectory == true;
     }
 

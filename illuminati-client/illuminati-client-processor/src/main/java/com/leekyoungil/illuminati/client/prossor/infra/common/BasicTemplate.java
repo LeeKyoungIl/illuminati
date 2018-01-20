@@ -1,10 +1,13 @@
 package com.leekyoungil.illuminati.client.prossor.infra.common;
 
 import com.leekyoungil.illuminati.client.prossor.exception.ValidationException;
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiFileBackupExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CommunicationType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CompressionCodecType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.PerformanceType;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
+import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
@@ -24,6 +27,11 @@ public abstract class BasicTemplate {
     protected String topic;
 
     protected IlluminatiProperties illuminatiProperties;
+
+    // ################################################################################################################
+    // ### init illuminati template executor                                                                        ###
+    // ################################################################################################################
+    protected final IlluminatiExecutor<String> illuminatiTemplateExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
 
     abstract protected void checkRequiredValuesForInit ();
     abstract protected void initProperties ();
