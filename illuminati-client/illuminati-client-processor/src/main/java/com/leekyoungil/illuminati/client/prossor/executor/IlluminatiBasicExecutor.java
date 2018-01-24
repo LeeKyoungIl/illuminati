@@ -19,6 +19,7 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
 
     public abstract void sendToNextStep(final T t);
     protected abstract void sendToNextStepByDebug(final T t);
+    protected abstract void preventErrorOfSystemThread(final String textData);
 
     protected IlluminatiBasicExecutor (int capacity, long enQueuingTimeout, long deQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
         this.enQueuingTimeout = enQueuingTimeout;
@@ -73,7 +74,6 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
 
     /**
      * only execute at debug
-     * @param Type illuminatiInterfaceModel
      */
     protected void addToQueueByDebug (final T illuminatiInterfaceModel) {
         // debug illuminati buffer queue
@@ -114,8 +114,9 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
         final Runnable runnableFirst = new Runnable() {
             public void run() {
                 while (true) {
+                    T illuminatiInterfaceModel = null;
                     try {
-                        final T illuminatiInterfaceModel = deQueue();
+                        illuminatiInterfaceModel = deQueue();
                         if (illuminatiInterfaceModel != null) {
                             if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                                 sendToNextStep(illuminatiInterfaceModel);
@@ -129,6 +130,10 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
                             }
                         }
                     } catch (Exception e) {
+                        if (illuminatiInterfaceModel != null) {
+                            preventErrorOfSystemThread(IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiInterfaceModel));
+                        }
+
                         illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
                     }
                 }

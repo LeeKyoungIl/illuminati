@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.common.util;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,9 @@ public class FileUtil {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String ILLUMINATI_DATA_FILE_NAME_POSTFIX = "_illuminati_data.log";
+
+    private static final String ENCODING = "utf-8";
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public static String generateFileName() {
         Date nowDate = new Date();
@@ -90,7 +94,7 @@ public class FileUtil {
     private static void write(List<String> dataList, Writer writer) throws IOException {
         long start = System.currentTimeMillis();
         for (String data: dataList) {
-            writer.append(data);
+            writer.append(data + LINE_SEPARATOR);
         }
         writer.flush();
         writer.close();
@@ -121,6 +125,16 @@ public class FileUtil {
             FILE_UTIL_LOGGER.info("check your dir permission.");
             return false;
         }
+    }
 
+    public static List<String> getDataFromFile (File fileOb) {
+        List<String> readDataLines = null;
+        try {
+            readDataLines = FileUtils.readLines(fileOb, ENCODING);
+        } catch (IOException e) {
+            FILE_UTIL_LOGGER.info("check your file.", e.getMessage());
+        }
+
+        return readDataLines;
     }
 }

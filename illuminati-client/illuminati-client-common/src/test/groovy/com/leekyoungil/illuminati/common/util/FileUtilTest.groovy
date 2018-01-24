@@ -17,7 +17,7 @@ class FileUtilTest extends Specification {
         boolean directoryIsExists = FileUtil.isDirectoryExists(directoryName);
 
         then:
-        directoryIsExists == false;
+        directoryIsExists == true;
     }
 
     def "make directory" () {
@@ -32,8 +32,8 @@ class FileUtilTest extends Specification {
         }
 
         then:
-        directoryIsExists == true;
-        madeDirectory == true;
+        directoryIsExists == false;
+        madeDirectory == false;
     }
 
     def "file name generate test" () {
@@ -108,5 +108,33 @@ class FileUtilTest extends Specification {
         if (fileObj != null) {
             fileObj.delete();
         }
+    }
+
+    def "get data from file" () {
+        setup:
+        String basePath = "./";
+        String fileName;
+
+        List<String> dataList = new ArrayList<>();
+        String dataString1 = "test_1";
+        String dataString2 = "test_2";
+        String dataString3 = "test_3"
+
+        dataList.add(dataString1);
+        dataList.add(dataString2);
+        dataList.add(dataString3);
+
+        List<String> dataListFromFile = new ArrayList<>();
+
+        when:
+        fileName = FileUtil.generateFileName();
+        File fileObj = FileUtil.generateFile(basePath, fileName);
+        FileUtil.appendDataToFile(fileObj, dataList);
+
+        dataListFromFile = FileUtil.getDataFromFile(fileObj);
+
+        then:
+        dataListFromFile != null;
+        dataListFromFile.size() > 0;
     }
 }

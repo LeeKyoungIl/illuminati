@@ -106,4 +106,8 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
         illuminatiExecutorLogger.info("data queue current size is "+String.valueOf(this.getQueueSize()));
         illuminatiExecutorLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
     }
+
+    @Override protected void preventErrorOfSystemThread(String textData) {
+
+    }
 }

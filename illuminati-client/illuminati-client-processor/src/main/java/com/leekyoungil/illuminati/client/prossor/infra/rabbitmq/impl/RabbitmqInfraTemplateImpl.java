@@ -125,9 +125,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 }
             }
         } catch (Exception ex) {
-            // When a problem occurs with the server, it is saved as a file.
-            this.illuminatiTemplateExecutor.addToQueue(entity);
-
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send exception log");

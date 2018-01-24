@@ -7,6 +7,7 @@ import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.FileUtil;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.io.File;
 import java.util.List;
@@ -19,7 +20,8 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
     // ################################################################################################################
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
-    private static final int ILLUMINATI_FILE_BACKUP_LOG = 10000;
+    private static final int ILLUMINATI_FILE_BACKUP_LOG = 100000;
+    private static final int ILLUMINATI_RESTORE_FILE_BACKUP_LOG = 10000;
     private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000;
     private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000;
 
@@ -34,7 +36,7 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
     }
 
     private IlluminatiFileBackupExecutorImpl () {
-        super(ILLUMINATI_FILE_BACKUP_LOG, ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<String>(10));
+        super(ILLUMINATI_FILE_BACKUP_LOG, ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<String>(ILLUMINATI_RESTORE_FILE_BACKUP_LOG));
     }
 
     public static IlluminatiFileBackupExecutorImpl getInstance () {
@@ -51,11 +53,16 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
 
     @Override public void init() {
         this.createSystemThread();
+        this.createFileSystemThread();
     }
 
     @Override public String deQueue() {
         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             List<String> fileTextDataList = illuminatiBlockingQueue.pollToList(ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+            if (CollectionUtils.isEmpty(fileTextDataList) == true) {
+                return null;
+            }
 
             StringBuilder fileTextString = new StringBuilder();
             for (String textData : fileTextDataList) {
@@ -125,18 +132,24 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
             public void run() {
                 while (true) {
                     try {
-                        final String textData = deQueue();
+                        String textData = deQueue();
                         if (StringObjectUtils.isValid(textData) == true) {
                             if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                                 sendToNextStep(textData);
                             } else {
                                 try {
-                                    Thread.sleep(300000);
+                                    Thread.sleep(5000);
                                 } catch (InterruptedException e) {
                                     // ignore
                                 }
                                 sendToNextStepByDebug(textData);
                             }
+                        }
+
+                        try {
+                            Thread.sleep(30000);
+                        } catch (InterruptedException e) {
+                            // ignore
                         }
                     } catch (Exception e) {
                         illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
@@ -145,9 +158,35 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
             }
         };
 
-        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_SENDER_THREAD");
+        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_SAVE_DATA_TO_FILE_THREAD");
 
         // if you set debug is true
         this.createDebugThread();
+    }
+
+    private void createFileSystemThread () {
+        final Runnable runnableFirst = new Runnable() {
+            public void run() {
+                while (true) {
+                    try {
+
+
+                        try {
+                            Thread.sleep(30000);
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
+                    } catch (Exception e) {
+                        illuminatiExecutorLogger.warn("Failed to restore from the file.. ("+e.getMessage()+")");
+                    }
+                }
+            }
+        };
+
+        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_RESTORE_FILE_THREAD");
+    }
+
+    @Override protected void preventErrorOfSystemThread(String textData) {
+
     }
 }
