@@ -1,6 +1,9 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutorType;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
@@ -24,6 +27,8 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
     private static final int ILLUMINATI_RESTORE_FILE_BACKUP_LOG = 10000;
     private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000;
     private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000;
+
+    private static final Backup<String> H2_BACKUP = H2Backup.getInstance();
 
     // ################################################################################################################
     // ### init illuminati file base path                                                                           ###
@@ -53,7 +58,6 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
 
     @Override public void init() {
         this.createSystemThread();
-        this.createFileSystemThread();
     }
 
     @Override public String deQueue() {
@@ -72,6 +76,7 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
 
             return fileTextString.toString();
         } else {
+
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -104,11 +109,12 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
     }
 
     @Override public void sendToNextStep(String textData) {
-        //## Save file
-        if (FileUtil.createDirectory(BASE_PATH) == true) {
-            File file = FileUtil.generateFile(BASE_PATH, FileUtil.generateFileName());
-            FileUtil.appendDataToFileByOnce(file, textData);
+        if (StringObjectUtils.isValid(textData) == false) {
+            illuminatiExecutorLogger.warn("textData is not valid");
+            return;
         }
+        //## Save file
+        H2_BACKUP.append(IlluminatiExecutorType.TEMPLATE_EXECUTOR, textData);
     }
 
     @Override protected void sendToNextStepByDebug(String textData) {
@@ -116,13 +122,9 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
             illuminatiExecutorLogger.warn("textData is not valid");
             return;
         }
-
         final long start = System.currentTimeMillis();
         //## Save file
-        if (FileUtil.createDirectory(BASE_PATH) == true) {
-            File file = FileUtil.generateFile(BASE_PATH, FileUtil.generateFileName());
-            FileUtil.appendDataToFileByOnce(file, textData);
-        }
+        H2_BACKUP.append(IlluminatiExecutorType.TEMPLATE_EXECUTOR, textData);
         final long elapsedTime = System.currentTimeMillis() - start;
         illuminatiExecutorLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
     }
@@ -162,28 +164,6 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<St
 
         // if you set debug is true
         this.createDebugThread();
-    }
-
-    private void createFileSystemThread () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-
-
-                        try {
-                            Thread.sleep(30000);
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
-                    } catch (Exception e) {
-                        illuminatiExecutorLogger.warn("Failed to restore from the file.. ("+e.getMessage()+")");
-                    }
-                }
-            }
-        };
-
-        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_RESTORE_FILE_THREAD");
     }
 
     @Override protected void preventErrorOfSystemThread(String textData) {

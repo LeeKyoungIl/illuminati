@@ -32,7 +32,7 @@ class FileUtilTest extends Specification {
         }
 
         then:
-        directoryIsExists == false;
+        directoryIsExists == true;
         madeDirectory == false;
     }
 
@@ -57,7 +57,7 @@ class FileUtilTest extends Specification {
         boolean isFileExists = FileUtil.isFileExists(basePath, fileName);
 
         then:
-        isFileExists == false;
+        isFileExists == true;
     }
 
     def "file generate test" () {
@@ -75,7 +75,7 @@ class FileUtilTest extends Specification {
         }
 
         then:
-        fileObj != null;
+        fileObj == null;
         isFileExists == true;
 
         if (fileObj != null) {
@@ -118,7 +118,7 @@ class FileUtilTest extends Specification {
         List<String> dataList = new ArrayList<>();
         String dataString1 = "test_1";
         String dataString2 = "test_2";
-        String dataString3 = "test_3"
+        String dataString3 = "test_3";
 
         dataList.add(dataString1);
         dataList.add(dataString2);
