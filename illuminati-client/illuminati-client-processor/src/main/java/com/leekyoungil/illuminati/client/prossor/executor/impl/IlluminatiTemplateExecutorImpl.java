@@ -7,13 +7,16 @@ import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemp
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
-import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiFileBackupInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
  */
-public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModel> {
+public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
 
     private static IlluminatiTemplateExecutorImpl ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
 
@@ -25,17 +28,12 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0l;
 
     // ################################################################################################################
-    // ### init illuminati template executor                                                                        ###
-    // ################################################################################################################
-    private final IlluminatiExecutor<String> illuminatiFileBackupExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
-
-    // ################################################################################################################
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
 
     private IlluminatiTemplateExecutorImpl () {
-        super(ILLUMINATI_BAK_LOG, ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModel>());
+        super(ILLUMINATI_BAK_LOG, ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>());
         this.illuminatiFileBackupExecutor.init();
     }
 
@@ -65,20 +63,20 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         illuminatiTemplate.sendToIlluminati(jsonString);
     }
 
-    @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
+    @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         // something to check validation.. but.. now not exists.
         if (illuminatiTemplate == null) {
             illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
             return;
         }
-        this.sendToIlluminati(illuminatiTemplateInterfaceModel.getJsonString());
+        this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
     }
 
     /**
      * only execute at debug
-     * @param illuminatiTemplateInterfaceModel
+     * @param illuminatiTemplateInterfaceModelImpl
      */
-    @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
+    @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         // something to check validation.. but.. now not exists.
         if (this.illuminatiTemplate == null) {
             illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
@@ -88,7 +86,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final long start = System.currentTimeMillis();
             //## sendToIlluminati
-            this.illuminatiTemplate.sendToIlluminati(illuminatiTemplateInterfaceModel.getJsonString());
+            this.illuminatiTemplate.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
             final long elapsedTime = System.currentTimeMillis() - start;
             illuminatiExecutorLogger.info("template queue current size is "+String.valueOf(this.getQueueSize()));
             illuminatiExecutorLogger.info("elapsed time of Illuminati sent is "+elapsedTime+" millisecond");
@@ -99,10 +97,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                 // ignore
             }
         }
-    }
-
-    @Override protected void preventErrorOfSystemThread(final String textData) {
-        illuminatiFileBackupExecutor.addToQueue(textData);
     }
 
     // ################################################################################################################
@@ -127,5 +121,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         }
 
         return illuminatiInfraTemplate;
+    }
+
+    @Override protected void preventErrorOfSystemThread(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
+        illuminatiFileBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
     }
 }

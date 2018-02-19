@@ -5,8 +5,8 @@ import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExe
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
-import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
-import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -34,10 +34,10 @@ public class IlluminatiClientInit {
     private static int SAMPLING_RATE = 20;
     private static final int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
-    private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR;
+    private static final IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
 
     static {
-        final IlluminatiExecutor<IlluminatiTemplateInterfaceModel> illuminatiTemplateExecutor = IlluminatiTemplateExecutorImpl.getInstance();
+        final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor = IlluminatiTemplateExecutorImpl.getInstance();
         illuminatiTemplateExecutor.init();
         ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(illuminatiTemplateExecutor);
 
@@ -151,7 +151,7 @@ public class IlluminatiClientInit {
             request.setAttribute("ChaosBomber", "true");
         }
 
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
+        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModelImpl(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
 
         if (throwable != null) {
             throw throwable;

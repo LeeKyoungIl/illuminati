@@ -4,17 +4,17 @@ import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRefreshType;
-import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsTemplateInterfaceModelImpl;
+import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsTemplateInterfaceModelImplImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @EsDocument(indexName = "sample-illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
-public class SampleEsTemplateInterfaceModelImpl extends IlluminatiEsTemplateInterfaceModelImpl {
+public class SampleEsTemplateInterfaceModelImplImpl extends IlluminatiEsTemplateInterfaceModelImplImpl {
 
     private static final long serialVersionUID = 7526472295622776147L;
-    private final static Logger SAMPLE_ES_CONSUMER_LOGGER = LoggerFactory.getLogger(SampleEsTemplateInterfaceModelImpl.class);
+    private final static Logger SAMPLE_ES_CONSUMER_LOGGER = LoggerFactory.getLogger(SampleEsTemplateInterfaceModelImplImpl.class);
     
-    public SampleEsTemplateInterfaceModelImpl() {}
+    public SampleEsTemplateInterfaceModelImplImpl() {}
 
     public void customData () {
         this.general.setCustomForEnv();

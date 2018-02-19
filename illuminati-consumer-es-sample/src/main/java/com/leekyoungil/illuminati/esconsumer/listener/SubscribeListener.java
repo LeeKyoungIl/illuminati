@@ -3,7 +3,7 @@ package com.leekyoungil.illuminati.esconsumer.listener;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
-import com.leekyoungil.illuminati.esconsumer.config.model.SampleEsTemplateInterfaceModelImpl;
+import com.leekyoungil.illuminati.esconsumer.config.model.SampleEsTemplateInterfaceModelImplImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
@@ -32,11 +32,11 @@ public class SubscribeListener {
 
     @StreamListener(Sink.INPUT)
     public void subscribe (Message<?> message) {
-        SampleEsTemplateInterfaceModelImpl sampleBuyEsModel = null;
+        SampleEsTemplateInterfaceModelImplImpl sampleBuyEsModel = null;
 
         try {
             String jsonString = (String) message.getPayload();
-            sampleBuyEsModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsTemplateInterfaceModelImpl.class);
+            sampleBuyEsModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsTemplateInterfaceModelImplImpl.class);
         } catch (Exception ex) {
             SUB_LOGGER.error("Sorry. something is wrong in Parsing received dto. ("+ex.toString()+")");
             return;

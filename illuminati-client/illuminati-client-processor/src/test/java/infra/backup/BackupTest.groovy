@@ -1,6 +1,6 @@
 package infra.backup
 
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutorType
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup
 import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory
 import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup
@@ -25,7 +25,7 @@ class BackupTest extends Specification {
         String stringData = "test data";
 
         when:
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData);
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData);
         List<String> h2DataList = h2Backup.getDataByList(false, false, 0, 0);
 
         then:
@@ -38,16 +38,16 @@ class BackupTest extends Specification {
         String stringData = "test data";
 
         when:
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 1");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 2");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 3");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 4");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 5");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 6");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 7");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 8");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 9");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 10");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 1");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 2");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 3");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 4");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 5");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 6");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 7");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 8");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
         List<String> h2DataList = h2Backup.getDataByList(true, false, 0, 5);
 
@@ -62,16 +62,16 @@ class BackupTest extends Specification {
 
         when:
         int beforeCount = h2Backup.getCount();
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 1");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 2");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 3");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 4");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 5");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 6");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 7");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 8");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 9");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 10");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 1");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 2");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 3");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 4");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 5");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 6");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 7");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 8");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
         Map<Integer, String> h2DataMap = h2Backup.getDataByMap(true,true, 0, 10);
         int afterCount = h2Backup.getCount();
@@ -87,16 +87,16 @@ class BackupTest extends Specification {
 
         when:
         int beforeCount = h2Backup.getCount();
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 1");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 2");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 3");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 4");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 5");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 6");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 7");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 8");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 9");
-        h2Backup.append(IlluminatiExecutorType.DATA_EXECUTOR, stringData + " 10");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 1");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 2");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 3");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 4");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 5");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 6");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 7");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 8");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
+        h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
         List<String> h2DataList = h2Backup.getDataByList(true, true, 0, 10);
         int afterCount = h2Backup.getCount();
@@ -112,7 +112,7 @@ class BackupTest extends Specification {
         List<String> dataList = null;
 
         when:
-        backup.append(IlluminatiExecutorType.DATA_EXECUTOR, testData);
+        backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, testData);
         dataList = backup.getDataByList(false, false, 0, 0);
 
         then:

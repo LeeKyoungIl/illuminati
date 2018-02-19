@@ -1,13 +1,13 @@
-package com.leekyoungil.illuminati.common.dto;
+package com.leekyoungil.illuminati.common.dto.impl;
 
 import com.google.gson.annotations.Expose;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.*;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
-import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class IlluminatiTemplateInterfaceModel implements Serializable {
+public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel, Serializable {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
@@ -40,26 +40,26 @@ public class IlluminatiTemplateInterfaceModel implements Serializable {
     private Date localTime;
     private Object[] paramValues;
 
-    public IlluminatiTemplateInterfaceModel() {}
+    public IlluminatiTemplateInterfaceModelImpl() {}
 
-    public IlluminatiTemplateInterfaceModel(final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
+    public IlluminatiTemplateInterfaceModelImpl(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
         this.localTime = new Date();
         this.generateAggregateId();
 
-        this.elapsedTime = illuminatiDataInterfaceModel.getElapsedTime();
-        this.output = illuminatiDataInterfaceModel.getOutput();
+        this.elapsedTime = illuminatiDataInterfaceModelImpl.getElapsedTime();
+        this.output = illuminatiDataInterfaceModelImpl.getOutput();
 
         this.timestamp = localTime.getTime();
         this.logTime = DATE_FORMAT_EVENT.format(localTime);
-        this.paramValues = illuminatiDataInterfaceModel.getParamValues();
+        this.paramValues = illuminatiDataInterfaceModelImpl.getParamValues();
 
-        this.setMethod(illuminatiDataInterfaceModel.getSignature());
-        this.initReqHeaderInfo(illuminatiDataInterfaceModel.getRequestHeaderModel());
+        this.setMethod(illuminatiDataInterfaceModelImpl.getSignature());
+        this.initReqHeaderInfo(illuminatiDataInterfaceModelImpl.getRequestHeaderModel());
         this.checkAndSetTransactionIdFromPostBody(this.header.getPostContentBody());
-        this.initUniqueUserId(illuminatiDataInterfaceModel.getIlluminatiUniqueUserId());
-        this.loadClientInfo(illuminatiDataInterfaceModel.getClientInfoMap());
-        this.staticInfo(illuminatiDataInterfaceModel.getStaticInfo());
-        this.isActiveChaosBomber(illuminatiDataInterfaceModel.isActiveChaosBomber());
+        this.initUniqueUserId(illuminatiDataInterfaceModelImpl.getIlluminatiUniqueUserId());
+        this.loadClientInfo(illuminatiDataInterfaceModelImpl.getClientInfoMap());
+        this.staticInfo(illuminatiDataInterfaceModelImpl.getStaticInfo());
+        this.isActiveChaosBomber(illuminatiDataInterfaceModelImpl.isActiveChaosBomber());
     }
 
     // ################################################################################################################
@@ -196,4 +196,32 @@ public class IlluminatiTemplateInterfaceModel implements Serializable {
         }
         this.general.setMethod(methodSignature.getMethod(), methodSignature.getParameterNames(), this.paramValues);
     }
+
+    @Override
+    public IlluminatiInterfaceType getInterfaceType() {
+        return null;
+    }
+
+    @Override
+    public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) {
+
+    }
+
+    @Override public String getData() {
+        return null;
+    }
+
+    @Override public void setData(String data) {
+
+    }
+
+    @Override public List<String> getDataList() {
+        return null;
+    }
+
+    @Override public void setDataList(List<String> dataList) {
+
+    }
+
+
 }

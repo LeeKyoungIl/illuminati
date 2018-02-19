@@ -1,16 +1,23 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBlockingQueue;
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiFileBackupExecutorImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
-public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T> {
+public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel> implements IlluminatiExecutor<T> {
 
     protected final Logger illuminatiExecutorLogger = LoggerFactory.getLogger(this.getClass());
+
+    // ################################################################################################################
+    // ### init illuminati template executor                                                                        ###
+    // ################################################################################################################
+    protected final IlluminatiExecutor<IlluminatiInterfaceModel> illuminatiFileBackupExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
 
     protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 
@@ -19,7 +26,7 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
 
     public abstract void sendToNextStep(final T t);
     protected abstract void sendToNextStepByDebug(final T t);
-    protected abstract void preventErrorOfSystemThread(final String textData);
+    protected abstract void preventErrorOfSystemThread(final T t);
 
     protected IlluminatiBasicExecutor (int capacity, long enQueuingTimeout, long deQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
         this.enQueuingTimeout = enQueuingTimeout;
@@ -131,7 +138,7 @@ public abstract class IlluminatiBasicExecutor<T> implements IlluminatiExecutor<T
                         }
                     } catch (Exception e) {
                         if (illuminatiInterfaceModel != null) {
-                            preventErrorOfSystemThread(IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiInterfaceModel));
+                            preventErrorOfSystemThread(illuminatiInterfaceModel);
                         }
 
                         illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");

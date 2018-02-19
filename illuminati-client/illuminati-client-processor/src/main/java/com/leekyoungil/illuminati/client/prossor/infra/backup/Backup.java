@@ -1,13 +1,13 @@
 package com.leekyoungil.illuminati.client.prossor.infra.backup;
 
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutorType;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
 import java.util.List;
 import java.util.Map;
 
 public interface Backup<T> {
 
-    void append (IlluminatiExecutorType illuminatiExecutorType, T data);
+    void append (IlluminatiInterfaceType illuminatiInterfaceType, T data);
 
     List<T> getDataByList (boolean isPaging, boolean isAfterDelete, int from, int size);
 

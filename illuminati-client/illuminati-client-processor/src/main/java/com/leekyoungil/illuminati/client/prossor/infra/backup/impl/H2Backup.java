@@ -1,10 +1,11 @@
 package com.leekyoungil.illuminati.client.prossor.infra.backup.impl;
 
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutorType;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.h2.tools.DeleteDbFiles;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +28,7 @@ public class H2Backup<T> implements Backup<T> {
         if (H2_CONN.isConnected() == true) {
             try {
                 this.stmt = H2_CONN.getDbConnection().createStatement();
+                //this.deleteTable();
                 this.createTable();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -46,6 +48,10 @@ public class H2Backup<T> implements Backup<T> {
         return H2_BACKUP;
     }
 
+    private void deleteTable() {
+        DeleteDbFiles.execute("./", TABLE_NAME, true);
+    }
+
     private void createTable () {
         //CREATE TABLE IF NOT EXISTS TEST(ID INT PRIMARY KEY, NAME VARCHAR(255));
         StringBuilder tableExecuteCommand = new StringBuilder();
@@ -53,6 +59,7 @@ public class H2Backup<T> implements Backup<T> {
         tableExecuteCommand.append(TABLE_NAME);
         tableExecuteCommand.append(" ( ");
         tableExecuteCommand.append(" ID INTEGER PRIMARY KEY AUTO_INCREMENT");
+        tableExecuteCommand.append(", EXECUTOR_TYPE INTEGER");
         tableExecuteCommand.append(", JSON_DATA TEXT ");
         tableExecuteCommand.append(" ) ");
 
@@ -63,12 +70,12 @@ public class H2Backup<T> implements Backup<T> {
         }
     }
 
-    @Override public void append(IlluminatiExecutorType illuminatiExecutorType, T data) {
+    @Override public void append(IlluminatiInterfaceType illuminatiInterfaceType, T data) {
         StringBuilder insertExecuteCommand = new StringBuilder();
         insertExecuteCommand.append("INSERT INTO ");
         insertExecuteCommand.append(TABLE_NAME);
-        insertExecuteCommand.append(" (JSON_DAta) ");
-        insertExecuteCommand.append("VALUES ('"+data+"')");
+        insertExecuteCommand.append(" (EXECUTOR_TYPE, JSON_DAta) ");
+        insertExecuteCommand.append("VALUES ("+ illuminatiInterfaceType.getExecutorId()+", '"+data+"')");
 
         try {
             this.stmt.execute(insertExecuteCommand.toString());

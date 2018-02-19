@@ -1,9 +1,11 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
+import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
+
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
  */
-public interface IlluminatiExecutor<T> {
+public interface IlluminatiExecutor<T extends IlluminatiInterfaceModel> {
 
     void init ();
 
@@ -16,6 +18,8 @@ public interface IlluminatiExecutor<T> {
 //    T deQueueByDebug ();
 
     void sendToNextStep (final T t);
+
+    int getQueueSize();
 
 //    void createSystemThread ();
 

@@ -3,8 +3,11 @@ package com.leekyoungil.illuminati.client.prossor.executor.impl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
-import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
-import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiFileBackupInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -14,7 +17,7 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
  */
-public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<IlluminatiDataInterfaceModel> {
+public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<IlluminatiDataInterfaceModelImpl> {
 
     private static IlluminatiDataExecutorImpl ILLUMINATI_DATA_EXECUTOR_IMPL;
 
@@ -28,7 +31,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
     // ### init illuminati template executor                                                                        ###
     // ################################################################################################################
-    private IlluminatiExecutor<IlluminatiTemplateInterfaceModel> illuminatiTemplateExecutor;
+    private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor;
 
     // ################################################################################################################
     // ### init illuminati basic system variables                                                                   ###
@@ -39,7 +42,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();
 
     private IlluminatiDataExecutorImpl (final IlluminatiExecutor illuminatiExecutor) {
-        super(ILLUMINATI_DATA_BAK_LOG, ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModel>());
+        super(ILLUMINATI_DATA_BAK_LOG, ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl>());
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
@@ -56,7 +59,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     }
 
     @Override public synchronized void init () {
-        // create illuminati template queue thread for send to the IlluminatiDataInterfaceModel.
+        // create illuminati template queue thread for send to the IlluminatiDataInterfaceModelImpl.
         this.createSystemThread();
     }
 
@@ -64,50 +67,54 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    @Override public void sendToNextStep(final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
-        if (illuminatiDataInterfaceModel.isValid() == false) {
+    @Override public void sendToNextStep(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
+        if (illuminatiDataInterfaceModelImpl.isValid() == false) {
             return;
         }
 
-        this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModel);
+        this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModelImpl);
     }
 
     // ################################################################################################################
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private void addDataOnIlluminatiModel (final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel) {
-        illuminatiTemplateInterfaceModel.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
-        illuminatiTemplateInterfaceModel.initBasicJvmInfo(JVM_INFO);
-        illuminatiTemplateInterfaceModel.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
-        illuminatiTemplateInterfaceModel.setJavascriptUserAction();
+    private void addDataOnIlluminatiModel (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
+        illuminatiTemplateInterfaceModelImpl.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
+        illuminatiTemplateInterfaceModelImpl.initBasicJvmInfo(JVM_INFO);
+        illuminatiTemplateInterfaceModelImpl.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
+        illuminatiTemplateInterfaceModelImpl.setJavascriptUserAction();
     }
 
-    private void sendToIlluminatiTemplateQueue (final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
+    private void sendToIlluminatiTemplateQueue (final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
         try {
-            final IlluminatiTemplateInterfaceModel illuminatiTemplateInterfaceModel = new IlluminatiTemplateInterfaceModel(illuminatiDataInterfaceModel);
-            this.addDataOnIlluminatiModel(illuminatiTemplateInterfaceModel);
-            this.illuminatiTemplateExecutor.addToQueue(illuminatiTemplateInterfaceModel);
+            final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl = new IlluminatiTemplateInterfaceModelImpl(illuminatiDataInterfaceModelImpl);
+            this.addDataOnIlluminatiModel(illuminatiTemplateInterfaceModelImpl);
+            this.illuminatiTemplateExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
         } catch (Exception ex) {
             illuminatiExecutorLogger.debug("error : check your broker. ("+ex.toString()+")");
         }
     }
 
-    @Override public void sendToNextStepByDebug (final IlluminatiDataInterfaceModel illuminatiDataInterfaceModel) {
-        if (illuminatiDataInterfaceModel.isValid() == false) {
-            illuminatiExecutorLogger.warn("illuminatiDataInterfaceModel is not valid");
+    @Override public void sendToNextStepByDebug (final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
+        if (illuminatiDataInterfaceModelImpl.isValid() == false) {
+            illuminatiExecutorLogger.warn("illuminatiDataInterfaceModelImpl is not valid");
             return;
         }
 
         final long start = System.currentTimeMillis();
         //## send To Illuminati template queue
-        this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModel);
+        this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModelImpl);
         final long elapsedTime = System.currentTimeMillis() - start;
         illuminatiExecutorLogger.info("data queue current size is "+String.valueOf(this.getQueueSize()));
         illuminatiExecutorLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
     }
 
-    @Override protected void preventErrorOfSystemThread(String textData) {
+    @Override protected void preventErrorOfSystemThread(final String textData) {
+        IlluminatiInterfaceModel illuminatiFileBackupInterfaceModel = new IlluminatiFileBackupInterfaceModelImpl();
+        illuminatiFileBackupInterfaceModel.setIlluminatiInterfaceType(IlluminatiInterfaceType.DATA_EXECUTOR);
+        illuminatiFileBackupInterfaceModel.setData(textData);
 
+        illuminatiFileBackupExecutor.addToQueue(illuminatiFileBackupInterfaceModel);
     }
 }

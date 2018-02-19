@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
+import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class IlluminatiBlockingQueue<E> extends LinkedBlockingQueue<E> {
+public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends LinkedBlockingQueue<E> {
 
     private int listCount = 1;
 

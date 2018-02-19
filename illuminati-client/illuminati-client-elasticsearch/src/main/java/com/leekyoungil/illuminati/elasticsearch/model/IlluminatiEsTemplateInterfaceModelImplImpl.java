@@ -2,7 +2,7 @@ package com.leekyoungil.illuminati.elasticsearch.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.common.dto.IlluminatiTemplateInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
@@ -28,10 +28,10 @@ import java.util.Map;
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
 @EsDocument(indexName = "illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
-public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiTemplateInterfaceModel implements IlluminatiEsModel {
+public abstract class IlluminatiEsTemplateInterfaceModelImplImpl extends IlluminatiTemplateInterfaceModelImpl implements IlluminatiEsModel {
 
     private static final long serialVersionUID = 7526472295622776147L;
-    private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImpl.class);
+    private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImplImpl.class);
 
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();
 
@@ -48,9 +48,9 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
     private final String encodingCharset = "UTF-8";
 
-    public IlluminatiEsTemplateInterfaceModelImpl() {}
+    public IlluminatiEsTemplateInterfaceModelImplImpl() {}
 
-//    public IlluminatiEsTemplateInterfaceModelImpl(long elapsedTime, Object output, String id, long timestamp) {
+//    public IlluminatiEsTemplateInterfaceModelImplImpl(long elapsedTime, Object output, String id, long timestamp) {
 //        super(elapsedTime, output, id, timestamp);
 //    }
 

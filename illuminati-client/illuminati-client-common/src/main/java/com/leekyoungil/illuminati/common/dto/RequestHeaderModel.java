@@ -504,7 +504,7 @@ public class RequestHeaderModel {
         this.illuminatiProcId = illuminatiProcId;
     }
 
-    protected String getIlluminatiSProcId () {
+    public String getIlluminatiSProcId () {
         return this.illuminatiSProcId;
     }
 
