@@ -103,7 +103,7 @@ public class IlluminatiFileBackupExecutorImpl extends IlluminatiBasicExecutor<Il
     }
 
     @Override public void sendToNextStep(IlluminatiInterfaceModel illuminatiFileBackupInterfaceModel) {
-        if (illuminatiFileBackupInterfaceModel == null || CollectionUtils.isEmpty(illuminatiFileBackupInterfaceModel.getDataList()) == true) {
+        if (illuminatiFileBackupInterfaceModel == null) {
             illuminatiExecutorLogger.warn("data is not valid");
             return;
         }

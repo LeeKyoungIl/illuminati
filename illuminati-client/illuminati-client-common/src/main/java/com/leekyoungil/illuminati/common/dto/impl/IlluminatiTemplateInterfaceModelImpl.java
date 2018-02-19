@@ -206,22 +206,4 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) {
 
     }
-
-    @Override public String getData() {
-        return null;
-    }
-
-    @Override public void setData(String data) {
-
-    }
-
-    @Override public List<String> getDataList() {
-        return null;
-    }
-
-    @Override public void setDataList(List<String> dataList) {
-
-    }
-
-
 }

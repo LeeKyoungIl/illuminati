@@ -69,9 +69,10 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
 
     @Override public void sendToNextStep(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
         if (illuminatiDataInterfaceModelImpl.isValid() == false) {
+            illuminatiExecutorLogger.warn("illuminatiDataInterfaceModelImpl is not valid");
             return;
         }
-
+        //## send To Illuminati template queue
         this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModelImpl);
     }
 
@@ -97,24 +98,14 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     }
 
     @Override public void sendToNextStepByDebug (final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
-        if (illuminatiDataInterfaceModelImpl.isValid() == false) {
-            illuminatiExecutorLogger.warn("illuminatiDataInterfaceModelImpl is not valid");
-            return;
-        }
-
         final long start = System.currentTimeMillis();
-        //## send To Illuminati template queue
-        this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModelImpl);
+        this.sendToNextStep(illuminatiDataInterfaceModelImpl);
         final long elapsedTime = System.currentTimeMillis() - start;
         illuminatiExecutorLogger.info("data queue current size is "+String.valueOf(this.getQueueSize()));
         illuminatiExecutorLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
     }
 
-    @Override protected void preventErrorOfSystemThread(final String textData) {
-        IlluminatiInterfaceModel illuminatiFileBackupInterfaceModel = new IlluminatiFileBackupInterfaceModelImpl();
-        illuminatiFileBackupInterfaceModel.setIlluminatiInterfaceType(IlluminatiInterfaceType.DATA_EXECUTOR);
-        illuminatiFileBackupInterfaceModel.setData(textData);
+    @Override protected void preventErrorOfSystemThread(IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) {
 
-        illuminatiFileBackupExecutor.addToQueue(illuminatiFileBackupInterfaceModel);
     }
 }

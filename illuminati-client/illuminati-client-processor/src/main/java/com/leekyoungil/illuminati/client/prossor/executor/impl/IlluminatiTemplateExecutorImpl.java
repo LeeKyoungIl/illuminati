@@ -77,16 +77,10 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
      * @param illuminatiTemplateInterfaceModelImpl
      */
     @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
-        // something to check validation.. but.. now not exists.
-        if (this.illuminatiTemplate == null) {
-            illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
-            return;
-        }
         // debug illuminati rabbitmq queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
             final long start = System.currentTimeMillis();
-            //## sendToIlluminati
-            this.illuminatiTemplate.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
+            this.sendToNextStep(illuminatiTemplateInterfaceModelImpl);
             final long elapsedTime = System.currentTimeMillis() - start;
             illuminatiExecutorLogger.info("template queue current size is "+String.valueOf(this.getQueueSize()));
             illuminatiExecutorLogger.info("elapsed time of Illuminati sent is "+elapsedTime+" millisecond");
