@@ -14,7 +14,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
  *  - github : https://github.com/LeeKyoungIl
  */
 //@EnableWebMvc
-//@Configuration
+@Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
@@ -27,7 +27,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    ServletRegistrationBean h2servletRegistration(){
+    public ServletRegistrationBean h2servletRegistration() {
         ServletRegistrationBean registrationBean = new ServletRegistrationBean( new WebServlet());
         registrationBean.addUrlMappings("/h2-console/*");
         return registrationBean;

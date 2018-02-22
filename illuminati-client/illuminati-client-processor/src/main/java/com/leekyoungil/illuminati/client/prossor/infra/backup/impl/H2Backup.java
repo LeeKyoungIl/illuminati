@@ -7,9 +7,7 @@ import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.h2.tools.DeleteDbFiles;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,19 +18,14 @@ public class H2Backup<T> implements Backup<T> {
     private static H2Backup H2_BACKUP;
 
     private final H2ConnectionFactory H2_CONN = H2ConnectionFactory.getInstance();
-    private Statement stmt = null;
+    private Connection connection = null;
     private static final String TABLE_NAME = "illuminati_backup";
-    private boolean tableIsCreated = false;
 
     private H2Backup () {
         if (H2_CONN.isConnected() == true) {
-            try {
-                this.stmt = H2_CONN.getDbConnection().createStatement();
-                this.deleteTable();
-                this.createTable();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            this.connection = H2_CONN.getDbConnection();
+            this.deleteTable();
+            this.createTable();
         }
     }
 
@@ -64,7 +57,10 @@ public class H2Backup<T> implements Backup<T> {
         tableExecuteCommand.append(" ) ");
 
         try {
-            this.stmt.execute(tableExecuteCommand.toString());
+            PreparedStatement preparedStatement = this.connection.prepareStatement(tableExecuteCommand.toString());
+            preparedStatement.execute();
+            this.connection.commit();
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,10 +71,15 @@ public class H2Backup<T> implements Backup<T> {
         insertExecuteCommand.append("INSERT INTO ");
         insertExecuteCommand.append(TABLE_NAME);
         insertExecuteCommand.append(" (EXECUTOR_TYPE, DATA) ");
-        insertExecuteCommand.append("VALUES ("+ illuminatiInterfaceType.getExecutorId()+", '"+data+"')");
+        insertExecuteCommand.append("VALUES (?, ?)");
 
         try {
-            this.stmt.execute(insertExecuteCommand.toString());
+            PreparedStatement preparedStatement = this.connection.prepareStatement(insertExecuteCommand.toString());
+            preparedStatement.setObject(1, illuminatiInterfaceType.getExecutorId());
+            preparedStatement.setObject(2, data);
+            preparedStatement.execute();
+            this.connection.commit();
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,12 +90,14 @@ public class H2Backup<T> implements Backup<T> {
         List<Integer> idList = new ArrayList<Integer>();
 
         try {
-            ResultSet rs = this.stmt.executeQuery(this.getSelectQuery(isPaging, from, size));
+            PreparedStatement preparedStatement = this.connection.prepareStatement(this.getSelectQuery(isPaging, from, size));
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 idList.add(rs.getInt("ID"));
                 dataList.add((T) rs.getString("DATA"));
             }
             rs.close();
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -119,11 +122,13 @@ public class H2Backup<T> implements Backup<T> {
         Map<Integer, T> dataMap = new HashMap<Integer, T>();
 
         try {
-            ResultSet rs = this.stmt.executeQuery(selectQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 dataMap.put(rs.getInt("ID"), (T) rs.getString("DATA"));
             }
             rs.close();
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -146,28 +151,36 @@ public class H2Backup<T> implements Backup<T> {
         deleteExecuteCommand.append(id);
 
         try {
-            this.stmt.executeUpdate(deleteExecuteCommand.toString());
+            PreparedStatement preparedStatement = this.connection.prepareStatement(deleteExecuteCommand.toString());
+            preparedStatement.execute();
+            this.connection.commit();
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override public int getCount() {
+        int resultCount = 0;
+
         StringBuilder countExecuteCommand = new StringBuilder();
         countExecuteCommand.append("SELECT count(1) FROM ");
         countExecuteCommand.append(TABLE_NAME);
 
         try {
-            ResultSet rs = this.stmt.executeQuery(countExecuteCommand.toString());
+            PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
+            ResultSet rs = preparedStatement.executeQuery();
             if (rs.next() == true) {
-                return rs.getInt(1);
+                resultCount = rs.getInt(1);
             }
+            rs.close();
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
 
-        return 0;
+        return resultCount;
     }
 
     private String getSelectQuery (boolean isPaging, int from, int size) {

@@ -2,7 +2,11 @@ package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
 
-public class ChangedValue {
+import java.io.Serializable;
+
+public class ChangedValue implements Serializable {
+
+    private static final long serialVersionUID = 5526432234522736127L;
 
     @Expose private String elementUniqueId;
     @Expose private String elementType;

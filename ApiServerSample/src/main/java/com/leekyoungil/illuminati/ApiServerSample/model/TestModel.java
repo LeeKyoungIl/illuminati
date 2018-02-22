@@ -1,6 +1,8 @@
 package com.leekyoungil.illuminati.ApiServerSample.model;
 
-public class TestModel {
+import java.io.Serializable;
+
+public class TestModel implements Serializable {
 
     private String name;
     private String userId;

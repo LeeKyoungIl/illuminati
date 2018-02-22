@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -15,7 +16,9 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class RequestHeaderModel {
+public class RequestHeaderModel implements Serializable {
+
+    private static final long serialVersionUID = 1226472295622776147L;
 
     private static final Logger REQUEST_HEADER_MODEL_LOGGER = LoggerFactory.getLogger(RequestHeaderModel.class);
 

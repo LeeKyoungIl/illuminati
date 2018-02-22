@@ -14,7 +14,7 @@ public class H2ConnectionFactory {
     private static H2ConnectionFactory H2_CONNECTION_FACTORY;
 
     private static final String DB_DRIVER = "org.h2.Driver";
-    private static final String DB_CONNECTION = "jdbc:h2:file:~/illuminati-backup;IFEXISTS=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+    private static final String DB_CONNECTION = "jdbc:h2:file:./illuminati-backup;FILE_LOCK=NO;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
     private static final String DB_USER = "";
     private static final String DB_PASSWORD = "";
 

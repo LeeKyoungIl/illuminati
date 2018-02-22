@@ -3,11 +3,14 @@ package com.leekyoungil.illuminati.common.dto;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChangedJsElement {
+public class ChangedJsElement implements Serializable {
+
+    private static final long serialVersionUID = 7526474295622776247L;
 
     private String illuminatiSProcId;
     private String illuminatiGProcId;

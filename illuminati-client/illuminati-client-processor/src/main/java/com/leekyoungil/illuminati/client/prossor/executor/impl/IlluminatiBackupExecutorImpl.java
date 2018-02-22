@@ -1,14 +1,12 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiBackupInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -25,20 +23,14 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
     private static final int ILLUMINATI_FILE_BACKUP_LOG = 100000;
-    private static final int ILLUMINATI_RESTORE_FILE_BACKUP_LOG = 10000;
     private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000;
     private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000;
 
     // ################################################################################################################
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
-    private static final int RESTORE_PER_COUNT = 1000;
+    private static final int POLL_PER_COUNT = 1000;
     private static final long RESTORE_SLEEP_TIME = 600000;
-
-    // ################################################################################################################
-    // ### init illuminati template executor                                                                        ###
-    // ################################################################################################################
-    private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor;
 
     private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance();
 
@@ -52,16 +44,15 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         BASE_PATH = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "baseFilePath", DEFAULT_BASE_PATH);
     }
 
-    private IlluminatiBackupExecutorImpl(final IlluminatiExecutor illuminatiExecutor) {
-        super(ILLUMINATI_FILE_BACKUP_LOG, ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_RESTORE_FILE_BACKUP_LOG));
-        this.illuminatiTemplateExecutor = illuminatiExecutor;
+    private IlluminatiBackupExecutorImpl() {
+        super(ILLUMINATI_FILE_BACKUP_LOG, ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(POLL_PER_COUNT));
     }
 
-    public static IlluminatiBackupExecutorImpl getInstance (final IlluminatiExecutor illuminatiExecutor) {
+    public static IlluminatiBackupExecutorImpl getInstance () {
         if (ILLUMINATI_BACKUP_EXECUTOR_IMPL == null) {
             synchronized (IlluminatiBackupExecutorImpl.class) {
                 if (ILLUMINATI_BACKUP_EXECUTOR_IMPL == null) {
-                    ILLUMINATI_BACKUP_EXECUTOR_IMPL = new IlluminatiBackupExecutorImpl(illuminatiExecutor);
+                    ILLUMINATI_BACKUP_EXECUTOR_IMPL = new IlluminatiBackupExecutorImpl();
                 }
             }
         }
@@ -154,36 +145,36 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         this.createDebugThread();
     }
 
-    private void restoreToTemplateQueueSystemThread () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-                            if ((10000 - illuminatiTemplateExecutor.getQueueSize()) > 2000) {
-                                final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(false, true, 0, 1000);
-                                if (CollectionUtils.isNotEmpty(backupObjectList) == true) {
-                                    for (IlluminatiInterfaceModel illuminatiInterfaceModel : backupObjectList) {
-                                        illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel);
-                                    }
-                                }
-                            }
-                        }
-
-                        try {
-                            Thread.sleep(RESTORE_SLEEP_TIME);
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
-                    } catch (Exception e) {
-                        illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
-                    }
-                }
-            }
-        };
-
-        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_RESTORE_DATA_TO_FILE_THREAD");
-    }
+//    private void restoreToTemplateQueueSystemThread () {
+//        final Runnable runnableFirst = new Runnable() {
+//            public void run() {
+//                while (true) {
+//                    try {
+//                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+//                            if ((10000 - illuminatiTemplateExecutor.getQueueSize()) > 2000) {
+//                                final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(false, true, 0, 1000);
+//                                if (CollectionUtils.isNotEmpty(backupObjectList) == true) {
+//                                    for (IlluminatiInterfaceModel illuminatiInterfaceModel : backupObjectList) {
+//                                        illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel);
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        try {
+//                            Thread.sleep(RESTORE_SLEEP_TIME);
+//                        } catch (InterruptedException e) {
+//                            // ignore
+//                        }
+//                    } catch (Exception e) {
+//                        illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
+//                    }
+//                }
+//            }
+//        };
+//
+//        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_RESTORE_DATA_TO_FILE_THREAD");
+//    }
 
     @Override
     protected void preventErrorOfSystemThread(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {

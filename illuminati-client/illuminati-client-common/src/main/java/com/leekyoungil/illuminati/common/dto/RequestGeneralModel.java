@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -15,7 +16,9 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class RequestGeneralModel {
+public class RequestGeneralModel implements Serializable {
+
+    private static final long serialVersionUID = 7526432234522776147L;
 
     private static final Logger REQUEST_GENERAL_MODEL_LOGGER = LoggerFactory.getLogger(RequestGeneralModel.class);
 
@@ -26,7 +29,7 @@ public class RequestGeneralModel {
     @Expose private String anotherPath;
     @Expose private String queryString;
 
-    private Method method;
+    private transient Method method;
 
     private static final List<String> CLIENT_INFO_KEY_LIST = Arrays.asList(new String[]{"path", "queryString", "clientIp", "anotherPath"});
 

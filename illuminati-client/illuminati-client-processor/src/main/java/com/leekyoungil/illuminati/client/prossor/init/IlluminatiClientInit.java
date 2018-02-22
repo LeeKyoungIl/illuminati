@@ -41,13 +41,16 @@ public class IlluminatiClientInit {
     private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_BACKUP_EXECUTOR;
 
     static {
-        ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance();
-        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-        ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-
         IlluminatiCommon.init();
-        ILLUMINATI_DATA_EXECUTOR.init();
+
+        ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
         ILLUMINATI_BACKUP_EXECUTOR.init();
+
+        ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR);
+        ILLUMINATI_TEMPLATE_EXECUTOR.init();
+
+        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
+        ILLUMINATI_DATA_EXECUTOR.init();
 
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;

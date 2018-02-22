@@ -5,6 +5,7 @@ import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -14,7 +15,9 @@ import java.util.Map;
  *
  * get server info is very expensive process. Because of this, it has to be executed only once.
  */
-public class ServerInfo {
+public class ServerInfo implements Serializable {
+
+    private static final long serialVersionUID = 1226443295622774147L;
 
     private static final Logger SERVER_INFO_LOGGER = LoggerFactory.getLogger(ServerInfo.class);
 
