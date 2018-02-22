@@ -1,7 +1,6 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBlockingQueue;
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiFileBackupExecutorImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -13,11 +12,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel> implements IlluminatiExecutor<T> {
 
     protected final Logger illuminatiExecutorLogger = LoggerFactory.getLogger(this.getClass());
-
-    // ################################################################################################################
-    // ### init illuminati template executor                                                                        ###
-    // ################################################################################################################
-    protected final IlluminatiExecutor<IlluminatiInterfaceModel> illuminatiFileBackupExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
 
     protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 

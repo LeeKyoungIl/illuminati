@@ -1,11 +1,13 @@
 package com.leekyoungil.illuminati.client.prossor.init;
 
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiBackupInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
@@ -35,14 +37,17 @@ public class IlluminatiClientInit {
     private static final int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
     private static final IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
+    private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
+    private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_BACKUP_EXECUTOR;
 
     static {
-        final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor = IlluminatiTemplateExecutorImpl.getInstance();
-        illuminatiTemplateExecutor.init();
-        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(illuminatiTemplateExecutor);
+        ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance();
+        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
+        ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
 
         IlluminatiCommon.init();
         ILLUMINATI_DATA_EXECUTOR.init();
+        ILLUMINATI_BACKUP_EXECUTOR.init();
 
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;

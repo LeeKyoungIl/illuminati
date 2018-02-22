@@ -1,17 +1,17 @@
 package executor.impl
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiFileBackupExecutorImpl
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant
 
 import com.leekyoungil.illuminati.common.util.FileUtil
 import spock.lang.Specification
 
-class IlluminatiFileBackupExecutorImplTest extends Specification {
+class IlluminatiBackupExecutorImplTest extends Specification {
 
     def "data add to file backup queue" () {
         setup:
-        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
+        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiBackupExecutorImpl.getInstance();
         String textData = "test1";
 
         when:
@@ -23,7 +23,7 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "get data from file backup queue" () {
         setup:
-        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
+        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiBackupExecutorImpl.getInstance();
         String textData = "test1";
 
         illuminatiExecutor.addToQueue(textData);
@@ -38,8 +38,8 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "create system thread" () {
         setup:
-        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
-        String threadName = "com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiFileBackupExecutorImpl : ILLUMINATI_SENDER_THREAD";
+        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiBackupExecutorImpl.getInstance();
+        String threadName = "com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl : ILLUMINATI_SENDER_THREAD";
 
         when:
         illuminatiExecutor.init();
@@ -50,7 +50,7 @@ class IlluminatiFileBackupExecutorImplTest extends Specification {
 
     def "add data to file by thread" () {
         setup:
-        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiFileBackupExecutorImpl.getInstance();
+        IlluminatiExecutor<String> illuminatiExecutor = IlluminatiBackupExecutorImpl.getInstance();
         String textData = "text file test\r\ntext file test1";
 
         String basePath = "./log";

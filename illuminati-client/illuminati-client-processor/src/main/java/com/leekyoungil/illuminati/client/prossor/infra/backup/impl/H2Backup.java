@@ -28,7 +28,7 @@ public class H2Backup<T> implements Backup<T> {
         if (H2_CONN.isConnected() == true) {
             try {
                 this.stmt = H2_CONN.getDbConnection().createStatement();
-                //this.deleteTable();
+                this.deleteTable();
                 this.createTable();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -59,8 +59,8 @@ public class H2Backup<T> implements Backup<T> {
         tableExecuteCommand.append(TABLE_NAME);
         tableExecuteCommand.append(" ( ");
         tableExecuteCommand.append(" ID INTEGER PRIMARY KEY AUTO_INCREMENT");
-        tableExecuteCommand.append(", EXECUTOR_TYPE INTEGER");
-        tableExecuteCommand.append(", JSON_DATA TEXT ");
+        tableExecuteCommand.append(", EXECUTOR_TYPE INTEGER NOT NULL");
+        tableExecuteCommand.append(", DATA OTHER NOT NULL ");
         tableExecuteCommand.append(" ) ");
 
         try {
@@ -74,7 +74,7 @@ public class H2Backup<T> implements Backup<T> {
         StringBuilder insertExecuteCommand = new StringBuilder();
         insertExecuteCommand.append("INSERT INTO ");
         insertExecuteCommand.append(TABLE_NAME);
-        insertExecuteCommand.append(" (EXECUTOR_TYPE, JSON_DAta) ");
+        insertExecuteCommand.append(" (EXECUTOR_TYPE, DATA) ");
         insertExecuteCommand.append("VALUES ("+ illuminatiInterfaceType.getExecutorId()+", '"+data+"')");
 
         try {
@@ -92,7 +92,7 @@ public class H2Backup<T> implements Backup<T> {
             ResultSet rs = this.stmt.executeQuery(this.getSelectQuery(isPaging, from, size));
             while (rs.next()) {
                 idList.add(rs.getInt("ID"));
-                dataList.add((T) rs.getString("JSON_DATA"));
+                dataList.add((T) rs.getString("DATA"));
             }
             rs.close();
         } catch (SQLException e) {
@@ -121,7 +121,7 @@ public class H2Backup<T> implements Backup<T> {
         try {
             ResultSet rs = this.stmt.executeQuery(selectQuery);
             while (rs.next()) {
-                dataMap.put(rs.getInt("ID"), (T) rs.getString("JSON_DATA"));
+                dataMap.put(rs.getInt("ID"), (T) rs.getString("DATA"));
             }
             rs.close();
         } catch (SQLException e) {
@@ -172,7 +172,7 @@ public class H2Backup<T> implements Backup<T> {
 
     private String getSelectQuery (boolean isPaging, int from, int size) {
         StringBuilder selectExecuteCommand = new StringBuilder();
-        selectExecuteCommand.append("SELECT ID, JSON_DATA FROM ");
+        selectExecuteCommand.append("SELECT ID, DATA FROM ");
         selectExecuteCommand.append(TABLE_NAME);
 
         if (isPaging == true) {

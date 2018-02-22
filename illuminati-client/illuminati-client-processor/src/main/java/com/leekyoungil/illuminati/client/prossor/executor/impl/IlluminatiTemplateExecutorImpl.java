@@ -1,15 +1,11 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
-import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
-import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiFileBackupInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 
@@ -34,7 +30,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     private IlluminatiTemplateExecutorImpl () {
         super(ILLUMINATI_BAK_LOG, ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>());
-        this.illuminatiFileBackupExecutor.init();
     }
 
     public static IlluminatiTemplateExecutorImpl getInstance () {

@@ -5,7 +5,7 @@ import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
 import java.util.List;
 
-public class IlluminatiFileBackupInterfaceModelImpl implements IlluminatiInterfaceModel {
+public class IlluminatiBackupInterfaceModelImpl implements IlluminatiInterfaceModel {
 
     private IlluminatiInterfaceType illuminatiInterfaceType;
 
