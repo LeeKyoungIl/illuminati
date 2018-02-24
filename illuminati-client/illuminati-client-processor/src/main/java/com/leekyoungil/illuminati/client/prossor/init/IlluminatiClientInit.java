@@ -5,6 +5,7 @@ import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupE
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
+import com.leekyoungil.illuminati.client.prossor.infra.restore.impl.RestoreTemplateData;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiBackupInterfaceModelImpl;
@@ -40,6 +41,8 @@ public class IlluminatiClientInit {
     private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
     private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_BACKUP_EXECUTOR;
 
+    private static final RestoreTemplateData RESTORE_TEMPLATE_DATA;
+
     static {
         IlluminatiCommon.init();
 
@@ -51,6 +54,9 @@ public class IlluminatiClientInit {
 
         ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
         ILLUMINATI_DATA_EXECUTOR.init();
+
+        RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
+        RESTORE_TEMPLATE_DATA.init();
 
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;

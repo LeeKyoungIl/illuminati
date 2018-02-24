@@ -52,7 +52,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     @Override public synchronized void init () {
-        if (illuminatiTemplate != null) {
+        if (this.illuminatiTemplate != null) {
             this.createSystemThread();
         }
     }
@@ -62,12 +62,16 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ################################################################################################################
 
     public void sendToIlluminati (final String jsonString) {
-        illuminatiTemplate.sendToIlluminati(jsonString);
+        this.illuminatiTemplate.sendToIlluminati(jsonString);
+    }
+
+    public boolean isCanConnect () {
+        return this.illuminatiTemplate.canIConnect();
     }
 
     @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         // something to check validation.. but.. now not exists.
-        if (illuminatiTemplate == null) {
+        if (this.illuminatiTemplate == null) {
             illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
             return;
         }
