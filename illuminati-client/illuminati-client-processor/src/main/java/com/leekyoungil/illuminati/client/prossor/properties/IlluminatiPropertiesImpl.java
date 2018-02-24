@@ -114,6 +114,10 @@ public class IlluminatiPropertiesImpl implements IlluminatiProperties {
         return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
     }
 
+    @Override public String getSamplingRate() {
+        return this.samplingRate;
+    }
+
     @Override public String getChaosBomber() {
         return StringObjectUtils.isValid(this.chaosBomber) ? this.chaosBomber : "";
     }

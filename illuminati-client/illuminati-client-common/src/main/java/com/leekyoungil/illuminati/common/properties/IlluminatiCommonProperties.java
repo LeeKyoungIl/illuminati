@@ -6,6 +6,9 @@ import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+/**
+ * This class is used where 'IlluminatiPropertiesImpl' is not used.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiCommonProperties implements IlluminatiProperties {
 
@@ -31,6 +34,11 @@ public class IlluminatiCommonProperties implements IlluminatiProperties {
 
     @Override public String getDebug() {
         return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
+    }
+
+    @Override
+    public String getSamplingRate() {
+        return null;
     }
 
     @Override

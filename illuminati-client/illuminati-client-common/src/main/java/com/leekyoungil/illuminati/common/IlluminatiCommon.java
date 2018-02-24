@@ -9,7 +9,7 @@ import com.leekyoungil.illuminati.common.util.SystemUtil;
 public class IlluminatiCommon {
 
     public synchronized static void init () {
-        String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, null, "illuminati", "debug", null);
+        final String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, null, "illuminati", "debug", null);
         if (StringObjectUtils.isValid(debug)) {
             IlluminatiConstant.ILLUMINATI_DEBUG = Boolean.valueOf(debug);
         }

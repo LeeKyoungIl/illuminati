@@ -89,6 +89,11 @@ public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
     }
 
     @Override
+    public String getSamplingRate() {
+        return null;
+    }
+
+    @Override
     public String getChaosBomber() {
         return null;
     }
