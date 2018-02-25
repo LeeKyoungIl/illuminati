@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
@@ -21,7 +22,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
     // ### init illuminati data queue                                                                               ###
     // ################################################################################################################
-    private static final int ILLUMINATI_DATA_BAK_LOG = 10000;
+    private static final int POLL_PER_COUNT = 1;
     private static final long ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS = 1000l;
     private static final long ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS = 0l;
 
@@ -39,7 +40,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();
 
     private IlluminatiDataExecutorImpl (final IlluminatiExecutor illuminatiExecutor) {
-        super(ILLUMINATI_DATA_BAK_LOG, ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl>());
+        super(ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 

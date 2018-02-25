@@ -1,6 +1,5 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -13,6 +12,8 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     protected final Logger illuminatiExecutorLogger = LoggerFactory.getLogger(this.getClass());
 
+    public static final int ILLUMINATI_BAK_LOG = 10000;
+
     protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 
     private long enQueuingTimeout = 0l;
@@ -22,7 +23,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     protected abstract void sendToNextStepByDebug(final T t);
     protected abstract void preventErrorOfSystemThread(final T t);
 
-    protected IlluminatiBasicExecutor (int capacity, long enQueuingTimeout, long deQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
+    protected IlluminatiBasicExecutor (long enQueuingTimeout, long deQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
         this.enQueuingTimeout = enQueuingTimeout;
         this.deQueuingTimeout = deQueuingTimeout;
 

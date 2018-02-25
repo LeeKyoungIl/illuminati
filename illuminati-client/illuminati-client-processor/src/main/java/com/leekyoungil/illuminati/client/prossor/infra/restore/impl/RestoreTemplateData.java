@@ -14,11 +14,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor.ILLUMINATI_BAK_LOG;
+
 public class RestoreTemplateData implements Restore {
 
     protected final Logger RestoreTemplateDataLogger = LoggerFactory.getLogger(this.getClass());
 
     private static RestoreTemplateData RESTORE_TEMPLATE_DATA;
+
+    private static final int RESTORE_CHECK_QUEUE_SIZE = 1500;
+    private static final int LIMIT_COUNT = 1000;
 
     private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance();
 
@@ -48,11 +53,11 @@ public class RestoreTemplateData implements Restore {
     }
 
     @Override public void restoreToQueue () {
-        if ((10000 - this.illuminatiTemplateExecutor.getQueueSize()) <= (1000 * 1.5)) {
+        if ((ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize()) <= RESTORE_CHECK_QUEUE_SIZE) {
             return;
         }
 
-        final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(false, true, 0, 1000);
+        final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(false, true, 0, LIMIT_COUNT);
         if (CollectionUtils.isNotEmpty(backupObjectList) == true) {
             for (IlluminatiInterfaceModel illuminatiInterfaceModel : backupObjectList) {
                 this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel);

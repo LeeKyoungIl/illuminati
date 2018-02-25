@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
@@ -22,7 +23,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ################################################################################################################
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
-    private static final int ILLUMINATI_FILE_BACKUP_LOG = 100000;
+    private static final int ILLUMINATI_BAK_LOG = 100000;
     private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000;
     private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000;
 
@@ -30,7 +31,6 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1000;
-    private static final long RESTORE_SLEEP_TIME = 600000;
 
     private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance();
 
@@ -45,7 +45,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     private IlluminatiBackupExecutorImpl() {
-        super(ILLUMINATI_FILE_BACKUP_LOG, ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(POLL_PER_COUNT));
+        super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
     }
 
     public static IlluminatiBackupExecutorImpl getInstance () {

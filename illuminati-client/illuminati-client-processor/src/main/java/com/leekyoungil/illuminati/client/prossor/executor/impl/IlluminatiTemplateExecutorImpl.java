@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
@@ -20,7 +21,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ################################################################################################################
     // ### init illuminati template queue                                                                           ###
     // ################################################################################################################
-    private static final int ILLUMINATI_BAK_LOG = 10000;
+    private static final int POLL_PER_COUNT = 1;
     private static final long ILLUMINATI_DEQUEUING_TIMEOUT_MS = 1000l;
     private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0l;
 
@@ -35,7 +36,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
 
     private IlluminatiTemplateExecutorImpl (final IlluminatiExecutor illuminatiBackupExecutor) {
-        super(ILLUMINATI_BAK_LOG, ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>());
+        super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiBackupExecutor = illuminatiBackupExecutor;
     }
 

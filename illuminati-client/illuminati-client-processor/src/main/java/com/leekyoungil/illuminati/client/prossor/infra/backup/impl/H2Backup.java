@@ -6,6 +6,8 @@ import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2Co
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.h2.tools.DeleteDbFiles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public class H2Backup<T> implements Backup<T> {
+
+    private final Logger h2BackupLogger = LoggerFactory.getLogger(this.getClass());
 
     private static H2Backup H2_BACKUP;
 
@@ -62,7 +66,7 @@ public class H2Backup<T> implements Backup<T> {
             this.connection.commit();
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            this.h2BackupLogger.warn("Failed to create the Backup Table. Check your H2 Driver");
         }
     }
 
@@ -81,7 +85,7 @@ public class H2Backup<T> implements Backup<T> {
             this.connection.commit();
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            this.h2BackupLogger.warn("Failed to insert data to Table.");
         }
     }
 
@@ -99,7 +103,7 @@ public class H2Backup<T> implements Backup<T> {
             rs.close();
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            this.h2BackupLogger.warn("Failed to select data from Table.");
             return null;
         }
 
@@ -130,7 +134,7 @@ public class H2Backup<T> implements Backup<T> {
             rs.close();
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            this.h2BackupLogger.warn("Failed to select data from Table.");
             return null;
         }
 
@@ -156,7 +160,7 @@ public class H2Backup<T> implements Backup<T> {
             this.connection.commit();
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            this.h2BackupLogger.warn("Failed to delete data from Table.");
         }
     }
 
@@ -176,7 +180,7 @@ public class H2Backup<T> implements Backup<T> {
             rs.close();
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            this.h2BackupLogger.warn("Failed to select data from Table.");
             return 0;
         }
 
