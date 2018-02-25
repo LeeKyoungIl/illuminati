@@ -2,6 +2,7 @@ package com.leekyoungil.illuminati.client.prossor.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.properties.IlluminatiCommonProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
@@ -27,7 +28,7 @@ import java.util.Properties;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IlluminatiPropertiesImpl implements IlluminatiProperties {
+public class IlluminatiPropertiesImpl extends IlluminatiCommonProperties implements IlluminatiProperties {
 
     private String parentModuleName;
     private String broker;
@@ -42,8 +43,6 @@ public class IlluminatiPropertiesImpl implements IlluminatiProperties {
     private String isAsync;
     private String isCompression;
     private String performance;
-
-    private String debug;
 
     private String illuminatiSwitchValueURL;
 
@@ -108,10 +107,6 @@ public class IlluminatiPropertiesImpl implements IlluminatiProperties {
 
     @Override public String getPerformance() {
         return StringObjectUtils.isValid(this.performance) ? this.performance : "";
-    }
-
-    @Override public String getDebug() {
-        return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
     }
 
     @Override public String getSamplingRate() {

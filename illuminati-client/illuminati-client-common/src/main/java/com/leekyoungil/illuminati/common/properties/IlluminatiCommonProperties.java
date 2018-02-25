@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.common.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
 import java.lang.reflect.Field;
@@ -15,19 +16,19 @@ public class IlluminatiCommonProperties implements IlluminatiProperties {
     private String debug;
 
     @Override
-    public void setProperties(Properties prop) {
-        final String keys = "debug";
-
-        final String value = prop.getProperty(keys);
-        if (prop.containsKey(keys) && !value.isEmpty()) {
-            try {
-                final Field field = this.getClass().getDeclaredField(keys);
-                field.setAccessible(true);
-                field.set(this, value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+    public void setProperties(final Properties prop) {
+        for (String keys : IlluminatiConstant.PROPERTIES_KEYS) {
+            final String value = prop.getProperty(keys);
+            if (prop.containsKey(keys) && !value.isEmpty()) {
+                try {
+                    final Field field = this.getClass().getDeclaredField(keys);
+                    field.setAccessible(true);
+                    field.set(this, value);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
