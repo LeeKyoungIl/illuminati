@@ -117,7 +117,7 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     @Override public Map<Integer, T> getDataByMap(boolean isPaging, boolean isAfterDelete, int from, int size) {
-        String selectQuery = this.getSelectQuery(isPaging, from, size);
+        final String selectQuery = this.getSelectQuery(isPaging, from, size);
 
         if (StringObjectUtils.isValid(selectQuery) == false) {
             return null;

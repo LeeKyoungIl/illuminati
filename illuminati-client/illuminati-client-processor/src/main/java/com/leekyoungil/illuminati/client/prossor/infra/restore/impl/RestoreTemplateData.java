@@ -65,6 +65,14 @@ public class RestoreTemplateData implements Restore {
         }
     }
 
+    @Override public void restoreToQueueByDebug () {
+        final long start = System.currentTimeMillis();
+        //## Restore file
+        this.restoreToQueue();
+        final long elapsedTime = System.currentTimeMillis() - start;
+        RestoreTemplateDataLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
+    }
+
     private void createSystemThread () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
@@ -73,6 +81,7 @@ public class RestoreTemplateData implements Restore {
                         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                             restoreToQueue();
                         } else {
+                            restoreToQueueByDebug();
 
                             try {
                                 Thread.sleep(5000);
@@ -82,7 +91,7 @@ public class RestoreTemplateData implements Restore {
                         }
 
                         try {
-                            Thread.sleep(30000);
+                            Thread.sleep(300000);
                         } catch (InterruptedException e) {
                             // ignore
                         }

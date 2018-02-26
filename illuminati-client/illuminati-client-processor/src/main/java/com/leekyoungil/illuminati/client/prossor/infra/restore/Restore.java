@@ -5,4 +5,6 @@ public interface Restore {
     void init ();
 
     void restoreToQueue ();
+
+    void restoreToQueueByDebug ();
 }

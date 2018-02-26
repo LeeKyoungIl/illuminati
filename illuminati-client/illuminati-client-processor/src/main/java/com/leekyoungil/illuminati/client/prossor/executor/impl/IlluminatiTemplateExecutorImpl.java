@@ -66,10 +66,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         this.illuminatiTemplate.sendToIlluminati(jsonString);
     }
 
-    public boolean isCanConnect () {
-        return this.illuminatiTemplate.canIConnect();
-    }
-
     @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         // something to check validation.. but.. now not exists.
         if (this.illuminatiTemplate == null) {
