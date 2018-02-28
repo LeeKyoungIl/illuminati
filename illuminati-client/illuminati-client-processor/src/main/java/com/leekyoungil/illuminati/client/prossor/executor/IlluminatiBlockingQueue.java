@@ -18,9 +18,18 @@ public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends
     }
 
     public List<E> pollToList(long timeout, TimeUnit unit) {
-        List<E> dataList = new ArrayList<E>(this.listCount);
+        int superQueueSize = super.size();
+        if (superQueueSize == 0) {
+            return null;
+        }
 
-        for (int i=0; i<this.listCount; i++) {
+        if (superQueueSize > this.listCount) {
+            superQueueSize = this.listCount;
+        }
+
+        List<E> dataList = new ArrayList<E>(superQueueSize);
+
+        for (int i=0; i<superQueueSize; i++) {
             try {
                 E data = super.poll(timeout, unit);
                 if (data != null) {

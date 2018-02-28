@@ -53,7 +53,8 @@ public class RestoreTemplateData implements Restore {
     }
 
     @Override public void restoreToQueue () {
-        if ((ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize()) <= RESTORE_CHECK_QUEUE_SIZE) {
+        if (((ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize()) <= RESTORE_CHECK_QUEUE_SIZE)
+                || H2_BACKUP.getCount() == 0) {
             return;
         }
 
