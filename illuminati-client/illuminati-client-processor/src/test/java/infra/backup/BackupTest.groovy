@@ -1,9 +1,9 @@
 package infra.backup
 
-import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup
-import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory
 import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType
+import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory
 import spock.lang.Specification
 
 class BackupTest extends Specification {
@@ -26,7 +26,7 @@ class BackupTest extends Specification {
 
         when:
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData);
-        List<String> h2DataList = h2Backup.getDataByList(false, false, 0, 0);
+        List<String> h2DataList = h2Backup.getDataByList(false, false, 0, 10);
 
         then:
         h2DataList.size() > 0;

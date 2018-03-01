@@ -25,7 +25,7 @@ public class RestoreTemplateData implements Restore {
     private static final int RESTORE_CHECK_QUEUE_SIZE = 1500;
     private static final int LIMIT_COUNT = 1000;
 
-    private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance();
+    private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
 
     // ################################################################################################################
     // ### init illuminati template executor                                                                        ###

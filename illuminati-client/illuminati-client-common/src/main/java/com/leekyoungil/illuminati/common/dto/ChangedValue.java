@@ -4,9 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 
-public class ChangedValue implements Serializable {
-
-    private static final long serialVersionUID = 5526432234522736127L;
+public class ChangedValue {
 
     @Expose private String elementUniqueId;
     @Expose private String elementType;

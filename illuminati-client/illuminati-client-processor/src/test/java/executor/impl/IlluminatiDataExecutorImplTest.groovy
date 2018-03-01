@@ -1,7 +1,7 @@
 package executor.impl
 
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
@@ -64,6 +64,7 @@ class IlluminatiDataExecutorImplTest extends Specification {
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
+        Thread.sleep(3000l);
         illuminatiExecutor.getQueueSize() == 0;
     }
 }

@@ -16,9 +16,7 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class RequestHeaderModel implements Serializable {
-
-    private static final long serialVersionUID = 1226472295622776147L;
+public class RequestHeaderModel {
 
     private static final Logger REQUEST_HEADER_MODEL_LOGGER = LoggerFactory.getLogger(RequestHeaderModel.class);
 

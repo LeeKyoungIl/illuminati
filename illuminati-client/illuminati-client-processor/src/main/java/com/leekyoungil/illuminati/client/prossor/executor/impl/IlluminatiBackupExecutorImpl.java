@@ -16,6 +16,8 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.ILLUMINATI_GSON_OBJ;
+
 public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
 
     private static IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR_IMPL;
@@ -32,7 +34,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1000;
 
-    private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance();
+    private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
 
     private IlluminatiBackupExecutorImpl() {
         super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
@@ -89,7 +91,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             return;
         }
         //## Save file
-        H2_BACKUP.append(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, illuminatiTemplateInterfaceModel);
+        H2_BACKUP.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
     }
 
     @Override protected void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiBackupInterfaceModel) {

@@ -16,9 +16,7 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class RequestGeneralModel implements Serializable {
-
-    private static final long serialVersionUID = 7526432234522776147L;
+public class RequestGeneralModel {
 
     private static final Logger REQUEST_GENERAL_MODEL_LOGGER = LoggerFactory.getLogger(RequestGeneralModel.class);
 

@@ -15,9 +15,7 @@ import java.util.Map;
  *
  * get server info is very expensive process. Because of this, it has to be executed only once.
  */
-public class ServerInfo implements Serializable {
-
-    private static final long serialVersionUID = 1226443295622774147L;
+public class ServerInfo {
 
     private static final Logger SERVER_INFO_LOGGER = LoggerFactory.getLogger(ServerInfo.class);
 

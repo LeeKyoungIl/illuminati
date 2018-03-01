@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface Backup<T> {
 
-    void append (IlluminatiInterfaceType illuminatiInterfaceType, T data);
+    void appendByJsonString (IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData);
 
     List<T> getDataByList (boolean isPaging, boolean isAfterDelete, int from, int size);
 

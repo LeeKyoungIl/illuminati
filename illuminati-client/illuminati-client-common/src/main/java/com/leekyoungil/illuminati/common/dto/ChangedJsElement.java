@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChangedJsElement implements Serializable {
-
-    private static final long serialVersionUID = 7526474295622776247L;
+public class ChangedJsElement {
 
     private String illuminatiSProcId;
     private String illuminatiGProcId;

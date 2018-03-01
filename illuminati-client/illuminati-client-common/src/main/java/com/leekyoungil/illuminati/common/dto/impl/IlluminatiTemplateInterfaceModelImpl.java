@@ -15,9 +15,7 @@ import java.util.*;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel, Serializable {
-
-    private static final long serialVersionUID = 7526472295622776147L;
+public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel {
 
     protected static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault());
 
