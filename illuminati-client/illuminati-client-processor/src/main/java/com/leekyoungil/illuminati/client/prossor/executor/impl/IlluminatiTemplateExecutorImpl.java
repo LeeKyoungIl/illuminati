@@ -121,6 +121,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     @Override protected void preventErrorOfSystemThread(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
-        this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
+        if (this.illuminatiBackupExecutor != null) {
+            this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
+        }
     }
 }

@@ -59,7 +59,8 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
  2. Drop in performance can occur, but there is no big difference in physical server. (It can happen a little more on virtual machines.)
  3. Even if an exception occurs in the original application logic, illuminati can also collect the corresponding exception information.
-
+ 4. When the Illuminati collects the Data. If a problems aries. Save that data to separate  storage. and If the problem is fixed. data will automaticaly restored.
+ 
 ## struct of illuminati
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
 
@@ -247,8 +248,8 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
 2. 성능하락은 발생할수도 있지만 물리서버에서는 큰 차이는 없습니다. (가상 장비에서는 조금더 발생할수 있습니다.)
 3. 본래의 Application로직에서 Exception이 발생하는 경우에도 illuminati에서는 해당 Exception정보도 수집하여 파악이 가능합니다.
-4. 데이터 수집을 위해 외부의 Queue (RabbitMq, Kafka)에 데이터를 전송중 문제가 생길경우 별도의 저장소에 저장을 하고 외부의 Queue 문제가 해결되면 자동으로 데이터 복구가 가능합니다. 
-
+4. 데이터 수집중 외부의 Queue (RabbitMq, Kafka)에 문제가 생길경우 별도의 저장소에 저장을 하고 문제가 해결되면 자동으로 데이터 복구가 가능하기 때문에 데이터의 손실을 방지할수 있습니다.
+ 
 # illuminati 구조
 
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)

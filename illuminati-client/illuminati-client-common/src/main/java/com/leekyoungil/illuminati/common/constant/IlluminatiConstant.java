@@ -15,6 +15,8 @@ abstract public class IlluminatiConstant {
     public static boolean ILLUMINATI_DEBUG = false;
 
     public static boolean ILLUMINATI_SWITCH_ACTIVATION = false;
+    public static boolean ILLUMINATI_BACKUP_ACTIVATION = false;
+
     public static AtomicBoolean ILLUMINATI_SWITCH_VALUE = new AtomicBoolean(false);
 
     public final static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = "5000";

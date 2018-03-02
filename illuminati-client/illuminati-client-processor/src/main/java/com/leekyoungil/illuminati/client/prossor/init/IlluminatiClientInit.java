@@ -46,8 +46,12 @@ public class IlluminatiClientInit {
     static {
         IlluminatiCommon.init();
 
-        ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
-        ILLUMINATI_BACKUP_EXECUTOR.init();
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+            ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
+            ILLUMINATI_BACKUP_EXECUTOR.init();
+        } else {
+            ILLUMINATI_BACKUP_EXECUTOR = null;
+        }
 
         ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR);
         ILLUMINATI_TEMPLATE_EXECUTOR.init();
@@ -55,8 +59,12 @@ public class IlluminatiClientInit {
         ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
         ILLUMINATI_DATA_EXECUTOR.init();
 
-        RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-        RESTORE_TEMPLATE_DATA.init();
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+            RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
+            RESTORE_TEMPLATE_DATA.init();
+        } else {
+            RESTORE_TEMPLATE_DATA = null;
+        }
 
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
