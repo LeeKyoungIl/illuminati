@@ -1,16 +1,20 @@
 package com.leekyoungil.illuminati.client.prossor.infra.backup.impl;
 
-import com.leekyoungil.illuminati.client.prossor.infra.backup.enums.TableDDLType;
-import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.enums.TableDDLType;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
+import com.leekyoungil.illuminati.common.properties.IlluminatiCommonProperties;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.h2.tools.DeleteDbFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +38,11 @@ public class H2Backup<T> implements Backup<T> {
         this.type = type;
         if (H2_CONN.isConnected() == true) {
             this.connection = H2_CONN.getDbConnection();
-            //this.tableDDL(TableDDLType.DROP);
+
+            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, null, "illuminati", "backTableReset", "false");
+            if ("true".equalsIgnoreCase(backTableReset)) {
+                this.tableDDL(TableDDLType.DROP);
+            }
             this.tableDDL(TableDDLType.CREATE);
         }
     }
