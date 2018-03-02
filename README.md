@@ -208,6 +208,7 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 * ElasticSearch
 * Kibana
 * Spring Cloud Stream - Consumer 제작시
+* H2 Database (Maven 의존성에 포함시)
 
 ## illuminati Project 구조
    * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
@@ -245,7 +246,8 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 # illuminati는 본래의 Application 로직에 영향이 없습니다.
 1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
 2. 성능하락은 발생할수도 있지만 물리서버에서는 큰 차이는 없습니다. (가상 장비에서는 조금더 발생할수 있습니다.)
-3. 본래의 Application로직에서 Exception이 발생하는 경우에도 illuminati에서는 해당 Exception정보도 수집하여 파악이 가능합니다. 
+3. 본래의 Application로직에서 Exception이 발생하는 경우에도 illuminati에서는 해당 Exception정보도 수집하여 파악이 가능합니다.
+4. 데이터 수집을 위해 외부의 Queue (RabbitMq, Kafka)에 데이터를 전송중 문제가 생길경우 별도의 저장소에 저장을 하고 외부의 Queue 문제가 해결되면 자동으로 데이터 복구가 가능합니다. 
 
 # illuminati 구조
 
