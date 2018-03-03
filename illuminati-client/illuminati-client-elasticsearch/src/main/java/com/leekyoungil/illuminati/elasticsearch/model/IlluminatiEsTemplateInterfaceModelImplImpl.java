@@ -30,7 +30,6 @@ import java.util.Map;
 @EsDocument(indexName = "illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
 public abstract class IlluminatiEsTemplateInterfaceModelImplImpl extends IlluminatiTemplateInterfaceModelImpl implements IlluminatiEsModel {
 
-    private static final long serialVersionUID = 7526472295622776147L;
     private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImplImpl.class);
 
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();

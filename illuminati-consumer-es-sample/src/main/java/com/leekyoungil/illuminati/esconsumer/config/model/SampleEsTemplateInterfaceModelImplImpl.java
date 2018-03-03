@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 @EsDocument(indexName = "sample-illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
 public class SampleEsTemplateInterfaceModelImplImpl extends IlluminatiEsTemplateInterfaceModelImplImpl {
 
-    private static final long serialVersionUID = 7526472295622776147L;
     private final static Logger SAMPLE_ES_CONSUMER_LOGGER = LoggerFactory.getLogger(SampleEsTemplateInterfaceModelImplImpl.class);
     
     public SampleEsTemplateInterfaceModelImplImpl() {}
