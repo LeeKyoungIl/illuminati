@@ -3,20 +3,16 @@ package com.leekyoungil.illuminati.client.prossor.executor.impl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
-import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup;
-import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.BackupFactory;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
-import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.ILLUMINATI_GSON_OBJ;
 
 public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
 
@@ -34,7 +30,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1000;
 
-    private static final Backup<IlluminatiInterfaceModel> H2_BACKUP = H2Backup.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
+    private static final Backup<IlluminatiInterfaceModel> ILLUMINATI_BACKUP = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
 
     private IlluminatiBackupExecutorImpl() {
         super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
@@ -53,7 +49,9 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override public void init() {
-        this.createSystemThread();
+        if (ILLUMINATI_BACKUP != null) {
+            this.createSystemThread();
+        }
     }
 
     @Override public IlluminatiTemplateInterfaceModelImpl deQueue() {
@@ -90,8 +88,12 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             illuminatiExecutorLogger.warn("data is not valid");
             return;
         }
+        if (ILLUMINATI_BACKUP == null) {
+            illuminatiExecutorLogger.warn("ILLUMINATI_BACKUP Object is null");
+            return;
+        }
         //## Save file
-        H2_BACKUP.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
+        ILLUMINATI_BACKUP.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
     }
 
     @Override protected void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiBackupInterfaceModel) {

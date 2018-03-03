@@ -2,6 +2,7 @@ package com.leekyoungil.illuminati.common.constant;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiStorageType;
 
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ abstract public class IlluminatiConstant {
     public static boolean ILLUMINATI_DEBUG = false;
 
     public static boolean ILLUMINATI_SWITCH_ACTIVATION = false;
+
+    public static IlluminatiStorageType ILLUMINATI_BACKUP_STORAGE_TYPE = null;
     public static boolean ILLUMINATI_BACKUP_ACTIVATION = false;
 
     public static AtomicBoolean ILLUMINATI_SWITCH_VALUE = new AtomicBoolean(false);
