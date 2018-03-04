@@ -125,9 +125,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImplImpl extends Illumin
         }
     }
 
-    /**
-     * @TODO : if some method result value is String, This code will faild.
-     */
     private void setResultData () {
         if (this.output != null) {
             if (!(this.output instanceof String)) {

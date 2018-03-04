@@ -23,7 +23,7 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     private final MethodSignature signature;
     private final Object[] args;
     private long elapsedTime = 0L;
-    private final Object output;
+    private final Map<String, Object> output;
 
     private String illuminatiUniqueUserId;
     private RequestHeaderModel requestHeaderModel;
@@ -31,11 +31,11 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     private Map<String, Object> staticInfo;
     private boolean isActiveChaosBomber;
 
-    public IlluminatiDataInterfaceModelImpl(final HttpServletRequest request, final MethodSignature signature, final Object[] args, long elapsedTime, final Object output) {
+    public IlluminatiDataInterfaceModelImpl(final HttpServletRequest request, final MethodSignature signature, final Object[] args, long elapsedTime, final Map<String, Object> resultMap) {
         this.signature = signature;
         this.args = args;
         this.elapsedTime = elapsedTime;
-        this.output = output;
+        this.output = resultMap;
 
         this.initDataFromHttpRequest(request);
     }

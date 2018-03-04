@@ -40,7 +40,7 @@ spring:
 
 elasticsearchInfo:
   master:
-    user: es_client_admin
-    pass: dlruddlfWkd
+#    user: es_client_admin
+#    pass: dlruddlfWkd
     host: pi.leekyoungil.com
     port: 9200

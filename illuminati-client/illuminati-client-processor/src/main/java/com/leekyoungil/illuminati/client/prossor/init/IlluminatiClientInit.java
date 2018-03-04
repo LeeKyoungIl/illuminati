@@ -162,7 +162,6 @@ public class IlluminatiClientInit {
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
         final long elapsedTime = System.currentTimeMillis() - start;
 
-        final Object output = originMethodExecute.get("result");
         Throwable throwable = null;
         if (originMethodExecute.containsKey("throwable")) {
             throwable = (Throwable) originMethodExecute.get("throwable");
@@ -173,13 +172,13 @@ public class IlluminatiClientInit {
             request.setAttribute("ChaosBomber", "true");
         }
 
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModelImpl(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
+        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModelImpl(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, originMethodExecute));
 
         if (throwable != null) {
             throw throwable;
         }
 
-        return output;
+        return originMethodExecute.get("result");
     }
 
     private boolean checkSamplingRate () {
