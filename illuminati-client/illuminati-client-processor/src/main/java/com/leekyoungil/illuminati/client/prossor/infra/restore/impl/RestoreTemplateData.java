@@ -3,6 +3,7 @@ package com.leekyoungil.illuminati.client.prossor.infra.restore.impl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.impl.H2Backup;
+import com.leekyoungil.illuminati.client.prossor.infra.common.IlluminatiInfraConstant;
 import com.leekyoungil.illuminati.client.prossor.infra.restore.Restore;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
@@ -54,7 +55,7 @@ public class RestoreTemplateData implements Restore {
 
     @Override public void restoreToQueue () {
         if (((ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize()) <= RESTORE_CHECK_QUEUE_SIZE)
-                || H2_BACKUP.getCount() == 0) {
+                || H2_BACKUP.getCount() == 0 || IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == false) {
             return;
         }
 
@@ -79,15 +80,17 @@ public class RestoreTemplateData implements Restore {
             public void run() {
                 while (true) {
                     try {
-                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-                            restoreToQueue();
-                        } else {
-                            restoreToQueueByDebug();
+                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == true) {
+                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                                restoreToQueue();
+                            } else {
+                                restoreToQueueByDebug();
 
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                // ignore
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    // ignore
+                                }
                             }
                         }
 

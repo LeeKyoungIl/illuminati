@@ -107,6 +107,11 @@ public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
         return StringObjectUtils.isValid(this.illuminatiSwitchValueURL) ? this.illuminatiSwitchValueURL : "false";
     }
 
+    @Override
+    public String getBackTableReset() {
+        return null;
+    }
+
     public String getIlluminatiSwitchValueURLCheckInterval() {
         return StringObjectUtils.isValid(this.illuminatiSwitchValueURLCheckInterval)
                 ? this.illuminatiSwitchValueURLCheckInterval

@@ -35,4 +35,6 @@ public interface IlluminatiProperties {
     String getParentModuleName();
 
     String getIlluminatiSwitchValueURL();
+
+    String getBackTableReset();
 }

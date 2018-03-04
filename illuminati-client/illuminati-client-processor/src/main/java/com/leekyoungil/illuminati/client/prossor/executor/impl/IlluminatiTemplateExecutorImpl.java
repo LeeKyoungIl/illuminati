@@ -4,12 +4,14 @@ import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecuto
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
+import com.leekyoungil.illuminati.client.prossor.infra.common.IlluminatiInfraConstant;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.util.SystemUtil;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
@@ -55,6 +57,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     @Override public synchronized void init () {
         if (this.illuminatiTemplate != null) {
             this.createSystemThread();
+            this.createSystemThreadForIsCanConnectRemoteBroker();
         }
     }
 
@@ -113,7 +116,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             return null;
         }
 
-        if (illuminatiInfraTemplate == null) {
+        IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());
+
+        if (illuminatiInfraTemplate == null || IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == false) {
             return null;
         }
 
@@ -122,7 +127,31 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     @Override protected void preventErrorOfSystemThread(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         if (this.illuminatiBackupExecutor != null) {
+            IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+
             this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
         }
+    }
+
+    private void createSystemThreadForIsCanConnectRemoteBroker () {
+        final Runnable runnableFirst = new Runnable() {
+            public void run() {
+                while (true) {
+                    try {
+                        IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+
+                        try {
+                            Thread.sleep(300000);
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
+                    } catch (Exception e) {
+                        illuminatiExecutorLogger.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ("+e.getMessage()+")");
+                    }
+                }
+            }
+        };
+
+        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_BROKER_HEALTH_CHECKER");
     }
 }

@@ -14,6 +14,7 @@ import java.util.Properties;
 public class IlluminatiCommonProperties implements IlluminatiProperties {
 
     private String debug;
+    private String backTableReset;
 
     @Override
     public void setProperties(final Properties prop) {
@@ -105,5 +106,10 @@ public class IlluminatiCommonProperties implements IlluminatiProperties {
     @Override
     public String getIlluminatiSwitchValueURL() {
         return null;
+    }
+
+    @Override
+    public String getBackTableReset() {
+        return StringObjectUtils.isValid(this.backTableReset) ? this.backTableReset : "false";
     }
 }

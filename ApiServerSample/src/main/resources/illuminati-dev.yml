@@ -13,6 +13,7 @@ samplingRate: 100
 debug: false
 illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
 illuminatiSwitchValueURLCheckInterval: 5000
+backTableReset: true
 
 #kafka
 #broker: kafka
