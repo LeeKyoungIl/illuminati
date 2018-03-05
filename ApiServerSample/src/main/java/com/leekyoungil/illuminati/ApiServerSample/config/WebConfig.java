@@ -13,8 +13,8 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
  * Created by leekyoungil (leekyoungil@gmail.com) on 23/06/2017.
  *  - github : https://github.com/LeeKyoungIl
  */
-@EnableWebMvc
-@Configuration
+//@EnableWebMvc
+//@Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
