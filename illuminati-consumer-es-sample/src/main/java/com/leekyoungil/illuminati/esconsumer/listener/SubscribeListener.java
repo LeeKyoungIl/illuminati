@@ -25,9 +25,9 @@ public class SubscribeListener {
 
     private final @NotNull EsClient esClient;
 
-    @Value("${elasticsearchInfo.master.user}")
+    @Value("${elasticsearchInfo.master.user:}")
     private String esUserName;
-    @Value("${elasticsearchInfo.master.pass}")
+    @Value("${elasticsearchInfo.master.pass:}")
     private String esUserPass;
 
     @StreamListener(Sink.INPUT)

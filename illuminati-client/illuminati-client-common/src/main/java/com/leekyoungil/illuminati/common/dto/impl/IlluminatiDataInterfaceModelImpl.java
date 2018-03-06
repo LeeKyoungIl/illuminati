@@ -1,6 +1,8 @@
-package com.leekyoungil.illuminati.common.dto;
+package com.leekyoungil.illuminati.common.dto.impl;
 
-import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.RequestHeaderModel;
+import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -9,19 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
-public class IlluminatiDataInterfaceModel {
+public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceModel {
 
-    private static final Logger ILLUMINATI_DATA_INTERFACE_MODEL_LOGGER = LoggerFactory.getLogger(IlluminatiDataInterfaceModel.class);
+    private static final Logger ILLUMINATI_DATA_INTERFACE_MODEL_LOGGER = LoggerFactory.getLogger(IlluminatiDataInterfaceModelImpl.class);
 
     private final static String ILLUMINATI_UNIQUE_USER_ID_KEY_NAME = "illuminatiUniqueUserId";
 
     private final MethodSignature signature;
     private final Object[] args;
     private long elapsedTime = 0L;
-    private final Object output;
+    private final Map<String, Object> output;
 
     private String illuminatiUniqueUserId;
     private RequestHeaderModel requestHeaderModel;
@@ -29,11 +31,11 @@ public class IlluminatiDataInterfaceModel {
     private Map<String, Object> staticInfo;
     private boolean isActiveChaosBomber;
 
-    public IlluminatiDataInterfaceModel (final HttpServletRequest request, final MethodSignature signature, final Object[] args, long elapsedTime, final Object output) {
+    public IlluminatiDataInterfaceModelImpl(final HttpServletRequest request, final MethodSignature signature, final Object[] args, long elapsedTime, final Map<String, Object> resultMap) {
         this.signature = signature;
         this.args = args;
         this.elapsedTime = elapsedTime;
-        this.output = output;
+        this.output = resultMap;
 
         this.initDataFromHttpRequest(request);
     }
@@ -88,5 +90,15 @@ public class IlluminatiDataInterfaceModel {
     }
     public boolean isActiveChaosBomber() {
         return this.isActiveChaosBomber;
+    }
+
+    @Override
+    public IlluminatiInterfaceType getInterfaceType() {
+        return null;
+    }
+
+    @Override
+    public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) {
+
     }
 }

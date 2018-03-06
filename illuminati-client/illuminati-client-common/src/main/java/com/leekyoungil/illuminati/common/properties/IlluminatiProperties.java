@@ -28,9 +28,13 @@ public interface IlluminatiProperties {
 
     String getDebug();
 
+    String getSamplingRate();
+
     String getChaosBomber();
 
     String getParentModuleName();
 
     String getIlluminatiSwitchValueURL();
+
+    String getBackTableReset();
 }

@@ -44,7 +44,7 @@ public class IlluminatiPropertiesHelper {
         return isIlluminatiSwitcherActive;
     }
 
-    public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName, final String key) {
+    public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName, final String key, final String defaultValue) {
         final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(clazz, messager, configPropertiesFileName);
         String propertiesValue = null;
 
@@ -65,7 +65,7 @@ public class IlluminatiPropertiesHelper {
             }
         }
 
-        return propertiesValue;
+        return (StringObjectUtils.isValid(propertiesValue) == true) ? propertiesValue : defaultValue;
     }
 
     public static IlluminatiProperties getIlluminatiProperties(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {

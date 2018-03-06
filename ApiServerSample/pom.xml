@@ -82,14 +82,14 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.8.1</version>
+            <version>0.9.9</version>
             <scope>compile</scope>
         </dependency>
 
         <!--<dependency>-->
             <!--<groupId>com.leekyoungil.illuminati</groupId>-->
             <!--<artifactId>illuminati-client-switch</artifactId>-->
-            <!--<version>1.0.0</version>-->
+            <!--<version>1.0.4</version>-->
             <!--<scope>compile</scope>-->
         <!--</dependency>-->
 
@@ -97,6 +97,13 @@
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
             <version>4.3.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.196</version>
             <scope>compile</scope>
         </dependency>
 

@@ -89,6 +89,11 @@ public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
     }
 
     @Override
+    public String getSamplingRate() {
+        return null;
+    }
+
+    @Override
     public String getChaosBomber() {
         return null;
     }
@@ -100,6 +105,11 @@ public class IlluminatiSwitchPropertiesImpl implements IlluminatiProperties {
 
     @Override public String getIlluminatiSwitchValueURL() {
         return StringObjectUtils.isValid(this.illuminatiSwitchValueURL) ? this.illuminatiSwitchValueURL : "false";
+    }
+
+    @Override
+    public String getBackTableReset() {
+        return null;
     }
 
     public String getIlluminatiSwitchValueURLCheckInterval() {

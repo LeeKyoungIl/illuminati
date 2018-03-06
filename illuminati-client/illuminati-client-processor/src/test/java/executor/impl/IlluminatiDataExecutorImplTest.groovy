@@ -1,8 +1,8 @@
-package executor
+package executor.impl
 
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
-import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
 
@@ -18,10 +18,10 @@ class IlluminatiDataExecutorImplTest extends Specification {
         long elapsedTime = 3l;
         final Object output = "test";
 
-        IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModel(request, signature, args, elapsedTime, output);
+        IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
 
         when:
-        IlluminatiExecutor<IlluminatiDataInterfaceModel> illuminatiExecutor = new IlluminatiDataExecutorImpl()
+        IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> illuminatiExecutor = new IlluminatiDataExecutorImpl()
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
@@ -36,16 +36,16 @@ class IlluminatiDataExecutorImplTest extends Specification {
         long elapsedTime = 3l;
         final Object output = "test";
 
-        IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModel(request, signature, args, elapsedTime, output);
+        IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
 
         when:
-        IlluminatiExecutor<IlluminatiDataInterfaceModel> illuminatiExecutor = new IlluminatiDataExecutorImpl()
+        IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> illuminatiExecutor = new IlluminatiDataExecutorImpl()
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
-        illuminatiExecutor.getQueueSize() == 2;
-        illuminatiExecutor.deQueue() != null;
         illuminatiExecutor.getQueueSize() == 1;
+        illuminatiExecutor.deQueue() != null;
+        illuminatiExecutor.getQueueSize() == 0;
     }
 
     def "illuminati data thread test" () {
@@ -56,14 +56,15 @@ class IlluminatiDataExecutorImplTest extends Specification {
         long elapsedTime = 3l;
         final Object output = "test";
 
-        IlluminatiDataInterfaceModel illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModel(request, signature, args, elapsedTime, output);
-        IlluminatiExecutor<IlluminatiDataInterfaceModel> illuminatiExecutor = new IlluminatiDataExecutorImpl();
+        IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
+        IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> illuminatiExecutor = new IlluminatiDataExecutorImpl();
         illuminatiExecutor.createSystemThread();
 
         when:
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
+        Thread.sleep(3000l);
         illuminatiExecutor.getQueueSize() == 0;
     }
 }

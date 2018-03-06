@@ -126,6 +126,7 @@ public class SystemUtil {
                             SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL : " + IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL + "ms");
                             SYSTEM_UTIL_LOGGER.info("# threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
                             SYSTEM_UTIL_LOGGER.info("#########################################################################################################");
+                            SYSTEM_UTIL_LOGGER.info("");
                         }
 
                         try {

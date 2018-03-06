@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -389,6 +390,10 @@ public class RequestHeaderModel {
      */
     private void init (HttpServletRequest request) {
         final Enumeration headerNames = request.getHeaderNames();
+        if (headerNames == null) {
+            return;
+        }
+
         while (headerNames.hasMoreElements()) {
             try {
                 String key = (String) headerNames.nextElement();
@@ -500,7 +505,7 @@ public class RequestHeaderModel {
         this.illuminatiProcId = illuminatiProcId;
     }
 
-    protected String getIlluminatiSProcId () {
+    public String getIlluminatiSProcId () {
         return this.illuminatiSProcId;
     }
 

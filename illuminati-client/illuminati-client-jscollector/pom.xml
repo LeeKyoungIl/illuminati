@@ -5,7 +5,7 @@
 
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.2</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-common</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
             <scope>provided</scope>
         </dependency>
 

@@ -5,8 +5,8 @@ import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.Communication
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.CompressionCodecType;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.PerformanceType;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
-import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
+import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

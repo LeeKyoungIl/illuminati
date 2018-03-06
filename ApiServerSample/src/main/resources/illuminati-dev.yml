@@ -1,0 +1,26 @@
+#rabbitmq
+broker: rabbitmq
+clusterList: pi.leekyoungil.com:5672
+virtualHost: illuminatiPiDev
+topic: pi-dev-illuminati-exchange
+queueName: pi-dev-illuminati-exchange.illuminati
+userName: illuminati-dev
+password: dlruddlfWkd
+isAsync: true
+isCompression: true
+parentModuleName: apisample
+samplingRate: 100
+debug: false
+illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
+illuminatiSwitchValueURLCheckInterval: 5000
+backTableReset: true
+
+#kafka
+#broker: kafka
+#clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
+#topic: illuminati-alpha
+#isAsync: true
+#isCompression: true
+#performance: 1
+#parentModuleName: apisample
+#samplingRate: 50

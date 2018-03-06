@@ -6,7 +6,7 @@
 
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client</artifactId>
-    <version>0.7</version>
+    <version>0.8</version>
     <modules>
         <module>illuminati-client-common</module>
         <module>illuminati-client-annotation</module>

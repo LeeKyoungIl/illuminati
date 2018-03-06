@@ -2,6 +2,8 @@ package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
 
+import java.io.Serializable;
+
 public class ChangedValue {
 
     @Expose private String elementUniqueId;
