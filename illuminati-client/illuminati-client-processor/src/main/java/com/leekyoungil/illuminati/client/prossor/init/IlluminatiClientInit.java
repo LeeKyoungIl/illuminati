@@ -1,11 +1,15 @@
 package com.leekyoungil.illuminati.client.prossor.init;
 
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
+import com.leekyoungil.illuminati.client.prossor.infra.restore.impl.RestoreTemplateData;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
-import com.leekyoungil.illuminati.common.dto.IlluminatiDataInterfaceModel;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiBackupInterfaceModelImpl;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -33,13 +37,36 @@ public class IlluminatiClientInit {
     private static int SAMPLING_RATE = 20;
     private static final int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
 
-    private static final IlluminatiExecutor<IlluminatiDataInterfaceModel> ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance();
+    private static final IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
+    private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
+    private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_BACKUP_EXECUTOR;
+
+    private static final RestoreTemplateData RESTORE_TEMPLATE_DATA;
 
     static {
         IlluminatiCommon.init();
+
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+            ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
+            ILLUMINATI_BACKUP_EXECUTOR.init();
+        } else {
+            ILLUMINATI_BACKUP_EXECUTOR = null;
+        }
+
+        ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR);
+        ILLUMINATI_TEMPLATE_EXECUTOR.init();
+
+        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
         ILLUMINATI_DATA_EXECUTOR.init();
 
-        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate");
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+            RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
+            RESTORE_TEMPLATE_DATA.init();
+        } else {
+            RESTORE_TEMPLATE_DATA = null;
+        }
+
+        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
     }
 
@@ -88,7 +115,7 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false || !this.checkSamplingRate()) {
+        if (this.checkSamplingRate() == false) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -107,11 +134,6 @@ public class IlluminatiClientInit {
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (this.isOnIlluminatiSwitch() == false) {
-            return pjp.proceed();
-        }
-
-        if (IlluminatiTemplateExecutorImpl.illuminatiTemplateIsActive() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor and the ChaosBomber mode is not effect of sampling rate.");
             return pjp.proceed();
         }
 
@@ -140,7 +162,6 @@ public class IlluminatiClientInit {
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
         final long elapsedTime = System.currentTimeMillis() - start;
 
-        final Object output = originMethodExecute.get("result");
         Throwable throwable = null;
         if (originMethodExecute.containsKey("throwable")) {
             throwable = (Throwable) originMethodExecute.get("throwable");
@@ -151,13 +172,13 @@ public class IlluminatiClientInit {
             request.setAttribute("ChaosBomber", "true");
         }
 
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModel(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, output));
+        ILLUMINATI_DATA_EXECUTOR.addToQueue(new IlluminatiDataInterfaceModelImpl(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, originMethodExecute));
 
         if (throwable != null) {
             throw throwable;
         }
 
-        return output;
+        return originMethodExecute.get("result");
     }
 
     private boolean checkSamplingRate () {

@@ -1,0 +1,46 @@
+logging.level.root: INFO
+server.port: 8099
+
+management.security.enabled: false
+
+spring:
+  cloud:
+    stream:
+      rabbit:
+        bindings:
+          input:
+            consumer:
+              bindQueue: true
+              exchangeType: fanout
+              durableSubscription: true
+              exchangeDurable: true
+              declareExchange: false
+              maxConcurrency: 2
+              prefetch: 1
+              autoBindDlq: false
+              dlqTtl: 5000
+      bindings:
+        input:
+          destination: pi-dev-illuminati-exchange
+          binder: illuminatiConsumer
+          group: illuminati
+          consumer:
+            headerMode: raw
+      binders:
+        illuminatiConsumer:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: pi.leekyoungil.com
+                port: 5672
+                virtual-host: illuminatiPiDev
+                username: illuminati-dev
+                password: dlruddlfWkd
+
+elasticsearchInfo:
+  master:
+#    user: es_client_admin
+#    pass: dlruddlfWkd
+    host: pi.leekyoungil.com
+    port: 9200

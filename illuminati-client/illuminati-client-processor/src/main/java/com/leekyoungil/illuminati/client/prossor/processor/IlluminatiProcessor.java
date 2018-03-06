@@ -137,7 +137,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         final String illuminatiAnnotationName = "com.leekyoungil.illuminati.client.annotation.Illuminati";
         // step 4.  check chaosBomber is activated.
-        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, this.messager, "illuminati", "chaosBomber");
+        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, this.messager, "illuminati", "chaosBomber", "false");
 
         String illuminatiExecuteMethod = "";
 
