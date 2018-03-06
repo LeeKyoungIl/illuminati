@@ -28,9 +28,9 @@ import java.util.Map;
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
 @EsDocument(indexName = "illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
-public abstract class IlluminatiEsTemplateInterfaceModelImplImpl extends IlluminatiTemplateInterfaceModelImpl implements IlluminatiEsModel {
+public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiTemplateInterfaceModelImpl implements IlluminatiEsModel {
 
-    private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImplImpl.class);
+    private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImpl.class);
 
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();
 
@@ -47,9 +47,9 @@ public abstract class IlluminatiEsTemplateInterfaceModelImplImpl extends Illumin
 
     private final String encodingCharset = "UTF-8";
 
-    public IlluminatiEsTemplateInterfaceModelImplImpl() {}
+    public IlluminatiEsTemplateInterfaceModelImpl() {}
 
-//    public IlluminatiEsTemplateInterfaceModelImplImpl(long elapsedTime, Object output, String id, long timestamp) {
+//    public IlluminatiEsTemplateInterfaceModelImpl(long elapsedTime, Object output, String id, long timestamp) {
 //        super(elapsedTime, output, id, timestamp);
 //    }
 
