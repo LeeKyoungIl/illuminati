@@ -29,14 +29,14 @@
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.8.1</version>
+      <version>0.9.9</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
        <groupId>com.leekyoungil.illuminati</groupId>
        <artifactId>illuminati-client-switch</artifactId>
-       <version>1.0.2</version>
+       <version>1.0.4</version>
     </dependency>
 </dependencies>
 ```
@@ -50,9 +50,9 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.4'
 ```
 
 ## add @Illuminati to Class
@@ -152,6 +152,13 @@ debug: false
 chaosBomber: true
 ```
 
+## Backup function
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/backup.png)
+
+ * IF Your system has problems on sending to data to external broker. (network or broker shutdown or etc..) After backup the data, if the system is restored. resend the data.
+ * Backup storage use H2database to prevent data loss. (Mysql, File, Embedded broker will be added)
+ * IF YOU add an H2Database dependency to a project with the illuminati, Backup data by automatically, If When a back event occurs. after restore the data will deleted.
+
 # illuminati is easy to disable in your application.
  * if you already apply  illuminati in your application. if you want exclude it. it's hard to remove all illuminati in your code. 
  * so you do exclude the illuminati-client-processor in pom.xml or build.gradle. it will be solved easily.
@@ -190,14 +197,14 @@ chaosBomber: true
     <dependency>
      <groupId>com.leekyoungil.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.8.1</version>
+     <version>0.9.9</version>
     </dependency>
       
     <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-switch</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
     </dependency>
 </dependencies>
 ```
@@ -212,7 +219,7 @@ repositories {
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.8.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9'
 ```
 
 ## Class에 @Illuminati 추가 
@@ -314,6 +321,14 @@ debug: false
 chaosBomber: true
 ```
 
+## 백업 기능
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/backup.png)
+
+ * 외부의 브로커로 데이터를 전송할때 문제가 생기면 (네트웍이슈나 브로커 이슈) 해당 데이터를 백업하고 있다가 다시 정상적인 상태가 되면 전송하는 기능입니다.
+ * 백업 저장소는 H2Database를 사용하여 데이터의 유실을 막을수 있습니다. (Mysql, File, Embedded broker 추가 예정) 
+ * illuminati 를 적용한 프로젝트에 h2database 의존성을 추가하면 자동으로 데이터가 저장이 되며 백업 이벤트가 발생했을경우 데이터 복구가 완료되면 자동으로 저장된 데이터는 삭제 됩니다.
+ 
+ 
 ## illuminati는 쉽게 비활성화 할수 있습니다. 
  * 이미 @illuminati가 적용된 모든 소스를 수정하기는 어렵습니다. 
  * pom.xml 혹은 build.gradle에서 illuminati-client-processor 부분만 주석처리를 하면 됩니다.
