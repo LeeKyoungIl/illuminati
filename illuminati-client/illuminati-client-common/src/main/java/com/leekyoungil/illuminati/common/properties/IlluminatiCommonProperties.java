@@ -26,9 +26,11 @@ public class IlluminatiCommonProperties implements IlluminatiProperties {
                     field.setAccessible(true);
                     field.set(this, value);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    // ignore
+                    //e.printStackTrace();
                 } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
+                    // ignore
+                    //e.printStackTrace();
                 }
             }
         }

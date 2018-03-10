@@ -8,17 +8,6 @@ Array.prototype.inArrayCheck = function (needle, haystack) {
     return false;
 };
 
-Object.prototype.isEmpty = function(obj) {
-    if (obj === undefined || obj === null) {
-        return true;
-    }
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key) === true)
-            return false;
-    }
-    return true;
-}
-
 var _send = XMLHttpRequest.prototype.send;
 XMLHttpRequest.prototype.send = function() {
     illuminatiAjax.setRequestHeaderOnAjaxEvent(this);
@@ -64,6 +53,17 @@ var illuminatiJsAgent = {
         }
     },
 
+    ObjectIsEmpty : function(obj) {
+        if (obj === undefined || obj === null) {
+            return true;
+        }
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key) === true)
+                return false;
+        }
+        return true;
+    },
+
     setIsAutoCollect : function (isAutoCollect) {
         illuminatiJsAgent.isAutoCollect = isAutoCollect;
     },
@@ -83,7 +83,7 @@ var illuminatiJsAgent = {
     },
 
     objectSize : function (obj) {
-        if (Object.prototype.isEmpty(obj) === true) {
+        if (illuminatiJsAgent.ObjectIsEmpty(obj) === true) {
             return 0;
         }
         var size = 0, key;
@@ -275,7 +275,7 @@ var illuminatiJsAgent = {
             var key = e.target.type + '-' + illuminatiJsAgent.getElementUniqueId(eventObject);
 
             eventObject['obj'] = firstElementData[key];
-        } else if (Object.prototype.isEmpty(eventObject['attributes']) === false && eventObject['attributes'].hasOwnProperty('type') === true) {
+        } else if (illuminatiJsAgent.ObjectIsEmpty(eventObject['attributes']) === false && eventObject['attributes'].hasOwnProperty('type') === true) {
             if (eventObject['attributes']['type'] === 'checkbox') {
                 eventObject['checked'] = e.target.checked;
             } else if (eventObject['attributes']['type'] === 'radio') {
@@ -320,7 +320,7 @@ var illuminatiJsAgent = {
                     for (var q=0; q<oldObject.obj.option.length; q++) {
                         var tempSelectOption = oldObject.obj.option[q];
 
-                        if (Object.prototype.isEmpty(tempSelectOption) === true) {
+                        if (illuminatiJsAgent.ObjectIsEmpty(tempSelectOption) === true) {
                             continue;
                         }
 
@@ -389,7 +389,7 @@ var illuminatiJsAgent = {
                     }
 
                     Object.keys(objectAttributes).map(function(objectKey, index) {
-                        if (Object.prototype.isEmpty(oldObject.attributes) === false) {
+                        if (illuminatiJsAgent.ObjectIsEmpty(oldObject.attributes) === false) {
                             if (oldObject.attributes.hasOwnProperty(objectKey) === true
                                 && (oldObject.attributes[objectKey] !== objectAttributes[objectKey])) {
                                 changedInfo['changedValues'][changedInfo['changedValues'].length] = illuminatiJsAgent.getChangedAttributeValue(oldObject.target.localName, oldObject.elementUniqueId, objectKey, oldObject.attributes[objectKey], objectAttributes[objectKey]);
@@ -426,7 +426,7 @@ var illuminatiJsAgent = {
     },
 
     setElementToSessionStorage : function (newObject) {
-        if (Object.prototype.isEmpty(newObject) === true) {
+        if (illuminatiJsAgent.ObjectIsEmpty(newObject) === true) {
             return;
         }
         if (newObject.hasOwnProperty('changedInfo') === true) {
@@ -445,15 +445,21 @@ var illuminatiJsAgent = {
                 elementStore = targetElementStore;
             }
 
-            if (Array.isArray(elementStore[key]) === false) {
-                elementStore[key]['changedInfo'] = newObject.changedInfo;
-            } else {
-                var tempArray = elementStore[key];
-                elementStore[key] = {
-                    obj: tempArray,
-                    type: newObject.type,
-                    changedInfo: newObject.changedInfo
-                };
+            if (illuminatiJsAgent.ObjectIsEmpty(elementStore) === true) {
+                return;
+            }
+
+            if (illuminatiJsAgent.ObjectIsEmpty(newObject) === false && newObject.hasOwnProperty('changedInfo') === true && elementStore.hasOwnProperty(key) === true) {
+                if (Array.isArray(elementStore[key]) === false) {
+                    elementStore[key]['changedInfo'] = newObject.changedInfo;
+                } else {
+                    var tempArray = elementStore[key];
+                    elementStore[key] = {
+                        obj: tempArray,
+                        type: newObject.type,
+                        changedInfo: newObject.changedInfo
+                    };
+                }
             }
 
             illuminatiJsAgent.setSessionStorage(sessionStorageName, JSON.stringify(elementStore));
@@ -915,7 +921,7 @@ var illuminatiJsAgent = {
             var ignoreCheckEventStoreKeys = ['alreadySent'];
             Object.keys(elementStore).map(function(objectKey, index) {
                 if (Array.prototype.inArrayCheck(objectKey, ignoreCheckEventStoreKeys) === false) {
-                    if (Object.prototype.isEmpty(elementStore[objectKey]) === false && elementStore[objectKey].hasOwnProperty('changedInfo') === true) {
+                    if (illuminatiJsAgent.ObjectIsEmpty(elementStore[objectKey]) === false && elementStore[objectKey].hasOwnProperty('changedInfo') === true) {
                         var changedObj = elementStore[objectKey];
 
                         if (illuminatiJsModel.hasOwnProperty('changedValues') === true) {

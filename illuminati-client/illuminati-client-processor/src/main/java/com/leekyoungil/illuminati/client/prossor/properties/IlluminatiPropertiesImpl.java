@@ -61,9 +61,11 @@ public class IlluminatiPropertiesImpl extends IlluminatiCommonProperties impleme
                     field.setAccessible(true);
                     field.set(this, value);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    // ignore
+                    //e.printStackTrace();
                 } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
+                    // ignore
+                    //e.printStackTrace();
                 }
             }
         }
