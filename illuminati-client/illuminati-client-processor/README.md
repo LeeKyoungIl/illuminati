@@ -6,7 +6,7 @@
  * RabbitMQ - completed test of heavy traffic
  * Kafka - not yet complete
 
-## I recommend the RabbitMQ for the current version.(0.9.8)
+## I recommend the RabbitMQ for the current version.(0.9.9.1)
 
 ## add to Maven Dependency
     * Maven
@@ -174,7 +174,7 @@ chaosBomber: true
  * rabbitmq - 대용량 트래픽 테스트 완료 
  * kafka - 테스트 중 
  
-## 현 버전 (0.8.3) 에서는 rabbitmq를 권장 합니다.
+## 현 버전 (0.9.9.1) 에서는 rabbitmq를 권장 합니다.
 
 ## Maven Dependency 추가 
     * Maven

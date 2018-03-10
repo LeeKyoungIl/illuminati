@@ -445,15 +445,21 @@ var illuminatiJsAgent = {
                 elementStore = targetElementStore;
             }
 
-            if (Array.isArray(elementStore[key]) === false) {
-                elementStore[key]['changedInfo'] = newObject.changedInfo;
-            } else {
-                var tempArray = elementStore[key];
-                elementStore[key] = {
-                    obj: tempArray,
-                    type: newObject.type,
-                    changedInfo: newObject.changedInfo
-                };
+            if (illuminatiJsAgent.ObjectIsEmpty(elementStore) === true) {
+                return;
+            }
+
+            if (illuminatiJsAgent.ObjectIsEmpty(newObject) === false && newObject.hasOwnProperty('changedInfo') === true && elementStore.hasOwnProperty(key) === true) {
+                if (Array.isArray(elementStore[key]) === false) {
+                    elementStore[key]['changedInfo'] = newObject.changedInfo;
+                } else {
+                    var tempArray = elementStore[key];
+                    elementStore[key] = {
+                        obj: tempArray,
+                        type: newObject.type,
+                        changedInfo: newObject.changedInfo
+                    };
+                }
             }
 
             illuminatiJsAgent.setSessionStorage(sessionStorageName, JSON.stringify(elementStore));
