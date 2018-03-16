@@ -56,7 +56,7 @@ public class SystemUtil {
         String keyName = illuminatiTransactionIdType.getValue();
 
         String id = SystemUtil.getValueFromHeaderByKey(request, keyName);
-        if (StringObjectUtils.isValid(id) == false) {
+        if (StringObjectUtils.isValid(id) == false && request != null) {
             switch (illuminatiTransactionIdType) {
                 case ILLUMINATI_PROC_ID :
                 case ILLUMINATI_G_PROC_ID :

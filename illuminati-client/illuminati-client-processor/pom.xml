@@ -6,7 +6,7 @@
 
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-processor</artifactId>
-    <version>0.9.9.2</version>
+    <version>0.9.9.3</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-common</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
             <scope>compile</scope>
         </dependency>
 
