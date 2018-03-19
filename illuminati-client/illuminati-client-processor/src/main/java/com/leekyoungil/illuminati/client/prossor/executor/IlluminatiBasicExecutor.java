@@ -53,19 +53,13 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     public T deQueue() {
         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             try {
-                return illuminatiBlockingQueue.poll(this.deQueuingTimeout, TimeUnit.MILLISECONDS);
+                return illuminatiBlockingQueue.take();
             } catch (InterruptedException e) {
                 illuminatiExecutorLogger.warn("Failed to dequeing the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
             }
 
             return null;
         } else {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // ignore
-            }
-
             return this.deQueueByDebug();
         }
     }
@@ -100,7 +94,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         }
         try {
             final long start = System.currentTimeMillis();
-            T illuminatiInterfaceModel = illuminatiBlockingQueue.poll(this.deQueuingTimeout, TimeUnit.MILLISECONDS);
+            T illuminatiInterfaceModel = illuminatiBlockingQueue.take();
             final long elapsedTime = System.currentTimeMillis() - start;
             illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is "+String.valueOf(this.getQueueSize()));
             illuminatiExecutorLogger.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is "+elapsedTime+" millisecond");
