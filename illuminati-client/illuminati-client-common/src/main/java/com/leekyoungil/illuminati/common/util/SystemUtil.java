@@ -11,7 +11,7 @@ import java.util.*;
 
 public class SystemUtil {
 
-    private static final Logger SYSTEM_UTIL_LOGGER = LoggerFactory.getLogger(SystemUtil.class);
+    public static final Logger SYSTEM_UTIL_LOGGER = LoggerFactory.getLogger(SystemUtil.class);
 
     private final static Runtime RUNTIME = Runtime.getRuntime();
 
@@ -26,7 +26,7 @@ public class SystemUtil {
             "PID"};
 
 
-    private static final int MB = 1024*1024;
+    private static final int MEGA_BYTE = 1024*1024;
 
     public static Map<String, Object> getJvmInfo () {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
@@ -44,75 +44,78 @@ public class SystemUtil {
 
     public static Map<String, Object> getJvmMemoryInfo () {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
-        jvmInfo.put("jvmUsedMemory", (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / MB);
-        jvmInfo.put("jvmFreeMemory", RUNTIME.freeMemory() / MB);
-        jvmInfo.put("jvmTotalMemory", RUNTIME.totalMemory() / MB);
-        jvmInfo.put("jvmMaxMemory", RUNTIME.maxMemory() / MB);
+        jvmInfo.put("jvmUsedMemory", (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / MEGA_BYTE);
+        jvmInfo.put("jvmFreeMemory", RUNTIME.freeMemory() / MEGA_BYTE);
+        jvmInfo.put("jvmTotalMemory", RUNTIME.totalMemory() / MEGA_BYTE);
+        jvmInfo.put("jvmMaxMemory", RUNTIME.maxMemory() / MEGA_BYTE);
 
         return jvmInfo;
     }
 
     public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) {
-        String keyName = illuminatiTransactionIdType.getValue();
+        final String keyName = illuminatiTransactionIdType.getValue();
 
-        String id = SystemUtil.getValueFromHeaderByKey(request, keyName);
-        if (StringObjectUtils.isValid(id) == false && request != null) {
+        String trxId = SystemUtil.getValueFromHeaderByKey(request, keyName);
+        if (StringObjectUtils.isValid(trxId) == false && request != null) {
             switch (illuminatiTransactionIdType) {
                 case ILLUMINATI_PROC_ID :
                 case ILLUMINATI_G_PROC_ID :
-                    id = StringObjectUtils.generateId(new Date().getTime(), keyName);
-                    request.setAttribute(keyName, id);
+                    trxId = StringObjectUtils.generateId(new Date().getTime(), keyName);
+                    request.setAttribute(keyName, trxId);
+                    break;
+
+                default :
                     break;
             }
         }
 
-        return StringObjectUtils.isValid(id) ? id : null;
+        return (StringObjectUtils.isValid(trxId) == true) ? trxId : null;
     }
 
     public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) {
-        if (request == null || keyName == null) {
-            return null;
-        }
+        Object value = null;
 
-        Object value = request.getHeader(keyName);
+        if (request != null && keyName != null) {
+            value = request.getHeader(keyName);
 
-        if (value == null) {
-            value = request.getAttribute(keyName);
+            if (value == null) {
+                value = request.getAttribute(keyName);
+            }
         }
 
         return (value != null) ? value.toString() : null;
     }
 
     public static void createSystemThread (final Runnable runnable, final String threadName) {
-        if (runnable == null) {
-            SYSTEM_UTIL_LOGGER.warn("Runnable is required.");
-            return;
+        if (runnable != null && StringUtils.isEmpty(threadName) == false
+                && IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == false) {
+            final Thread newThread = new Thread(runnable);
+
+            if (!"debug".equalsIgnoreCase(threadName)) {
+                newThread.setName(threadName);
+            }
+            newThread.setDaemon(true);
+            newThread.start();
+
+            IlluminatiConstant.SYSTEM_THREAD_MAP.put(threadName, newThread);
+        } else {
+            if (runnable == null) {
+                SYSTEM_UTIL_LOGGER.warn("Runnable is required.");
+            }
+
+            if (StringUtils.isEmpty(threadName)) {
+                SYSTEM_UTIL_LOGGER.warn("threadName is required.");
+            }
+
+            if (IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == true) {
+                SYSTEM_UTIL_LOGGER.warn(threadName + " thread is already exists.");
+            }
         }
-
-        if (StringUtils.isEmpty(threadName)) {
-            SYSTEM_UTIL_LOGGER.warn("threadName is required.");
-            return;
-        }
-
-        if (IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName)) {
-            SYSTEM_UTIL_LOGGER.warn(threadName + " thread is already exists.");
-            return;
-        }
-
-        final Thread newThread = new Thread(runnable);
-
-        if (!"debug".equalsIgnoreCase(threadName)) {
-            newThread.setName(threadName);
-        }
-        newThread.setDaemon(true);
-        newThread.start();
-
-        IlluminatiConstant.SYSTEM_THREAD_MAP.put(threadName, newThread);
     }
 
     public static void createThreadStatusDebugThread () {
         // debug illuminati buffer queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == true && SYSTEM_UTIL_LOGGER.isInfoEnabled() == true) {
             final Runnable threadCheckRunnable = new Runnable() {
                 public void run() {
                     while (true) {
