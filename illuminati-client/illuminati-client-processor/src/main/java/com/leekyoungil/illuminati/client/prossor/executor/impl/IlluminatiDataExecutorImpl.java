@@ -23,7 +23,6 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ### init illuminati data queue                                                                               ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1;
-    private static final long ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS = 1000l;
     private static final long ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS = 0l;
 
     // ################################################################################################################
@@ -40,7 +39,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();
 
     private IlluminatiDataExecutorImpl (final IlluminatiExecutor illuminatiExecutor) {
-        super(ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DATA_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
+        super(ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 

@@ -75,21 +75,21 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-jscollector</artifactId>
-            <version>0.5.3</version>
+            <version>0.5.5</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.9.2</version>
+            <version>0.9.9.4</version>
             <scope>compile</scope>
         </dependency>
 
         <!--<dependency>-->
             <!--<groupId>com.leekyoungil.illuminati</groupId>-->
             <!--<artifactId>illuminati-client-switch</artifactId>-->
-            <!--<version>1.0.4</version>-->
+            <!--<version>1.0.5</version>-->
             <!--<scope>compile</scope>-->
         <!--</dependency>-->
 

@@ -24,7 +24,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### init illuminati template queue                                                                           ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1;
-    private static final long ILLUMINATI_DEQUEUING_TIMEOUT_MS = 1000l;
     private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0l;
 
     // ################################################################################################################
@@ -36,9 +35,10 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
+    private final long BROKER_HEALTH_CHECK_TIME = 300000l;
 
     private IlluminatiTemplateExecutorImpl (final IlluminatiExecutor illuminatiBackupExecutor) {
-        super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, ILLUMINATI_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
+        super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiBackupExecutor = illuminatiBackupExecutor;
     }
 
@@ -141,7 +141,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                         IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
 
                         try {
-                            Thread.sleep(300000);
+                            Thread.sleep(BROKER_HEALTH_CHECK_TIME);
                         } catch (InterruptedException e) {
                             // ignore
                         }

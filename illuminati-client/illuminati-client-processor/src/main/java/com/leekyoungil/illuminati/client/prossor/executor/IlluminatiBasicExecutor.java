@@ -17,15 +17,13 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 
     private long enQueuingTimeout = 0l;
-    private long deQueuingTimeout = 0l;
 
     public abstract void sendToNextStep(final T t);
     protected abstract void sendToNextStepByDebug(final T t);
     protected abstract void preventErrorOfSystemThread(final T t);
 
-    protected IlluminatiBasicExecutor (long enQueuingTimeout, long deQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
+    protected IlluminatiBasicExecutor (long enQueuingTimeout, IlluminatiBlockingQueue<T> blockingQueue) {
         this.enQueuingTimeout = enQueuingTimeout;
-        this.deQueuingTimeout = deQueuingTimeout;
 
         this.illuminatiBlockingQueue = blockingQueue;
     }
@@ -53,19 +51,13 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     public T deQueue() {
         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             try {
-                return illuminatiBlockingQueue.poll(this.deQueuingTimeout, TimeUnit.MILLISECONDS);
+                return illuminatiBlockingQueue.take();
             } catch (InterruptedException e) {
                 illuminatiExecutorLogger.warn("Failed to dequeing the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
             }
 
             return null;
         } else {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // ignore
-            }
-
             return this.deQueueByDebug();
         }
     }
@@ -100,7 +92,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         }
         try {
             final long start = System.currentTimeMillis();
-            T illuminatiInterfaceModel = illuminatiBlockingQueue.poll(this.deQueuingTimeout, TimeUnit.MILLISECONDS);
+            T illuminatiInterfaceModel = illuminatiBlockingQueue.take();
             final long elapsedTime = System.currentTimeMillis() - start;
             illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is "+String.valueOf(this.getQueueSize()));
             illuminatiExecutorLogger.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is "+elapsedTime+" millisecond");
@@ -113,6 +105,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     }
 
     protected void createSystemThread () {
+        final String thisClassName = this.getClass().getName();
         final Runnable runnableFirst = new Runnable() {
             public void run() {
                 while (true) {
@@ -136,13 +129,21 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                             preventErrorOfSystemThread(illuminatiInterfaceModel);
                         }
 
-                        illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
+                        StringBuilder errorMessage = new StringBuilder();
+                        errorMessage.append("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ");
+
+                        if (thisClassName.contains("IlluminatiTemplateExecutorImpl") == true) {
+                            errorMessage.append("But Your data has already been safely stored. ");
+                            errorMessage.append("It will be restored. When broker is restored. ");
+                        }
+
+                        illuminatiExecutorLogger.info(errorMessage.toString() + " ("+e.getMessage()+")");
                     }
                 }
             }
         };
 
-        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_SENDER_THREAD");
+        SystemUtil.createSystemThread(runnableFirst, thisClassName + " : ILLUMINATI_SENDER_THREAD");
 
         // if you set debug is true
         this.createDebugThread();
