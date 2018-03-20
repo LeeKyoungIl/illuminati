@@ -10,6 +10,9 @@ public class BackupFactory {
         switch (illuminatiStorageType) {
             case H2 :
                 return H2Backup.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
+
+            default :
+                break;
         }
 
         return null;
