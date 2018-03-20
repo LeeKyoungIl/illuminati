@@ -29,11 +29,12 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1000;
+    private static final long BACKUP_THREAD_SLEEP_TIME = 300000l;
 
     private static final Backup<IlluminatiInterfaceModel> ILLUMINATI_BACKUP = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
 
     private IlluminatiBackupExecutorImpl() {
-        super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
+        super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
     }
 
     public static IlluminatiBackupExecutorImpl getInstance () {
@@ -113,16 +114,10 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                             deQueue();
                         } else {
                             deQueueByDebug();
-
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
                         }
 
                         try {
-                            Thread.sleep(30000);
+                            Thread.sleep(BACKUP_THREAD_SLEEP_TIME);
                         } catch (InterruptedException e) {
                             // ignore
                         }

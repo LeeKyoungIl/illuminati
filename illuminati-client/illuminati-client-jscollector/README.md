@@ -23,7 +23,7 @@
 <dependency>
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
-    <version>0.5.3</version>
+    <version>0.5.5</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,7 +36,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.3'
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.5'
 ```
 
 ## 2. add to Javascript in HTML & initialization
@@ -113,7 +113,7 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.3'
 <dependency>
     <groupId>com.leekyoungil.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
-    <version>0.5.3</version>
+    <version>0.5.5</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -126,7 +126,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.3'
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.5'
 ```
 
 ## 2. Javascript 추가 & 초기화

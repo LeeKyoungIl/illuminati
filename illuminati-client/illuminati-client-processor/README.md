@@ -6,7 +6,7 @@
  * RabbitMQ - completed test of heavy traffic
  * Kafka - not yet complete
 
-## I recommend the RabbitMQ for the current version.(0.9.9.2)
+## I recommend the RabbitMQ for the current version.(0.9.9.4)
 
 ## add to Maven Dependency
     * Maven
@@ -29,14 +29,14 @@
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.9.2</version>
+      <version>0.9.9.4</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
        <groupId>com.leekyoungil.illuminati</groupId>
        <artifactId>illuminati-client-switch</artifactId>
-       <version>1.0.4</version>
+       <version>1.0.5</version>
     </dependency>
 </dependencies>
 ```
@@ -50,9 +50,9 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.5'
 ```
 
 ## add @Illuminati to Class
@@ -174,7 +174,7 @@ chaosBomber: true
  * rabbitmq - 대용량 트래픽 테스트 완료 
  * kafka - 테스트 중 
  
-## 현 버전 (0.9.9.2) 에서는 rabbitmq를 권장 합니다.
+## 현 버전 (0.9.9.4) 에서는 rabbitmq를 권장 합니다.
 
 ## Maven Dependency 추가 
     * Maven
@@ -197,14 +197,14 @@ chaosBomber: true
     <dependency>
      <groupId>com.leekyoungil.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.9.2</version>
+     <version>0.9.9.4</version>
     </dependency>
       
     <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-switch</artifactId>
-      <version>1.0.4</version>
+      <version>1.0.5</version>
     </dependency>
 </dependencies>
 ```
@@ -219,7 +219,7 @@ repositories {
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.2'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
 ```
 
 ## Class에 @Illuminati 추가 
