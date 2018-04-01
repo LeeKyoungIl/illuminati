@@ -11,6 +11,8 @@ import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 13/07/2017.
  */
@@ -28,6 +30,8 @@ public abstract class BasicTemplate {
     abstract protected void checkRequiredValuesForInit ();
     abstract protected void initProperties ();
     abstract protected void publisherClose ();
+
+    protected final AtomicInteger sendCount = new AtomicInteger(0);
 
     protected BasicTemplate (final String propertiesName) {
         this.illuminatiProperties = IlluminatiPropertiesHelper.getIlluminatiProperties(IlluminatiPropertiesImpl.class, null, propertiesName);

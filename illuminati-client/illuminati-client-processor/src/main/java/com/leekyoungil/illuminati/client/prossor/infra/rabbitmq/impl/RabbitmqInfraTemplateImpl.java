@@ -79,27 +79,13 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     @Override protected void publisherClose() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                System.out.println("Illuminati BYE BYE");
-                try {
-                    if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen() == true) {
-                        AMQP_CONNECTION.close();
-                    }
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        });
+
     }
 
     private void setProps () {
-        this.PROPS = new BasicProperties
-                .Builder()
+        this.PROPS = new BasicProperties.Builder()
                 .contentEncoding(this.compressionCodec)
                 .contentType(this.contentType)
-//                .messageId(UUID.randomUUID().toString())
-//                .timestamp(new Date())
                 .deliveryMode(2)
                 .priority(0)
                 .build();
