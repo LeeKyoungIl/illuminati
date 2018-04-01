@@ -41,6 +41,7 @@ public class ContainerSignalHandler implements SignalHandler {
 
     @Override
     public void handle(Signal signal) {
+        System.out.println("test2");
         final String containerName = this.containerShutdownHandler.getClass().getSimpleName();
 
         if (CollectionUtils.isNotEmpty(SIGNAL_LISTENERS)) {

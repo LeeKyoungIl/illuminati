@@ -20,6 +20,18 @@ public class SpringApplicationContainer {
                 .registerShutdownHook(true)
                 .run(args);
 
+//        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+//            public void run() {
+//                try {
+//                    while (true) {
+//                        System.out.println("test1");
+//                        Thread.sleep(1000);
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }));
         if(applicationContext.isActive()) {
             if (applicationContext instanceof EmbeddedWebApplicationContext) {
                 EmbeddedWebApplicationContext embeddedWebApplicationContext = (EmbeddedWebApplicationContext)applicationContext;
