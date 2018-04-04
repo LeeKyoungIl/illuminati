@@ -82,10 +82,11 @@
         <dependency>
             <groupId>com.leekyoungil.illuminati</groupId>
             <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.9.4</version>
+            <version>0.9.9.5</version>
             <scope>compile</scope>
         </dependency>
 
+        <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
         <!--<dependency>-->
             <!--<groupId>com.leekyoungil.illuminati</groupId>-->
             <!--<artifactId>illuminati-client-switch</artifactId>-->
@@ -100,6 +101,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

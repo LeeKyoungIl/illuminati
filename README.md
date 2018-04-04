@@ -59,7 +59,8 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
  2. Drop in performance can occur, but there is no big difference in physical server. (It can happen a little more on virtual machines.)
  3. Even if an exception occurs in the original application logic, illuminati can also collect the corresponding exception information.
- 4. When the Illuminati collects the Data. If a problems aries. Save that data to separate  storage. and If the problem is fixed. data will automaticaly restored.
+ 4. When the Illuminati collects the Data. If a problems aries. Save that data to separate  storage. and If the problem is fixed. data will automaticaly restored. (Backup function)
+ 5. Grace Shutdown mode is supported. (When Backup function is activated.) 
  
 ## struct of illuminati
 ![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
@@ -85,21 +86,21 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.9.4</version>
+      <version>0.9.9.5</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
    <dependency>
        <groupId>com.leekyoungil.illuminati</groupId>
        <artifactId>illuminati-client-switch</artifactId>
-       <version>1.0.5</version>
+       <version>1.0.6</version>
    </dependency>
 
    <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
    <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-jscollector</artifactId>
-      <version>0.5.5</version>
+      <version>0.5.6</version>
    </dependency>
 </dependencies>
 ```
@@ -113,11 +114,11 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.5'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.6'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollectorswitch:0.5.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollectorswitch:0.5.6'
 ```
 
 ## add @Illuminati  to Class
@@ -248,7 +249,8 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 1. Buffer와 별도의 Thread를 사용하여 본 로직에 영향이 없도록 개발되었습니다.
 2. 성능하락은 발생할수도 있지만 물리서버에서는 큰 차이는 없습니다. (가상 장비에서는 조금더 발생할수 있습니다.)
 3. 본래의 Application로직에서 Exception이 발생하는 경우에도 illuminati에서는 해당 Exception정보도 수집하여 파악이 가능합니다.
-4. 데이터 수집중 외부의 Queue (RabbitMq, Kafka)에 문제가 생길경우 별도의 저장소에 저장을 하고 문제가 해결되면 자동으로 데이터 복구가 가능하기 때문에 데이터의 손실을 방지할수 있습니다.
+4. 데이터 수집중 외부의 Queue (RabbitMq, Kafka)에 문제가 생길경우 별도의 저장소에 저장을 하고 문제가 해결되면 자동으로 데이터 복구가 가능하기 때문에 데이터의 손실을 방지할수 있습니다. (백업 기능)
+5. Graceful Shutdown을 지원합니다. (Backup 모드 활성화시) 
  
 # illuminati 구조
 
@@ -275,21 +277,21 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
    <dependency>
      <groupId>com.leekyoungil.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.9.4</version>
+     <version>0.9.9.5</version>
   </dependency>
       
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
   <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-switch</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.6</version>
   </dependency>
 
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다. -->
   <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-jscollector</artifactId>
-      <version>0.5.5</version>
+      <version>0.5.6</version>
   </dependency>
 </dependencies>
 ```
@@ -303,11 +305,11 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.5'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.6'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.6'
 ```
 
 ## Class에 @Illuminati 추가 

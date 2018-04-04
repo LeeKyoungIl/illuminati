@@ -138,6 +138,10 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+            return pjp.proceed();
+        }
+
         if (this.isOnIlluminatiSwitch() == false) {
             return pjp.proceed();
         }
