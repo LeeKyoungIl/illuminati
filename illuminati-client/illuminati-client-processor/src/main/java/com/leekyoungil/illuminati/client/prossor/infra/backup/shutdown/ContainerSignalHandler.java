@@ -10,7 +10,7 @@ public class ContainerSignalHandler extends Thread {
 
     private final long threadSleepTime = 1000l;
     private final long threadLimitSleepTime = 60000l;
-    private final long endTermSleepTime = 3000l;
+    private final long endTermSleepTime = 2000l;
     private final AtomicLong shutdownTimer = new AtomicLong(0l);
 
     public ContainerSignalHandler(ContainerShutdownHandler containerShutdownHandler) {
@@ -21,6 +21,13 @@ public class ContainerSignalHandler extends Thread {
         System.out.println("Illuminati is preparing to close...");
         // off illuminati
         IlluminatiGracefulShutdownChecker.setIlluminatiReadyToShutdown(true);
+        // set the 3 second term.
+        try {
+            Thread.sleep(endTermSleepTime);
+        } catch (InterruptedException ignored) {
+            // ignored...
+        }
+
         // broker connection close
         containerShutdownHandler.stop();
         // shutdown signal
