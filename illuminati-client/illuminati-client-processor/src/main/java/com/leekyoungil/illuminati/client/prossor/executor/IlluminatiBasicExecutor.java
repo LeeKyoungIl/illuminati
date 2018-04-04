@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.client.prossor.executor;
 
+import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.util.SystemUtil;
@@ -114,10 +115,14 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                         illuminatiInterfaceModel = deQueue();
                         if (illuminatiInterfaceModel != null) {
                             if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-                                sendToNextStep(illuminatiInterfaceModel);
+                                if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
+                                    sendToNextStep(illuminatiInterfaceModel);
+                                } else {
+                                    preventErrorOfSystemThread(illuminatiInterfaceModel);
+                                }
                             } else {
                                 try {
-                                    Thread.sleep(5000);
+                                    Thread.sleep(100);
                                 } catch (InterruptedException e) {
                                     // ignore
                                 }
@@ -125,7 +130,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                             }
                         }
                     } catch (Exception e) {
-                        if (illuminatiInterfaceModel != null) {
+                        if (illuminatiInterfaceModel != null && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
                             preventErrorOfSystemThread(illuminatiInterfaceModel);
                         }
 
@@ -137,7 +142,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                             errorMessage.append("It will be restored. When broker is restored. ");
                         }
 
-                        illuminatiExecutorLogger.info(errorMessage.toString() + " ("+e.getMessage()+")");
+                        illuminatiExecutorLogger.debug(errorMessage.toString() + " ("+e.getMessage()+")");
                     }
                 }
             }

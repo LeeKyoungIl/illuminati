@@ -29,7 +29,6 @@ public abstract class BasicTemplate {
 
     abstract protected void checkRequiredValuesForInit ();
     abstract protected void initProperties ();
-    abstract protected void publisherClose ();
 
     protected final AtomicInteger sendCount = new AtomicInteger(0);
 
@@ -81,9 +80,9 @@ public abstract class BasicTemplate {
      *
      *  0 : which means that the producer never waits for an acknowledgement from the broker.
      *      this option procides the lowest latency but the weakest durabilility guarantees.
-     *      some dto will be lost when a server fails.
+     *      some dto will be lost when a spring fails.
      *  1 : which means that the producer gets an acknowledgement after the leader replica has received the dto.
-     *      this option provides better durability as the processor waits until the server acknowledges the request as
+     *      this option provides better durability as the processor waits until the spring acknowledges the request as
      *      successful.
      *  -1 : which means thar the producer gets an acknowledgement after all in-sync replicas have received the dto.
      *       this option provides the best durability, we guarantee that no messages will be lost as long as at least

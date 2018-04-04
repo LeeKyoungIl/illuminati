@@ -75,11 +75,16 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         this.isAsync();
         this.isCompression();
         this.setTopicAndQueue();
-        this.publisherClose();
     }
 
-    @Override protected void publisherClose() {
-
+    @Override public void connectionClose() {
+        try {
+            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen() == true) {
+                AMQP_CONNECTION.close();
+            }
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
     private void setProps () {
@@ -168,8 +173,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : cluster host had a problem. " + ex.toString());
             //throw new CommunicationException("error : cluster host had a problem. " + ex.toString());
         } catch (TimeoutException ex) {
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : there was a problem communicating with the server. " + ex.toString());
-            //throw new CommunicationException("error : there was a problem communicating with the server. " + ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : there was a problem communicating with the spring. " + ex.toString());
+            //throw new CommunicationException("error : there was a problem communicating with the spring. " + ex.toString());
         }
     }
 
@@ -187,8 +192,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             } catch (IOException ex) {
                 RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : create connection channel has failed.. ("+ex.toString()+")");
             }
-        } else {
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : connection is required about creation of channel.");
         }
 
         return null;

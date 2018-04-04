@@ -61,7 +61,6 @@ public class H2Backup<T> implements Backup<T> {
 
     private void tableDDL (TableDDLType tableDDLType) {
         switch (tableDDLType) {
-
             case CREATE :
                 this.createTable();
                 break;

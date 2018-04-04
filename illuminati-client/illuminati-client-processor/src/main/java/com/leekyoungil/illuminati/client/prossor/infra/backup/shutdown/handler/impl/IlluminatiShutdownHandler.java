@@ -1,24 +1,34 @@
 package com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.handler.impl;
 
+import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.handler.ContainerShutdownHandler;
-import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
 
 /**
  *  - i refer to the source that @marcus.moon created.
  */
-public class SpringContainerShutdownHandler implements ContainerShutdownHandler {
+public class IlluminatiShutdownHandler implements ContainerShutdownHandler {
 
-    private final EmbeddedWebApplicationContext applicationContext;
+    // ################################################################################################################
+    // ### init illuminati template executor                                                                        ###
+    // ################################################################################################################
+    private IlluminatiTemplateExecutorImpl illuminatiTemplateExecutor;
 
-    public SpringContainerShutdownHandler (EmbeddedWebApplicationContext embeddedWebApplicationContext) {
-        this.applicationContext = embeddedWebApplicationContext;
+    public IlluminatiShutdownHandler (IlluminatiTemplateExecutorImpl illuminatiExecutor) {
+        this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
     @Override public boolean isRunning() {
-        return this.applicationContext.isRunning();
+        int templateQueueSize = this.illuminatiTemplateExecutor.getQueueSize();
+        int backupQueueSize = this.illuminatiTemplateExecutor.getBackupQueueSize();
+
+        return templateQueueSize == 0 && backupQueueSize == 0 ? false : true;
     }
 
     @Override public void stop() {
-        this.applicationContext.close();
+        this.illuminatiTemplateExecutor.connectionClose();
+    }
+
+    @Override public void stopSignal() {
+        this.illuminatiTemplateExecutor.executeStopThread();
     }
 }

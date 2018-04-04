@@ -113,12 +113,12 @@ public class RequestHeaderModel {
     @Expose private String cookie;
 
     /**
-     *   The Expect request-header field is used to indicate that a particular set of server behaviors is required by the
+     *   The Expect request-header field is used to indicate that a particular set of spring behaviors is required by the
      *   client. The general syntax is:
      *
      *    - Expect : 100-continue | expectation-extension
      *
-     *   If a server receives a request containing an Expect field that includes an expectation-extension that it does not
+     *   If a spring receives a request containing an Expect field that includes an expectation-extension that it does not
      *   support, it must respond with a 417 (Expectation Failed) status.
      */
     @Expose private String expect;
@@ -141,7 +141,7 @@ public class RequestHeaderModel {
      *    - Host : "Host" ":" host [ ":" port ] ;
      *
      *   A host without any trailing port information implies the default port, which is 80. For example, a request on the origin
-     *   server for http://www.w3.org/pub/WWW/ would be:
+     *   spring for http://www.w3.org/pub/WWW/ would be:
      *
      *   - GET /pub/WWW/ HTTP/1.1
      *   - Host: www.w3.org
@@ -149,7 +149,7 @@ public class RequestHeaderModel {
     @Expose private String host;
 
     /**
-     *   The If-Match request-header field is used with a method to make it conditional. This header requests the server to
+     *   The If-Match request-header field is used with a method to make it conditional. This header requests the spring to
      *   perform the requested method only if the given value in this tag matches the given entity tags represented by ETag.
      *   The general syntax is:
      *
@@ -162,14 +162,14 @@ public class RequestHeaderModel {
      *    - If-Match: "xyzzy", "r2d2xxxx", "c3piozzzz"
      *    - If-Match: *
      *
-     *   If none of the entity tags match, or if "*" is given and no current entity exists, the server must not perform the
+     *   If none of the entity tags match, or if "*" is given and no current entity exists, the spring must not perform the
      *   requested method, and must return a 412 (Precondition Failed) response.
      */
     @Expose private String ifMatch;
 
     /**
      *   The If-Modified-Since request-header field is used with a method to make it conditional. If the requested URL has
-     *   not been modified since the time specified in this field, an entity will not be returned from the server; instead,
+     *   not been modified since the time specified in this field, an entity will not be returned from the spring; instead,
      *   a 304 (not modified) response will be returned without any message-body. The general syntax of if-modified-since is:
      *
      *    - If-Modified-Since : HTTP-date
@@ -178,13 +178,13 @@ public class RequestHeaderModel {
      *
      *    - If-Modified-Since: Sat, 29 Oct 1994 19:43:31 GMT
      *
-     *   If none of the entity tags match, or if "*" is given and no current entity exists, the server must not perform the
+     *   If none of the entity tags match, or if "*" is given and no current entity exists, the spring must not perform the
      *   requested method, and must return a 412 (Precondition Failed) response.
      */
     @Expose private String ifModifiedSince;
 
     /**
-     *   The If-None-Match request-header field is used with a method to make it conditional. This header requests the server
+     *   The If-None-Match request-header field is used with a method to make it conditional. This header requests the spring
      *   to perform the requested method only if one of the given value in this tag matches the given entity tags represented
      *   by ETag. The general syntax is:
      *
@@ -209,7 +209,7 @@ public class RequestHeaderModel {
      *
      *    - If-Range: Sat, 29 Oct 1994 19:43:31 GMT
      *
-     *   Here if the document has not been modified since the given date, the server returns the byte range given by the Range
+     *   Here if the document has not been modified since the given date, the spring returns the byte range given by the Range
      *   header, otherwise it returns all of the new document.
      */
     @Expose private String ifRange;
@@ -219,7 +219,7 @@ public class RequestHeaderModel {
      *
      *    - If-Unmodified-Since : HTTP-date
      *
-     *   If the requested resource has not been modified since the time specified in this field, the server should perform
+     *   If the requested resource has not been modified since the time specified in this field, the spring should perform
      *   the requested operation as if the If-Unmodified-Since header were not present. For example:
      *
      *    - If-Unmodified-Since: Sat, 29 Oct 1994 19:43:31 GMT
@@ -230,7 +230,7 @@ public class RequestHeaderModel {
 
     /**
      *   The Max-Forwards request-header field provides a mechanism with the TRACE and OPTIONS methods to limit the number
-     *   of proxies or gateways that can forward the request to the next inbound server. Here is the general syntax:
+     *   of proxies or gateways that can forward the request to the next inbound spring. Here is the general syntax:
      *
      *    - Max-Forwards : n
      *
