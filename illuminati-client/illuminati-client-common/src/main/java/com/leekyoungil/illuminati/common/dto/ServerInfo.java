@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  *
- * get server info is very expensive process. Because of this, it has to be executed only once.
+ * get spring info is very expensive process. Because of this, it has to be executed only once.
  */
 public class ServerInfo {
 
@@ -40,7 +40,7 @@ public class ServerInfo {
             this.serverIp = ip.getHostAddress();
             this.hostName = ip.getHostName();
         } catch (UnknownHostException ex) {
-            SERVER_INFO_LOGGER.error("Sorry. check your server network. ("+ex.toString()+")");
+            SERVER_INFO_LOGGER.error("Sorry. check your spring network. ("+ex.toString()+")");
         }
     }
 

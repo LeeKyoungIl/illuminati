@@ -2,8 +2,10 @@ package com.leekyoungil.illuminati.client.prossor.executor.impl;
 
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.infra.IlluminatiInfraTemplate;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.ContainerSignalHandler;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.handler.impl.IlluminatiShutdownHandler;
 import com.leekyoungil.illuminati.client.prossor.infra.common.IlluminatiInfraConstant;
 import com.leekyoungil.illuminati.client.prossor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import com.leekyoungil.illuminati.client.prossor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
@@ -27,9 +29,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0l;
 
     // ################################################################################################################
-    // ### init illuminati template executor                                                                        ###
+    // ### init illuminati backup executor                                                                        ###
     // ################################################################################################################
-    private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiBackupExecutor;
+    private IlluminatiBackupExecutorImpl illuminatiBackupExecutor;
 
     // ################################################################################################################
     // ### init illuminati broker                                                                                   ###
@@ -37,12 +39,14 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
     private final long BROKER_HEALTH_CHECK_TIME = 300000l;
 
-    private IlluminatiTemplateExecutorImpl (final IlluminatiExecutor illuminatiBackupExecutor) {
+    private IlluminatiShutdownHandler illuminatiShutdownHandler;
+
+    private IlluminatiTemplateExecutorImpl (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) {
         super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiBackupExecutor = illuminatiBackupExecutor;
     }
 
-    public static IlluminatiTemplateExecutorImpl getInstance (final IlluminatiExecutor illuminatiBackupExecutor) {
+    public static IlluminatiTemplateExecutorImpl getInstance (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) {
         if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
             synchronized (IlluminatiTemplateExecutorImpl.class) {
                 if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
@@ -58,12 +62,26 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         if (this.illuminatiTemplate != null) {
             this.createSystemThread();
             this.createSystemThreadForIsCanConnectRemoteBroker();
+
+            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+                this.addShutdownHook();
+            }
         }
     }
 
     // ################################################################################################################
     // ### public methods                                                                                           ###
     // ################################################################################################################
+
+    public void connectionClose () {
+        this.illuminatiTemplate.connectionClose();
+    }
+    public void executeStopThread () {
+        this.illuminatiBackupExecutor.createStopThread();
+    }
+    public int getBackupQueueSize () {
+        return this.illuminatiBackupExecutor.getQueueSize();
+    }
 
     public void sendToIlluminati (final String jsonString) {
         this.illuminatiTemplate.sendToIlluminati(jsonString);
@@ -75,7 +93,11 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
             return;
         }
-        this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
+            this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
+        } else {
+            this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
+        }
     }
 
     /**
@@ -103,6 +125,10 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
+    private void addShutdownHook () {
+       Runtime.getRuntime().addShutdownHook(new ContainerSignalHandler(new IlluminatiShutdownHandler(this)));
+    }
+
     private IlluminatiInfraTemplate initIlluminatiTemplate () {
         final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker", "no broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
@@ -128,7 +154,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     @Override protected void preventErrorOfSystemThread(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         if (this.illuminatiBackupExecutor != null) {
             IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
-
             this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
         }
     }

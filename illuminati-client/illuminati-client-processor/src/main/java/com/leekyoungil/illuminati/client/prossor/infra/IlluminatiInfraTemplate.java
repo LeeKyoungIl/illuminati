@@ -8,4 +8,6 @@ public interface IlluminatiInfraTemplate<T> {
     void sendToIlluminati (final T entity);
 
     boolean canIConnect ();
+
+    void connectionClose();
 }

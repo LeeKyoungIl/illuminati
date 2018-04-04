@@ -6,7 +6,7 @@
  * RabbitMQ - completed test of heavy traffic
  * Kafka - not yet complete
 
-## I recommend the RabbitMQ for the current version.(0.9.9.4)
+## I recommend the RabbitMQ for the current version.(0.9.9.5)
 
 ## add to Maven Dependency
     * Maven
@@ -29,14 +29,22 @@
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.9.4</version>
+      <version>0.9.9.5</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
        <groupId>com.leekyoungil.illuminati</groupId>
        <artifactId>illuminati-client-switch</artifactId>
-       <version>1.0.5</version>
+       <version>1.0.6</version>
+    </dependency>
+
+    <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.196</version>
+        <scope>compile</scope>
     </dependency>
 </dependencies>
 ```
@@ -50,9 +58,11 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.5'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.6'
+// This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. 
+compile 'com.h2database:h2:1.4.196'
 ```
 
 ## add @Illuminati to Class
@@ -197,14 +207,22 @@ chaosBomber: true
     <dependency>
      <groupId>com.leekyoungil.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.9.4</version>
+     <version>0.9.9.5</version>
     </dependency>
       
     <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
     <dependency>
       <groupId>com.leekyoungil.illuminati</groupId>
       <artifactId>illuminati-client-switch</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.6</version>
+    </dependency>
+
+    <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 broker에 문제가 생겼을때 H2DB로 자동으로 백업할수 있습니다. -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.196</version>
+        <scope>compile</scope>
     </dependency>
 </dependencies>
 ```
@@ -218,8 +236,11 @@ repositories {
 }
 
 compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.5'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.6'
+//이것은 옵션 입니다. 해당 모듈을 추가하면 대시 broker에 문제가 생겼을때 H2DB로 자동으로 백업할수 있습니다.
+compile 'com.h2database:h2:1.4.196'
 ```
 
 ## Class에 @Illuminati 추가 

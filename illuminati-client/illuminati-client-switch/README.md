@@ -37,7 +37,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-switch</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.6'
 ```
 
 ===============================================================================
@@ -92,7 +92,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-switch</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 ```
 
@@ -104,5 +104,5 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.5'
+compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.6'
 ```
