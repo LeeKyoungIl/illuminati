@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public class H2ConnectionFactory {
 
     private final Logger h2ConnectionFactoryLogger = LoggerFactory.getLogger(this.getClass());

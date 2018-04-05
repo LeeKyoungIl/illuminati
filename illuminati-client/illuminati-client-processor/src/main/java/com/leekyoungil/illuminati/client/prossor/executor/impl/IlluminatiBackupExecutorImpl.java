@@ -4,6 +4,7 @@ import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBasicExecuto
 import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiBlockingQueue;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.BackupFactory;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
@@ -14,6 +15,9 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
 
     private static IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR_IMPL;
@@ -108,7 +112,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     @Override protected void createSystemThread () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-                while (true) {
+                while (true && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
                     try {
                         if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                             deQueue();
@@ -135,6 +139,23 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override protected void preventErrorOfSystemThread(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
+
+    }
+
+    public void createStopThread() {
+        final Runnable runnableFirst = new Runnable() {
+            public void run() {
+                while (getQueueSize() > 0) {
+                    try {
+                        deQueue();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        };
+
+        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_STOP_THREAD");
 
     }
 }

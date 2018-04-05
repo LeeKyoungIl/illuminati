@@ -22,6 +22,9 @@ import java.util.Map;
 
 import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.ILLUMINATI_GSON_OBJ;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public class H2Backup<T> implements Backup<T> {
 
     private final Logger h2BackupLogger = LoggerFactory.getLogger(this.getClass());
@@ -61,7 +64,6 @@ public class H2Backup<T> implements Backup<T> {
 
     private void tableDDL (TableDDLType tableDDLType) {
         switch (tableDDLType) {
-
             case CREATE :
                 this.createTable();
                 break;
