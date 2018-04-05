@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel> implements IlluminatiExecutor<T> {
 
     protected final Logger illuminatiExecutorLogger = LoggerFactory.getLogger(this.getClass());

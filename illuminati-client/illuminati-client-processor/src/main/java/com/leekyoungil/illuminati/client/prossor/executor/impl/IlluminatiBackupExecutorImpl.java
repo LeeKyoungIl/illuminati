@@ -15,6 +15,9 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
 
     private static IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR_IMPL;

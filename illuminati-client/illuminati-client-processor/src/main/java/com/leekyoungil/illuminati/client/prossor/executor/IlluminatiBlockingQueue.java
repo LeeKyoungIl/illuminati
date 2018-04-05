@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends LinkedBlockingQueue<E> {
 
     private int listCount = 1;

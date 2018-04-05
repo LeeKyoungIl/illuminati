@@ -4,6 +4,11 @@ import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.handler.C
 
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * - @marcus.moon provided me with an Graceful idea.
+ *
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
 public class ContainerSignalHandler extends Thread {
 
     private final ContainerShutdownHandler containerShutdownHandler;

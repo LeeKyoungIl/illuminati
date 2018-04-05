@@ -4,7 +4,9 @@ import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplat
 import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.handler.ContainerShutdownHandler;
 
 /**
- *  - i refer to the source that @marcus.moon created.
+ *  - @marcus.moon provided me with an Graceful idea.
+ *
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
 public class IlluminatiShutdownHandler implements ContainerShutdownHandler {
 
