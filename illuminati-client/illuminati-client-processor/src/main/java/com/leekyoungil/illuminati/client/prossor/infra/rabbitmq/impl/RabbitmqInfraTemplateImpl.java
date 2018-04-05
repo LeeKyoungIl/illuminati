@@ -75,31 +75,22 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         this.isAsync();
         this.isCompression();
         this.setTopicAndQueue();
-        this.publisherClose();
     }
 
-    @Override protected void publisherClose() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                System.out.println("Illuminati BYE BYE");
-                try {
-                    if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen() == true) {
-                        AMQP_CONNECTION.close();
-                    }
-                } catch (IOException e) {
-                    // ignore
-                }
+    @Override public void connectionClose() {
+        try {
+            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen() == true) {
+                AMQP_CONNECTION.close();
             }
-        });
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
     private void setProps () {
-        this.PROPS = new BasicProperties
-                .Builder()
+        this.PROPS = new BasicProperties.Builder()
                 .contentEncoding(this.compressionCodec)
                 .contentType(this.contentType)
-//                .messageId(UUID.randomUUID().toString())
-//                .timestamp(new Date())
                 .deliveryMode(2)
                 .priority(0)
                 .build();
@@ -182,8 +173,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : cluster host had a problem. " + ex.toString());
             //throw new CommunicationException("error : cluster host had a problem. " + ex.toString());
         } catch (TimeoutException ex) {
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : there was a problem communicating with the server. " + ex.toString());
-            //throw new CommunicationException("error : there was a problem communicating with the server. " + ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : there was a problem communicating with the spring. " + ex.toString());
+            //throw new CommunicationException("error : there was a problem communicating with the spring. " + ex.toString());
         }
     }
 
@@ -201,8 +192,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             } catch (IOException ex) {
                 RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : create connection channel has failed.. ("+ex.toString()+")");
             }
-        } else {
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : connection is required about creation of channel.");
         }
 
         return null;

@@ -1,18 +1,18 @@
 package com.leekyoungil.illuminati.client.prossor.init;
 
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
+import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl;
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor;
 import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiTemplateExecutorImpl;
+import com.leekyoungil.illuminati.client.prossor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import com.leekyoungil.illuminati.client.prossor.infra.restore.impl.RestoreTemplateData;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.IlluminatiCommon;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiBackupInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
-import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
-import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -39,7 +40,7 @@ public class IlluminatiClientInit {
 
     private static final IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
     private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
-    private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_BACKUP_EXECUTOR;
+    private static final IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR;
 
     private static final RestoreTemplateData RESTORE_TEMPLATE_DATA;
 
@@ -111,6 +112,10 @@ public class IlluminatiClientInit {
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+            return pjp.proceed();
+        }
+
         if (this.isOnIlluminatiSwitch() == false) {
             return pjp.proceed();
         }
@@ -133,6 +138,10 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+            return pjp.proceed();
+        }
+
         if (this.isOnIlluminatiSwitch() == false) {
             return pjp.proceed();
         }

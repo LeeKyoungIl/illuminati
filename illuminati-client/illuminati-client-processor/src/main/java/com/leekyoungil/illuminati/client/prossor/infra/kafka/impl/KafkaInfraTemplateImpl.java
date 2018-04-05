@@ -75,7 +75,6 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     private synchronized void initPublisher () {
         if (this.KAFKA_PUBLISHER == null) {
             this.KAFKA_PUBLISHER = new KafkaProducer<String,  byte[]>(this.PROPERTIES);
-            this.publisherClose();
         }
     }
 
@@ -87,15 +86,6 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.setPerformance();
         this.setIsAsync();
         this.setIsCompression();
-    }
-
-    public void publisherClose () {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                System.out.println("Illuminati BYE BYE");
-                KAFKA_PUBLISHER.close();
-            }
-        });
     }
 
     public void sendToIlluminati (String entity) {
@@ -124,6 +114,11 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         }
 
         return false;
+    }
+
+    @Override
+    public void connectionClose() {
+        KAFKA_PUBLISHER.close();
     }
 
     private void setPerformance () {
