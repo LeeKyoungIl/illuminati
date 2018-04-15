@@ -33,6 +33,8 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
     private String generatedIlluminatiTemplate;
 
+    private final static String DEFAULT_CONFIG_PROPERTIES_FILE_NAME = "illuminati";
+
     @Override public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
 
@@ -117,35 +119,21 @@ public class IlluminatiProcessor extends AbstractProcessor {
     private boolean setGeneratedIlluminatiTemplate (final String basePackageName) {
         // step 1.  set basicImport
         this.generatedIlluminatiTemplate = "package {basePackageName};\r\n" + this.getImport();
-
         // step 2.  base package name
-        this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}"
-                , basePackageName);
-
-        //BrokerType brokerType = BrokerType.getEnumType(illuminatiProperties.getBroker());
+        this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}", basePackageName);
 
         final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n \r\n";
-
-        // step 3.  properties by broker
-        String implClassName;
-
-        //if (BrokerType.RABBITMQ != brokerType && BrokerType.KAFKA != brokerType) {
-            // Exception
-        //    this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in properties read process.");
-        //   return false;
-        //}
-
         final String illuminatiAnnotationName = "com.leekyoungil.illuminati.client.annotation.Illuminati";
-        // step 4.  check chaosBomber is activated.
-        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, this.messager, "illuminati", "chaosBomber", "false");
+        // step 3.  check chaosBomber is activated.
+        final String checkChaosBomber = this.getPropertiesValueByKey("chaosBomber", "false");
 
         String illuminatiExecuteMethod = "";
 
-        if (StringObjectUtils.isValid(checkChaosBomber) && "true".equals(checkChaosBomber.toLowerCase())) {
+        if (StringObjectUtils.isValid(checkChaosBomber) == true && "true".equals(checkChaosBomber.toLowerCase())) {
             illuminatiExecuteMethod = "ByChaosBomber";
         }
 
-        // step 5.  set the method body
+        // step 4. set the method body
         this.generatedIlluminatiTemplate += ""
                 + "@Component\r\n"
                 + "@Aspect\r\n"
@@ -218,5 +206,9 @@ public class IlluminatiProcessor extends AbstractProcessor {
         }
 
         return importString.toString();
+    }
+
+    private String getPropertiesValueByKey (final String key, final String defaultValue) {
+
     }
 }

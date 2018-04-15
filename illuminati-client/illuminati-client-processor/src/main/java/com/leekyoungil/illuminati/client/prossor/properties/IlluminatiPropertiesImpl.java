@@ -52,25 +52,6 @@ public class IlluminatiPropertiesImpl extends IlluminatiCommonProperties impleme
 
     public IlluminatiPropertiesImpl() {}
 
-    @Override public void setProperties(final Properties prop) {
-        for (String keys : IlluminatiConstant.PROPERTIES_KEYS) {
-            final String value = prop.getProperty(keys);
-            if (prop.containsKey(keys) && !value.isEmpty()) {
-                try {
-                    final Field field = this.getClass().getDeclaredField(keys);
-                    field.setAccessible(true);
-                    field.set(this, value);
-                } catch (IllegalAccessException e) {
-                    // ignore
-                    //e.printStackTrace();
-                } catch (NoSuchFieldException e) {
-                    // ignore
-                    //e.printStackTrace();
-                }
-            }
-        }
-    }
-
     @Override public String getBroker() {
         return StringObjectUtils.isValid(this.broker) ? this.broker.toLowerCase() : null;
     }

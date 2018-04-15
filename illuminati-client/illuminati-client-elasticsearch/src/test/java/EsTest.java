@@ -37,7 +37,7 @@ public class EsTest {
 ////
 ////        CloseableHttpClient httpClient = new IlluminatiHttpClient();
 ////
-////        EsClient eSclient = new ESclientImpl(httpClient, esUrl, esPort);
+////        EsClientTest eSclient = new ESclientImpl(httpClient, esUrl, esPort);
 ////        eSclient.save(illuminatiEsModelImpl);
 ////
 ////        System.out.println("test");

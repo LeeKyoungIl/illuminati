@@ -24,6 +24,17 @@ public class IlluminatiPropertiesHelper {
     private final static List<String> BASIC_CONFIG_FILES = Arrays.asList(new String[] { "application.properties", "application.yml", "application.yaml" });
     private final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
     private final static String ILLUMINATI_SWITCH_CONFIGURATION_CLASS_NAME = "com.leekyoungil.illuminati.client.switcher.IlluminatiSwitch";
+    private final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+
+    static {
+        YAML_MAPPER.setVisibility(
+                YAML_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
+        );
+    }
 
     /**
      * Spring Cloud Config is active properties.
@@ -54,18 +65,12 @@ public class IlluminatiPropertiesHelper {
                 final Method getNameMethod = IlluminatiProperties.class.getMethod(methodName);
                 propertiesValue = (String) getNameMethod.invoke(illuminatiProperties);
             }
-            catch (NoSuchMethodException ex) {
+            catch (Exception ex) {
                 IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, unable to find method. (" + ex.toString() + ")");
-            }
-            catch (IllegalAccessException ex) {
-                IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, unable to access method. (" + ex.toString() + ")");
-            }
-            catch (InvocationTargetException ex) {
-                IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, unable to package method. (" + ex.toString() + ")");
             }
         }
 
-        return (StringObjectUtils.isValid(propertiesValue) == true) ? propertiesValue : defaultValue;
+        return (StringObjectUtils.isValid(propertiesValue)) ? propertiesValue : defaultValue;
     }
 
     public static IlluminatiProperties getIlluminatiProperties(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
@@ -125,14 +130,7 @@ public class IlluminatiPropertiesHelper {
 
         try {
             if (configPropertiesFileName.indexOf(".yml") > -1 || configPropertiesFileName.indexOf(".yaml") > -1) {
-                ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-                mapper.setVisibility(mapper.getSerializationConfig()
-                        .getDefaultVisibilityChecker()
-                        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-                        .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                        .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
-                illuminatiProperties = mapper.readValue(input, clazz);
+                illuminatiProperties = YAML_MAPPER.readValue(input, clazz);
             } else {
                 final Properties prop = new Properties();
                 prop.load(input);
@@ -156,15 +154,13 @@ public class IlluminatiPropertiesHelper {
                     // ignore
                 }
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             if (messager != null) {
                 messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in read process. (" + ex.toString() + ")");
             }
 
             IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, something is wrong in read process. (" + ex.toString() + ")");
-        }
-        finally {
+        } finally {
             if (input != null) {
                 try {
                     input.close();
@@ -180,5 +176,9 @@ public class IlluminatiPropertiesHelper {
         }
 
         return illuminatiProperties;
+    }
+
+    private String getFullFileName () {
+
     }
 }

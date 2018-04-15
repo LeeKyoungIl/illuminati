@@ -1,25 +1,24 @@
-package com.leekyoungil.illuminati.common.properties;
+package com.leekyoungil.illuminati.client.prossor.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.properties.IlluminatiBaseProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
-import java.lang.reflect.Field;
 import java.util.Properties;
 
 /**
  * This class is used where 'IlluminatiPropertiesImpl' is not used.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IlluminatiCommonProperties extends IlluminatiBaseProperties implements IlluminatiProperties {
+public class IlluminatiH2Properties extends IlluminatiBaseProperties {
 
     private String debug = "false";
 
-    public IlluminatiCommonProperties (final Properties prop) {
+    public IlluminatiH2Properties(final Properties prop) {
         super(prop);
     }
 
-    @Override public String getDebug () {
+    @Override public String getDebug() {
         return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
     }
 }
