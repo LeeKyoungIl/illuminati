@@ -17,24 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.*;
+
 public class IlluminatiPropertiesHelper {
 
     private final static Logger FILEUTIL_LOGGER = LoggerFactory.getLogger(IlluminatiPropertiesHelper.class);
-    private final static List<String> CONFIG_FILE_EXTENSTIONS = Arrays.asList(new String[] { "properties", "yml", "yaml" });
-    private final static List<String> BASIC_CONFIG_FILES = Arrays.asList(new String[] { "application.properties", "application.yml", "application.yaml" });
-    private final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
-    private final static String ILLUMINATI_SWITCH_CONFIGURATION_CLASS_NAME = "com.leekyoungil.illuminati.client.switcher.IlluminatiSwitch";
-    private final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
-    static {
-        YAML_MAPPER.setVisibility(
-                YAML_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
-                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
-        );
-    }
+    private final static String ILLUMINATI_SWITCH_CONFIGURATION_CLASS_NAME = "com.leekyoungil.illuminati.client.switcher.IlluminatiSwitch";
 
     /**
      * Spring Cloud Config is active properties.
@@ -55,8 +44,8 @@ public class IlluminatiPropertiesHelper {
         return isIlluminatiSwitcherActive;
     }
 
-    public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName, final String key, final String defaultValue) {
-        final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(clazz, messager, configPropertiesFileName);
+    public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, final String configPropertiesFileName, final String key, final String defaultValue) {
+        final IlluminatiProperties illuminatiProperties = getIlluminatiProperties(clazz, configPropertiesFileName);
         String propertiesValue = null;
 
         if (StringObjectUtils.isValid(key) && illuminatiProperties != null) {
@@ -73,8 +62,8 @@ public class IlluminatiPropertiesHelper {
         return (StringObjectUtils.isValid(propertiesValue)) ? propertiesValue : defaultValue;
     }
 
-    public static IlluminatiProperties getIlluminatiProperties(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
-        IlluminatiProperties illuminatiProperties = null;
+    public static <T extends IlluminatiProperties> T getIlluminatiProperties(final Class<T> clazz, final String configPropertiesFileName) {
+        T illuminatiProperties = null;
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
             String dotBeforeExtension = ".";
@@ -84,7 +73,7 @@ public class IlluminatiPropertiesHelper {
             }
 
             final String fullFileName = configPropertiesFileName + dotBeforeExtension + extension;
-            illuminatiProperties = getIlluminatiPropertiesByFile(clazz, messager, fullFileName);
+            illuminatiProperties = getIlluminatiPropertiesByFile(clazz, fullFileName);
 
             if (illuminatiProperties != null) {
                 break;
@@ -92,25 +81,21 @@ public class IlluminatiPropertiesHelper {
         }
 
         if (illuminatiProperties == null) {
-            illuminatiProperties = getIlluminatiPropertiesFromBasicFiles(clazz, messager);
+            illuminatiProperties = getIlluminatiPropertiesFromBasicFiles(clazz);
         }
 
         if (illuminatiProperties == null) {
-            if (messager != null) {
-                messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, unable to find " + configPropertiesFileName);
-            }
-
             IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, unable to find " + configPropertiesFileName);
         }
 
         return illuminatiProperties;
     }
 
-    private static IlluminatiProperties getIlluminatiPropertiesFromBasicFiles(final Class<? extends IlluminatiProperties> clazz, Messager messager) {
-        IlluminatiProperties illuminatiProperties = null;
+    private static <T extends IlluminatiProperties> T getIlluminatiPropertiesFromBasicFiles(final Class<T> clazz) {
+        T illuminatiProperties = null;
 
         for (String fileName : BASIC_CONFIG_FILES) {
-            illuminatiProperties = getIlluminatiPropertiesByFile(clazz, messager, fileName);
+            illuminatiProperties = getIlluminatiPropertiesByFile(clazz, fileName);
 
             if (illuminatiProperties != null) {
                 return illuminatiProperties;
@@ -120,9 +105,9 @@ public class IlluminatiPropertiesHelper {
         return null;
     }
 
-    private static IlluminatiProperties getIlluminatiPropertiesByFile(final Class<? extends IlluminatiProperties> clazz, Messager messager, final String configPropertiesFileName) {
+    private static <T extends IlluminatiProperties> T getIlluminatiPropertiesByFile(final Class<T> clazz, final String configPropertiesFileName) {
         final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
-        IlluminatiProperties illuminatiProperties = null;
+        T illuminatiProperties = null;
 
         if (input == null) {
             return null;
@@ -136,10 +121,6 @@ public class IlluminatiPropertiesHelper {
                 prop.load(input);
 
                 if (prop == null) {
-                    if (messager != null) {
-                        messager.printMessage(Diagnostic.Kind.ERROR, "Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
-                    }
-
                     IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
 
                     return null;
@@ -155,10 +136,6 @@ public class IlluminatiPropertiesHelper {
                 }
             }
         } catch (IOException ex) {
-            if (messager != null) {
-                messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in read process. (" + ex.toString() + ")");
-            }
-
             IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, something is wrong in read process. (" + ex.toString() + ")");
         } finally {
             if (input != null) {
@@ -166,19 +143,11 @@ public class IlluminatiPropertiesHelper {
                     input.close();
                 }
                 catch (IOException ex) {
-                    if (messager != null) {
-                        messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
-                    }
-
                     IlluminatiPropertiesHelper.FILEUTIL_LOGGER.debug("Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
                 }
             }
         }
 
         return illuminatiProperties;
-    }
-
-    private String getFullFileName () {
-
     }
 }

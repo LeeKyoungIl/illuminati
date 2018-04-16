@@ -3,6 +3,7 @@ package com.leekyoungil.illuminati.client.prossor.infra.backup.impl;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.enums.TableDDLType;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiH2Properties;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiCommonProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
@@ -42,7 +43,7 @@ public class H2Backup<T> implements Backup<T> {
         if (H2_CONN.isConnected() == true) {
             this.connection = H2_CONN.getDbConnection();
 
-            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, null, "illuminati", "backTableReset", "false");
+            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class, "illuminati", "backTableReset", "false");
             if ("true".equalsIgnoreCase(backTableReset)) {
                 this.tableDDL(TableDDLType.DROP);
             }

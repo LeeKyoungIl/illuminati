@@ -25,7 +25,7 @@ public abstract class BasicTemplate {
     protected PerformanceType performanceType;
     protected String topic;
 
-    protected IlluminatiProperties illuminatiProperties;
+    protected IlluminatiPropertiesImpl illuminatiProperties;
 
     abstract protected void checkRequiredValuesForInit ();
     abstract protected void initProperties ();
@@ -33,7 +33,7 @@ public abstract class BasicTemplate {
     protected final AtomicInteger sendCount = new AtomicInteger(0);
 
     protected BasicTemplate (final String propertiesName) {
-        this.illuminatiProperties = IlluminatiPropertiesHelper.getIlluminatiProperties(IlluminatiPropertiesImpl.class, null, propertiesName);
+        this.illuminatiProperties = IlluminatiPropertiesHelper.getIlluminatiProperties(IlluminatiPropertiesImpl.class, propertiesName);
 
         if (this.illuminatiProperties == null) {
             BASIC_TEMPLATE_LOGGER.error("error : Sorry, something is wrong in read Properties file.");
@@ -89,6 +89,7 @@ public abstract class BasicTemplate {
      *       one in sync replica remains.
      *
      *  default value is 0
+     *  it's only using when you choose kafka.
      */
     protected void performanceType () {
         int performance = 0;

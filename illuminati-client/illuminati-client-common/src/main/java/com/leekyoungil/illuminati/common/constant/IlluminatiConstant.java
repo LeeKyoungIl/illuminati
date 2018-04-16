@@ -1,11 +1,16 @@
 package com.leekyoungil.illuminati.common.constant;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiStorageType;
 
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,4 +39,21 @@ abstract public class IlluminatiConstant {
     }
 
     public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).serializeNulls().create();
+
+    public final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
+
+    public final static List<String> CONFIG_FILE_EXTENSTIONS = Arrays.asList(new String[] { "properties", "yml", "yaml" });
+    public final static List<String> BASIC_CONFIG_FILES = Arrays.asList(new String[] { "application.properties", "application.yml", "application.yaml" });
+
+    public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+
+    static {
+        YAML_MAPPER.setVisibility(
+                YAML_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
+                        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                        .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                        .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
+        );
+    }
 }

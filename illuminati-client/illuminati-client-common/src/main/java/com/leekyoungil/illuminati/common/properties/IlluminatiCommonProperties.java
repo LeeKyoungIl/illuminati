@@ -11,7 +11,7 @@ import java.util.Properties;
  * This class is used where 'IlluminatiPropertiesImpl' is not used.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IlluminatiCommonProperties extends IlluminatiBaseProperties implements IlluminatiProperties {
+public class IlluminatiCommonProperties extends IlluminatiBaseProperties {
 
     private String debug = "false";
 
@@ -19,7 +19,7 @@ public class IlluminatiCommonProperties extends IlluminatiBaseProperties impleme
         super(prop);
     }
 
-    @Override public String getDebug () {
+    public String getDebug () {
         return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
     }
 }

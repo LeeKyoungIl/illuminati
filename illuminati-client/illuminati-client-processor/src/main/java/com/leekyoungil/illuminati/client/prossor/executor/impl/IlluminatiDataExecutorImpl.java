@@ -33,7 +33,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
     // ### init illuminati basic system variables                                                                   ###
     // ################################################################################################################
-    private final static String PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "parentModuleName", "no Name");
+    private final static String PARENT_MODULE_NAME = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "parentModuleName", "no Name");
     private final static ServerInfo SERVER_INFO = new ServerInfo(true);
     // get basic JVM setting info only once.
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();

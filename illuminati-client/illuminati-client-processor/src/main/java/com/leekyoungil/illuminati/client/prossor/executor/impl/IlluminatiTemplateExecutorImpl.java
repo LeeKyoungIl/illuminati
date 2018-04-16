@@ -130,7 +130,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     private IlluminatiInfraTemplate initIlluminatiTemplate () {
-        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker", "no broker");
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
         if ("kafka".equals(illuminatiBroker)) {

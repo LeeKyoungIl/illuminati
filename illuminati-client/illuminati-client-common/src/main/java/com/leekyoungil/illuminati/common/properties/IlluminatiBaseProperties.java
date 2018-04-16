@@ -5,13 +5,13 @@ import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
-public abstract class IlluminatiBaseProperties {
+public abstract class IlluminatiBaseProperties implements IlluminatiProperties {
 
     protected IlluminatiBaseProperties (final Properties prop) {
         this.setProperties(prop);
     }
 
-    private void setProperties(final Properties prop) {
+    @Override public void setProperties(final Properties prop) {
         for (String keys : IlluminatiConstant.PROPERTIES_KEYS) {
             final String value = prop.getProperty(keys);
             if (prop.containsKey(keys) && !value.isEmpty()) {

@@ -8,17 +8,20 @@ import java.util.Properties;
 
 /**
  * This class is used where 'IlluminatiPropertiesImpl' is not used.
+ *
+ * Sample
+ *  - backTableReset: false
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiH2Properties extends IlluminatiBaseProperties {
 
-    private String debug = "false";
+    private String backTableReset = "false";
 
     public IlluminatiH2Properties(final Properties prop) {
         super(prop);
     }
 
-    @Override public String getDebug() {
-        return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
+    public String getBackTableReset() {
+        return StringObjectUtils.isValid(this.backTableReset) ? this.backTableReset : "false";
     }
 }
