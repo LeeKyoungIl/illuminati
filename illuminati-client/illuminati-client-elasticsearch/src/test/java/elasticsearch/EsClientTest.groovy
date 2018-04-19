@@ -6,6 +6,7 @@ import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl
+import org.apache.commons.collections.CollectionUtils
 import spock.lang.Specification
 
 class EsClientTest extends Specification {
@@ -44,14 +45,21 @@ class EsClientTest extends Specification {
 
         then:
         resultList.size() > 0
+        resultList.each { map ->
+            map.containsKey("_source") == true;
+            Map<String, Object> checkMap = map.get("_source");
+            checkMap.containsKey("jvmInfo") == true;
+        }
     }
 
-    // def "get key from yml" () {
-    //     setup:
-    //     IlluminatiPropertiesHelper.getPropertiesValueByKey()
+     def "get key from yml" () {
+         setup:
+         List<String> listData;
 
-    //     when:
+         when:
+         listData = IlluminatiPropertiesHelper.getPropertiesListByKey(String.class, "esKey");
 
-    //     then:
-    // }
+         then:
+         CollectionUtils.isNotEmpty(listData) == true
+     }
 }

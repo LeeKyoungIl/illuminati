@@ -1,19 +1,12 @@
 package com.leekyoungil.illuminati.common.properties;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.processing.Messager;
-import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -149,5 +142,9 @@ public class IlluminatiPropertiesHelper {
         }
 
         return illuminatiProperties;
+    }
+
+    public static List<?> getPropertiesListByKey(Class<?> clazz, String key) {
+
     }
 }
