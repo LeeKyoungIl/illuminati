@@ -18,6 +18,15 @@ public class EsDataImpl implements EsData {
     private final String sourceData;
     private List<Map<String, Object>> sourceList;
 
+    private static final Map<String, String> RENAME_KEYS_FROM_ES = new HashMap<String, String>();
+
+    static {
+        RENAME_KEYS_FROM_ES.put("_index", "index");
+        RENAME_KEYS_FROM_ES.put("_type", "type");
+        RENAME_KEYS_FROM_ES.put("_id", "id");
+        RENAME_KEYS_FROM_ES.put("_source", "source");
+    }
+
     public EsDataImpl (final String sourceData) throws ValidationException {
         if (StringObjectUtils.isValid(sourceData) == false) {
             throw new ValidationException("source data is a required value.");
@@ -48,6 +57,7 @@ public class EsDataImpl implements EsData {
         for (Map<String, Object> map : mapList) {
             if (map.containsKey("_source") == true && ((Map<String, Object>) map.get("_source")).size() > 0) {
                 map.remove("_score");
+                this.renameKeys(map);
                 this.sourceList.add(map);
             }
         }
@@ -55,5 +65,14 @@ public class EsDataImpl implements EsData {
 
     @Override public List<Map<String, Object>> getEsDataList() {
         return this.sourceList;
+    }
+
+    private void renameKeys (Map<String, Object> targetMap) {
+        for (String key : RENAME_KEYS_FROM_ES.keySet()) {
+            if (targetMap.containsKey(key) == true) {
+                targetMap.put(RENAME_KEYS_FROM_ES.get(key), targetMap.get(key));
+                targetMap.remove(key);
+            }
+        }
     }
 }

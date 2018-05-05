@@ -51,15 +51,4 @@ class EsClientTest extends Specification {
             checkMap.containsKey("jvmInfo") == true;
         }
     }
-
-     def "get key from yml" () {
-         setup:
-         List<String> listData;
-
-         when:
-         listData = IlluminatiPropertiesHelper.getPropertiesListByKey(String.class, "esKey");
-
-         then:
-         CollectionUtils.isNotEmpty(listData) == true
-     }
 }

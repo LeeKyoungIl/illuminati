@@ -1,11 +1,8 @@
 package com.leekyoungil.illuminati.elasticsearch.infra;
 
-import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.IlluminatiStringBuilder;
 import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsModel;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
@@ -20,10 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -76,7 +71,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return httpResponse;
     }
 
-    @Override public String getAllDataByFields(ArrayList<String> fields) {
+    @Override public String getAllDataByFields(List<String> fields) {
         if (CollectionUtils.isEmpty(fields) == true) {
             return null;
         }
