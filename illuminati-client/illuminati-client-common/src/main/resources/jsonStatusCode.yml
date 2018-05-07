@@ -1,0 +1,4 @@
+jsonStatusCode:
+  200: success
+  500: error
+  501: an error occurred because of null

@@ -7,6 +7,7 @@ import com.leekyoungil.illuminati.client.prossor.infra.kafka.enums.PerformanceTy
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
+import com.leekyoungil.illuminati.common.util.PropertiesUtil;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public abstract class BasicTemplate {
     protected final AtomicInteger sendCount = new AtomicInteger(0);
 
     protected BasicTemplate (final String propertiesName) {
-        this.illuminatiProperties = IlluminatiPropertiesHelper.getIlluminatiProperties(IlluminatiPropertiesImpl.class, propertiesName);
+        this.illuminatiProperties = PropertiesUtil.getIlluminatiProperties(IlluminatiPropertiesImpl.class, propertiesName);
 
         if (this.illuminatiProperties == null) {
             BASIC_TEMPLATE_LOGGER.error("error : Sorry, something is wrong in read Properties file.");

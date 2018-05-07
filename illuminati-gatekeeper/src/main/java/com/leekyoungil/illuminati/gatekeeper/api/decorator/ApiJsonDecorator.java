@@ -1,19 +1,29 @@
 package com.leekyoungil.illuminati.gatekeeper.api.decorator;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.IlluminatiJsonResult;
 
-import java.util.List;
-import java.util.Map;
+public class ApiJsonDecorator<T> {
 
-public class ApiJsonDecorator {
+    private final T data;
 
-    private final List<Map<String, Object>> objectList;
-
-    ApiJsonDecorator (List<Map<String, Object>> objectList) {
-        this.objectList = objectList;
+    ApiJsonDecorator (T data) {
+        this.data = data;
     }
 
     public String getJsonString () {
-        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.objectList);
+        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.data);
+    }
+
+    public IlluminatiJsonResult<T> getIlluminatiJsonObject() {
+        IlluminatiJsonResult<T> illuminatiJsonResult = new IlluminatiJsonResult<T>();
+        if (this.data == null) {
+            illuminatiJsonResult.setCodeAndMessageOfResult(501);
+        } else {
+            illuminatiJsonResult.setCodeAndMessageOfResult(200);
+            illuminatiJsonResult.setResult(this.data);
+        }
+
+        return illuminatiJsonResult;
     }
 }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiStorageType;
+import com.leekyoungil.illuminati.common.properties.IlluminatiJsonCodeProperties;
+import com.leekyoungil.illuminati.common.util.PropertiesUtil;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -56,4 +58,6 @@ abstract public class IlluminatiConstant {
                         .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
         );
     }
+
+    public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(IlluminatiJsonCodeProperties.class, "jsonStatusCode");
 }

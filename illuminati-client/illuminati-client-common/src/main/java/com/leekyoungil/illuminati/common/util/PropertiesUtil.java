@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.common.util;
 
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import org.slf4j.Logger;
@@ -80,7 +81,7 @@ public class PropertiesUtil {
 
         try {
             if (configPropertiesFileName.indexOf(".yml") > -1 || configPropertiesFileName.indexOf(".yaml") > -1) {
-                illuminatiProperties = YAML_MAPPER.readValue(input, clazz);
+                illuminatiProperties = IlluminatiConstant.YAML_MAPPER.readValue(input, clazz);
             } else {
                 final Properties prop = new Properties();
                 prop.load(input);
