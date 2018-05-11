@@ -77,6 +77,13 @@
 			<version>4.0.0-2</version>
 		</dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.webjars.bower/select2 -->
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>select2</artifactId>
+            <version>4.0.6-rc.1</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.webjars.bower/select2-bootstrap-theme -->
         <dependency>
             <groupId>org.webjars.bower</groupId>

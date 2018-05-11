@@ -1,20 +1,93 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<header th:fragment="header">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Test</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.css}">
-    <link rel="stylesheet" th:href="@{/webjars/select2/4.0.6-rc.1/dist/css/select2.css}">
-    <link rel="stylesheet" th:href="@{/webjars/select2-bootstrap-theme/0.1.0-beta.10/dist/select2-bootstrap.css}">
-    <link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}">
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/2.4.2-1/dist/css/AdminLTE.min.css}">
-    <link rel="stylesheet" th:href="@{/webjars/AdminLTE/2.4.2-1/dist/css/skins/_all-skins.min.css}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Order Backoffice</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.css}">
+        <link rel="stylesheet" th:href="@{/webjars/select2/4.0.6-rc.1/dist/css/select2.css}">
+        <link rel="stylesheet" th:href="@{/webjars/select2-bootstrap-theme/0.1.0-beta.10/dist/select2-bootstrap.css}">
+        <link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}">
+        <link rel="stylesheet" th:href="@{/webjars/AdminLTE/2.4.2-1/dist/css/AdminLTE.min.css}">
+        <link rel="stylesheet" th:href="@{/webjars/AdminLTE/2.4.2-1/dist/css/skins/_all-skins.min.css}">
 
-    <script th:src="@{/webjars/jquery/3.3.1-1/jquery.js}"></script>
-    <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.js}"></script>
+        <script th:src="@{/webjars/jquery/3.3.1-1/jquery.js}"></script>
+        <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.js}"></script>
+        <script th:src="@{/webjars/AdminLTE/2.4.2-1/dist/js/adminlte.min.js}"></script>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-</header>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    </head>
+
+    <body class="hold-transition pace-done skin-blue-light sidebar-mini fixed">
+        <div class="wrapper">
+
+            <header class="main-header">
+                <a href="/" class="logo">
+                    <span class="logo-mini"><img src="/image/illuminati-logo.png" widtd="30px" height="30px"></span>
+                    <span class="logo-lg">Gatekeeper</span>
+                </a>
+                <nav class="navbar navbar-static-top">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="padding: 0px;">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" th:remove="${session.LOGIN_MEMBER_SESSION == null}? all : none" th:object="${session.LOGIN_MEMBER_SESSION}">
+                                    <img th:src="|http://tree.kakaocorp.com/main/public/krew-image?accountId=*{id}|" class="user-image" th:alt="*{name}">
+                                    <span class="hidden-xs" th:text="|*{name} ( *{id} )|"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="user-footer">
+                                        <div class="pull-right">
+                                            <a href="/member/logout" class="btn btn-default btn-flat">Logout</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
+            <aside class="main-sidebar">
+                <section class="sidebar">
+                    <ul class="sidebar-menu" data-widget="tree">
+                        <li><a href="/dashboard/index"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                        <!--<li><a href="/search/orders/index"><i class="fa fa-shopping-cart"></i> <span>주문정보 조회</span></a></li>-->
+                        <!--<li><a href="/search/logs/index"><i class="fa fa-file-text-o"></i> <span>서버로그 확인</span></a></li>-->
+                        <!--<li><a href="#/order/status"><i class="fa fa-exchange"></i> <span>주문상태 변경</span></a></li>-->
+                        <!--<li><a href="#/mq/send"><i class="fa fa-send-o"></i> <span>MQ 재발행</span></a></li>-->
+                        <li class="active treeview menu-open">
+                            <a href="/joblog/index">
+                                <i class="fa fa-money"></i> <span>System</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+
+                            <ul class="treeview-menu" style="display: block;">
+                                <li><a href="/system/view/jvmStatus"><i class="fa fa-circle-o"></i> JVM Status</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+
+            <div class="content-wrapper" layout:fragment="content" ></div>
+
+            <footer class="main-footer">
+                <div class="pull-right hidden-xs">
+                </div>
+                <strong>Copyright &copy; 2018 Illuminati Gatekeeper.</strong> All rights
+                reserved.
+            </footer>
+            <div class="control-sidebar-bg"></div>
+        </div>
+
+    </body>
 </html>

@@ -27,5 +27,6 @@ class JsonDecoratorTest extends Specification {
 
         then:
         illuminatiJsonResult != null
+        illuminatiJsonResult.getCode() == 200
     }
 }

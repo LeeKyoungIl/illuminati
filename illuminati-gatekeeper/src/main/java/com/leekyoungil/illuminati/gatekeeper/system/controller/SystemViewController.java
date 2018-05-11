@@ -10,9 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class SystemViewController {
 
     private final String SYSTEM_VIEW_URI = "/view";
+    private final String SYSTEM_VIEW_JVM_STATUS_URI = "/view/jvmStatus";
 
     @RequestMapping(value = SYSTEM_VIEW_URI, method = RequestMethod.GET)
     public String systemView () {
         return "system/index";
+    }
+
+    @RequestMapping(value = SYSTEM_VIEW_JVM_STATUS_URI, method = RequestMethod.GET)
+    public String systemViewJvmStatus () {
+        return "system/jvm/index";
     }
 }
