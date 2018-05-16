@@ -1,12 +1,11 @@
 package com.leekyoungil.illuminati.elasticsearch.infra;
 
-import com.leekyoungil.illuminati.common.util.IlluminatiStringBuilder;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsModel;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
@@ -18,7 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -33,14 +33,19 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     private HttpClient httpClient;
     private String esUrl;
+    private String optionalIndex = "";
 
     public ESclientImpl (final HttpClient httpClient, final String esUrl, final int esPort) {
         this.httpClient = httpClient;
         this.esUrl = "http://" + esUrl + ":" + String.valueOf(esPort);
     }
 
+    public void setOptionalIndex (String optionalIndex) {
+        this.optionalIndex = optionalIndex;
+    }
+
     @Override public HttpResponse save (final IlluminatiEsModel entity) {
-        final HttpRequestBase httpPutRequest = new HttpPut(entity.getEsUrl(this.esUrl));
+        final HttpRequestBase httpPutRequest = new HttpPut(entity.getEsUrl(this.esUrl + this.optionalIndex));
 
         if (entity.isSetUserAuth() == true) {
             try {
@@ -50,7 +55,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
             }
         }
 
-        ((HttpPut) httpPutRequest).setEntity(this.getHttpEntity(entity));
+        ((HttpPut) httpPutRequest).setEntity(this.getHttpEntity(entity.getJsonString()));
 
         HttpResponse httpResponse = null;
 
@@ -71,24 +76,20 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return httpResponse;
     }
 
-    @Override public String getAllDataByFields(List<String> fields) {
-        if (CollectionUtils.isEmpty(fields) == true) {
+    @Override public String getDataByParam(Map<String, Object> param) {
+        if (param == null || param.size() == 0) {
             return null;
         }
-        IlluminatiStringBuilder fieldNames = new IlluminatiStringBuilder();
-        for (String fieldName : fields) {
-            fieldNames.appendString(fieldName);
-        }
 
-        final HttpRequestBase httpGetRequest = new HttpGet(this.esUrl + "/_search?_source=" + fieldNames.toStringWithDelimiter(","));
-
+        final HttpRequestBase httpPostRequest = new HttpPost(this.getSearchRequestUrl());
+        ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.generateRequestParam(param))));
         HttpResponse httpResponse = null;
         try {
-            httpResponse = this.httpClient.execute(httpGetRequest);
+            httpResponse = this.httpClient.execute(httpPostRequest);
         } catch (IOException e) {
             this.logger.error("Sorry. something is wrong in Http Request. ("+e.toString()+")");
             try {
-                httpGetRequest.releaseConnection();
+                httpPostRequest.releaseConnection();
             } catch (Exception ignored) {}
         }
 
@@ -99,13 +100,52 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
             return null;
         } finally {
             try {
-                httpGetRequest.releaseConnection();
+                httpPostRequest.releaseConnection();
             } catch (Exception ignored) {}
         }
     }
 
-    private HttpEntity getHttpEntity(final IlluminatiEsModel entity) {
-        return EntityBuilder.create().setText(entity.getJsonString()).setContentType(this.contentType).build();
+    private String getSearchRequestUrl () {
+        StringBuilder requestEsUrl = new StringBuilder();
+        requestEsUrl.append(this.esUrl);
+        requestEsUrl.append("/");
+        requestEsUrl.append(this.optionalIndex);
+        requestEsUrl.append("/");
+        requestEsUrl.append("_search?pretty");
+
+        return requestEsUrl.toString();
+    }
+
+    private Map<String, Object> generateRequestParam (Map<String, Object> param) {
+        Map<String, Object> queryParam = new HashMap<String, Object>();
+
+        if (param.containsKey("match") == true) {
+            queryParam.put("match", param.get("match"));
+        } else {
+            queryParam.put("match_all", new HashMap<String, Object>());
+        }
+        if (param.containsKey("range") == true) {
+            queryParam.put("range", param.get("range"));
+        }
+
+        Map<String, Object> requestParam = new HashMap<String, Object>();
+        requestParam.put("query", queryParam);
+
+        if (param.containsKey("source") == true) {
+            requestParam.put("_source", param.get("source"));
+        }
+        if (param.containsKey("from") == true) {
+            requestParam.put("from", param.get("from"));
+        }
+        if (param.containsKey("size") == true) {
+            requestParam.put("size", param.get("size"));
+        }
+
+        return requestParam;
+    }
+
+    private HttpEntity getHttpEntity(final String entityString) {
+        return EntityBuilder.create().setText(entityString).setContentType(this.contentType).build();
     }
 
     private HttpResponse getHttpResponseByData (final int httpStatus, final String message) {

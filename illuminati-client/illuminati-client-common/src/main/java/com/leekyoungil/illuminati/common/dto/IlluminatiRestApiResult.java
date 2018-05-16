@@ -2,7 +2,7 @@ package com.leekyoungil.illuminati.common.dto;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 
-public class IlluminatiJsonResult<T> {
+public class IlluminatiRestApiResult<T> {
 
     private int code;
     private String message;

@@ -16,6 +16,7 @@ class JvmInfoApiTest extends Specification {
     def "get Jvm Info From Elasticsearch" () {
         setup:
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
         JvmInfoApiService jvmInfoApiService = new JvmInfoApiService(esClient);
         List<Map<String, Object>> jvmInfo;
 
@@ -24,11 +25,13 @@ class JvmInfoApiTest extends Specification {
 
         then:
         jvmInfo != null;
+        jvmInfo.size() > 0;
     }
 
     def "get Jvm Info timestamp to datetime" () {
         setup:
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
         JvmInfoApiService jvmInfoApiService = new JvmInfoApiService(esClient);
         List<Map<String, Object>> jvmInfo;
         Map<String, Object> firstJvmInfo;

@@ -1,12 +1,10 @@
 package elasticsearch
 
 import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient
-import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl
-import org.apache.commons.collections.CollectionUtils
 import spock.lang.Specification
 
 class EsClientTest extends Specification {
@@ -16,28 +14,33 @@ class EsClientTest extends Specification {
 
     def "get all value in a field from elasticsearch" () {
         setup:
-        List<String> filedNames = new ArrayList<>();
-        filedNames.add("jvmInfo");
-        filedNames.add("timestamp");
+        List<String> fields = new ArrayList<>();
+        fields.add("jvmInfo");
+        fields.add("timestamp");
+        Map<String, Object> param =  new HashMap<>();
+        param.put("source", fields)
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
 
         when:
-        String data = esClient.getAllDataByFields(filedNames);
+        String data = esClient.getDataByParam(param);
 
         then:
-        println(data);
         data != null;
     }
 
     def "make jvm data from source data" () {
         setup:
-        List<String> filedNames = new ArrayList<>();
-        filedNames.add("jvmInfo");
-        filedNames.add("timestamp");
+        List<String> fields = new ArrayList<>();
+        fields.add("jvmInfo");
+        fields.add("timestamp");
+        Map<String, Object> param =  new HashMap<>();
+        param.put("source", fields)
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
-        String data = esClient.getAllDataByFields(filedNames);
+        esClient.setOptionalIndex("sample-illuminati*");
+        String data = esClient.getDataByParam(param);
 
         when:
         EsData esData = new EsDataImpl(data);
@@ -46,8 +49,8 @@ class EsClientTest extends Specification {
         then:
         resultList.size() > 0
         resultList.each { map ->
-            map.containsKey("_source") == true;
-            Map<String, Object> checkMap = map.get("_source");
+            map.containsKey("source") == true;
+            Map<String, Object> checkMap = map.get("source");
             checkMap.containsKey("jvmInfo") == true;
         }
     }

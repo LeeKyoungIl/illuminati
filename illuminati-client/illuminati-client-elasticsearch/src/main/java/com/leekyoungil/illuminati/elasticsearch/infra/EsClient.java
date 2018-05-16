@@ -1,6 +1,6 @@
 package com.leekyoungil.illuminati.elasticsearch.infra;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -9,7 +9,7 @@ public interface EsClient<T, V> {
 
     V save(T entity);
 
-    String getAllDataByFields(List<String> fields);
+    String getDataByParam(Map<String, Object> param);
 
 //    V save(T entity, EsRefreshType esRefreshType);
 

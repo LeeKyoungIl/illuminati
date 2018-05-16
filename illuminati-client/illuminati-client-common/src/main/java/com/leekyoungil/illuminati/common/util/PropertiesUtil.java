@@ -22,17 +22,32 @@ public class PropertiesUtil {
         List<String> fileNames = new ArrayList<String>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
-            String dotBeforeExtension = ".";
-
-            if (StringObjectUtils.isValid(PROFILES_PHASE)) {
-                dotBeforeExtension = "-" + PROFILES_PHASE + ".";
-            }
-
-            final String fullFileName = configPropertiesFileName + dotBeforeExtension + extension;
+            final String fullFileName = configPropertiesFileName + getDotBeforeExtension() + extension;
             fileNames.add(fullFileName);
         }
 
         return fileNames;
+    }
+
+    public static List<String> getPropertiesFileNamesWithoutProfiles (final String configPropertiesFileName) {
+        List<String> fileNames = new ArrayList<String>();
+
+        for (String extension : CONFIG_FILE_EXTENSTIONS) {
+            final String fullFileName = configPropertiesFileName + "." + extension;
+            fileNames.add(fullFileName);
+        }
+
+        return fileNames;
+    }
+
+    private static String getDotBeforeExtension () {
+        String dotBeforeExtension = ".";
+
+        if (StringObjectUtils.isValid(PROFILES_PHASE)) {
+            dotBeforeExtension = "-" + PROFILES_PHASE + ".";
+        }
+
+        return dotBeforeExtension;
     }
 
     public static <T extends IlluminatiProperties> T getIlluminatiProperties(final Class<T> clazz, final String configPropertiesFileName) {
@@ -43,6 +58,16 @@ public class PropertiesUtil {
 
             if (illuminatiProperties != null) {
                 break;
+            }
+        }
+
+        if (illuminatiProperties == null) {
+            for (String fullFileName : PropertiesUtil.getPropertiesFileNamesWithoutProfiles(configPropertiesFileName)) {
+                illuminatiProperties = getIlluminatiPropertiesByFile(clazz, fullFileName);
+
+                if (illuminatiProperties != null) {
+                    break;
+                }
             }
         }
 

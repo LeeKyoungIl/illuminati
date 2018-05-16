@@ -1,29 +1,29 @@
 package com.leekyoungil.illuminati.gatekeeper.api.decorator;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
-import com.leekyoungil.illuminati.common.dto.IlluminatiJsonResult;
+import com.leekyoungil.illuminati.common.dto.IlluminatiRestApiResult;
 
-public class ApiJsonDecorator<T> {
+public class ApiJsonDecorator<T> implements ApiDecorator<T> {
 
     private final T data;
 
-    ApiJsonDecorator (T data) {
+    public ApiJsonDecorator (T data) {
         this.data = data;
     }
 
-    public String getJsonString () {
+    @Override public String getStringData () {
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.data);
     }
 
-    public IlluminatiJsonResult<T> getIlluminatiJsonObject() {
-        IlluminatiJsonResult<T> illuminatiJsonResult = new IlluminatiJsonResult<T>();
+    @Override public IlluminatiRestApiResult<T> getIlluminatiTypeObject() {
+        IlluminatiRestApiResult<T> illuminatiRestApiResult = new IlluminatiRestApiResult<T>();
         if (this.data == null) {
-            illuminatiJsonResult.setCodeAndMessageOfResult(501);
+            illuminatiRestApiResult.setCodeAndMessageOfResult(501);
         } else {
-            illuminatiJsonResult.setCodeAndMessageOfResult(200);
-            illuminatiJsonResult.setResult(this.data);
+            illuminatiRestApiResult.setCodeAndMessageOfResult(200);
+            illuminatiRestApiResult.setResult(this.data);
         }
 
-        return illuminatiJsonResult;
+        return illuminatiRestApiResult;
     }
 }
