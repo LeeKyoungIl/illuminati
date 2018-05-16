@@ -80,7 +80,6 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         if (param == null || param.size() == 0) {
             return null;
         }
-
         final HttpRequestBase httpPostRequest = new HttpPost(this.getSearchRequestUrl());
         ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.generateRequestParam(param))));
         HttpResponse httpResponse = null;
@@ -117,31 +116,42 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     private Map<String, Object> generateRequestParam (Map<String, Object> param) {
+        Map<String, Object> outerQueryParam = new HashMap<String, Object>();
         Map<String, Object> queryParam = new HashMap<String, Object>();
-
         if (param.containsKey("match") == true) {
             queryParam.put("match", param.get("match"));
         } else {
             queryParam.put("match_all", new HashMap<String, Object>());
         }
+        outerQueryParam.put("query", queryParam);
+
         if (param.containsKey("range") == true) {
-            queryParam.put("range", param.get("range"));
+            Map<String, Object> queryRangeParam = new HashMap<String, Object>();
+            queryRangeParam.put("range", param.get("range"));
+
+            outerQueryParam.put("filter", queryRangeParam);
         }
 
         Map<String, Object> requestParam = new HashMap<String, Object>();
-        requestParam.put("query", queryParam);
+        requestParam.put("filtered", outerQueryParam);
+
+        Map<String, Object> requestFilteredParam = new HashMap<String, Object>();
+        requestFilteredParam.put("query", requestParam);
 
         if (param.containsKey("source") == true) {
-            requestParam.put("_source", param.get("source"));
+            requestFilteredParam.put("_source", param.get("source"));
         }
         if (param.containsKey("from") == true) {
-            requestParam.put("from", param.get("from"));
+            requestFilteredParam.put("from", param.get("from"));
         }
         if (param.containsKey("size") == true) {
-            requestParam.put("size", param.get("size"));
+            requestFilteredParam.put("size", param.get("size"));
+        }
+        if (param.containsKey("sort") == true) {
+            requestFilteredParam.put("sort", param.get("sort"));
         }
 
-        return requestParam;
+        return requestFilteredParam;
     }
 
     private HttpEntity getHttpEntity(final String entityString) {
