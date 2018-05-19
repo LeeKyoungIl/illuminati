@@ -16,7 +16,7 @@ public class JvmInfoApiService {
 
     private final static Map<String, Object> JVM_ES_FIELD_PARAM = new HashMap<>();
     static {
-        List<String> jvmFieldList = new ArrayList<String>();
+        List<String> jvmFieldList = new ArrayList<>();
         jvmFieldList.add("jvmInfo");
         jvmFieldList.add("timestamp");
         JVM_ES_FIELD_PARAM.put("source", jvmFieldList);
@@ -27,11 +27,22 @@ public class JvmInfoApiService {
         this.eSclient = eSclient;
     }
 
+    public List<Map<String, Object>> getJvmInfoByConditionFromElasticsearch(Map<String, Object> param) {
+        Map<String, Object> requestParam = new HashMap<>(JVM_ES_FIELD_PARAM);
+        requestParam.putAll(param);
+
+        return this.requestJvmInfoFromElasticsearch(requestParam);
+    }
+
     public List<Map<String, Object>> getJvmInfoFromElasticsearch() {
+        return this.requestJvmInfoFromElasticsearch(JVM_ES_FIELD_PARAM);
+    }
+
+    private List<Map<String, Object>> requestJvmInfoFromElasticsearch (Map<String, Object> param) {
         List<Map<String, Object>> resultList = null;
 
         try {
-            String returnData = eSclient.getDataByParam(JVM_ES_FIELD_PARAM);
+            String returnData = eSclient.getDataByParam(param);
             EsData esData = new EsDataImpl(returnData);
             resultList = esData.getEsDataList();
 
@@ -40,6 +51,7 @@ public class JvmInfoApiService {
             }
         } catch (Exception ex) {
             this.logger.error("Exception occurred at getting data from Elasticsearch.", ex.getMessage());
+            return null;
         }
 
         return resultList;

@@ -72,7 +72,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         try {
             final EsDocument esDocument = this.getEsDocumentAnnotation();
 
-            final String[] dateForIndex = DATE_FORMAT_EVENT.format(new Date()).split("T");
+            final String[] dateForIndex = IlluminatiConstant.DATE_FORMAT_EVENT.format(new Date()).split("T");
 
             return new StringBuilder()
                 .append(baseUrl)

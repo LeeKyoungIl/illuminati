@@ -17,8 +17,6 @@ import java.util.*;
  */
 public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel {
 
-    protected static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault());
-
     @Expose private String parentModuleName;
     @Expose private ServerInfo serverInfo;
     @Expose private Map<String, Object> jvmInfo;
@@ -48,7 +46,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         this.output = illuminatiDataInterfaceModelImpl.getOutput();
 
         this.timestamp = localTime.getTime();
-        this.logTime = DATE_FORMAT_EVENT.format(localTime);
+        this.logTime = IlluminatiConstant.DATE_FORMAT_EVENT.format(localTime);
         this.paramValues = illuminatiDataInterfaceModelImpl.getParamValues();
 
         this.setMethod(illuminatiDataInterfaceModelImpl.getSignature());

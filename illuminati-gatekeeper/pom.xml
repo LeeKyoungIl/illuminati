@@ -56,6 +56,15 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.20</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
@@ -111,8 +120,6 @@
 			<artifactId>AdminLTE</artifactId>
 			<version>2.4.2-1</version>
 		</dependency>
-
-
 
 		<!-- https://mvnrepository.com/artifact/org.spockframework/spock-core -->
 		<dependency>

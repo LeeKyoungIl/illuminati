@@ -10,13 +10,14 @@ import com.leekyoungil.illuminati.common.properties.IlluminatiJsonCodeProperties
 import com.leekyoungil.illuminati.common.util.PropertiesUtil;
 
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class IlluminatiConstant {
+
+    public static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
 
     public static Map<String, Thread> SYSTEM_THREAD_MAP = new HashMap<String, Thread>();
 

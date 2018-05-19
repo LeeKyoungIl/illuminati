@@ -47,4 +47,21 @@ class JvmInfoApiTest extends Specification {
         Matcher matcher = pattern.matcher(String.valueOf(firstJvmInfo.get("timestamp")));
         matcher.find() == true;
     }
+
+    def "get Jvm Info with range From Elasticsearch" () {
+        setup:
+        Map<String, Object> param = new HashMap<>();
+        param.put("size", 3);
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
+        JvmInfoApiService jvmInfoApiService = new JvmInfoApiService(esClient);
+        List<Map<String, Object>> jvmInfo;
+
+        when:
+        jvmInfo = jvmInfoApiService.getJvmInfoByConditionFromElasticsearch(param);
+
+        then:
+        jvmInfo != null;
+        jvmInfo.size() == 3;
+    }
 }
