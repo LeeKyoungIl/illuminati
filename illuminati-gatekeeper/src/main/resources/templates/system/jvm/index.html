@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <script th:src="@{/js/Chart.min.js}"></script>
-
+    <script th:src="@{/js/gatekeeper/jvm.status.js}"></script>
 </head>
 <body>
 
@@ -17,49 +17,44 @@
 
     <section class="content">
         <div class="row">
-            <canvas id="jvmChart" width="400" height="400"></canvas>
-            <script>
-                var ctx = document.getElementById("jvmChart");
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                        datasets: [{
-                            label: '# of Votes',
-                            data: [12, 19, 3, 5, 2, 3],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
+            <div class="wrapper .col-2">
+                <canvas id="jvmUsedMemoryStatus" width="600" height="400"></canvas>
+            </div>
+            <div class="wrapper .col-2">
+                <canvas id="jvmFreeMemoryStatus" width="600" height="400"></canvas>
+            </div>
         </div>
     </section>
+    <script>
+        var ctxMap = {};
+        ctxMap['used'] = {};
+        ctxMap['free'] = {};
+
+        ctxMap['used']['id'] = 'jvmUsedMemoryStatus';
+        ctxMap['used']['label'] = 'JVM of used memory';
+        ctxMap['free']['id'] = 'jvmFreeMemoryStatus';
+        ctxMap['free']['label'] = 'JVM of free memory';
+
+        for (var key in ctxMap) {
+            var tmpChartObj = document.getElementById(ctxMap[key]['id']).getContext('2d');
+            new Chart(tmpChartObj, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: ctxMap[key]['label'],
+                        backgroundColor: jvm.getBackgroundColor(),
+                        borderColor: jvm.getBorderColor(),
+                        borderWidth: 1
+                    }]
+                },
+                options: jvm.getOptions()
+            });
+        }
+
+        jvm.init();
+    </script>
 </div>
+
 
 </body>
 </html>

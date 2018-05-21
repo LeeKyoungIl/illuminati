@@ -16,7 +16,7 @@ public class JvmRequestParam {
     private int size = 10;
     @Setter
     private int from = 0;
-    private OrderType orderType;
+    private OrderType orderType = OrderType.getOrderType("ASC");
     private String gte;
     private String lte;
 
@@ -33,7 +33,9 @@ public class JvmRequestParam {
     }
 
     public void setOrderType (String orderType) {
-        this.orderType = OrderType.getOrderType(orderType);
+        if (StringObjectUtils.isValid(orderType) == true) {
+            this.orderType = OrderType.getOrderType(orderType);
+        }
     }
 
     public Map<String, Object> getParam () {
@@ -55,11 +57,9 @@ public class JvmRequestParam {
             param.put("range", range);
         }
 
-        if (this.orderType != null) {
-            Map<String, Object> sort = new HashMap<>();
-            sort.put("logTime", this.orderType.getOrderType());
-            param.put("sort", sort);
-        }
+        Map<String, Object> sort = new HashMap<>();
+        sort.put("logTime", this.orderType.getOrderType());
+        param.put("sort", sort);
 
         return param;
     }
