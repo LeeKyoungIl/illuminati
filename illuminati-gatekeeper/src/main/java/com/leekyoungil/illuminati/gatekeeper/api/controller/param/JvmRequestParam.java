@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.gatekeeper.api.controller.param;
 
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
+import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ public class JvmRequestParam {
     private int size = 10;
     @Setter
     private int from = 0;
-    private OrderType orderType = OrderType.getOrderType("ASC");
+    private EsOrderType esOrderType = EsOrderType.getOrderType("ASC");
     private String gte;
     private String lte;
 
@@ -32,9 +33,9 @@ public class JvmRequestParam {
         }
     }
 
-    public void setOrderType (String orderType) {
-        if (StringObjectUtils.isValid(orderType) == true) {
-            this.orderType = OrderType.getOrderType(orderType);
+    public void setEsOrderType(String esOrderType) {
+        if (StringObjectUtils.isValid(esOrderType) == true) {
+            this.esOrderType = EsOrderType.getOrderType(esOrderType);
         }
     }
 
@@ -58,7 +59,7 @@ public class JvmRequestParam {
         }
 
         Map<String, Object> sort = new HashMap<>();
-        sort.put("logTime", this.orderType.getOrderType());
+        sort.put("logTime", this.esOrderType.getOrderType());
         param.put("sort", sort);
 
         return param;

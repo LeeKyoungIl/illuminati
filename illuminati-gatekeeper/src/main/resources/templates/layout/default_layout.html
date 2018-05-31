@@ -6,19 +6,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Illuminati Gatekeeper</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-        <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.css}">
-        <link rel="stylesheet" th:href="@{/webjars/select2/4.0.6-rc.1/dist/css/select2.css}">
-        <link rel="stylesheet" th:href="@{/webjars/select2-bootstrap-theme/0.1.0-beta.10/dist/select2-bootstrap.css}">
-        <link rel="stylesheet" th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}">
-        <link rel="stylesheet" th:href="@{/webjars/AdminLTE/2.4.2-1/dist/css/AdminLTE.min.css}">
-        <link rel="stylesheet" th:href="@{/webjars/AdminLTE/2.4.2-1/dist/css/skins/_all-skins.min.css}">
-
-        <script th:src="@{/webjars/jquery/3.3.1-1/jquery.js}"></script>
-        <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.js}"></script>
-        <script th:src="@{/webjars/AdminLTE/2.4.2-1/dist/js/adminlte.min.js}"></script>
-
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" th:href="@{/bootstrap/dist/css/bootstrap.min.css}">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" th:href="@{/font-awesome//css/font-awesome.min.css}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" th:href="@{/Ionicons/css/ionicons.min.css}">
+        <!-- DataTables -->
+        <link rel="stylesheet" th:href="@{/datatables.net-bs/css/dataTables.bootstrap.min.css}">
+        <!-- Theme style -->
+        <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" th:href="@{/css/skins/_all-skins.min.css}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
         <link rel="stylesheet" th:href="@{/css/gatekeeper.css}">
+
+        <!-- jQuery 3 -->
+        <script th:src="@{/jquery/dist/jquery.min.js}"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script th:src="@{/bootstrap/dist/js/bootstrap.min.js}"></script>
+        <!-- DataTables -->
+        <script th:src="@{/datatables.net/js/jquery.dataTables.min.js}"></script>
+        <script th:src="@{/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+        <!-- SlimScroll -->
+        <script th:src="@{/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+        <!-- FastClick -->
+        <script th:src="@{/fastclick/lib/fastclick.js}"></script>
+        <!-- AdminLTE App -->
+        <script th:src="@{/js/adminlte.min.js}"></script>
+        <script th:src="@{/js/gatekeeper/menu.js}"></script>
+
+        <script>
+            $(document).ready(function() {
+                menu.initSystemStatus('hostInfo');
+            });
+        </script>
     </head>
 
     <body class="hold-transition pace-done skin-blue-light sidebar-mini fixed">
@@ -26,7 +49,7 @@
 
             <header class="main-header">
                 <a href="/" class="logo">
-                    <span class="logo-mini"><img src="/image/illuminati-logo.png" widtd="30px" height="30px"></span>
+                    <span class="logo-mini"><img th:src="@{/img/illuminati-logo.png}" widtd="30px" height="30px"></span>
                     <span class="logo-lg">Gatekeeper</span>
                 </a>
                 <nav class="navbar navbar-static-top">
@@ -72,8 +95,8 @@
                                     <i class="fa fa-angle-left pull-right"></i>
                             </a>
 
-                            <ul class="treeview-menu" style="display: block;">
-                                <li><a href="/system/view/jvmStatus"><i class="fa fa-circle-o"></i> JVM Status</a></li>
+                            <ul id="systemStatusMenu" class="treeview-menu" style="display: block;">
+                                <!--<li><a href="/system/view/jvmStatus"><i class="fa fa-circle-o"></i> JVM Status</a></li>-->
                             </ul>
                         </li>
                     </ul>

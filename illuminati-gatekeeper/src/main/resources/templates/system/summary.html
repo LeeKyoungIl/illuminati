@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default_layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script>
+        $(document).ready(function() {
+            $(function () {
+                $('#example2').DataTable({
+                    'paging': false,
+                    'lengthChange': false,
+                    'searching': false,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': false
+                })
+            });
+        });
+    </script>
+<body>
+
+<div layout:fragment="content">
+    <input th:type="hidden" id="hostName" th:value="${hostName}" />
+    <section class="content-header">
+        <h1>
+            Host Summary Information : <span th:text="${hostName}"></span>
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Instance JVM Status</h3>
+                        <span class="glyphicon glyphicon-refresh padding-from-left"></span>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>JVM Specification Version</th>
+                                <th>File Encoding</th>
+                                <th>JVM Mode</th>
+                                <th>JVM Version</th>
+                                <th>JVM Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td id="javaVmSpecificationVersion"></td>
+                                <td id="fileEncoding"></td>
+                                <td id="javaVmInfo"></td>
+                                <td id="javaVmVersion"></td>
+                                <td id="javaVmName"></td>
+                            </tr>
+                            <tr>
+                                <th>Instance Process ID</th>
+                                <th>JVM Max Memory</th>
+                                <th>JVM Total Memory</th>
+                                <th>JVM Free Memory</th>
+                                <th>JVM Used Memory</th>
+                            </tr>
+                            <tr>
+                                <td id="PID"></td>
+                                <td id="jvmMaxMemory"></td>
+                                <td id="jvmTotalMemory"></td>
+                                <td id="jvmFreeMemory"></td>
+                                <td id="jvmUsedMemory"></td>
+                            </tr>
+                            <tr>
+                                <th>JVM Language</th>
+                                <th>JVM User Country</th>
+                                <th>JVM User Timezone</th>
+                                <th th:colspan="2">JVM Vendor</th>
+                            </tr>
+                            <tr>
+                                <td id="userLanguage"></td>
+                                <td id="userCountry"></td>
+                                <td id="userTimezone"></td>
+                                <td th:colspan="2" id="javaVmVendor"></td>
+                            </tr>
+                            <tr>
+                                <th th:colspan="2">Java Home</th>
+                                <th th:colspan="3">Catalina Home</th>
+                            </tr>
+                            <tr>
+                                <td th:colspan="2" id="javaHome"></td>
+                                <td th:colspan="3" id="catalinaHome"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

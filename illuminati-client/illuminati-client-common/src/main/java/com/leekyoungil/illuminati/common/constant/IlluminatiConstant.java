@@ -41,7 +41,7 @@ abstract public class IlluminatiConstant {
                 , "performance", "debug", "chaosBomber"};
     }
 
-    public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).serializeNulls().create();
+    public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
     public final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
 

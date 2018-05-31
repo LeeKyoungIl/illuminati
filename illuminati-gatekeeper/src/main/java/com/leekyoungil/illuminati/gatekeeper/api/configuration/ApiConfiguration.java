@@ -5,6 +5,7 @@ import com.leekyoungil.illuminati.common.util.PropertiesUtil;
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
 import com.leekyoungil.illuminati.elasticsearch.infra.properties.EsClientProperties;
+import com.leekyoungil.illuminati.gatekeeper.api.service.HostInfoService;
 import com.leekyoungil.illuminati.gatekeeper.api.service.JvmInfoApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +18,23 @@ public class ApiConfiguration {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean
-    public JvmInfoApiService getJvmInfoApiService () {
+    public EsClient getEsClient () {
         EsClientProperties esInfo = PropertiesUtil.getIlluminatiProperties(EsClientProperties.class, "elasticsearch/elasticsearch");
         if (esInfo.isValid() == true) {
-            EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), esInfo.getHost(), esInfo.getPort());
-            return new JvmInfoApiService(esClient);
+            return new ESclientImpl(new IlluminatiHttpClient(), esInfo.getHost(), esInfo.getPort());
         } else {
             this.logger.error("failed to generate Elasticsearch client.");
             return null;
         }
+    }
+
+    @Bean
+    public JvmInfoApiService getJvmInfoApiService () {
+        return new JvmInfoApiService(this.getEsClient());
+    }
+
+    @Bean
+    public HostInfoService getHostInfoService () {
+        return new HostInfoService(this.getEsClient());
     }
 }

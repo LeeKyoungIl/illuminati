@@ -53,7 +53,7 @@ var jvm = {
                     chart.update();
                 });
             }
-        })
+        });
     },
 
     getBackgroundColor: function () {

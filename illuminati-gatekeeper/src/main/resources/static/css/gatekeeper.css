@@ -190,3 +190,8 @@ a:hover {
     padding: 2px;
     text-align: center;
 }
+
+.padding-from-left {
+    padding-left: 15px;
+    vertical-align: Text-top;
+}

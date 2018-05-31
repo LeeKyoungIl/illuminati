@@ -116,42 +116,61 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     private Map<String, Object> generateRequestParam (Map<String, Object> param) {
-        Map<String, Object> outerQueryParam = new HashMap<String, Object>();
-        Map<String, Object> queryParam = new HashMap<String, Object>();
-        if (param.containsKey("match") == true) {
-            queryParam.put("match", param.get("match"));
+        if (param.containsKey("group_by") == true) {
+            return this.generateGroupByRequestParam(param);
         } else {
-            queryParam.put("match_all", new HashMap<String, Object>());
-        }
-        outerQueryParam.put("query", queryParam);
+            Map<String, Object> outerQueryParam = new HashMap<String, Object>();
+            Map<String, Object> queryParam = new HashMap<String, Object>();
+            if (param.containsKey("match") == true) {
+                queryParam.put("match", param.get("match"));
+            } else {
+                queryParam.put("match_all", new HashMap<String, Object>());
+            }
+            outerQueryParam.put("query", queryParam);
 
-        if (param.containsKey("range") == true) {
-            Map<String, Object> queryRangeParam = new HashMap<String, Object>();
-            queryRangeParam.put("range", param.get("range"));
+            if (param.containsKey("range") == true) {
+                Map<String, Object> queryRangeParam = new HashMap<String, Object>();
+                queryRangeParam.put("range", param.get("range"));
 
-            outerQueryParam.put("filter", queryRangeParam);
+                outerQueryParam.put("filter", queryRangeParam);
+            }
+
+            Map<String, Object> requestParam = new HashMap<String, Object>();
+            requestParam.put("filtered", outerQueryParam);
+
+            Map<String, Object> requestFilteredParam = new HashMap<String, Object>();
+            requestFilteredParam.put("query", requestParam);
+
+            if (param.containsKey("source") == true) {
+                requestFilteredParam.put("_source", param.get("source"));
+            }
+            if (param.containsKey("from") == true) {
+                requestFilteredParam.put("from", param.get("from"));
+            }
+            if (param.containsKey("size") == true) {
+                requestFilteredParam.put("size", param.get("size"));
+            }
+            if (param.containsKey("sort") == true) {
+                requestFilteredParam.put("sort", param.get("sort"));
+            }
+
+            return requestFilteredParam;
         }
+    }
+
+    private Map<String, Object> generateGroupByRequestParam (Map<String, Object> param) {
+        Map<String, Object> groupByFieldParam = new HashMap<String, Object>();
+        groupByFieldParam.put("field", param.get("group_by"));
+        Map<String, Object> outerGroupByFieldParam = new HashMap<String, Object>();
+        outerGroupByFieldParam.put("terms", groupByFieldParam);
+        Map<String, Object> aggregationParam = new HashMap<String, Object>();
+        aggregationParam.put("group_by"+param.get("group_by"), outerGroupByFieldParam);
 
         Map<String, Object> requestParam = new HashMap<String, Object>();
-        requestParam.put("filtered", outerQueryParam);
+        requestParam.put("size", 0);
+        requestParam.put("aggs", aggregationParam);
 
-        Map<String, Object> requestFilteredParam = new HashMap<String, Object>();
-        requestFilteredParam.put("query", requestParam);
-
-        if (param.containsKey("source") == true) {
-            requestFilteredParam.put("_source", param.get("source"));
-        }
-        if (param.containsKey("from") == true) {
-            requestFilteredParam.put("from", param.get("from"));
-        }
-        if (param.containsKey("size") == true) {
-            requestFilteredParam.put("size", param.get("size"));
-        }
-        if (param.containsKey("sort") == true) {
-            requestFilteredParam.put("sort", param.get("sort"));
-        }
-
-        return requestFilteredParam;
+        return requestParam;
     }
 
     private HttpEntity getHttpEntity(final String entityString) {

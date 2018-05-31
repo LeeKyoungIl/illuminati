@@ -37,8 +37,25 @@ public class EsDataImpl implements EsData {
     }
 
     private void initEsData() {
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
-        Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, type);
+        Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, new TypeToken<Map<String, Object>>(){}.getType());
+        if (resultMap.containsKey("aggregations") == true) {
+            this.initAggregationData((Map<String, Object>) resultMap.get("aggregations"));
+        } else {
+            this.initBasicSearchData(resultMap);
+        }
+    }
+
+    @Override public List<Map<String, Object>> getEsDataList() {
+        return this.sourceList;
+    }
+
+    private void initAggregationData (Map<String, Object> resultMap) {
+        for(String key : resultMap.keySet()) {
+            this.sourceList = (List<Map<String, Object>>) ((Map<String, Object>) resultMap.get(key)).get("buckets");
+        }
+    }
+
+    private void initBasicSearchData (Map<String, Object> resultMap) {
         if (resultMap.containsKey("hits") == false) {
             return;
         }
@@ -61,10 +78,6 @@ public class EsDataImpl implements EsData {
                 this.sourceList.add(map);
             }
         }
-    }
-
-    @Override public List<Map<String, Object>> getEsDataList() {
-        return this.sourceList;
     }
 
     private void renameKeys (Map<String, Object> targetMap) {

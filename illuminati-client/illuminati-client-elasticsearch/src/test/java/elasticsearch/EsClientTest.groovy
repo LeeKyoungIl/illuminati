@@ -3,8 +3,13 @@ package elasticsearch
 import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
+import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsQueryType
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl
+import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsParam
+import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsSourceParam
+import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQuery
+import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQueryBuilder
 import spock.lang.Specification
 
 import java.text.SimpleDateFormat
@@ -100,5 +105,60 @@ class EsClientTest extends Specification {
             Map<String, Object> checkMap = map.get("source");
             checkMap.containsKey("jvmInfo") == true;
         }
+    }
+
+    def "get host bt group by" () {
+        setup:
+        Map<String, Object> groupByParam =  new HashMap<>();
+        groupByParam.put("group_by", "serverInfo.hostName");
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
+        String data = esClient.getDataByParam(groupByParam);
+
+        when:
+        EsData esData = new EsDataImpl(data);
+        List<Map<String, Object>> resultList = esData.getEsDataList();
+
+        then:
+        resultList.size() > 0
+        resultList.each { map ->
+            map.containsKey("key") == true;
+        }
+    }
+
+    def "query builder test" () {
+        setup:
+        EsQuery esQuery;
+
+        when:
+        esQuery = EsQueryBuilder.Builder()
+                        .setQueryType(EsQueryType.MATCH_ALL)
+                        .build();
+
+        then:
+        esQuery != null;
+    }
+
+    def "es request builder" () {
+        setup:
+        RequestEsParam requestEsParam;
+        List<String> requestEsSourceParam;
+
+        when:
+        requestEsSourceParam = new RequestEsSourceParam()
+                                .setSource("timestamp")
+                                .setSource("jvm")
+                                .build();
+
+        EsQuery esQuery = EsQueryBuilder.Builder()
+                            .setQueryType(EsQueryType.MATCH_ALL)
+                            .build();
+
+        requestEsParam = new RequestEsParam(esQuery, requestEsSourceParam);
+        String jsonString = requestEsParam.build();
+
+        then:
+        jsonString != null;
     }
 }
