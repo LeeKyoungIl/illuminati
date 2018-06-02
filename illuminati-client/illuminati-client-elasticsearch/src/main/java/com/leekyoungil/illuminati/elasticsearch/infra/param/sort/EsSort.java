@@ -21,6 +21,6 @@ public class EsSort {
     }
 
     public Map<String, String> getSort () {
-        return this.sort.size() > 0 ? this.sort : null;
+        return this.sort;
     }
 }

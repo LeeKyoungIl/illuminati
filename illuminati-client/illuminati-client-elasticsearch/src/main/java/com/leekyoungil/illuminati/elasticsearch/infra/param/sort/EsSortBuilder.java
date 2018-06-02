@@ -9,7 +9,11 @@ public class EsSortBuilder {
 
     private final EsSort esSort = new EsSort();
 
-    public EsSortBuilder () {
+    public static EsSortBuilder Builder() {
+        return new EsSortBuilder();
+    }
+
+    private EsSortBuilder () {
 
     }
 

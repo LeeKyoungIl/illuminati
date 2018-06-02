@@ -5,6 +5,7 @@ import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsQueryType
+import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRangeType
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsParam
@@ -23,17 +24,23 @@ class EsClientTest extends Specification {
 
     def "get all value in a field from elasticsearch" () {
         setup:
-        List<String> fields = new ArrayList<>();
-        fields.add("jvmInfo");
-        fields.add("timestamp");
-        Map<String, Object> param =  new HashMap<>();
-        param.put("source", fields)
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
+                                        .setMatchAll()
+                                        .build();
+
+        List<String> esSource = new EsSource()
+                            .setSource("jvmInfo")
+                            .setSource("timestamp")
+                            .build();
+
+        String queryString = new RequestEsParam(esQuery, esSource)
+                                .build()
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
 
         when:
-        String data = esClient.getDataByParam(param);
+        String data = esClient.getDataByJson(queryString);
 
         then:
         data != null;
@@ -41,15 +48,22 @@ class EsClientTest extends Specification {
 
     def "make jvm data from source data" () {
         setup:
-        List<String> fields = new ArrayList<>();
-        fields.add("jvmInfo");
-        fields.add("timestamp");
-        Map<String, Object> param =  new HashMap<>();
-        param.put("source", fields)
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
+                                        .setMatchAll()
+                                        .build();
+
+        List<String> esSource = new EsSource()
+                                .setSource("jvmInfo")
+                                .setSource("timestamp")
+                                .build();
+
+        String queryString = new RequestEsParam(esQuery, esSource)
+                            .setSort(EsSortBuilder.Builder().build())
+                            .build()
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByParam(param);
+        String data = esClient.getDataByJson(queryString);
 
         when:
         EsData esData = new EsDataImpl(data);
@@ -66,35 +80,30 @@ class EsClientTest extends Specification {
 
     def "jvm data by range" () {
         setup:
-        List<String> fields = new ArrayList<>();
-        fields.add("jvmInfo");
-        fields.add("timestamp");
+        List<String> esSource = new EsSource()
+                                .setSource("jvmInfo")
+                                .setSource("timestamp")
+                                .build();
 
-        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
+                                        .setMatchAll()
+                                        .setRange(EsRangeType.GTE, "2018-03-04T00:04:20")
+                                        .setRange(EsRangeType.LTE, "2018-03-05T00:06:20")
+                                        .build();
 
-        Date from = transFormat.parse("2018-03-05 00:04:20");
-        Date to = transFormat.parse("2018-03-05 00:6:20");
+        Map<String, String> sort = EsSortBuilder.Builder()
+                                    .setSort(EsOrderType.DESC, "logTime")
+                                    .build();
 
-        Map<String, Object> rangeTimestamp = new HashMap<>();
-        rangeTimestamp.put("gte", "2018-03-04T00:04:20");
-        rangeTimestamp.put("lte", "2018-03-05T00:06:20");
-
-        Map<String, Object> range = new HashMap<>();
-        range.put("logTime", rangeTimestamp);
-
-        Map<String, Object> sort = new HashMap<>();
-        sort.put("logTime", "desc");
-
-        Map<String, Object> param =  new HashMap<>();
-        param.put("source", fields);
-        param.put("range", range);
-        param.put("sort", sort);
-        param.put("size", 20)
-        param.put("from", 10);
+        String queryString = new RequestEsParam(esQuery, esSource)
+                                .setSort(sort)
+                                .setSize(20)
+                                .setFrom(10)
+                                .build()
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByParam(param);
+        String data = esClient.getDataByJson(queryString);
 
         when:
         EsData esData = new EsDataImpl(data);
