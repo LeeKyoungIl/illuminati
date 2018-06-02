@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.elasticsearch.infra;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsModel;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -76,12 +77,12 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return httpResponse;
     }
 
-    @Override public String getDataByParam(Map<String, Object> param) {
-        if (param == null || param.size() == 0) {
+    @Override public String getDataByJson(String jsonRequestString) {
+        if (StringObjectUtils.isValid(jsonRequestString) == Boolean.FALSE) {
             return null;
         }
         final HttpRequestBase httpPostRequest = new HttpPost(this.getSearchRequestUrl());
-        ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.generateRequestParam(param))));
+        ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(jsonRequestString));
         HttpResponse httpResponse = null;
         try {
             httpResponse = this.httpClient.execute(httpPostRequest);

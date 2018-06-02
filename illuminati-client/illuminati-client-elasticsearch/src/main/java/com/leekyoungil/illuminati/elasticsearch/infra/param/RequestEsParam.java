@@ -1,11 +1,14 @@
 package com.leekyoungil.illuminati.elasticsearch.infra.param;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType;
-import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQuery;
+import com.leekyoungil.illuminati.elasticsearch.infra.param.sort.EsSort;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RequestEsParam {
 
@@ -14,13 +17,13 @@ public class RequestEsParam {
     @Expose
     private int from = 0;
     @Expose
-    private final EsQuery query;
+    private final Map<String, Object> query;
     @Expose
-    private RequestEsSortParam sort;
-    @Expose
+    private Map<String, String> sort;
+    @Expose @SerializedName("_source")
     private final List<String> source;
 
-    public RequestEsParam (EsQuery query, List<String> source) {
+    public RequestEsParam (Map<String, Object> query, List<String> source) {
         this.query = query;
         this.source = source;
     }
@@ -35,8 +38,8 @@ public class RequestEsParam {
         return this;
     }
 
-    public RequestEsParam setSort (EsOrderType orderType, String key) {
-        this.sort = new RequestEsSortParam(orderType, key);
+    public RequestEsParam setSort (Map<String, String> sort) {
+        this.sort = sort;
         return this;
     }
 

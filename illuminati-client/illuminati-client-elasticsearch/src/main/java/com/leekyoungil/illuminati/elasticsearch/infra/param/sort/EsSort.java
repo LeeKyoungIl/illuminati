@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.elasticsearch.infra.param;
+package com.leekyoungil.illuminati.elasticsearch.infra.param.sort;
 
 import com.google.gson.annotations.Expose;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
@@ -7,15 +7,15 @@ import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestEsSortParam {
+public class EsSort {
 
     @Expose
     private Map<String, String> sort = new HashMap<String, String>();
 
-    public RequestEsSortParam (EsOrderType orderType, String key) {
-        String orderByString = orderType.getOrderType();
+    public EsSort() {}
 
-        if (StringObjectUtils.isValid(orderByString) == true) {
+    public void setOrderDataToMap(String key, String orderByString) {
+        if (StringObjectUtils.isValid(key) == true && StringObjectUtils.isValid(orderByString) == true) {
             this.sort.put(key, orderByString);
         }
     }

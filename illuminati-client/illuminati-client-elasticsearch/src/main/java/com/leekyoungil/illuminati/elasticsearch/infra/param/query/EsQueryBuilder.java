@@ -23,7 +23,7 @@ public class EsQueryBuilder {
         } else {
             this.match.clear();
         }
-        this.match.put("match_all", "");
+        this.match.put("match_all", new HashMap<String, Object>());
         return this;
     }
 
@@ -46,14 +46,14 @@ public class EsQueryBuilder {
         return this;
     }
 
-    public EsQuery build () {
+    public Map<String, Object> build () {
         if (this.queryType == EsQueryType.MATCH_ALL) {
             Map<String, Object> innerQuery = new HashMap<String, Object>();
             innerQuery.put("query", this.match);
             Map<String, Object> outerQuery = new HashMap<String, Object>();
             outerQuery.put("filtered", innerQuery);
 
-            return new EsQuery(outerQuery);
+            return outerQuery;
         }
 
         return null;

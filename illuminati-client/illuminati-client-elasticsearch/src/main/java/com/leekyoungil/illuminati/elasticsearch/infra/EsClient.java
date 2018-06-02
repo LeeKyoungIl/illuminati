@@ -9,7 +9,7 @@ public interface EsClient<T, V> {
 
     V save(T entity);
 
-    String getDataByParam(Map<String, Object> param);
+    String getDataByJson(String jsonRequestString);
 
 //    V save(T entity, EsRefreshType esRefreshType);
 

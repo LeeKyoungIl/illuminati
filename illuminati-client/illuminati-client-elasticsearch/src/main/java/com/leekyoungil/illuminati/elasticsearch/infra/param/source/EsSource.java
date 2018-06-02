@@ -1,16 +1,16 @@
-package com.leekyoungil.illuminati.elasticsearch.infra.param;
+package com.leekyoungil.illuminati.elasticsearch.infra.param.source;
 
 import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestEsSourceParam {
+public class EsSource {
 
     @Expose
     private List<String> source = new ArrayList<String>();
 
-    public RequestEsSourceParam setSource (String columnName) {
+    public EsSource setSource (String columnName) {
         this.source.add(columnName);
         return this;
     }

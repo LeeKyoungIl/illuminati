@@ -3,13 +3,15 @@ package elasticsearch
 import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
+import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsQueryType
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsParam
-import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsSourceParam
+import com.leekyoungil.illuminati.elasticsearch.infra.param.source.EsSource
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQuery
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQueryBuilder
+import com.leekyoungil.illuminati.elasticsearch.infra.param.sort.EsSortBuilder
 import spock.lang.Specification
 
 import java.text.SimpleDateFormat
@@ -144,21 +146,46 @@ class EsClientTest extends Specification {
         setup:
         RequestEsParam requestEsParam;
         List<String> requestEsSourceParam;
+        boolean result = false;
 
         when:
-        requestEsSourceParam = new RequestEsSourceParam()
+        requestEsSourceParam = new EsSource()
                                 .setSource("timestamp")
-                                .setSource("jvm")
+                                .setSource("jvmInfo")
                                 .build();
 
-        EsQuery esQuery = EsQueryBuilder.Builder()
+        Map<String, String> esSort = new EsSortBuilder()
+                                .setSort(EsOrderType.DESC, "logTime")
+                                .build();
+
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
                             .setQueryType(EsQueryType.MATCH_ALL)
                             .build();
 
         requestEsParam = new RequestEsParam(esQuery, requestEsSourceParam);
-        String jsonString = requestEsParam.build();
+        String jsonString = requestEsParam
+                            .setSort(esSort)
+                            .build();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
+        String data = esClient.getDataByJson(jsonString);
+
+        EsData esData = new EsDataImpl(data);
+        List<Map<String, Object>> resultList = esData.getEsDataList();
 
         then:
-        jsonString != null;
+        resultList != null
+        resultList.size() > 0
+        resultList.each { map ->
+            Map<String, Object> resultMap = map.get("source");
+            if (resultMap.size() == 2) {
+                result = true;
+            } else {
+                result = false;
+            }
+        }
+
+        result == true
     }
 }
