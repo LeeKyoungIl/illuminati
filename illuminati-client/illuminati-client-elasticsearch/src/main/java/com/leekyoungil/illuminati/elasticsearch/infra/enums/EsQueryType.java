@@ -30,4 +30,14 @@ public enum EsQueryType {
                 return null;
         }
     }
+
+    public static String getMatchText () {
+        return EsQueryType.MATCH.name().toLowerCase();
+    }
+    public static String getMatchAllText () {
+        return EsQueryType.MATCH_ALL.name().toLowerCase();
+    }
+    public static String getTermText () {
+        return EsQueryType.TERM.name().toLowerCase();
+    }
 }

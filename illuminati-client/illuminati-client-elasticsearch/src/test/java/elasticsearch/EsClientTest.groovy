@@ -9,6 +9,7 @@ import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRangeType
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsParam
+import com.leekyoungil.illuminati.elasticsearch.infra.param.groupby.EsGroupByBuilder
 import com.leekyoungil.illuminati.elasticsearch.infra.param.source.EsSource
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQuery
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQueryBuilder
@@ -120,14 +121,25 @@ class EsClientTest extends Specification {
 
     def "get host bt group by" () {
         setup:
-        Map<String, Object> groupByParam =  new HashMap<>();
-        groupByParam.put("group_by", "serverInfo.hostName");
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
+                                        .setMatchAll()
+                                        .build();
+
+        Map<String, Object> esGroupBy = EsGroupByBuilder.Builder()
+                                        .setGroupByKey("serverInfo.hostName")
+                                        .setGroupByKey("serverInfo.serverIp")
+                                        .build();
+
+        String queryString = new RequestEsParam(esQuery)
+                                .setGroupBy(esGroupBy)
+                                .build();
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByParam(groupByParam);
+        String data = esClient.getDataByJson(queryString);
 
         when:
+
         EsData esData = new EsDataImpl(data);
         List<Map<String, Object>> resultList = esData.getEsDataList();
 

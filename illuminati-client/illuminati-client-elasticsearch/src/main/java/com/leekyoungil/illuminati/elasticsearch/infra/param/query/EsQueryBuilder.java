@@ -13,6 +13,11 @@ public class EsQueryBuilder {
     private Map<String, Object> range;
     private Map<String, Object> filter;
 
+    private final static String LOG_TIME_KEY_NAME = "logTime";
+    private final static String FILTER_KEY_NAME = "filter";
+    private final static String FILTERED_KEY_NAME = "filtered";
+    private final static String QUERY_KEY_NAME = "query";
+
     private EsQueryBuilder () {
 
     }
@@ -32,8 +37,8 @@ public class EsQueryBuilder {
         }
         if (this.match == null) {
             this.match = new HashMap<String, Object>();
-        } else if (this.match.containsKey("match_all") == true) {
-            this.match.remove("match_all");
+        } else if (this.match.containsKey(EsQueryType.getMatchAllText()) == true) {
+            this.match.remove(EsQueryType.getMatchAllText());
         }
         this.match.put(key, value);
         return this;
@@ -48,7 +53,7 @@ public class EsQueryBuilder {
         } else {
             this.match.clear();
         }
-        this.match.put("match_all", new HashMap<String, Object>());
+        this.match.put(EsQueryType.getMatchAllText(), new HashMap<String, Object>());
         return this;
     }
 
@@ -65,20 +70,20 @@ public class EsQueryBuilder {
             return;
         }
         Map<String, Object> range = new HashMap<String, Object>();
-        range.put("logTime", this.range);
+        range.put(LOG_TIME_KEY_NAME, this.range);
         this.filter = new HashMap<String, Object>();
-        this.filter.put("filter", range);
+        this.filter.put(FILTER_KEY_NAME, range);
     }
 
     public Map<String, Object> build () {
         if (this.queryType == EsQueryType.MATCH_ALL) {
             Map<String, Object> innerQuery = new HashMap<String, Object>();
-            innerQuery.put("query", this.match);
+            innerQuery.put(QUERY_KEY_NAME, this.match);
             if (this.filter != null && this.filter.size() > 0) {
-                innerQuery.put("filter", this.filter);
+                innerQuery.put(FILTER_KEY_NAME, this.filter);
             }
             Map<String, Object> outerQuery = new HashMap<String, Object>();
-            outerQuery.put("filtered", innerQuery);
+            outerQuery.put(FILTERED_KEY_NAME, innerQuery);
 
             return outerQuery;
         }
