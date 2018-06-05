@@ -21,9 +21,19 @@ public class EsQueryBuilder {
     private EsQueryBuilder () {
 
     }
+    private EsQueryBuilder (EsQueryType esQueryType) {
+        this.setQueryType(esQueryType);
+        if (esQueryType == EsQueryType.MATCH_ALL) {
+            this.setMatchAll();
+        }
+    }
 
     public static EsQueryBuilder Builder(){
         return new EsQueryBuilder();
+    }
+
+    public static EsQueryBuilder Builder(EsQueryType esQueryType){
+        return new EsQueryBuilder(esQueryType);
     }
 
     public EsQueryBuilder setQueryType (EsQueryType esQueryType) {

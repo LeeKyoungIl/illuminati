@@ -21,13 +21,13 @@ public class ApiJsonController {
         return restApiService.getJvmInfo();
     }
 
-    @RequestMapping(value = "jvmInfo", method = RequestMethod.POST)
-    public String getJvmInfoWithCondition (JvmRequestParam jvmRequestParam) {
-        return restApiService.getJvmInfoWithCondition(jvmRequestParam);
-    }
-
-    @RequestMapping(value = "hostInfo", method = RequestMethod.GET)
-    public String getHostInfo () {
-        return restApiService.getHostInfo();
-    }
+//    @RequestMapping(value = "jvmInfo", method = RequestMethod.POST)
+//    public String getJvmInfoWithCondition (JvmRequestParam jvmRequestParam) {
+//        return restApiService.getJvmInfoWithCondition(jvmRequestParam);
+//    }
+//
+//    @RequestMapping(value = "hostInfo", method = RequestMethod.GET)
+//    public String getHostInfo () {
+//        return restApiService.getHostInfo();
+//    }
 }

@@ -18,7 +18,7 @@ public class HostInfoService extends BasicElasticsearchService {
         super(eSclient);
     }
 
-    public List<Map<String,Object>> getHostInfoFromElasticsearch() {
-        return this.requestToElasticsearch(GROUP_BY_PARAM);
-    }
+//    public List<Map<String,Object>> getHostInfoFromElasticsearch() {
+//        return this.requestToElasticsearch(GROUP_BY_PARAM);
+//    }
 }

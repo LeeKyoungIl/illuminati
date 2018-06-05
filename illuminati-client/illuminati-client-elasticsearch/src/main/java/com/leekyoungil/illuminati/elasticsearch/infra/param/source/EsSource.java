@@ -8,14 +8,19 @@ import java.util.List;
 public class EsSource {
 
     @Expose
-    private List<String> source = new ArrayList<String>();
+    private final List<String> source = new ArrayList<String>();
 
-    public EsSource setSource (String columnName) {
-        this.source.add(columnName);
-        return this;
+    EsSource () {
+
     }
 
-    public List<String> build () {
-        return this.source.size() > 0 ? this.source : null;
+    public void setSource (String columnName) {
+        if (this.source.contains(columnName) == false) {
+            this.source.add(columnName);
+        }
+    }
+
+    public List<String> getSource () {
+        return this.source;
     }
 }

@@ -22,13 +22,13 @@ public class RestApiService {
         return apiDecorator.getStringData();
     }
 
-    public String getJvmInfoWithCondition(JvmRequestParam jvmRequestParam) {
-        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(jvmInfoApiService.getJvmInfoByConditionFromElasticsearch(jvmRequestParam.getParam()));
-        return apiDecorator.getStringData();
-    }
+//    public String getJvmInfoWithCondition(JvmRequestParam jvmRequestParam) {
+//        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(jvmInfoApiService.getJvmInfoByConditionFromElasticsearch(jvmRequestParam.getParam()));
+//        return apiDecorator.getStringData();
+//    }
 
-    public String getHostInfo () {
-        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(hostInfoService.getHostInfoFromElasticsearch());
-        return apiDecorator.getStringData();
-    }
+//    public String getHostInfo () {
+//        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(hostInfoService.getHostInfoFromElasticsearch());
+//        return apiDecorator.getStringData();
+//    }
 }

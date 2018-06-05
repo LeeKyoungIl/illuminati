@@ -21,11 +21,11 @@ public abstract class BasicElasticsearchService {
         this.eSclient = eSclient;
     }
 
-    protected List<Map<String, Object>> requestToElasticsearch (Map<String, Object> param) {
+    protected List<Map<String, Object>> requestToElasticsearch (String jsonString) {
         List<Map<String, Object>> resultList = null;
 
         try {
-            String returnData = eSclient.getDataByParam(param);
+            String returnData = eSclient.getDataByJson(jsonString);
             EsData esData = new EsDataImpl(returnData);
             resultList = esData.getEsDataList();
 

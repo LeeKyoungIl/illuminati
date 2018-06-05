@@ -26,15 +26,25 @@ public class RequestEsParam {
     @Expose
     private Map<String, Object> aggs;
 
-    public RequestEsParam () {
+    public static RequestEsParam Builder () {
+        return new RequestEsParam();
+    }
+    public static RequestEsParam Builder (Map<String, Object> query) {
+        return new RequestEsParam(query);
+    }
+    public static RequestEsParam Builder (Map<String, Object> query, List<String> source) {
+        return new RequestEsParam(query, source);
+    }
+
+    private RequestEsParam () {
 
     }
 
-    public RequestEsParam (Map<String, Object> query) {
+    private RequestEsParam (Map<String, Object> query) {
         this.query = query;
     }
 
-    public RequestEsParam (Map<String, Object> query, List<String> source) {
+    private RequestEsParam (Map<String, Object> query, List<String> source) {
         this.query = query;
         this.source = source;
     }
@@ -73,15 +83,20 @@ public class RequestEsParam {
         } else {
             this.source = new ArrayList<String>();
         }
+        this.resetSort();
+    }
+
+    private void resetAggregationField () {
+        this.aggs = new HashMap<String, Object>();
+        this.resetSort();
+    }
+
+    private void resetSort () {
         if (this.sort != null) {
             this.sort.clear();
         } else {
             this.sort = new HashMap<String, String>();
         }
-    }
-
-    private void resetAggregationField () {
-        this.aggs = new HashMap<String, Object>();
     }
 
     public String build () {
