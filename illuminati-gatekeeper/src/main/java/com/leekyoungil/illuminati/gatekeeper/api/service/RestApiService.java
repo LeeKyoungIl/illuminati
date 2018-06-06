@@ -12,23 +12,21 @@ import java.util.Map;
 @Service
 public class RestApiService {
 
-    @Inject
-    private JvmInfoApiService jvmInfoApiService;
-    @Inject
-    private HostInfoService hostInfoService;
+    @Inject private JvmInfoApiService jvmInfoApiService;
+    @Inject private HostInfoService hostInfoService;
 
     public String getJvmInfo () {
         ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(jvmInfoApiService.getJvmInfoFromElasticsearch());
         return apiDecorator.getStringData();
     }
 
-//    public String getJvmInfoWithCondition(JvmRequestParam jvmRequestParam) {
-//        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(jvmInfoApiService.getJvmInfoByConditionFromElasticsearch(jvmRequestParam.getParam()));
-//        return apiDecorator.getStringData();
-//    }
+    public String getJvmInfoWithCondition(JvmRequestParam jvmRequestParam) {
+        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(jvmInfoApiService.getJvmInfoByConditionFromElasticsearch(jvmRequestParam.getParam()));
+        return apiDecorator.getStringData();
+    }
 
-//    public String getHostInfo () {
-//        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(hostInfoService.getHostInfoFromElasticsearch());
-//        return apiDecorator.getStringData();
-//    }
+    public String getHostInfo () {
+        ApiDecorator<List<Map<String, Object>>> apiDecorator = new ApiJsonDecorator(hostInfoService.getHostInfoFromElasticsearch());
+        return apiDecorator.getStringData();
+    }
 }

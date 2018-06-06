@@ -152,6 +152,36 @@ class EsClientTest extends Specification {
         }
     }
 
+    def "get host bt group by single" () {
+        setup:
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
+                .setMatchAll()
+                .build();
+
+        Map<String, Object> esGroupBy = EsGroupByBuilder.Builder()
+                .setGroupByKey("serverInfo.hostName")
+                .build();
+
+        String queryString = new RequestEsParam(esQuery)
+                .setGroupBy(esGroupBy)
+                .build();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
+        String data = esClient.getDataByJson(queryString);
+
+        when:
+
+        EsData esData = new EsDataImpl(data);
+        List<Map<String, Object>> resultList = esData.getEsDataList();
+
+        then:
+        resultList.size() > 0
+        resultList.each { map ->
+            map.containsKey("key") == true;
+        }
+    }
+
     def "query builder test" () {
         setup:
         EsQuery esQuery;

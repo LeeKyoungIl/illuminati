@@ -13,21 +13,20 @@ import javax.inject.Inject;
 @RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiJsonController {
 
-    @Inject
-    private RestApiService restApiService;
+    @Inject private RestApiService restApiService;
 
     @RequestMapping(value = "jvmInfo", method = RequestMethod.GET)
     public String getJvmInfo () {
         return restApiService.getJvmInfo();
     }
 
-//    @RequestMapping(value = "jvmInfo", method = RequestMethod.POST)
-//    public String getJvmInfoWithCondition (JvmRequestParam jvmRequestParam) {
-//        return restApiService.getJvmInfoWithCondition(jvmRequestParam);
-//    }
-//
-//    @RequestMapping(value = "hostInfo", method = RequestMethod.GET)
-//    public String getHostInfo () {
-//        return restApiService.getHostInfo();
-//    }
+    @RequestMapping(value = "jvmInfo", method = RequestMethod.POST)
+    public String getJvmInfoWithCondition (JvmRequestParam jvmRequestParam) {
+        return restApiService.getJvmInfoWithCondition(jvmRequestParam);
+    }
+
+    @RequestMapping(value = "hostInfo", method = RequestMethod.GET)
+    public String getHostInfo () {
+        return restApiService.getHostInfo();
+    }
 }
