@@ -26,32 +26,43 @@ public class JvmInfoApiService extends BasicElasticsearchService {
         super(eSclient);
     }
 
-//    public List<Map<String, Object>> getJvmInfoByConditionFromElasticsearch(Map<String, Object> param) {
-//        Map<String, Object> requestParam = new HashMap<>(JVM_ES_FIELD_PARAM);
-//        requestParam.putAll(param);
-//
-//        return this.requestToElasticsearch(requestParam);
-//    }
+    public List<Map<String, Object>> getJvmInfoByConditionFromElasticsearch(Map<String, Object> param) {
+        return this.requestToElasticsearch(this.generateQueryForEs(param));
+    }
 
     public List<Map<String, Object>> getJvmInfoFromElasticsearch() {
         return this.requestToElasticsearch(this.generateQueryForEs());
     }
 
-//    private Map<String, Object> generateQueryForEs (Map<String, Object> param) {
-//        EsQueryBuilder esQueryBuilder = EsQueryBuilder.Builder();
-//        if (param.containsKey()) {
-//
-//        }
-//    }
-
     private String generateQueryForEs () {
+        return this.generateQueryForEs(this.getRequestEsParam(), null);
+    }
+
+    private String generateQueryForEs (Map<String, Object> param) {
+        return this.generateQueryForEs(this.getRequestEsParam(), param);
+    }
+
+    private RequestEsParam getRequestEsParam () {
         Map<String, Object> query = EsQueryBuilder.Builder(EsQueryType.MATCH_ALL)
-                                    .build();
+                .build();
         List<String> source = EsSourceBuilder.Builder()
-                                .setSource(JVM_FIELD_LIST)
-                                .builder();
-        String jsonQuery = RequestEsParam.Builder(query, source)
-                            .build();
+                .setSource(JVM_FIELD_LIST)
+                .builder();
+
+        return RequestEsParam.Builder(query, source);
+    }
+
+    private String generateQueryForEs (RequestEsParam requestEsParam, Map<String, Object> param) {
+        if (param != null || param.size() > 0) {
+            if (param.containsKey("size") == true) {
+                requestEsParam.setSize((int)param.get("size"));
+            }
+            if (param.containsKey("from") == true) {
+                requestEsParam.setFrom((int)param.get("from"));
+            }
+        }
+
+        String jsonQuery = requestEsParam.build();
 
         return jsonQuery;
     }
