@@ -88,7 +88,6 @@ public class RequestEsParam {
 
     private void resetAggregationField () {
         this.aggs = new HashMap<String, Object>();
-        this.resetSort();
     }
 
     private void resetSort () {

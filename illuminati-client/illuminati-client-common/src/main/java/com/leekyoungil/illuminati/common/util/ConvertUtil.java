@@ -61,7 +61,7 @@ public class ConvertUtil {
     }
 
     private static <T> void checkCast(Class<T> clazz, Object obj) {
-        if ( !clazz.isInstance(obj) ) {
+        if (obj != null && clazz.isInstance(obj) == false) {
             StringBuilder exMessage = new StringBuilder();
             exMessage.append("Expected : " + clazz.getName());
             exMessage.append("Was : " + obj.getClass().getName());

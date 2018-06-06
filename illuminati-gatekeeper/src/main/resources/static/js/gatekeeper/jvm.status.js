@@ -90,5 +90,32 @@ var jvm = {
             responsive: true,
                 maintainAspectRatio: true
         }
+    },
+
+    getJvmInfo : function (hostName) {
+        var data = {
+            esOrderType : 'desc',
+            size : 1,
+            from : 0
+        };
+
+        $.ajax({
+            url: this.requestUrl,
+            method: 'POST',
+            contentType: "application/json",
+            async: true,
+            data: JSON.stringify(data),
+            success: function (data) {
+                if (data != null) {
+                    data = data[0].source.jvmInfo;
+                    for (var key in data) {
+                        var jvmInfoObj = $('#'+key);
+                        if (jvmInfoObj != null && jvmInfoObj.length > 0) {
+                            jvmInfoObj.text(data[key]);
+                        }
+                    }
+                }
+            }
+        });
     }
 };

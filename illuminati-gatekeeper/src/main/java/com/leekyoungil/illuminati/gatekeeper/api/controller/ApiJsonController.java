@@ -3,6 +3,7 @@ package com.leekyoungil.illuminati.gatekeeper.api.controller;
 import com.leekyoungil.illuminati.gatekeeper.api.controller.param.JvmRequestParam;
 import com.leekyoungil.illuminati.gatekeeper.api.service.RestApiService;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ public class ApiJsonController {
     }
 
     @RequestMapping(value = "jvmInfo", method = RequestMethod.POST)
-    public String getJvmInfoWithCondition (JvmRequestParam jvmRequestParam) {
+    public String getJvmInfoWithCondition (@RequestBody JvmRequestParam jvmRequestParam) {
         return restApiService.getJvmInfoWithCondition(jvmRequestParam);
     }
 

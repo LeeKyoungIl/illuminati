@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <script th:src="@{/js/gatekeeper/jvm.status.js}"></script>
     <script>
         $(document).ready(function() {
             $(function () {
@@ -15,6 +16,8 @@
                     'autoWidth': false
                 })
             });
+
+            jvm.getJvmInfo($('#hostName').val())
         });
     </script>
 <body>
