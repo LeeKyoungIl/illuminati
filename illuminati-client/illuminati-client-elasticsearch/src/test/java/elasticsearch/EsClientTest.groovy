@@ -14,6 +14,7 @@ import com.leekyoungil.illuminati.elasticsearch.infra.param.source.EsSource
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQuery
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQueryBuilder
 import com.leekyoungil.illuminati.elasticsearch.infra.param.sort.EsSortBuilder
+import com.leekyoungil.illuminati.elasticsearch.infra.param.source.EsSourceBuilder
 import spock.lang.Specification
 
 import java.text.SimpleDateFormat
@@ -29,12 +30,13 @@ class EsClientTest extends Specification {
                                         .setMatchAll()
                                         .build();
 
-        List<String> esSource = new EsSource()
+
+        List<String> esSource = EsSourceBuilder.Builder()
                             .setSource("jvmInfo")
                             .setSource("timestamp")
                             .build();
 
-        String queryString = new RequestEsParam(esQuery, esSource)
+        String queryString = RequestEsParam.Builder(esQuery, esSource)
                                 .build()
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
@@ -53,12 +55,12 @@ class EsClientTest extends Specification {
                                         .setMatchAll()
                                         .build();
 
-        List<String> esSource = new EsSource()
+        List<String> esSource = EsSourceBuilder.Builder()
                                 .setSource("jvmInfo")
                                 .setSource("timestamp")
                                 .build();
 
-        String queryString = new RequestEsParam(esQuery, esSource)
+        String queryString = RequestEsParam.Builder(esQuery, esSource)
                             .setSort(EsSortBuilder.Builder().build())
                             .build()
 
@@ -81,7 +83,7 @@ class EsClientTest extends Specification {
 
     def "jvm data by range" () {
         setup:
-        List<String> esSource = new EsSource()
+        List<String> esSource = EsSourceBuilder.Builder()
                                 .setSource("jvmInfo")
                                 .setSource("timestamp")
                                 .build();
@@ -96,7 +98,7 @@ class EsClientTest extends Specification {
                                     .setSort(EsOrderType.DESC, "logTime")
                                     .build();
 
-        String queryString = new RequestEsParam(esQuery, esSource)
+        String queryString = RequestEsParam.Builder(esQuery, esSource)
                                 .setSort(sort)
                                 .setSize(20)
                                 .setFrom(10)
@@ -170,7 +172,7 @@ class EsClientTest extends Specification {
         boolean result = false;
 
         when:
-        requestEsSourceParam = new EsSource()
+        requestEsSourceParam = EsSourceBuilder.Builder()
                                 .setSource("timestamp")
                                 .setSource("jvmInfo")
                                 .build();
@@ -183,7 +185,7 @@ class EsClientTest extends Specification {
                             .setQueryType(EsQueryType.MATCH_ALL)
                             .build();
 
-        requestEsParam = new RequestEsParam(esQuery, requestEsSourceParam);
+        requestEsParam = RequestEsParam.Builder(esQuery, requestEsSourceParam);
         String jsonString = requestEsParam
                             .setSort(esSort)
                             .build();

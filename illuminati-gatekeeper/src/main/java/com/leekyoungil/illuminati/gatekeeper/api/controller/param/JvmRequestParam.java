@@ -59,7 +59,7 @@ public class JvmRequestParam {
         }
 
         Map<String, Object> sort = new HashMap<>();
-        sort.put("logTime", this.esOrderType.getOrderType());
+        sort.put("logTime", this.esOrderType);
         param.put("sort", sort);
 
         return param;

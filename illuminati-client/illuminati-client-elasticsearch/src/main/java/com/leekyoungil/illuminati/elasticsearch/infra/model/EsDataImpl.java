@@ -2,6 +2,7 @@ package com.leekyoungil.illuminati.elasticsearch.infra.model;
 
 import com.google.gson.reflect.TypeToken;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class EsDataImpl implements EsData {
     private void initEsData() {
         Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, new TypeToken<Map<String, Object>>(){}.getType());
         if (resultMap.containsKey("aggregations") == true) {
-            this.initAggregationData((Map<String, Object>) resultMap.get("aggregations"));
+            this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get("aggregations"))));
         } else {
             this.initBasicSearchData(resultMap);
         }
@@ -51,7 +52,7 @@ public class EsDataImpl implements EsData {
 
     private void initAggregationData (Map<String, Object> resultMap) {
         for(String key : resultMap.keySet()) {
-            this.sourceList = (List<Map<String, Object>>) ((Map<String, Object>) resultMap.get(key)).get("buckets");
+            this.sourceList = (List<Map<String, Object>>) (ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(key)))).get("buckets");
         }
     }
 
@@ -59,7 +60,7 @@ public class EsDataImpl implements EsData {
         if (resultMap.containsKey("hits") == false) {
             return;
         }
-        Map<String, Object> bufEsDataMap = (Map<String, Object>) resultMap.get("hits");
+        Map<String, Object> bufEsDataMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get("hits")));
         if (bufEsDataMap.containsKey("hits") == false) {
             return;
         }
@@ -72,7 +73,8 @@ public class EsDataImpl implements EsData {
         }
         this.sourceList = new ArrayList<Map<String, Object>>();
         for (Map<String, Object> map : mapList) {
-            if (map.containsKey("_source") == true && ((Map<String, Object>) map.get("_source")).size() > 0) {
+            Map<String, Object> source = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(map.get("_source")));
+            if (map.containsKey("_source") == true && source.size() > 0) {
                 map.remove("_score");
                 this.renameKeys(map);
                 this.sourceList.add(map);

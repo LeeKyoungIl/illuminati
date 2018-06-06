@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.gatekeeper.api.service;
 
+import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData;
 import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl;
@@ -32,7 +33,7 @@ public abstract class BasicElasticsearchService {
             for (Map<String, Object> data : resultList) {
                 Map<String, Object> checkResultMap = data;
                 if (data.containsKey("source") == true) {
-                    this.convertJsonTimestampToDate((Map<String, Object>) data.get("source"));
+                    this.convertJsonTimestampToDate(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(data.get("source"))));
                 }
             }
         } catch (Exception ex) {

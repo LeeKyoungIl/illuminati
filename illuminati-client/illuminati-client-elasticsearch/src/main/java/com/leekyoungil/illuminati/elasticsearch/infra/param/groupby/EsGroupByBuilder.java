@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.elasticsearch.infra.param.groupby;
 
+import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -34,7 +35,7 @@ public class EsGroupByBuilder {
             for (Map<String, Object> groupBy : this.esGroupBy.getGroupByList()) {
                 if (lastResultMap != null) {
                     for (String key : lastResultMap.keySet()) {
-                        Map<String, Object> keyMap = ((Map<String, Object>) lastResultMap.get(key));
+                        Map<String, Object> keyMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(lastResultMap.get(key)));
                         keyMap.put(AGGREGATION_KEY_NAME, groupBy);
                         Map<String, Object> aggsMap = new HashMap<String, Object>();
                         aggsMap.put(key, keyMap);

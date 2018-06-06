@@ -48,4 +48,26 @@ public class ConvertUtil {
 
         return false;
     }
+
+    public static <K, V> Map<K, V> castToMapOf(Class<K> clazzK, Class<V> clazzV, Map<?, ?> map) {
+        for (Map.Entry<?, ?> e: map.entrySet()) {
+            checkCast(clazzK, e.getKey());
+            checkCast(clazzV, e.getValue());
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<K, V> result = (Map<K, V>) map;
+        return result;
+    }
+
+    private static <T> void checkCast(Class<T> clazz, Object obj) {
+        if ( !clazz.isInstance(obj) ) {
+            StringBuilder exMessage = new StringBuilder();
+            exMessage.append("Expected : " + clazz.getName());
+            exMessage.append("Was : " + obj.getClass().getName());
+            exMessage.append("Value : " + obj);
+
+            throw new ClassCastException(exMessage.toString());
+        }
+    }
 }

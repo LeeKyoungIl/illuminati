@@ -3,6 +3,7 @@ package com.leekyoungil.illuminati.gatekeeper.api.service
 import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
+import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType
 import spock.lang.Specification
 
 import java.util.regex.Matcher
@@ -68,7 +69,7 @@ class JvmInfoApiServiceTest extends Specification {
     def "get Jvm Info with range by order by From Elasticsearch" () {
         setup:
         Map<String, Object> sort = new HashMap<>();
-        sort.put("logTime", "desc");
+        sort.put("logTime", EsOrderType.DESC);
         Map<String, Object> param = new HashMap<>();
         param.put("from", 0);
         param.put("size", 1);

@@ -36,7 +36,7 @@ public class EsSourceBuilder {
         return this;
     }
 
-    public List<String> builder () {
+    public List<String> build () {
         return this.esSource.getSource();
     }
 }
