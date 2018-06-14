@@ -15,6 +15,10 @@ public class IlluminatiCommonProperties extends IlluminatiBaseProperties {
 
     private String debug = "false";
 
+    public IlluminatiCommonProperties () {
+        super();
+    }
+
     public IlluminatiCommonProperties (final Properties prop) {
         super(prop);
     }

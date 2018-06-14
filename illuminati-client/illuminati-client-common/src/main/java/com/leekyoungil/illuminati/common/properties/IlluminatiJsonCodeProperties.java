@@ -10,7 +10,9 @@ public class IlluminatiJsonCodeProperties extends IlluminatiBaseProperties {
 
     private Map<Integer, String> jsonStatusCode;
 
-    public IlluminatiJsonCodeProperties () {}
+    public IlluminatiJsonCodeProperties () {
+        super();
+    }
 
     public IlluminatiJsonCodeProperties (final Properties prop) {
         super(prop);

@@ -70,6 +70,19 @@ public class JvmInfoApiService extends BasicElasticsearchService {
 
                 requestEsParam.setSort(esSortBuilder.build());
             }
+            if (param.containsKey("match") == true) {
+                final EsQueryBuilder esQueryBuilder = EsQueryBuilder.Builder();
+                Map<String, Object> match = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get("match")));
+                if (match != null && match.size() > 0) {
+                    esQueryBuilder.setQueryType(EsQueryType.MATCH);
+                    match.forEach((k, v) -> {
+                        esQueryBuilder.setMatch(k, v);
+                    });
+                } else {
+                    esQueryBuilder.setQueryType(EsQueryType.MATCH_ALL);
+                }
+                requestEsParam.setQuery(match);
+            }
         }
 
         String jsonQuery = requestEsParam.build();

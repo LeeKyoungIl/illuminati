@@ -39,7 +39,7 @@ public class IlluminatiPropertiesHelper {
         if (StringObjectUtils.isValid(key) && illuminatiProperties != null) {
             try {
                 final String methodName = "get" + key.substring(0, 1).toUpperCase() + key.substring(1);
-                final Method getNameMethod = IlluminatiProperties.class.getMethod(methodName);
+                final Method getNameMethod = clazz.getMethod(methodName);
                 propertiesValue = (String) getNameMethod.invoke(illuminatiProperties);
             }
             catch (Exception ex) {

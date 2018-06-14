@@ -241,4 +241,51 @@ class EsClientTest extends Specification {
 
         result == true
     }
+
+    def "get data by search" () {
+        setup:
+        boolean checkResult = true;
+
+        List<String> esSource = EsSourceBuilder.Builder()
+                .setSource("timestamp")
+                .setSource("jvmInfo")
+                .setSource("serverInfo")
+                .build();
+
+        Map<String, String> esSort = new EsSortBuilder()
+                .setSort(EsOrderType.DESC, "logTime")
+                .build();
+
+        Map<String, Object> esQuery = EsQueryBuilder.Builder()
+                .setQueryType(EsQueryType.MATCH)
+                .setMatch("serverInfo.hostName", "leekyoungils")
+                .build();
+
+        String queryString = new RequestEsParam(esQuery, esSource)
+                .setSource(esSource)
+                .setSort(esSort)
+                .build();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
+        String data = esClient.getDataByJson(queryString);
+
+        when:
+
+        EsData esData = new EsDataImpl(data);
+        List<Map<String, Object>> resultList = esData.getEsDataList();
+
+        then:
+        resultList.size() > 0
+        resultList.each { map ->
+            Map<String, Object> resultMap = map.get("source");
+            Map<String, Object> resultMap2 = resultMap.get("serverInfo");
+            if ("leekyoungils".equals(resultMap2.get("hostName")) == true) {
+                checkResult = true;
+            } else {
+                checkResult = false
+            }
+        }
+        checkResult == true;
+    }
 }

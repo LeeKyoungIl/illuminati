@@ -45,6 +45,10 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
     // it's only using when you choose kafka.
     private String performance;
 
+    public IlluminatiPropertiesImpl () {
+        super();
+    }
+
     public IlluminatiPropertiesImpl(final Properties prop) {
         super(prop);
     }
@@ -90,7 +94,7 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
     }
 
     public String getSamplingRate() {
-        return StringObjectUtils.isValid(this.samplingRate) ? this.samplingRate : "100";
+        return StringObjectUtils.isValid(this.samplingRate) ? this.samplingRate : "20";
     }
 
     public String getParentModuleName() {

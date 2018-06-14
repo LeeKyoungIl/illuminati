@@ -12,6 +12,14 @@ var jvm = {
     requestUrl: "/api/v1/jvmInfo",
 
     init: function () {
+        var data = {
+            var data = {
+                esOrderType : 'asc',
+                size : 30,
+                from : 0,
+
+            };
+        };
 
         $.ajax({
             url: this.requestUrl,
@@ -96,7 +104,8 @@ var jvm = {
         var data = {
             esOrderType : 'desc',
             size : 1,
-            from : 0
+            from : 0,
+            hostName: hostName
         };
 
         $.ajax({

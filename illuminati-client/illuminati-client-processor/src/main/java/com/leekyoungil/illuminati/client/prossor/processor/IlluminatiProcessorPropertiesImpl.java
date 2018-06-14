@@ -22,6 +22,10 @@ public class IlluminatiProcessorPropertiesImpl extends IlluminatiBaseProperties 
     // * after using this function. you must have to re compile.(clean first)
     private String chaosBomber;
 
+    public IlluminatiProcessorPropertiesImpl () {
+        super();
+    }
+
     public IlluminatiProcessorPropertiesImpl (final Properties prop) {
         super(prop);
     }

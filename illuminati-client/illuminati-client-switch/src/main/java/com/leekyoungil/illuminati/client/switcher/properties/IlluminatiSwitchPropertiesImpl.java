@@ -15,6 +15,10 @@ public class IlluminatiSwitchPropertiesImpl extends IlluminatiBaseProperties {
     private String illuminatiSwitchValueURL;
     private String illuminatiSwitchValueURLCheckInterval;
 
+    public IlluminatiSwitchPropertiesImpl () {
+        super();
+    }
+
     public IlluminatiSwitchPropertiesImpl (final Properties prop) {
         super(prop);
     }

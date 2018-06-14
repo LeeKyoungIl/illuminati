@@ -74,6 +74,11 @@ public class RequestEsParam {
         return this;
     }
 
+    public RequestEsParam setQuery (Map<String, Object> query) {
+        this.query = query;
+        return this;
+    }
+
     private void resetFieldsWithoutAggregation () {
         this.size = 0;
         this.from = 0;

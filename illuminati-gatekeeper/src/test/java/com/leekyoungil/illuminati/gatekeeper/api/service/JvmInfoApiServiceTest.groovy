@@ -86,4 +86,28 @@ class JvmInfoApiServiceTest extends Specification {
         jvmInfo != null;
         jvmInfo.size() == 1;
     }
+
+    def "get Jvm Info by hostName From Elasticsearch" () {
+        setup:
+        Map<String, Object> match = new HashMap<>();
+        match.put("hostName", "leekyoungils");
+        Map<String, Object> sort = new HashMap<>();
+        sort.put("logTime", EsOrderType.DESC);
+        Map<String, Object> param = new HashMap<>();
+        param.put("from", 0);
+        param.put("size", 1);
+        param.put("sort", sort);
+        param.put("match", match)
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        esClient.setOptionalIndex("sample-illuminati*");
+        JvmInfoApiService jvmInfoApiService = new JvmInfoApiService(esClient);
+        List<Map<String, Object>> jvmInfo;
+
+        when:
+        jvmInfo = jvmInfoApiService.getJvmInfoByConditionFromElasticsearch(param);
+
+        then:
+        jvmInfo != null;
+        jvmInfo.size() == 1;
+    }
 }

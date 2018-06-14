@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <script th:src="@{/js/Chart.min.js}"></script>
     <script th:src="@{/js/gatekeeper/jvm.status.js}"></script>
     <script>
         $(document).ready(function() {
@@ -102,6 +103,45 @@
         </div>
     </section>
 
+    <section class="content">
+        <div class="row">
+            <div class="wrapper .col-2">
+                <canvas id="jvmUsedMemoryStatus" width="600" height="400"></canvas>
+            </div>
+            <div class="wrapper .col-2">
+                <canvas id="jvmFreeMemoryStatus" width="600" height="400"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        var ctxMap = {};
+        ctxMap['used'] = {};
+        ctxMap['free'] = {};
+
+        ctxMap['used']['id'] = 'jvmUsedMemoryStatus';
+        ctxMap['used']['label'] = 'JVM of used memory';
+        ctxMap['free']['id'] = 'jvmFreeMemoryStatus';
+        ctxMap['free']['label'] = 'JVM of free memory';
+
+        for (var key in ctxMap) {
+            var tmpChartObj = document.getElementById(ctxMap[key]['id']).getContext('2d');
+            new Chart(tmpChartObj, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: ctxMap[key]['label'],
+                        backgroundColor: jvm.getBackgroundColor(),
+                        borderColor: jvm.getBorderColor(),
+                        borderWidth: 1
+                    }]
+                },
+                options: jvm.getOptions()
+            });
+        }
+
+        jvm.init();
+    </script>
 </div>
 </body>
 </html>

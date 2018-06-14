@@ -13,13 +13,12 @@ public class JvmRequestParam {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Setter
-    private int size = 10;
-    @Setter
-    private int from = 0;
+    @Setter private int size = 10;
+    @Setter private int from = 0;
     private EsOrderType esOrderType = EsOrderType.getOrderType("ASC");
     private String gte;
     private String lte;
+    @Setter private String hostName;
 
     public void setGte (String gte) {
         if (StringObjectUtils.isValid(gte) == true) {
@@ -50,6 +49,11 @@ public class JvmRequestParam {
         }
         if (StringObjectUtils.isValid(this.lte) == true) {
             rangeTimestamp.put("lte", this.lte);
+        }
+        if (StringObjectUtils.isValid(this.hostName) == true) {
+            Map<String, Object> match = new HashMap<>();
+            match.put("hostName", hostName);
+            param.put("match", match);
         }
 
         if (rangeTimestamp.size() > 0) {

@@ -1,9 +1,12 @@
 package com.leekyoungil.illuminati.elasticsearch.infra.param.query;
 
+import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsQueryType;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRangeType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EsQueryBuilder {
@@ -94,6 +97,17 @@ public class EsQueryBuilder {
             }
             Map<String, Object> outerQuery = new HashMap<String, Object>();
             outerQuery.put(FILTERED_KEY_NAME, innerQuery);
+
+            return outerQuery;
+        } else if (this.queryType == EsQueryType.MATCH) {
+            Map<String, Object> matchQuery = new HashMap<String, Object>();
+            matchQuery.put("match", this.match);
+            List<Map<String, Object>> matchList = new ArrayList<>();
+            matchList.add(matchQuery);
+            Map<String, Object> innerQuery = new HashMap<String, Object>();
+            innerQuery.put("must", matchList);
+            Map<String, Object> outerQuery = new HashMap<String, Object>();
+            outerQuery.put("bool", innerQuery);
 
             return outerQuery;
         }

@@ -12,7 +12,9 @@ public class EsClientProperties extends IlluminatiBaseProperties {
 
     private EsInfo elasticsearchInfo;
 
-    public EsClientProperties() {}
+    public EsClientProperties() {
+        super();
+    }
 
     public EsClientProperties(final Properties prop) {
         super(prop);

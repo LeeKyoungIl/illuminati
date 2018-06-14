@@ -17,6 +17,10 @@ public class IlluminatiH2Properties extends IlluminatiBaseProperties {
 
     private String backTableReset = "false";
 
+    public IlluminatiH2Properties () {
+        super();
+    }
+
     public IlluminatiH2Properties(final Properties prop) {
         super(prop);
     }
