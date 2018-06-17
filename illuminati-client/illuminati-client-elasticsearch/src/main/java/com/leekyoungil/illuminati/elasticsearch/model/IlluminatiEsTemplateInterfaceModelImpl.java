@@ -7,6 +7,7 @@ import com.leekyoungil.illuminati.common.dto.GroupMapping;
 import com.leekyoungil.illuminati.common.dto.ServerInfo;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.util.ConvertUtil;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
@@ -242,18 +243,35 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         }
         return null;
     }
+
     private GroupMapping getGroupMappingAnnotation () {
-        this.getMethodsAnnotatedWith();
+        this.getMappingAnnotation(this.getClass());
         return null;
     }
 
-    private List<Method> getMethodsAnnotatedWith() {
-        for (Object m : this.getClass().getSuperclass().getDeclaredFields()) {
-           // GroupMapping mXY = (GroupMapping)m.getAnnotation(GroupMapping.class);
-            System.out.println(m);
+    private void getMappingAnnotation (final Class<?> clazz) {
+        if ("java.lang.Object".equalsIgnoreCase(clazz.getName()) == true) {
+            return;
         }
 
-        return null;
-    }
+        for (Field field : clazz.getDeclaredFields()) {
+            String className = field.getType().getName();
+            if (className.indexOf("com.leekyoungil") > -1) {
+                try {
+                    Class<?> memberClass = Class.forName(className);
+                    this.getMappingAnnotation(memberClass);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
 
+            if (field.getAnnotation(Expose.class) != null) {
+                if ("java.util.Map".equalsIgnoreCase(className) == false && "java.util.List".equalsIgnoreCase(className) == false) {
+                        System.out.println(className + " / "+ clazz.getName() + "." + field.getName());
+                }
+            }
+        }
+
+        this.getMappingAnnotation(clazz.getSuperclass());
+    }
 }
