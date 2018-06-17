@@ -1,11 +1,11 @@
 package com.leekyoungil.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
+import com.leekyoungil.illuminati.common.dto.enums.MappingType;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class ServerInfo {
     @Expose private String domain;
     @Expose private int serverPort = 0;
 
-    @Expose private String hostName;
+    @Expose @GroupMapping(mappingType = MappingType.KEYWORD) private String hostName;
     @Expose private String serverIp;
 
     public ServerInfo () {}

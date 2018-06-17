@@ -14,4 +14,6 @@ public interface IlluminatiEsModel {
     boolean isSetUserAuth ();
 
     String getEsAuthString ();
+
+    String getIndexMapping ();
 }

@@ -364,7 +364,9 @@ public class RequestHeaderModel {
 
     @Expose private Map<String, String> parsedCookie;
 
-    public RequestHeaderModel (final HttpServletRequest request) {
+    public RequestHeaderModel () { }
+
+    public void setRequestInfo (final HttpServletRequest request) {
         if (request != null) {
             this.init(request);
             //this.getIlluminatiProcId(request);
@@ -378,9 +380,6 @@ public class RequestHeaderModel {
         }
     }
 
-    public void generateIlluminatiProcId () {
-
-    }
 
     /**
      * Get Header Info from HttpRequest

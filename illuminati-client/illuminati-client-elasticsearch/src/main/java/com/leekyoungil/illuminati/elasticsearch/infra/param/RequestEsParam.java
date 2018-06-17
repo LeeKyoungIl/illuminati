@@ -20,7 +20,7 @@ public class RequestEsParam {
     @Expose
     private Map<String, Object> query;
     @Expose
-    private Map<String, String> sort;
+    private Map<String, String> sort = new HashMap<String, String>();
     @Expose @SerializedName("_source")
     private List<String> source;
     @Expose

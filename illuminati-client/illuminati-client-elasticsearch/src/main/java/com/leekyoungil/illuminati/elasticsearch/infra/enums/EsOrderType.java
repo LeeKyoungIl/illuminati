@@ -16,15 +16,12 @@ public enum EsOrderType {
     }
 
     public static EsOrderType getOrderType (String orderType) {
-        switch (orderType.toLowerCase()) {
-            case "asc" :
-                return EsOrderType.ASC;
-
-            case "desc" :
-                return EsOrderType.DESC;
-
-            default :
-                return null;
+        if ("asc".equalsIgnoreCase(orderType) == true) {
+            return EsOrderType.ASC;
+        } else if ("asc".equalsIgnoreCase(orderType) == true) {
+            return EsOrderType.DESC;
+        } else {
+            return null;
         }
     }
 }

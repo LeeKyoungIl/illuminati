@@ -16,18 +16,14 @@ public enum EsQueryType {
     }
 
     public static EsQueryType getMatchType (String matchType) {
-        switch (matchType.toLowerCase()) {
-            case "match" :
-                return EsQueryType.MATCH;
-
-            case "match_all" :
-                return EsQueryType.MATCH_ALL;
-
-            case "term" :
-                return EsQueryType.TERM;
-
-            default :
-                return null;
+        if ("match".equalsIgnoreCase(matchType) == true) {
+            return EsQueryType.MATCH;
+        } else if ("match_all".equalsIgnoreCase(matchType) == true) {
+            return EsQueryType.MATCH_ALL;
+        } else if ("term".equalsIgnoreCase(matchType) == true) {
+            return EsQueryType.TERM;
+        } else {
+            return null;
         }
     }
 

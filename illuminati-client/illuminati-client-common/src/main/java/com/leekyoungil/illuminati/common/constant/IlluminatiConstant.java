@@ -60,5 +60,7 @@ abstract public class IlluminatiConstant {
         );
     }
 
+    public final static ObjectMapper BASIC_OBJECT_MAPPER = new ObjectMapper();
+
     public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(IlluminatiJsonCodeProperties.class, "jsonStatusCode");
 }

@@ -1,7 +1,10 @@
 package com.leekyoungil.illuminati.elasticsearch.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
+import com.leekyoungil.illuminati.common.dto.GroupMapping;
+import com.leekyoungil.illuminati.common.dto.ServerInfo;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
@@ -18,11 +21,13 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -47,7 +52,9 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
     private final String encodingCharset = "UTF-8";
 
-    public IlluminatiEsTemplateInterfaceModelImpl() {}
+    public IlluminatiEsTemplateInterfaceModelImpl() {
+        super();
+    }
 
 //    public IlluminatiEsTemplateInterfaceModelImpl(long elapsedTime, Object output, String id, long timestamp) {
 //        super(elapsedTime, output, id, timestamp);
@@ -223,4 +230,30 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
         return null;
     }
+
+    @Override public String getIndexMapping () {
+        try {
+            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+            Map<String, Object> illuminatiEsModelMap = IlluminatiConstant.BASIC_OBJECT_MAPPER.readValue(this.getJsonString(), typeRef);
+            final GroupMapping groupMapping = this.getGroupMappingAnnotation();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private GroupMapping getGroupMappingAnnotation () {
+        this.getMethodsAnnotatedWith();
+        return null;
+    }
+
+    private List<Method> getMethodsAnnotatedWith() {
+        for (Object m : this.getClass().getSuperclass().getDeclaredFields()) {
+           // GroupMapping mXY = (GroupMapping)m.getAnnotation(GroupMapping.class);
+            System.out.println(m);
+        }
+
+        return null;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.common.util;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,5 +70,19 @@ public class ConvertUtil {
 
             throw new ClassCastException(exMessage.toString());
         }
+    }
+
+    public static Map<String, Object> ConvertObjectToMap (Object obj) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for(int i=0; i <fields.length; i++){
+            fields[i].setAccessible(true);
+            try{
+                map.put(fields[i].getName(), fields[i].get(obj));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return map;
     }
 }

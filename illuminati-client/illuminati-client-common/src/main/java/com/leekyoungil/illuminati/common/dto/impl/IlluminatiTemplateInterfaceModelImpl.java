@@ -18,7 +18,7 @@ import java.util.*;
 public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel {
 
     @Expose private String parentModuleName;
-    @Expose private ServerInfo serverInfo;
+    @Expose protected ServerInfo serverInfo;
     @Expose private Map<String, Object> jvmInfo;
 
     @Expose private String id;

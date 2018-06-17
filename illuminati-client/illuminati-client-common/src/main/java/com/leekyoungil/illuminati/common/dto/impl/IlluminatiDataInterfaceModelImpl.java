@@ -41,7 +41,8 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     private void initDataFromHttpRequest (final HttpServletRequest request) {
-        this.requestHeaderModel = new RequestHeaderModel(request);
+        this.requestHeaderModel = new RequestHeaderModel();
+        this.requestHeaderModel.setRequestInfo(request);
         this.requestHeaderModel.setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID));
         this.requestHeaderModel.setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID));
         this.requestHeaderModel.setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));

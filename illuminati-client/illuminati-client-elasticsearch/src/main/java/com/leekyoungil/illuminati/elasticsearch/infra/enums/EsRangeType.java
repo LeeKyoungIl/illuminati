@@ -18,21 +18,16 @@ public enum EsRangeType {
     }
 
     public static EsRangeType getRangeType (String rangeType) {
-        switch (rangeType.toLowerCase()) {
-            case "gt" :
-                return EsRangeType.GT;
-
-            case "lt" :
-                return EsRangeType.LT;
-
-            case "gte" :
-                return EsRangeType.GTE;
-
-            case "lte" :
-                return EsRangeType.LTE;
-
-            default :
-                return null;
+        if ("gt".equalsIgnoreCase(rangeType) == true) {
+            return EsRangeType.GT;
+        } else if ("gt".equalsIgnoreCase(rangeType) == true) {
+            return EsRangeType.LT;
+        } else if ("gt".equalsIgnoreCase(rangeType) == true) {
+            return EsRangeType.GTE;
+        } else if ("gt".equalsIgnoreCase(rangeType) == true) {
+            return EsRangeType.LTE;
+        } else {
+            return null;
         }
     }
 }
