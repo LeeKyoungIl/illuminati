@@ -1,5 +1,7 @@
 package com.leekyoungil.illuminati.elasticsearch.infra.param.mapping;
 
+import com.leekyoungil.illuminati.common.util.StringObjectUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ public class EsIndexMapping {
     }
 
     public void setMappingIndexByField (String rootField, String field, String type) {
+        rootField = StringObjectUtils.convertFirstLetterToLowerize(rootField);
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("type", type);
 

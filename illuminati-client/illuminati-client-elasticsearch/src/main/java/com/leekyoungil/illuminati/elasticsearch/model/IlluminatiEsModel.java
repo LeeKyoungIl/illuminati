@@ -9,6 +9,8 @@ public interface IlluminatiEsModel {
 
     String getEsUrl (String baseUrl);
 
+    String getBaseEsUrl (String baseUrl);
+
     void setEsUserAuth (String esUserName, String esUserPass);
 
     boolean isSetUserAuth ();

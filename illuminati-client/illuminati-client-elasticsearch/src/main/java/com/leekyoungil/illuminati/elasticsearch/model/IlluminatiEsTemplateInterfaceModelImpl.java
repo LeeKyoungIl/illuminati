@@ -1,13 +1,10 @@
 package com.leekyoungil.illuminati.elasticsearch.model;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.common.dto.GroupMapping;
-import com.leekyoungil.illuminati.common.dto.ServerInfo;
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
-import com.leekyoungil.illuminati.common.util.ConvertUtil;
+import com.leekyoungil.illuminati.common.dto.GroupMapping;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
@@ -23,13 +20,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -72,8 +68,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
-    @Override public String getEsUrl(final String baseUrl) {
-        if (!StringObjectUtils.isValid(baseUrl)) {
+    @Override public String getBaseEsUrl(final String baseUrl) {
+        if (StringObjectUtils.isValid(baseUrl) == Boolean.FALSE) {
             ES_CONSUMER_LOGGER.error("Sorry. baseUrl of Elasticsearch is required value.");
             return null;
         }
@@ -84,9 +80,25 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             final String[] dateForIndex = IlluminatiConstant.DATE_FORMAT_EVENT.format(new Date()).split("T");
 
             return new StringBuilder()
-                .append(baseUrl)
-                .append("/")
-                .append(esDocument.indexName()+"-"+dateForIndex[0])
+                    .append(baseUrl)
+                    .append("/")
+                    .append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
+        } catch (Exception ex) {
+            ES_CONSUMER_LOGGER.error("Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")");
+            return null;
+        }
+    }
+
+    @Override public String getEsUrl(final String baseUrl) {
+        String baseEsUrl = this.getBaseEsUrl(baseUrl);
+        if (StringObjectUtils.isValid(baseEsUrl) == Boolean.FALSE) {
+            return null;
+        }
+
+        try {
+            final EsDocument esDocument = this.getEsDocumentAnnotation();
+
+            return new StringBuilder(baseEsUrl)
                 .append("/")
                 .append(esDocument.type())
                 .append("/")

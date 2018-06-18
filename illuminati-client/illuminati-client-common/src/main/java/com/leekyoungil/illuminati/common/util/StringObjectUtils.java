@@ -202,4 +202,11 @@ public class StringObjectUtils {
 
         return id.toString();
     }
+
+    public static String convertFirstLetterToLowerize (String str) {
+        StringBuilder convertString = new StringBuilder();
+        convertString.append(str.substring(0, 1).toLowerCase());
+        convertString.append(str.substring(1));
+        return convertString.toString();
+    }
 }
