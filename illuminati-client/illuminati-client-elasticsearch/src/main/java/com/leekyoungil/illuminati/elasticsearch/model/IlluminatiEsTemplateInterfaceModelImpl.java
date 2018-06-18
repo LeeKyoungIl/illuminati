@@ -13,6 +13,7 @@ import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRefreshType;
 import com.leekyoungil.illuminati.elasticsearch.infra.model.Settings;
+import com.leekyoungil.illuminati.elasticsearch.infra.param.mapping.EsIndexMappingBuilder;
 import net.sf.uadetector.OperatingSystem;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
@@ -233,23 +234,19 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public String getIndexMapping () {
-        try {
-            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
-            Map<String, Object> illuminatiEsModelMap = IlluminatiConstant.BASIC_OBJECT_MAPPER.readValue(this.getJsonString(), typeRef);
-            final GroupMapping groupMapping = this.getGroupMappingAnnotation();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return this.getGroupMappingAnnotation();
     }
 
-    private GroupMapping getGroupMappingAnnotation () {
-        this.getMappingAnnotation(this.getClass());
-        return null;
+    private String getGroupMappingAnnotation () {
+        final EsDocument esDocument = this.getEsDocumentAnnotation();
+
+        EsIndexMappingBuilder esIndexMappingBuilder = EsIndexMappingBuilder.Builder().setEsDataType(esDocument.type());
+        this.getMappingAnnotation(this.getClass(), esIndexMappingBuilder);
+
+        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(esIndexMappingBuilder.build());
     }
 
-    private void getMappingAnnotation (final Class<?> clazz) {
+    private void getMappingAnnotation (final Class<?> clazz, EsIndexMappingBuilder esIndexMappingBuilder) {
         if ("java.lang.Object".equalsIgnoreCase(clazz.getName()) == true) {
             return;
         }
@@ -259,19 +256,20 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             if (className.indexOf("com.leekyoungil") > -1) {
                 try {
                     Class<?> memberClass = Class.forName(className);
-                    this.getMappingAnnotation(memberClass);
+                    this.getMappingAnnotation(memberClass, esIndexMappingBuilder);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (field.getAnnotation(Expose.class) != null) {
+            if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {
                 if ("java.util.Map".equalsIgnoreCase(className) == false && "java.util.List".equalsIgnoreCase(className) == false) {
-                        System.out.println(className + " / "+ clazz.getName() + "." + field.getName());
+                    final GroupMapping annotatedOnField = field.getAnnotation(GroupMapping.class);
+                    esIndexMappingBuilder.setMapping(clazz.getSimpleName(), field.getName(), annotatedOnField.mappingType());
                 }
             }
         }
 
-        this.getMappingAnnotation(clazz.getSuperclass());
+        this.getMappingAnnotation(clazz.getSuperclass(), esIndexMappingBuilder);
     }
 }

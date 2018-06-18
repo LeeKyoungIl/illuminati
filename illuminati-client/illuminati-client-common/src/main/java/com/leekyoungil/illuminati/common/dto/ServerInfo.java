@@ -23,7 +23,7 @@ public class ServerInfo {
     @Expose private int serverPort = 0;
 
     @Expose @GroupMapping(mappingType = MappingType.KEYWORD) private String hostName;
-    @Expose private String serverIp;
+    @Expose @GroupMapping(mappingType = MappingType.KEYWORD) private String serverIp;
 
     public ServerInfo () {}
 
