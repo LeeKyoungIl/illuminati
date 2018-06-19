@@ -20,7 +20,7 @@ public class EsSortBuilder {
     public EsSortBuilder setSort (EsOrderType orderType, String key) {
         String orderByString = orderType.getOrderType();
 
-        if (StringObjectUtils.isValid(orderByString) == true) {
+        if (StringObjectUtils.isValid(orderByString)) {
             this.esSort.setOrderDataToMap(key, orderByString);
         }
 

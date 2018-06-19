@@ -56,13 +56,13 @@ public class JvmInfoApiService extends BasicElasticsearchService {
 
     private String generateQueryForEs (RequestEsParam requestEsParam, Map<String, Object> param) {
         if (param != null && param.size() > 0) {
-            if (param.containsKey("size") == true) {
+            if (param.containsKey("size")) {
                 requestEsParam.setSize((int)param.get("size"));
             }
-            if (param.containsKey("from") == true) {
+            if (param.containsKey("from")) {
                 requestEsParam.setFrom((int)param.get("from"));
             }
-            if (param.containsKey("sort") == true) {
+            if (param.containsKey("sort")) {
                 final EsSortBuilder esSortBuilder = EsSortBuilder.Builder();
                 ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get("sort"))).forEach((k, v) -> {
                     esSortBuilder.setSort(EsOrderType.class.cast(v), k);
@@ -70,7 +70,7 @@ public class JvmInfoApiService extends BasicElasticsearchService {
 
                 requestEsParam.setSort(esSortBuilder.build());
             }
-            if (param.containsKey("match") == true) {
+            if (param.containsKey("match")) {
                 final EsQueryBuilder esQueryBuilder = EsQueryBuilder.Builder();
                 Map<String, Object> match = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get("match")));
                 if (match != null && match.size() > 0) {

@@ -62,7 +62,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     @Override public IlluminatiTemplateInterfaceModelImpl deQueue() {
         List<IlluminatiTemplateInterfaceModelImpl> backupObjectList = illuminatiBlockingQueue.pollToList(ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
-        if (CollectionUtils.isEmpty(backupObjectList) == true) {
+        if (CollectionUtils.isEmpty(backupObjectList)) {
             return null;
         }
 

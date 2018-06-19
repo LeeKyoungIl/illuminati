@@ -41,7 +41,7 @@ public class EsClientProperties extends IlluminatiBaseProperties {
     }
 
     public boolean isValid () {
-        if (this.elasticsearchInfo != null && StringObjectUtils.isValid(this.elasticsearchInfo.getHost()) == true
+        if (this.elasticsearchInfo != null && StringObjectUtils.isValid(this.elasticsearchInfo.getHost())
                 && this.elasticsearchInfo.getPort() > 0) {
             return true;
         } else {

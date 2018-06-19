@@ -32,7 +32,7 @@ public abstract class BasicElasticsearchService {
 
             for (Map<String, Object> data : resultList) {
                 Map<String, Object> checkResultMap = data;
-                if (data.containsKey("source") == true) {
+                if (data.containsKey("source")) {
                     this.convertJsonTimestampToDate(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(data.get("source"))));
                 }
             }
@@ -47,7 +47,7 @@ public abstract class BasicElasticsearchService {
     private void convertJsonTimestampToDate (Map<String, Object> mapData) {
         final String checkKey = "timestamp";
 
-        if (mapData.containsKey(checkKey) == true) {
+        if (mapData.containsKey(checkKey)) {
             try {
                 double dbTimestamp = (double) mapData.get(checkKey);
                 Date targetDate = new Date((long) dbTimestamp);

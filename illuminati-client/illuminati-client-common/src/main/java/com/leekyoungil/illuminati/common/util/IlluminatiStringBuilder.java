@@ -18,7 +18,7 @@ public class IlluminatiStringBuilder {
     }
 
     public String toStringWithDelimiter (final String delimeter) {
-        if (CollectionUtils.isEmpty(this.bufStringData) == true) {
+        if (CollectionUtils.isEmpty(this.bufStringData)) {
             return "";
         } else {
             StringBuilder returnStringData = new StringBuilder();

@@ -61,7 +61,7 @@ public class EsQueryBuilder {
         }
         if (this.match == null) {
             this.match = new HashMap<String, Object>();
-        } else if (this.match.containsKey(EsQueryType.getMatchAllText()) == true) {
+        } else if (this.match.containsKey(EsQueryType.getMatchAllText())) {
             this.match.remove(EsQueryType.getMatchAllText());
         }
         this.match.put(key, value);

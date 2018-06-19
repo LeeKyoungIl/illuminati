@@ -21,19 +21,19 @@ public class JvmRequestParam {
     @Setter private String hostName;
 
     public void setGte (String gte) {
-        if (StringObjectUtils.isValid(gte) == true) {
+        if (StringObjectUtils.isValid(gte)) {
             this.gte = gte.replace(" ", "T");
         }
     }
 
     public void setLte (String lte) {
-        if (StringObjectUtils.isValid(lte) == true) {
+        if (StringObjectUtils.isValid(lte)) {
             this.lte = lte.replace(" ", "T");
         }
     }
 
     public void setEsOrderType(String esOrderType) {
-        if (StringObjectUtils.isValid(esOrderType) == true) {
+        if (StringObjectUtils.isValid(esOrderType)) {
             this.esOrderType = EsOrderType.getOrderType(esOrderType);
         }
     }
@@ -44,13 +44,13 @@ public class JvmRequestParam {
         param.put("from", this.from);
 
         Map<String, Object> rangeTimestamp = new HashMap<>();
-        if (StringObjectUtils.isValid(this.gte) == true) {
+        if (StringObjectUtils.isValid(this.gte)) {
             rangeTimestamp.put("gte", this.gte);
         }
-        if (StringObjectUtils.isValid(this.lte) == true) {
+        if (StringObjectUtils.isValid(this.lte)) {
             rangeTimestamp.put("lte", this.lte);
         }
-        if (StringObjectUtils.isValid(this.hostName) == true) {
+        if (StringObjectUtils.isValid(this.hostName)) {
             Map<String, Object> match = new HashMap<>();
             match.put("hostName", hostName);
             param.put("match", match);

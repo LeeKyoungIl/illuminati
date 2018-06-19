@@ -20,7 +20,7 @@ public class ApiConfiguration {
     @Bean
     public EsClient getEsClient () {
         EsClientProperties esInfo = PropertiesUtil.getIlluminatiProperties(EsClientProperties.class, "elasticsearch/elasticsearch");
-        if (esInfo.isValid() == true) {
+        if (esInfo.isValid()) {
             return new ESclientImpl(new IlluminatiHttpClient(), esInfo.getHost(), esInfo.getPort());
         } else {
             this.logger.error("failed to generate Elasticsearch client.");

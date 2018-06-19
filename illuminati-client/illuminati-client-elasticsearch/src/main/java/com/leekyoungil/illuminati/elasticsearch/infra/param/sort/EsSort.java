@@ -15,7 +15,7 @@ public class EsSort {
     public EsSort() {}
 
     public void setOrderDataToMap(String key, String orderByString) {
-        if (StringObjectUtils.isValid(key) == true && StringObjectUtils.isValid(orderByString) == true) {
+        if (StringObjectUtils.isValid(key) && StringObjectUtils.isValid(orderByString)) {
             this.sort.put(key, orderByString);
         }
     }
