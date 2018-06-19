@@ -50,6 +50,11 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
     private final String encodingCharset = "UTF-8";
 
+    private final String objectPackageName = "java.lang.Object";
+    private final String mapPackageName = "java.util.Map";
+    private final String listPackageName = "java.util.List";
+    private final String mappingTargetPackageName = "com.leekyoungil";
+
     public IlluminatiEsTemplateInterfaceModelImpl() {
         super();
     }
@@ -124,7 +129,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
         if (StringObjectUtils.isValid(postContentBody)) {
             try {
-                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, "UTF-8").split("&");
+                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, this.encodingCharset).split("&");
 
                 if (postContentBodyArray.length > 0) {
                     this.postContentResultData = new HashMap<String, String>();
@@ -160,8 +165,10 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
                 ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. ("+ex.toString()+")");
             }
 
-            if (tmpResultData != null && tmpResultData.containsKey("result") && tmpResultData.get("result") != null) {
-                this.resultData = tmpResultData.get("result");
+            final String resultKey = "result";
+
+            if (tmpResultData != null && tmpResultData.containsKey(resultKey) && tmpResultData.get(resultKey) != null) {
+                this.resultData = tmpResultData.get(resultKey);
                 // ignore output json
                 this.output = null;
             } else {
@@ -256,13 +263,13 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     private void getMappingAnnotation (final Class<?> clazz, EsIndexMappingBuilder esIndexMappingBuilder) {
-        if ("java.lang.Object".equalsIgnoreCase(clazz.getName()) == Boolean.TRUE) {
+        if (this.objectPackageName.equalsIgnoreCase(clazz.getName()) == Boolean.TRUE) {
             return;
         }
 
         for (Field field : clazz.getDeclaredFields()) {
             String className = field.getType().getName();
-            if (className.indexOf("com.leekyoungil") > -1) {
+            if (className.contains(this.mappingTargetPackageName)) {
                 try {
                     Class<?> memberClass = Class.forName(className);
                     this.getMappingAnnotation(memberClass, esIndexMappingBuilder);
@@ -272,7 +279,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             }
 
             if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {
-                if ("java.util.Map".equalsIgnoreCase(className) == Boolean.FALSE && "java.util.List".equalsIgnoreCase(className) == Boolean.FALSE) {
+                if (this.mapPackageName.equalsIgnoreCase(className) == Boolean.FALSE
+                        && this.listPackageName.equalsIgnoreCase(className) == Boolean.FALSE) {
                     final GroupMapping annotatedOnField = field.getAnnotation(GroupMapping.class);
                     esIndexMappingBuilder.setMapping(clazz.getSimpleName(), field.getName(), annotatedOnField.mappingType());
                 }
