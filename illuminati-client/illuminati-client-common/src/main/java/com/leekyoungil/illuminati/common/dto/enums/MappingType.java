@@ -2,7 +2,7 @@ package com.leekyoungil.illuminati.common.dto.enums;
 
 public enum MappingType {
 
-    TEXT("teXt"),
+    TEXT("text"),
     KEYWORD("keyword");
 
     private String mappingType;
