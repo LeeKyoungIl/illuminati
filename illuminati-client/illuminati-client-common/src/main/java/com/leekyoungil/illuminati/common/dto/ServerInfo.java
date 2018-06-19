@@ -28,7 +28,7 @@ public class ServerInfo {
     public ServerInfo () {}
 
     public ServerInfo (final boolean init) {
-        if (init == Boolean.TRUE) {
+        if (init) {
             this.init();
         }
     }

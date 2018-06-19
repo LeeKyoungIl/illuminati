@@ -41,7 +41,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     }
 
     public void addToQueue(final T illuminatQueueInterfaceModel) {
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.FALSE) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             try {
                 illuminatiBlockingQueue.offer(illuminatQueueInterfaceModel, this.enQueuingTimeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
@@ -53,7 +53,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     }
 
     public T deQueue() {
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.FALSE) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
             try {
                 return illuminatiBlockingQueue.take();
             } catch (InterruptedException e) {
@@ -75,7 +75,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
      */
     protected void addToQueueByDebug (final T illuminatiInterfaceModel) {
         // debug illuminati buffer queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.TRUE) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             try {
                 illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE current size is "+String.valueOf(this.getQueueSize()));
                 final long start = System.currentTimeMillis();
@@ -112,13 +112,13 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         final String thisClassName = this.getClass().getName();
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-                while (Boolean.TRUE) {
+                while (true) {
                     T illuminatiInterfaceModel = null;
                     try {
                         illuminatiInterfaceModel = deQueue();
                         if (illuminatiInterfaceModel != null) {
-                            if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.FALSE) {
-                                if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == Boolean.FALSE) {
+                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                                if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
                                     sendToNextStep(illuminatiInterfaceModel);
                                 } else {
                                     preventErrorOfSystemThread(illuminatiInterfaceModel);
@@ -133,14 +133,14 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                             }
                         }
                     } catch (Exception e) {
-                        if (illuminatiInterfaceModel != null && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == Boolean.FALSE) {
+                        if (illuminatiInterfaceModel != null && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
                             preventErrorOfSystemThread(illuminatiInterfaceModel);
                         }
 
                         StringBuilder errorMessage = new StringBuilder();
                         errorMessage.append("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ");
 
-                        if (thisClassName.contains("IlluminatiTemplateExecutorImpl") == Boolean.TRUE) {
+                        if (thisClassName.contains("IlluminatiTemplateExecutorImpl")) {
                             errorMessage.append("But Your data has already been safely stored. ");
                             errorMessage.append("It will be restored. When broker is restored. ");
                         }
@@ -159,10 +159,10 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     protected void createDebugThread () {
         // debug illuminati buffer queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.TRUE) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             final Runnable queueCheckRunnable = new Runnable() {
                 public void run() {
-                    while (Boolean.TRUE) {
+                    while (true) {
                         illuminatiExecutorLogger.info("");
                         illuminatiExecutorLogger.info("#########################################################################################################");
                         illuminatiExecutorLogger.info("## template queue buffer debug info");

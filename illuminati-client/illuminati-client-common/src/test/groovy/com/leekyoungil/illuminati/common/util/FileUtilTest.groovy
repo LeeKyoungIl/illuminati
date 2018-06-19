@@ -17,7 +17,7 @@ class FileUtilTest extends Specification {
         boolean directoryIsExists = FileUtil.isDirectoryExists(directoryName);
 
         then:
-        directoryIsExists == Boolean.TRUE;
+        directoryIsExists == true;
     }
 
     def "make directory" () {
@@ -27,13 +27,13 @@ class FileUtilTest extends Specification {
         when:
         boolean directoryIsExists = FileUtil.isDirectoryExists(directoryName);
         boolean madeDirectory = false;
-        if (directoryIsExists == Boolean.FALSE) {
+        if (directoryIsExists == false) {
             madeDirectory = FileUtil.createDirectory(directoryName);
         }
 
         then:
-        directoryIsExists == Boolean.TRUE;
-        madeDirectory == Boolean.FALSE;
+        directoryIsExists == true;
+        madeDirectory == false;
     }
 
     def "file name generate test" () {
@@ -57,7 +57,7 @@ class FileUtilTest extends Specification {
         boolean isFileExists = FileUtil.isFileExists(basePath, fileName);
 
         then:
-        isFileExists == Boolean.TRUE;
+        isFileExists == true;
     }
 
     def "file generate test" () {
@@ -69,14 +69,14 @@ class FileUtilTest extends Specification {
         fileName = FileUtil.generateFileName();
         boolean isFileExists = FileUtil.isFileExists(basePath, fileName);
         File fileObj = null;
-        if (isFileExists == Boolean.FALSE) {
+        if (isFileExists == false) {
             fileObj = FileUtil.generateFile(basePath, fileName);
             isFileExists = FileUtil.isFileExists(basePath, fileName);
         }
 
         then:
         fileObj == null;
-        isFileExists == Boolean.TRUE;
+        isFileExists == true;
 
         if (fileObj != null) {
             fileObj.delete();

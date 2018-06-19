@@ -72,7 +72,7 @@ public class RequestGeneralModel {
                 try {
                     String value = clientInfoMap.get(key);
 
-                    if ("clientIp".equals(key) && StringObjectUtils.isValid(value) == Boolean.FALSE) {
+                    if ("clientIp".equals(key) && StringObjectUtils.isValid(value) == false) {
                         value = clientInfoMap.get("remoteAddr");
                     }
 

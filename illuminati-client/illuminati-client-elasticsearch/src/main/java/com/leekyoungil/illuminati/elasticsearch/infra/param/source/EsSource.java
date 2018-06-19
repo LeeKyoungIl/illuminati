@@ -15,7 +15,7 @@ public class EsSource {
     }
 
     public void setSource (String columnName) {
-        if (this.source.contains(columnName) == Boolean.FALSE) {
+        if (this.source.contains(columnName) == false) {
             this.source.add(columnName);
         }
     }

@@ -43,7 +43,7 @@ public class SubscribeListener {
         }
 
         if (sampleBuyEsModel != null) {
-            if (StringObjectUtils.isValid(esUserName) == Boolean.TRUE && StringObjectUtils.isValid(esUserPass) == Boolean.TRUE) {
+            if (StringObjectUtils.isValid(esUserName) && StringObjectUtils.isValid(esUserPass)) {
                 sampleBuyEsModel.setEsUserAuth(this.esUserName, this.esUserPass);
             }
 

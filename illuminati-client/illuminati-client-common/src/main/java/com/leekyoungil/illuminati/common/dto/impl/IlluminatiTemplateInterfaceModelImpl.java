@@ -96,8 +96,8 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
 
             String illuminatiGProcId = this.header.getIlluminatiGProcId();
             String illuminatiSProcId = this.header.getIlluminatiSProcId();
-            if (illuminatiGProcId != null && (illuminatiGProcId.equals(changedJsElement.getIlluminatiGProcId()) == Boolean.TRUE)
-                    && illuminatiSProcId != null && (illuminatiSProcId.equals(changedJsElement.getIlluminatiSProcId()) == Boolean.TRUE)) {
+            if (illuminatiGProcId != null && (illuminatiGProcId.equals(changedJsElement.getIlluminatiGProcId()))
+                    && illuminatiSProcId != null && (illuminatiSProcId.equals(changedJsElement.getIlluminatiSProcId()))) {
                 this.changedJsElement = changedJsElement;
                 this.changedJsElement.convertListToMap();
             }
@@ -151,7 +151,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     }
 
     private void checkAndSetTransactionIdFromPostBody (String postBody) {
-        if (StringObjectUtils.isValid(postBody) == Boolean.FALSE) {
+        if (StringObjectUtils.isValid(postBody) == false) {
             return;
         }
 
@@ -168,12 +168,12 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
                         continue;
                     }
 
-                    if (keyValue.equals(postElementArrayData[0]) == Boolean.TRUE) {
-                        if ("illuminatiGProcId".equals(keyValue) == Boolean.TRUE && StringObjectUtils.isValid(this.header.getIlluminatiGProcId()) == Boolean.FALSE) {
+                    if (keyValue.equals(postElementArrayData[0])) {
+                        if ("illuminatiGProcId".equals(keyValue) && StringObjectUtils.isValid(this.header.getIlluminatiGProcId()) == false) {
                             this.header.setGlobalTransactionId(postElementArrayData[1]);
-                        } else if ("illuminatiSProcId".equals(keyValue) == Boolean.TRUE && StringObjectUtils.isValid(this.header.getIlluminatiSProcId()) == Boolean.FALSE) {
+                        } else if ("illuminatiSProcId".equals(keyValue) && StringObjectUtils.isValid(this.header.getIlluminatiSProcId()) == false) {
                             this.header.setSessionTransactionId(postElementArrayData[1]);
-                        } else if ("illuminatiUniqueUserId".equals(keyValue) == Boolean.TRUE && StringObjectUtils.isValid(this.illuminatiUniqueUserId) == Boolean.FALSE) {
+                        } else if ("illuminatiUniqueUserId".equals(keyValue) && StringObjectUtils.isValid(this.illuminatiUniqueUserId) == false) {
                             this.illuminatiUniqueUserId = postElementArrayData[1];
                         }
                     }

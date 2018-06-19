@@ -36,7 +36,7 @@ public class ChangedJsElement {
     }
 
     public void convertListToMap () {
-        if (CollectionUtils.isNotEmpty(this.changedValues) == Boolean.TRUE) {
+        if (CollectionUtils.isNotEmpty(this.changedValues)) {
             if (this.changedValueMap == null) {
                 this.changedValueMap = new HashMap<Integer, ChangedValue>();
             }

@@ -79,7 +79,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
     @Override public void connectionClose() {
         try {
-            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen() == Boolean.TRUE) {
+            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen()) {
                 AMQP_CONNECTION.close();
             }
         } catch (IOException e) {
@@ -107,7 +107,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                     amqpChannel.waitForConfirms(VALUE_CONNECTION_WAIT_CONFIRM_TIMEOUT_MS);
                 }
 
-                if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.TRUE) {
+                if (IlluminatiConstant.ILLUMINATI_DEBUG) {
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send log");
@@ -182,7 +182,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         if (AMQP_CONNECTION != null) {
             try {
                 final Channel amqpChannel = AMQP_CONNECTION.createChannel();
-                amqpChannel.queueDeclare(this.queueName, Boolean.TRUE, Boolean.FALSE, Boolean.FALSE, null);
+                amqpChannel.queueDeclare(this.queueName, true, false, false, null);
 
                 if (this.communicationType == CommunicationType.SYNC) {
                     amqpChannel.confirmSelect();
@@ -248,9 +248,9 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 socket.setReceiveBufferSize(VALUE_SET_WRITE_BUFFER_SIZE);
                 socket.setSendBufferSize(VALUE_SET_SEND_BUFFER_SIZE);
                 socket.setPerformancePreferences(0, 2, 1);
-                socket.setReuseAddress(Boolean.TRUE);
+                socket.setReuseAddress(true);
                 socket.setKeepAlive(VALUE_TCP_KEELALIVE);
-                socket.setSoLinger(Boolean.TRUE, 1000);
+                socket.setSoLinger(true, 1000);
             }
         });
     }

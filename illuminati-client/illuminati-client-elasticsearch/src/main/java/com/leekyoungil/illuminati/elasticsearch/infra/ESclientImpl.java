@@ -62,7 +62,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     private HttpResponse saveToEs (String esRequestUrl, String jsonString) {
         final HttpRequestBase httpPutRequest = new HttpPut(esRequestUrl);
 
-        if (StringObjectUtils.isValid(this.esAuthString) == Boolean.TRUE) {
+        if (StringObjectUtils.isValid(this.esAuthString)) {
             try {
                 httpPutRequest.setHeader("Authorization", "Basic " + this.esAuthString);
             } catch (Exception ex) {
@@ -92,7 +92,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     @Override public String getDataByJson(final IlluminatiEsModel entity, final String jsonRequestString) {
-        if (StringObjectUtils.isValid(jsonRequestString) == Boolean.FALSE) {
+        if (StringObjectUtils.isValid(jsonRequestString) == false) {
             return null;
         }
         final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(entity, ES_SEARCH_KEYWORD));
@@ -107,7 +107,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     private String getRequestUrl (final IlluminatiEsModel entity, String command) {
         StringBuilder baseEsHttpUrl = new StringBuilder(this.esUrl);
-        if (StringObjectUtils.isValid(this.optionalIndex) == Boolean.TRUE) {
+        if (StringObjectUtils.isValid(this.optionalIndex)) {
             baseEsHttpUrl.append(this.optionalIndex);
         }
 
@@ -161,8 +161,8 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     private void checkIndexAndGenerate (final IlluminatiEsModel entity) {
         Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.getMappingByIndex(entity), new TypeToken<Map<String, Object>>(){}.getType());
-        if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY) == Boolean.TRUE
-                && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE) == Boolean.TRUE) {
+        if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY)
+                && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE)) {
             this.saveToEs(entity.getBaseEsUrl(this.esUrl), entity.getIndexMapping());
         }
     }

@@ -24,11 +24,11 @@ public class IlluminatiCommon {
             IlluminatiConstant.ILLUMINATI_DEBUG = Boolean.valueOf(debug);
         }
 
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.TRUE) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             SystemUtil.createThreadStatusDebugThread();
         }
 
-        if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive() == Boolean.TRUE) {
+        if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive()) {
             IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION = true;
         }
 

@@ -112,9 +112,9 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     @Override protected void createSystemThread () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-                while (true && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == Boolean.FALSE) {
+                while (true && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
                     try {
-                        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.FALSE) {
+                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                             deQueue();
                         } else {
                             deQueueByDebug();

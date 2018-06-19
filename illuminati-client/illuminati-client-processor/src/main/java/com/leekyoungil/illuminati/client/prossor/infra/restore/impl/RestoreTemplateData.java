@@ -55,12 +55,12 @@ public class RestoreTemplateData implements Restore {
 
     @Override public void restoreToQueue () {
         if (((ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize()) <= RESTORE_CHECK_QUEUE_SIZE)
-                || H2_BACKUP.getCount() == 0 || IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == Boolean.FALSE) {
+                || H2_BACKUP.getCount() == 0 || IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == false) {
             return;
         }
 
-        final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(Boolean.FALSE, Boolean.TRUE, 0, LIMIT_COUNT);
-        if (CollectionUtils.isNotEmpty(backupObjectList) == Boolean.TRUE) {
+        final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(false, true, 0, LIMIT_COUNT);
+        if (CollectionUtils.isNotEmpty(backupObjectList)) {
             for (IlluminatiInterfaceModel illuminatiInterfaceModel : backupObjectList) {
                 this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel);
             }
@@ -78,10 +78,10 @@ public class RestoreTemplateData implements Restore {
     private void createSystemThread () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-                while (Boolean.TRUE) {
+                while (true) {
                     try {
-                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == Boolean.TRUE) {
-                            if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.FALSE) {
+                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
+                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                                 restoreToQueue();
                             } else {
                                 restoreToQueueByDebug();

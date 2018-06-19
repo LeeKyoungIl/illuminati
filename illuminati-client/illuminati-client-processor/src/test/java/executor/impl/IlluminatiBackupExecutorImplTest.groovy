@@ -45,6 +45,6 @@ class IlluminatiBackupExecutorImplTest extends Specification {
         illuminatiExecutor.init();
 
         then:
-        IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == Boolean.TRUE;
+        IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == true;
     }
 }

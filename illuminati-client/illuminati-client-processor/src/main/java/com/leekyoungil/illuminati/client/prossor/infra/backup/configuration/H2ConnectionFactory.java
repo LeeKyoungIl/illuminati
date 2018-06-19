@@ -63,7 +63,7 @@ public class H2ConnectionFactory {
 
     public boolean isConnected () {
         try {
-            if (this.dbConnection != null && this.dbConnection.isValid(this.connectionValidCheckTimeout) == Boolean.TRUE) {
+            if (this.dbConnection != null && this.dbConnection.isValid(this.connectionValidCheckTimeout)) {
                 return true;
             }
         } catch (SQLException se) {
@@ -74,7 +74,7 @@ public class H2ConnectionFactory {
     }
 
     public Connection getDbConnection() {
-        if (this.isConnected() == Boolean.TRUE) {
+        if (this.isConnected()) {
             return this.dbConnection;
         }
 

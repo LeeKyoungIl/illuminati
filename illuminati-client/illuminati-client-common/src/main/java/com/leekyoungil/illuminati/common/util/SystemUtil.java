@@ -56,7 +56,7 @@ public class SystemUtil {
         final String keyName = illuminatiTransactionIdType.getValue();
 
         String trxId = SystemUtil.getValueFromHeaderByKey(request, keyName);
-        if (StringObjectUtils.isValid(trxId) == Boolean.FALSE && request != null) {
+        if (StringObjectUtils.isValid(trxId) == false && request != null) {
             switch (illuminatiTransactionIdType) {
                 case ILLUMINATI_PROC_ID :
                 case ILLUMINATI_G_PROC_ID :
@@ -69,7 +69,7 @@ public class SystemUtil {
             }
         }
 
-        return (StringObjectUtils.isValid(trxId) == Boolean.TRUE) ? trxId : null;
+        return (StringObjectUtils.isValid(trxId)) ? trxId : null;
     }
 
     public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) {
@@ -87,8 +87,8 @@ public class SystemUtil {
     }
 
     public static void createSystemThread (final Runnable runnable, final String threadName) {
-        if (runnable != null && StringUtils.isEmpty(threadName) == Boolean.FALSE
-                && IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == Boolean.FALSE) {
+        if (runnable != null && StringUtils.isEmpty(threadName) == false
+                && IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == false) {
             final Thread newThread = new Thread(runnable);
 
             if (!"debug".equalsIgnoreCase(threadName)) {
@@ -107,7 +107,7 @@ public class SystemUtil {
                 SYSTEM_UTIL_LOGGER.warn("threadName is required.");
             }
 
-            if (IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == Boolean.TRUE) {
+            if (IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName)) {
                 SYSTEM_UTIL_LOGGER.warn(threadName + " thread is already exists.");
             }
         }
@@ -115,10 +115,10 @@ public class SystemUtil {
 
     public static void createThreadStatusDebugThread () {
         // debug illuminati buffer queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.TRUE && SYSTEM_UTIL_LOGGER.isInfoEnabled() == Boolean.TRUE) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG && SYSTEM_UTIL_LOGGER.isInfoEnabled()) {
             final Runnable threadCheckRunnable = new Runnable() {
                 public void run() {
-                    while (Boolean.TRUE) {
+                    while (true) {
                         for(Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()){
                             SYSTEM_UTIL_LOGGER.info("");
                             SYSTEM_UTIL_LOGGER.info("#########################################################################################################");

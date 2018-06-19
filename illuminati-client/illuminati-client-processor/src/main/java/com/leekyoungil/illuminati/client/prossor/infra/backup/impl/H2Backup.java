@@ -40,7 +40,7 @@ public class H2Backup<T> implements Backup<T> {
 
     private H2Backup (Class<T> type) {
         this.type = type;
-        if (H2_CONN.isConnected() == Boolean.TRUE) {
+        if (H2_CONN.isConnected()) {
             this.connection = H2_CONN.getDbConnection();
 
             final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class, "illuminati", "backTableReset", "false");
@@ -148,7 +148,7 @@ public class H2Backup<T> implements Backup<T> {
             return null;
         }
 
-        if (isAfterDelete == Boolean.TRUE && CollectionUtils.isNotEmpty(idList) == Boolean.TRUE) {
+        if (isAfterDelete && CollectionUtils.isNotEmpty(idList)) {
             for (Integer id : idList) {
                 this.deleteById(id);
             }
@@ -160,7 +160,7 @@ public class H2Backup<T> implements Backup<T> {
     @Override public Map<Integer, T> getDataByMap(boolean isPaging, boolean isAfterDelete, int from, int size) {
         final String selectQuery = this.getSelectQuery(isPaging, from, size);
 
-        if (StringObjectUtils.isValid(selectQuery) == Boolean.FALSE) {
+        if (StringObjectUtils.isValid(selectQuery) == false) {
             return null;
         }
 
@@ -179,7 +179,7 @@ public class H2Backup<T> implements Backup<T> {
             return null;
         }
 
-        if (isAfterDelete == Boolean.TRUE && dataMap.isEmpty() == Boolean.FALSE) {
+        if (isAfterDelete && dataMap.isEmpty() == false) {
             for (Map.Entry<Integer, T> entry : dataMap.entrySet()) {
                 this.deleteById(entry.getKey());
             }
@@ -215,7 +215,7 @@ public class H2Backup<T> implements Backup<T> {
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
             ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next() == Boolean.TRUE) {
+            if (rs.next()) {
                 resultCount = rs.getInt(1);
             }
             rs.close();
@@ -233,7 +233,7 @@ public class H2Backup<T> implements Backup<T> {
         selectExecuteCommand.append("SELECT ID, JSON_DATA FROM ");
         selectExecuteCommand.append(TABLE_NAME);
 
-        if (isPaging == Boolean.TRUE) {
+        if (isPaging) {
             selectExecuteCommand.append(" LIMIT "+from+", "+size);
         }
 

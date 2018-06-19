@@ -35,7 +35,7 @@ public class ConvertUtil {
 
         if (request.getAttribute("ChaosBomber") != null && "true".equals(request.getAttribute("ChaosBomber").toString())) {
             request.setAttribute("ChaosBomber", null);
-            staticInfoMap.put("ChaosBomber" , Boolean.TRUE);
+            staticInfoMap.put("ChaosBomber" , true);
         }
 
         return staticInfoMap;
@@ -62,7 +62,7 @@ public class ConvertUtil {
     }
 
     private static <T> void checkCast(Class<T> clazz, Object obj) {
-        if (obj != null && clazz.isInstance(obj) == Boolean.FALSE) {
+        if (obj != null && clazz.isInstance(obj) == false) {
             StringBuilder exMessage = new StringBuilder();
             exMessage.append("Expected : " + clazz.getName());
             exMessage.append("Was : " + obj.getClass().getName());

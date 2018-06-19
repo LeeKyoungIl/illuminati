@@ -37,9 +37,9 @@ public class FileUtil {
         File file = new File(basePath, fileName);
 
         try {
-            if (file.createNewFile() == Boolean.TRUE) {
+            if (file.createNewFile()) {
                 return file;
-            } else if (file.exists() == Boolean.TRUE) {
+            } else if (file.exists()) {
                 return file;
             }
         } catch (IOException e) {
@@ -53,7 +53,7 @@ public class FileUtil {
     public static boolean isFileExists(String basePath, String fileName) {
         File file = new File(basePath, fileName);
 
-        if (file.exists() == Boolean.TRUE) {
+        if (file.exists()) {
             return true;
         }
 
@@ -61,10 +61,10 @@ public class FileUtil {
     }
 
     public static void appendDataToFileByOnce(File file, String textData) {
-        if (file.canWrite() == Boolean.TRUE) {
+        if (file.canWrite()) {
             try {
                 long start = System.currentTimeMillis();
-                FileWriter writer = new FileWriter(file, Boolean.TRUE);
+                FileWriter writer = new FileWriter(file, true);
                 writer.append(textData);
                 writer.flush();
                 writer.close();
@@ -79,9 +79,9 @@ public class FileUtil {
     }
 
     public static void appendDataToFile(File file, List<String> dataList) {
-        if (file.canWrite() == Boolean.TRUE) {
+        if (file.canWrite()) {
             try {
-                FileWriter writer = new FileWriter(file, Boolean.TRUE);
+                FileWriter writer = new FileWriter(file, true);
                 write(dataList, writer);
             } catch (IOException e) {
                 FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
@@ -105,7 +105,7 @@ public class FileUtil {
     public static boolean isDirectoryExists(String directoryName) {
         File file = new File(directoryName);
 
-        if (file.exists() == Boolean.TRUE && file.isDirectory() == Boolean.TRUE) {
+        if (file.exists() && file.isDirectory()) {
             return true;
         }
 
@@ -113,7 +113,7 @@ public class FileUtil {
     }
 
     public static boolean createDirectory(String directoryName) {
-        if (isDirectoryExists(directoryName) == Boolean.TRUE) {
+        if (isDirectoryExists(directoryName)) {
             FILE_UTIL_LOGGER.info(directoryName + " is already exists.");
             return true;
         }

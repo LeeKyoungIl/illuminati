@@ -16,11 +16,11 @@ public enum EsQueryType {
     }
 
     public static EsQueryType getMatchType (String matchType) {
-        if ("match".equalsIgnoreCase(matchType) == Boolean.TRUE) {
+        if ("match".equalsIgnoreCase(matchType)) {
             return EsQueryType.MATCH;
-        } else if ("match_all".equalsIgnoreCase(matchType) == Boolean.TRUE) {
+        } else if ("match_all".equalsIgnoreCase(matchType)) {
             return EsQueryType.MATCH_ALL;
-        } else if ("term".equalsIgnoreCase(matchType) == Boolean.TRUE) {
+        } else if ("term".equalsIgnoreCase(matchType)) {
             return EsQueryType.TERM;
         } else {
             return null;
