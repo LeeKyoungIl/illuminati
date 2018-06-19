@@ -483,7 +483,7 @@ public class RequestHeaderModel {
         this.parsedCookie.put(key, value);
     }
     public void setSessionTransactionId (String illuminatiSProcId) {
-        if (StringObjectUtils.isValid(illuminatiSProcId) == false) {
+        if (StringObjectUtils.isValid(illuminatiSProcId) == Boolean.FALSE) {
             return;
         }
         this.illuminatiSProcId = illuminatiSProcId;
@@ -491,14 +491,14 @@ public class RequestHeaderModel {
 
 
     public void setGlobalTransactionId (String illuminatiGProcId) {
-        if (StringObjectUtils.isValid(illuminatiGProcId) == false) {
+        if (StringObjectUtils.isValid(illuminatiGProcId) == Boolean.FALSE) {
             return;
         }
         this.illuminatiGProcId = illuminatiGProcId;
     }
 
     public void setTransactionId (String illuminatiProcId) {
-        if (StringObjectUtils.isValid(illuminatiProcId) == false) {
+        if (StringObjectUtils.isValid(illuminatiProcId) == Boolean.FALSE) {
             return;
         }
         this.illuminatiProcId = illuminatiProcId;

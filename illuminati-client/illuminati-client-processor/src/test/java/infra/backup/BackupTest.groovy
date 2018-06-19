@@ -16,7 +16,7 @@ class BackupTest extends Specification {
         boolean isConnectedValid = h2ConnectionFactory.isConnected();
 
         then:
-        isConnectedValid == true;
+        isConnectedValid == Boolean.TRUE;
     }
 
     def "add data" () {
@@ -26,7 +26,7 @@ class BackupTest extends Specification {
 
         when:
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData);
-        List<String> h2DataList = h2Backup.getDataByList(false, false, 0, 10);
+        List<String> h2DataList = h2Backup.getDataByList(Boolean.FALSE, Boolean.FALSE, 0, 10);
 
         then:
         h2DataList.size() > 0;
@@ -49,7 +49,7 @@ class BackupTest extends Specification {
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
-        List<String> h2DataList = h2Backup.getDataByList(true, false, 0, 5);
+        List<String> h2DataList = h2Backup.getDataByList(Boolean.TRUE, Boolean.FALSE, 0, 5);
 
         then:
         h2DataList.size() == 5;
@@ -73,7 +73,7 @@ class BackupTest extends Specification {
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
-        Map<Integer, String> h2DataMap = h2Backup.getDataByMap(true,true, 0, 10);
+        Map<Integer, String> h2DataMap = h2Backup.getDataByMap(Boolean.TRUE,Boolean.TRUE, 0, 10);
         int afterCount = h2Backup.getCount();
 
         then:
@@ -98,7 +98,7 @@ class BackupTest extends Specification {
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
-        List<String> h2DataList = h2Backup.getDataByList(true, true, 0, 10);
+        List<String> h2DataList = h2Backup.getDataByList(Boolean.TRUE, Boolean.TRUE, 0, 10);
         int afterCount = h2Backup.getCount();
 
         then:
@@ -113,7 +113,7 @@ class BackupTest extends Specification {
 
         when:
         backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, testData);
-        dataList = backup.getDataByList(false, false, 0, 0);
+        dataList = backup.getDataByList(Boolean.FALSE, Boolean.FALSE, 0, 0);
 
         then:
         dataList.size() > 0;

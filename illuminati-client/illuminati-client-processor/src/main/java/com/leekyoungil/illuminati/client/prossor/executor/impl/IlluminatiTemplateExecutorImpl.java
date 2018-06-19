@@ -63,7 +63,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             this.createSystemThread();
             this.createSystemThreadForIsCanConnectRemoteBroker();
 
-            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == Boolean.TRUE) {
                 this.addShutdownHook();
             }
         }
@@ -93,7 +93,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
             return;
         }
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == Boolean.FALSE) {
             this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
         } else {
             this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
@@ -106,7 +106,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
      */
     @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         // debug illuminati rabbitmq queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.TRUE) {
             final long start = System.currentTimeMillis();
             this.sendToNextStep(illuminatiTemplateInterfaceModelImpl);
             final long elapsedTime = System.currentTimeMillis() - start;
@@ -144,7 +144,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
         IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());
 
-        if (illuminatiInfraTemplate == null || IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == false) {
+        if (illuminatiInfraTemplate == null || IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == Boolean.FALSE) {
             return null;
         }
 
@@ -161,7 +161,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private void createSystemThreadForIsCanConnectRemoteBroker () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-                while (true) {
+                while (Boolean.TRUE) {
                     try {
                         IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
 

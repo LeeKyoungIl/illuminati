@@ -18,13 +18,13 @@ public enum EsRangeType {
     }
 
     public static EsRangeType getRangeType (String rangeType) {
-        if ("gt".equalsIgnoreCase(rangeType) == true) {
+        if ("gt".equalsIgnoreCase(rangeType) == Boolean.TRUE) {
             return EsRangeType.GT;
-        } else if ("gt".equalsIgnoreCase(rangeType) == true) {
+        } else if ("gt".equalsIgnoreCase(rangeType) == Boolean.TRUE) {
             return EsRangeType.LT;
-        } else if ("gt".equalsIgnoreCase(rangeType) == true) {
+        } else if ("gt".equalsIgnoreCase(rangeType) == Boolean.TRUE) {
             return EsRangeType.GTE;
-        } else if ("gt".equalsIgnoreCase(rangeType) == true) {
+        } else if ("gt".equalsIgnoreCase(rangeType) == Boolean.TRUE) {
             return EsRangeType.LTE;
         } else {
             return null;

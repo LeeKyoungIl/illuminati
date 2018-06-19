@@ -22,7 +22,7 @@ public class EsGroupByBuilder {
     }
 
     public EsGroupByBuilder setGroupByKey (String groupByKey) {
-        if (StringObjectUtils.isValid(groupByKey) == false) {
+        if (StringObjectUtils.isValid(groupByKey) == Boolean.FALSE) {
             return this;
         }
         this.esGroupBy.setGroupBy(groupByKey);
@@ -30,7 +30,7 @@ public class EsGroupByBuilder {
     }
 
     public Map<String, Object> build () {
-        if (CollectionUtils.isNotEmpty(this.esGroupBy.getGroupByList()) == true) {
+        if (CollectionUtils.isNotEmpty(this.esGroupBy.getGroupByList()) == Boolean.TRUE) {
             Map<String, Object> lastResultMap = null;
             for (Map<String, Object> groupBy : this.esGroupBy.getGroupByList()) {
                 if (lastResultMap != null) {

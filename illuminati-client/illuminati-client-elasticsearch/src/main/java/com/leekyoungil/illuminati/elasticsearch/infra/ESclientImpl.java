@@ -35,6 +35,15 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     private String optionalIndex = "";
     private String esAuthString;
 
+    private final static String BASE_CHARSET = "UTF-8";
+    private final static String IS_RESPONSE_JSON = "pretty";
+
+    private final static String INDEX_IS_NOT_EXISTS_STATUS_OF_KEY = "status";
+    private final static double INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE = 404d;
+
+    private final static String ES_SEARCH_KEYWORD = "search";
+    private final static String ES_MAPPING_KEYWORD = "mapping";
+
     public ESclientImpl (final HttpClient httpClient, final String esUrl, final int esPort) {
         this.httpClient = httpClient;
         this.esUrl = "http://" + esUrl + ":" + String.valueOf(esPort);
@@ -82,72 +91,62 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return httpResponse;
     }
 
-    @Override public String getDataByJson(final IlluminatiEsModel entity, String jsonRequestString) {
+    @Override public String getDataByJson(final IlluminatiEsModel entity, final String jsonRequestString) {
         if (StringObjectUtils.isValid(jsonRequestString) == Boolean.FALSE) {
             return null;
         }
-        final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(entity.getBaseEsUrl(this.esUrl + this.optionalIndex), "search"));
+        final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(entity, ES_SEARCH_KEYWORD));
         ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(jsonRequestString));
-        String resultFromEs = null;
-        try {
-            resultFromEs = this.requestToEsByHttp(httpPostRequest);
-        } catch (Exception e) {
-            this.logger.error("Sorry. something is wrong in Http Request. ("+e.toString()+")");
-            try {
-                httpPostRequest.releaseConnection();
-            } catch (Exception ignored) {}
-        } finally {
-            try {
-                httpPostRequest.releaseConnection();
-            } catch (Exception ignored) {}
-        }
 
-        return resultFromEs;
+        return this.requestToEsByHttp(httpPostRequest);
     }
 
     @Override public String getMappingByIndex(final IlluminatiEsModel entity) {
-        final HttpRequestBase httpGetRequest = new HttpGet(this.getRequestUrl(entity.getBaseEsUrl(this.esUrl + this.optionalIndex), "mapping"));
-        String resultFromEs = null;
-        try {
-            resultFromEs = this.requestToEsByHttp(httpGetRequest);
-        } catch (Exception e) {
-            this.logger.error("Sorry. something is wrong in Http Request. ("+e.toString()+")");
-            try {
-                httpGetRequest.releaseConnection();
-            } catch (Exception ignored) {}
-        } finally {
-            try {
-                httpGetRequest.releaseConnection();
-            } catch (Exception ignored) {}
-        }
-
-        return resultFromEs;
+        return this.requestToEsByHttp(new HttpGet(this.getRequestUrl(entity, ES_MAPPING_KEYWORD)));
     }
 
-    private String getRequestUrl (String baseEsUrl, String command) {
-        StringBuilder requestEsUrl = new StringBuilder();
-        requestEsUrl.append(baseEsUrl);
-        requestEsUrl.append("/");
-        requestEsUrl.append(this.optionalIndex);
+    private String getRequestUrl (final IlluminatiEsModel entity, String command) {
+        StringBuilder baseEsHttpUrl = new StringBuilder(this.esUrl);
+        if (StringObjectUtils.isValid(this.optionalIndex) == Boolean.TRUE) {
+            baseEsHttpUrl.append(this.optionalIndex);
+        }
+
+        String baseEsUrl;
+        if (entity != null) {
+            baseEsUrl = entity.getBaseEsUrl(baseEsHttpUrl.toString());
+        } else {
+            baseEsUrl = baseEsHttpUrl.toString();
+        }
+
+        StringBuilder requestEsUrl = new StringBuilder(baseEsUrl);
         requestEsUrl.append("/_");
         requestEsUrl.append(command);
-        requestEsUrl.append("?pretty");
+        requestEsUrl.append("?");
+        requestEsUrl.append(IS_RESPONSE_JSON);
 
         return requestEsUrl.toString();
     }
 
-    private String requestToEsByHttp (HttpUriRequest httpUriRequest) throws Exception {
+    private String requestToEsByHttp (HttpRequestBase httpRequestBase) {
         HttpResponse httpResponse = null;
         try {
-            httpResponse = this.httpClient.execute(httpUriRequest);
+            httpResponse = this.httpClient.execute(httpRequestBase);
         } catch (IOException e) {
-            throw e;
+            this.logger.error("Sorry. something is wrong in Http Request. ("+e.toString()+")");
+            try {
+                httpRequestBase.releaseConnection();
+            } catch (Exception ignored) {}
         }
 
         try {
-            return EntityUtils.toString(httpResponse.getEntity(), Charset.forName("UTF-8"));
+            return EntityUtils.toString(httpResponse.getEntity(), Charset.forName(BASE_CHARSET));
         } catch (IOException e) {
-            throw e;
+            this.logger.error("Sorry. something is wrong in Parse on Http Response. ("+e.toString()+")");
+            return null;
+        } finally {
+            try {
+                httpRequestBase.releaseConnection();
+            } catch (Exception ignored) {}
         }
     }
 
@@ -162,7 +161,8 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     private void checkIndexAndGenerate (final IlluminatiEsModel entity) {
         Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.getMappingByIndex(entity), new TypeToken<Map<String, Object>>(){}.getType());
-        if (indexMappingResult.containsKey("status") == Boolean.TRUE) {
+        if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY) == Boolean.TRUE
+                && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE) == Boolean.TRUE) {
             this.saveToEs(entity.getBaseEsUrl(this.esUrl), entity.getIndexMapping());
         }
     }

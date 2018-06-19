@@ -65,7 +65,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
 
     @Override public void sendToNextStep(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
-        if (illuminatiDataInterfaceModelImpl.isValid() == false) {
+        if (illuminatiDataInterfaceModelImpl.isValid() == Boolean.FALSE) {
             illuminatiExecutorLogger.warn("illuminatiDataInterfaceModelImpl is not valid");
             return;
         }

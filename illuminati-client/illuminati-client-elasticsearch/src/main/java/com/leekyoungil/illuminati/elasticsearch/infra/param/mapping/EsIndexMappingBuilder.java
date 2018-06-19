@@ -1,7 +1,6 @@
 package com.leekyoungil.illuminati.elasticsearch.infra.param.mapping;
 
 import com.leekyoungil.illuminati.common.dto.enums.MappingType;
-import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +9,9 @@ public class EsIndexMappingBuilder {
 
     private final EsIndexMapping esIndexMapping;
     private String esDataType = "log";
+
+    private final static String PROPERTIES_KEY = "properties";
+    private final static String MAPPINGS_KEY = "mappings";
 
     private EsIndexMappingBuilder () {
         this.esIndexMapping = new EsIndexMapping();
@@ -31,13 +33,13 @@ public class EsIndexMappingBuilder {
 
     public Map<String, Object> build () {
         Map<String, Object> propertiesMap = new HashMap<String, Object>();
-        propertiesMap.put("properties", this.esIndexMapping.getMappingIndex());
+        propertiesMap.put(PROPERTIES_KEY, this.esIndexMapping.getMappingIndex());
 
         Map<String, Object> typeMap = new HashMap<String, Object>();
         typeMap.put(this.esDataType, propertiesMap);
 
         Map<String, Object> mappingResultMap = new HashMap<String, Object>();
-        mappingResultMap.put("mappings", typeMap);
+        mappingResultMap.put(MAPPINGS_KEY, typeMap);
 
         return mappingResultMap;
     }

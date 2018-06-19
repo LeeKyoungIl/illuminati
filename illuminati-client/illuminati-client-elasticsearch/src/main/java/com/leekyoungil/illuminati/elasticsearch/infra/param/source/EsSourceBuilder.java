@@ -20,7 +20,7 @@ public class EsSourceBuilder {
     }
 
     public EsSourceBuilder setSource (String column) {
-        if (StringObjectUtils.isValid(column) == false) {
+        if (StringObjectUtils.isValid(column) == Boolean.FALSE) {
             return this;
         }
         this.esSource.setSource(column);
@@ -28,7 +28,7 @@ public class EsSourceBuilder {
     }
 
     public EsSourceBuilder setSource (List<String> sources) {
-        if (CollectionUtils.isNotEmpty(sources) == true) {
+        if (CollectionUtils.isNotEmpty(sources) == Boolean.TRUE) {
             for (String source : sources) {
                 this.setSource(source);
             }

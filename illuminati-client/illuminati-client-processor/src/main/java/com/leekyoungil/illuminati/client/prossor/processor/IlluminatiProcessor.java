@@ -128,7 +128,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         String illuminatiExecuteMethod = "";
 
-        if (StringObjectUtils.isValid(checkChaosBomber) == true && "true".equals(checkChaosBomber.toLowerCase())) {
+        if (StringObjectUtils.isValid(checkChaosBomber) == Boolean.TRUE && "true".equals(checkChaosBomber.toLowerCase())) {
             illuminatiExecuteMethod = "ByChaosBomber";
         }
 
@@ -143,7 +143,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
-                + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp) == true) {\r\n"
+                + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp) == Boolean.TRUE) {\r\n"
                 + "             return pjp.proceed();\r\n"
                 + "         }\r\n"
                 + "         HttpServletRequest request = null;\r\n"

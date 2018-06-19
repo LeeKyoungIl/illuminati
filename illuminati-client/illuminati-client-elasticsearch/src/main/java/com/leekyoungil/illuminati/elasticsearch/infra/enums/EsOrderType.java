@@ -16,9 +16,9 @@ public enum EsOrderType {
     }
 
     public static EsOrderType getOrderType (String orderType) {
-        if ("asc".equalsIgnoreCase(orderType) == true) {
+        if ("asc".equalsIgnoreCase(orderType) == Boolean.TRUE) {
             return EsOrderType.ASC;
-        } else if ("asc".equalsIgnoreCase(orderType) == true) {
+        } else if ("asc".equalsIgnoreCase(orderType) == Boolean.TRUE) {
             return EsOrderType.DESC;
         } else {
             return null;

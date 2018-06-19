@@ -47,7 +47,7 @@ public class IlluminatiSwitch {
 
         Runnable runnable = new Runnable() {
             public void run() {
-                while (true) {
+                while (Boolean.TRUE) {
                     setIlluminatiSwitchValue(ILLUMINATI_SWITCH_HTTP.getByGetMethod());
 
                     try {

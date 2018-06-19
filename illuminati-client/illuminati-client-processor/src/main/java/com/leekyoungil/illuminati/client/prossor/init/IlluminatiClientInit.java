@@ -47,7 +47,7 @@ public class IlluminatiClientInit {
     static {
         IlluminatiCommon.init();
 
-        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == Boolean.TRUE) {
             ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
             ILLUMINATI_BACKUP_EXECUTOR.init();
         } else {
@@ -60,7 +60,7 @@ public class IlluminatiClientInit {
         ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
         ILLUMINATI_DATA_EXECUTOR.init();
 
-        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == Boolean.TRUE) {
             RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
             RESTORE_TEMPLATE_DATA.init();
         } else {
@@ -112,20 +112,20 @@ public class IlluminatiClientInit {
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == Boolean.TRUE) {
             return pjp.proceed();
         }
 
-        if (this.isOnIlluminatiSwitch() == false) {
+        if (this.isOnIlluminatiSwitch() == Boolean.FALSE) {
             return pjp.proceed();
         }
 
-        if (this.checkSamplingRate() == false) {
+        if (this.checkSamplingRate() == Boolean.FALSE) {
             ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
 
-        return addToQueue(pjp, request, false);
+        return addToQueue(pjp, request, Boolean.FALSE);
     }
 
     /**
@@ -138,19 +138,19 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == Boolean.TRUE) {
             return pjp.proceed();
         }
 
-        if (this.isOnIlluminatiSwitch() == false) {
+        if (this.isOnIlluminatiSwitch() == Boolean.FALSE) {
             return pjp.proceed();
         }
 
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-            return addToQueue(pjp, request, false);
+        if (IlluminatiConstant.ILLUMINATI_DEBUG == Boolean.FALSE) {
+            return addToQueue(pjp, request, Boolean.FALSE);
         }
 
-        return addToQueue(pjp, request, true);
+        return addToQueue(pjp, request, Boolean.TRUE);
     }
 
     // ################################################################################################################
@@ -158,7 +158,7 @@ public class IlluminatiClientInit {
     // ################################################################################################################
 
     private boolean isOnIlluminatiSwitch () {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
+        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == Boolean.TRUE && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == Boolean.FALSE) {
             ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
             return false;
         }
@@ -176,7 +176,7 @@ public class IlluminatiClientInit {
             throwable = (Throwable) originMethodExecute.get("throwable");
         }
 
-        if (isActiveChaosBomber == true && throwable == null && CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
+        if (isActiveChaosBomber == Boolean.TRUE && throwable == null && CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
             throwable = new Throwable("Illuminati ChaosBomber Exception Activate");
             request.setAttribute("ChaosBomber", "true");
         }

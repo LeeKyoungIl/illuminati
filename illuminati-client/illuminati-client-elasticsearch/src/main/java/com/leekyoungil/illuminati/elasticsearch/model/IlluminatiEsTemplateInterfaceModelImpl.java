@@ -79,10 +79,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             final String[] dateForIndex = IlluminatiConstant.DATE_FORMAT_EVENT.format(new Date()).split("T");
 
-            return new StringBuilder()
-                    .append(baseUrl)
-                    .append("/")
-                    .append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
+            return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
         } catch (Exception ex) {
             ES_CONSUMER_LOGGER.error("Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")");
             return null;
@@ -90,7 +87,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public String getEsUrl(final String baseUrl) {
-        String baseEsUrl = this.getBaseEsUrl(baseUrl);
+        final String baseEsUrl = this.getBaseEsUrl(baseUrl);
         if (StringObjectUtils.isValid(baseEsUrl) == Boolean.FALSE) {
             return null;
         }
@@ -112,7 +109,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public void setEsUserAuth (String esUserName, String esUserPass) {
-        if (StringObjectUtils.isValid(esUserName) == true && StringObjectUtils.isValid(esUserPass) == true) {
+        if (StringObjectUtils.isValid(esUserName) == Boolean.TRUE && StringObjectUtils.isValid(esUserPass) == Boolean.TRUE) {
             this.esUserName = esUserName;
             this.esUserPass = esUserPass;
         }
@@ -224,7 +221,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public boolean isSetUserAuth () {
-        if (StringObjectUtils.isValid(this.esUserName) == true && StringObjectUtils.isValid(this.esUserPass) == true) {
+        if (StringObjectUtils.isValid(this.esUserName) == Boolean.TRUE && StringObjectUtils.isValid(this.esUserPass) == Boolean.TRUE) {
             return true;
         }
 
@@ -232,7 +229,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public String getEsAuthString () {
-        if (this.isSetUserAuth() == true) {
+        if (this.isSetUserAuth() == Boolean.TRUE) {
             StringBuilder authInfo = new StringBuilder();
             authInfo.append(this.esUserName);
             authInfo.append(":");
@@ -259,7 +256,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     private void getMappingAnnotation (final Class<?> clazz, EsIndexMappingBuilder esIndexMappingBuilder) {
-        if ("java.lang.Object".equalsIgnoreCase(clazz.getName()) == true) {
+        if ("java.lang.Object".equalsIgnoreCase(clazz.getName()) == Boolean.TRUE) {
             return;
         }
 
@@ -275,7 +272,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             }
 
             if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {
-                if ("java.util.Map".equalsIgnoreCase(className) == false && "java.util.List".equalsIgnoreCase(className) == false) {
+                if ("java.util.Map".equalsIgnoreCase(className) == Boolean.FALSE && "java.util.List".equalsIgnoreCase(className) == Boolean.FALSE) {
                     final GroupMapping annotatedOnField = field.getAnnotation(GroupMapping.class);
                     esIndexMappingBuilder.setMapping(clazz.getSimpleName(), field.getName(), annotatedOnField.mappingType());
                 }

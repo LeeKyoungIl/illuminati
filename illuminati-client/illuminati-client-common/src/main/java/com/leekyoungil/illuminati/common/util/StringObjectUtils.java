@@ -151,7 +151,7 @@ public class StringObjectUtils {
             final StringWriter stringWriter = new StringWriter();
 
             final ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+            objectMapper.configure(SerializationFeature.INDENT_OUTPUT, Boolean.TRUE);
             objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
             objectMapper.writeValue(stringWriter, object);
 

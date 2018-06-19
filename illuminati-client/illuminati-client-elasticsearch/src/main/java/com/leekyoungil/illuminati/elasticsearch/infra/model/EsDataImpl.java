@@ -21,6 +21,13 @@ public class EsDataImpl implements EsData {
     private final String sourceData;
     private List<Map<String, Object>> sourceList;
 
+    private final static String AGGREGATIONS_KEYWORD = "aggregations";
+    private final static String HITS_KEYWORD = "hits";
+    private final static String MAX_SCORE_KEYWORD = "max_score";
+    private final static String SCORE_KEYWORD = "_score";
+    private final static String SOURCE_KEYWORD = "_source";
+    private final static String BUCKETS_KEYWORD = "buckets";
+
     private static final Map<String, String> RENAME_KEYS_FROM_ES = new HashMap<String, String>();
 
     static {
@@ -31,7 +38,7 @@ public class EsDataImpl implements EsData {
     }
 
     public EsDataImpl (final String sourceData) throws ValidationException {
-        if (StringObjectUtils.isValid(sourceData) == false) {
+        if (StringObjectUtils.isValid(sourceData) == Boolean.FALSE) {
             throw new ValidationException("source data is a required value.");
         }
 
@@ -41,8 +48,8 @@ public class EsDataImpl implements EsData {
 
     private void initEsData() {
         Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, new TypeToken<Map<String, Object>>(){}.getType());
-        if (resultMap.containsKey("aggregations") == true) {
-            this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get("aggregations"))));
+        if (resultMap.containsKey(AGGREGATIONS_KEYWORD) == Boolean.TRUE) {
+            this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(AGGREGATIONS_KEYWORD))));
         } else {
             this.initBasicSearchData(resultMap);
         }
@@ -54,30 +61,30 @@ public class EsDataImpl implements EsData {
 
     private void initAggregationData (Map<String, Object> resultMap) {
         for(String key : resultMap.keySet()) {
-            this.sourceList = (List<Map<String, Object>>) (ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(key)))).get("buckets");
+            this.sourceList = (List<Map<String, Object>>) (ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(key)))).get(BUCKETS_KEYWORD);
         }
     }
 
     private void initBasicSearchData (Map<String, Object> resultMap) {
-        if (resultMap.containsKey("hits") == false) {
+        if (resultMap.containsKey(HITS_KEYWORD) == Boolean.FALSE) {
             return;
         }
-        Map<String, Object> bufEsDataMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get("hits")));
-        if (bufEsDataMap.containsKey("hits") == false) {
+        Map<String, Object> bufEsDataMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(HITS_KEYWORD)));
+        if (bufEsDataMap.containsKey(HITS_KEYWORD) == Boolean.FALSE) {
             return;
         }
-        if (bufEsDataMap.containsKey("max_score") == true) {
-            bufEsDataMap.remove("max_score");
+        if (bufEsDataMap.containsKey(MAX_SCORE_KEYWORD) == Boolean.TRUE) {
+            bufEsDataMap.remove(MAX_SCORE_KEYWORD);
         }
-        List<Map<String, Object>> mapList = (List<Map<String, Object>>) bufEsDataMap.get("hits");
-        if (CollectionUtils.isEmpty(mapList) == true) {
+        List<Map<String, Object>> mapList = (List<Map<String, Object>>) bufEsDataMap.get(HITS_KEYWORD);
+        if (CollectionUtils.isEmpty(mapList) == Boolean.TRUE) {
             return;
         }
         this.sourceList = new ArrayList<Map<String, Object>>();
         for (Map<String, Object> map : mapList) {
-            Map<String, Object> source = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(map.get("_source")));
-            if (map.containsKey("_source") == true && source.size() > 0) {
-                map.remove("_score");
+            Map<String, Object> source = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(map.get(SOURCE_KEYWORD)));
+            if (map.containsKey(SOURCE_KEYWORD) == Boolean.TRUE && source.size() > 0) {
+                map.remove(SCORE_KEYWORD);
                 this.renameKeys(map);
                 this.sourceList.add(map);
             }
@@ -86,7 +93,7 @@ public class EsDataImpl implements EsData {
 
     private void renameKeys (Map<String, Object> targetMap) {
         for (String key : RENAME_KEYS_FROM_ES.keySet()) {
-            if (targetMap.containsKey(key) == true) {
+            if (targetMap.containsKey(key) == Boolean.TRUE) {
                 targetMap.put(RENAME_KEYS_FROM_ES.get(key), targetMap.get(key));
                 targetMap.remove(key);
             }
