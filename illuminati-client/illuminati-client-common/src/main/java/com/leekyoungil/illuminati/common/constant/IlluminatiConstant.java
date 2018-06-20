@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiStorageType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiJsonCodeProperties;
 import com.leekyoungil.illuminati.common.util.PropertiesUtil;
 
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -63,4 +65,6 @@ abstract public class IlluminatiConstant {
     public final static ObjectMapper BASIC_OBJECT_MAPPER = new ObjectMapper();
 
     public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(IlluminatiJsonCodeProperties.class, "jsonStatusCode");
+
+    public final static Type TYPE_FOR_TYPE_TOKEN = new TypeToken<Map<String, Object>>(){}.getType();
 }

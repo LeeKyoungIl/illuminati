@@ -160,7 +160,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             Map<String, Object> tmpResultData = null;
             try {
-                tmpResultData = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, new TypeToken<Map<String, Object>>(){}.getType());
+                tmpResultData = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
             } catch (Exception ex) {
                 ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. ("+ex.toString()+")");
             }

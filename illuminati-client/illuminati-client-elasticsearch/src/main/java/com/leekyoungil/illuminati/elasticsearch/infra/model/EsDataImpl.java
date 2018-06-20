@@ -47,7 +47,7 @@ public class EsDataImpl implements EsData {
     }
 
     private void initEsData() {
-        Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, new TypeToken<Map<String, Object>>(){}.getType());
+        Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
         if (resultMap.containsKey(AGGREGATIONS_KEYWORD)) {
             this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(AGGREGATIONS_KEYWORD))));
         } else {
