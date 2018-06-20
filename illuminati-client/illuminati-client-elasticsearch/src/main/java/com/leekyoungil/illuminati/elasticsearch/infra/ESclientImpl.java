@@ -1,13 +1,16 @@
 package com.leekyoungil.illuminati.elasticsearch.infra;
 
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonSyntaxException;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.model.IlluminatiEsModel;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.message.BasicStatusLine;
@@ -160,10 +163,12 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     private void checkIndexAndGenerate (final IlluminatiEsModel entity) {
-        Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.getMappingByIndex(entity), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
-        if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY)
-                && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE)) {
-            this.saveToEs(entity.getBaseEsUrl(this.esUrl), entity.getIndexMapping());
-        }
+        try {
+            Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.getMappingByIndex(entity), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
+            if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY)
+                    && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE)) {
+                this.saveToEs(entity.getBaseEsUrl(this.esUrl), entity.getIndexMapping());
+            }
+        } catch (JsonSyntaxException ignore) {}
     }
 }

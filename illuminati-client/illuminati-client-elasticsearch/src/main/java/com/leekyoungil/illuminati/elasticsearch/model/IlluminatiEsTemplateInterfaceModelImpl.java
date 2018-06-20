@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.elasticsearch.model;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
@@ -161,8 +162,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             Map<String, Object> tmpResultData = null;
             try {
                 tmpResultData = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
-            } catch (Exception ex) {
-                ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. ("+ex.toString()+")");
+            } catch (JsonSyntaxException ex) {
+                ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. - JsonSyntaxException ("+ex.toString()+")");
             }
 
             final String resultKey = "result";
@@ -231,7 +232,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         if (StringObjectUtils.isValid(this.esUserName) && StringObjectUtils.isValid(this.esUserPass)) {
             return true;
         }
-
         return false;
     }
 
@@ -271,11 +271,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             String className = field.getType().getName();
             if (className.contains(this.mappingTargetPackageName)) {
                 try {
-                    Class<?> memberClass = Class.forName(className);
-                    this.getMappingAnnotation(memberClass, esIndexMappingBuilder);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                    this.getMappingAnnotation(Class.forName(className), esIndexMappingBuilder);
+                } catch (ClassNotFoundException ignored) {}
             }
 
             if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {

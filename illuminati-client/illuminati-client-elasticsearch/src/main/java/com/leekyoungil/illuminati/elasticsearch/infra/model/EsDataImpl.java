@@ -1,5 +1,6 @@
 package com.leekyoungil.illuminati.elasticsearch.infra.model;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.util.ConvertUtil;
@@ -47,11 +48,15 @@ public class EsDataImpl implements EsData {
     }
 
     private void initEsData() {
-        Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
-        if (resultMap.containsKey(AGGREGATIONS_KEYWORD)) {
-            this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(AGGREGATIONS_KEYWORD))));
-        } else {
-            this.initBasicSearchData(resultMap);
+        try {
+            Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
+            if (resultMap.containsKey(AGGREGATIONS_KEYWORD)) {
+                this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(AGGREGATIONS_KEYWORD))));
+            } else {
+                this.initBasicSearchData(resultMap);
+            }
+        } catch (JsonSyntaxException ex) {
+            this.logger.error("Failed to Read json - JsonSyntaxException ", ex.getMessage());
         }
     }
 

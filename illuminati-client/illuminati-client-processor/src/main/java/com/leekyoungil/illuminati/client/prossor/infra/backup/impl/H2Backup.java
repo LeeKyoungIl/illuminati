@@ -1,9 +1,11 @@
 package com.leekyoungil.illuminati.client.prossor.infra.backup.impl;
 
+import com.google.gson.JsonSyntaxException;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.enums.TableDDLType;
 import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiH2Properties;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiCommonProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
@@ -20,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.ILLUMINATI_GSON_OBJ;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
@@ -139,7 +139,11 @@ public class H2Backup<T> implements Backup<T> {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 idList.add(rs.getInt("ID"));
-                dataList.add(ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                try {
+                    dataList.add(IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                } catch (JsonSyntaxException ex) {
+                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getMessage());
+                }
             }
             rs.close();
             preparedStatement.close();
@@ -170,7 +174,11 @@ public class H2Backup<T> implements Backup<T> {
             PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                dataMap.put(rs.getInt("ID"), ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                try {
+                    dataMap.put(rs.getInt("ID"), IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                } catch (JsonSyntaxException ex) {
+                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getMessage());
+                }
             }
             rs.close();
             preparedStatement.close();
