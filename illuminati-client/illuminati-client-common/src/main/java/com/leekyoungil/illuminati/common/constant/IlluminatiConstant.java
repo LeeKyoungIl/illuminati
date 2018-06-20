@@ -67,4 +67,6 @@ abstract public class IlluminatiConstant {
     public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(IlluminatiJsonCodeProperties.class, "jsonStatusCode");
 
     public final static Type TYPE_FOR_TYPE_TOKEN = new TypeToken<Map<String, Object>>(){}.getType();
+
+    public final static String BASE_CHARSET = "UTF-8";
 }

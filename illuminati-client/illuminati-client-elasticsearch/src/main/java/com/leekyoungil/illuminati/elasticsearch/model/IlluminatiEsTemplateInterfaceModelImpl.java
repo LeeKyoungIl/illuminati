@@ -49,8 +49,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     private String esUserName;
     private String esUserPass;
 
-    private final String encodingCharset = "UTF-8";
-
     private final String objectPackageName = "java.lang.Object";
     private final String mapPackageName = "java.util.Map";
     private final String listPackageName = "java.util.List";
@@ -130,7 +128,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
         if (StringObjectUtils.isValid(postContentBody)) {
             try {
-                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, this.encodingCharset).split("&");
+                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, IlluminatiConstant.BASE_CHARSET).split("&");
 
                 if (postContentBodyArray.length > 0) {
                     this.postContentResultData = new HashMap<String, String>();
@@ -242,8 +240,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             authInfo.append(":");
             authInfo.append(this.esUserPass);
 
-            byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(this.encodingCharset))));
-            return new String(credentials, Charset.forName(this.encodingCharset));
+            byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(IlluminatiConstant.BASE_CHARSET))));
+            return new String(credentials, Charset.forName(IlluminatiConstant.BASE_CHARSET));
         }
 
         return null;

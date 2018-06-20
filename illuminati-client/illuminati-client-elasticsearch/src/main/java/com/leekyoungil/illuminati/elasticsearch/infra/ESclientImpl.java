@@ -29,16 +29,11 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final HttpVersion httpVersion = HttpVersion.HTTP_1_1;
-    private final int errorCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-    private final ContentType contentType = ContentType.APPLICATION_JSON;
-
     private HttpClient httpClient;
     private String esUrl;
     private String optionalIndex = "";
     private String esAuthString;
 
-    private final static String BASE_CHARSET = "UTF-8";
     private final static String IS_RESPONSE_JSON = "pretty";
 
     private final static String INDEX_IS_NOT_EXISTS_STATUS_OF_KEY = "status";
@@ -88,7 +83,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         }
 
         if (httpResponse == null) {
-            httpResponse = getHttpResponseByData(this.errorCode, "Sorry. something is wrong in Http Request.");
+            httpResponse = getHttpResponseByData(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Sorry. something is wrong in Http Request.");
         }
 
         return httpResponse;
@@ -142,7 +137,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         }
 
         try {
-            return EntityUtils.toString(httpResponse.getEntity(), Charset.forName(BASE_CHARSET));
+            return EntityUtils.toString(httpResponse.getEntity(), Charset.forName(IlluminatiConstant.BASE_CHARSET));
         } catch (IOException e) {
             this.logger.error("Sorry. something is wrong in Parse on Http Response. ("+e.toString()+")");
             return null;
@@ -154,12 +149,12 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     private HttpEntity getHttpEntity(final String entityString) {
-        return EntityBuilder.create().setText(entityString).setContentType(this.contentType).build();
+        return EntityBuilder.create().setText(entityString).setContentType(ContentType.APPLICATION_JSON).build();
     }
 
     private HttpResponse getHttpResponseByData (final int httpStatus, final String message) {
         HttpResponseFactory factory = new DefaultHttpResponseFactory();
-        return factory.newHttpResponse(new BasicStatusLine(this.httpVersion, httpStatus, message), null);
+        return factory.newHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, httpStatus, message), null);
     }
 
     private void checkIndexAndGenerate (final IlluminatiEsModel entity) {

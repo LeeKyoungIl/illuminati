@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class StringObjectUtils {
             GZIPOutputStream stream = new GZIPOutputStream(bos);
             byte[] bytes;
             try {
-                bytes = message.getBytes("UTF-8");
+                bytes = message.getBytes(IlluminatiConstant.BASE_CHARSET);
             } catch (UnsupportedEncodingException e) {
                 STRINGUTIL_LOGGER.error("No UTF-8 support available. ("+e.toString()+")");
                 throw new RuntimeException("No UTF-8 support available.", e);
@@ -64,7 +65,7 @@ public class StringObjectUtils {
         }
         if (isCompressed(compressed)) {
             final GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(compressed));
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gis, IlluminatiConstant.BASE_CHARSET));
 
             String line;
             while ((line = bufferedReader.readLine()) != null) {
@@ -81,9 +82,8 @@ public class StringObjectUtils {
     }
 
     public static String getPostBodyString (HttpServletRequest request) throws IOException {
-        final String charset = "UTF-8";
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final Writer writer = new OutputStreamWriter(bos, charset);
+        final Writer writer = new OutputStreamWriter(bos, IlluminatiConstant.BASE_CHARSET);
         final Map<String, String[]> form = request.getParameterMap();
 
         for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext();) {
@@ -92,11 +92,11 @@ public class StringObjectUtils {
 
             for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext();) {
                 final String value = valueIterator.next();
-                writer.write(URLEncoder.encode(name, charset));
+                writer.write(URLEncoder.encode(name, IlluminatiConstant.BASE_CHARSET));
 
                 if (value != null) {
                     writer.write('=');
-                    writer.write(URLEncoder.encode(value, charset));
+                    writer.write(URLEncoder.encode(value, IlluminatiConstant.BASE_CHARSET));
 
                     if (valueIterator.hasNext()) {
                         writer.write('&');
@@ -109,7 +109,7 @@ public class StringObjectUtils {
         }
         writer.flush();
 
-        return new String(bos.toByteArray(), charset);
+        return new String(bos.toByteArray(), IlluminatiConstant.BASE_CHARSET);
     }
 
     public static String getExceptionMessageChain (Throwable throwable) {
@@ -177,7 +177,7 @@ public class StringObjectUtils {
 
     public static byte[] encode (final char[] charArray){
         try {
-            final CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
+            final CharsetEncoder encoder = Charset.forName(IlluminatiConstant.BASE_CHARSET).newEncoder();
             final ByteBuffer bb = encoder.encode(CharBuffer.wrap(charArray));
 
             final byte[] ba=new byte[bb.limit()];
