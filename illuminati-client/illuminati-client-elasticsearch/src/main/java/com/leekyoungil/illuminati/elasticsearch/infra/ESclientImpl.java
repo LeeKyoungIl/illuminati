@@ -89,11 +89,11 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return httpResponse;
     }
 
-    @Override public String getDataByJson(final IlluminatiEsModel entity, final String jsonRequestString) {
+    @Override public String getDataByJson(final String jsonRequestString) {
         if (StringObjectUtils.isValid(jsonRequestString) == false) {
             return null;
         }
-        final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(entity, ES_SEARCH_KEYWORD));
+        final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(ES_SEARCH_KEYWORD));
         ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(jsonRequestString));
 
         return this.requestToEsByHttp(httpPostRequest);
@@ -103,19 +103,24 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return this.requestToEsByHttp(new HttpGet(this.getRequestUrl(entity, ES_MAPPING_KEYWORD)));
     }
 
+    private String getRequestUrl (String command) {
+        return this.generateRequestUrl(this.getBaseEsHttpUrl(), command);
+    }
+
     private String getRequestUrl (final IlluminatiEsModel entity, String command) {
+        return this.generateRequestUrl(entity.getBaseEsUrl(this.getBaseEsHttpUrl()), command);
+    }
+
+    private String getBaseEsHttpUrl () {
         StringBuilder baseEsHttpUrl = new StringBuilder(this.esUrl);
         if (StringObjectUtils.isValid(this.optionalIndex)) {
             baseEsHttpUrl.append(this.optionalIndex);
         }
 
-        String baseEsUrl;
-        if (entity != null) {
-            baseEsUrl = entity.getBaseEsUrl(baseEsHttpUrl.toString());
-        } else {
-            baseEsUrl = baseEsHttpUrl.toString();
-        }
+        return baseEsHttpUrl.toString();
+    }
 
+    private String generateRequestUrl (String baseEsUrl, String command) {
         StringBuilder requestEsUrl = new StringBuilder(baseEsUrl);
         requestEsUrl.append("/_");
         requestEsUrl.append(command);

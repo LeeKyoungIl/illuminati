@@ -43,7 +43,7 @@ class EsClientTest extends Specification {
         esClient.setOptionalIndex("sample-illuminati*");
 
         when:
-        String data = esClient.getDataByJson(null, queryString);
+        String data = esClient.getDataByJson(queryString);
 
         then:
         data != null;
@@ -67,7 +67,7 @@ class EsClientTest extends Specification {
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByJson(null, queryString);
+        String data = esClient.getDataByJson(queryString);
 
         when:
         EsData esData = new EsDataImpl(data);
@@ -107,7 +107,7 @@ class EsClientTest extends Specification {
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByJson(null, queryString);
+        String data = esClient.getDataByJson(queryString);
 
         when:
         EsData esData = new EsDataImpl(data);
@@ -139,7 +139,7 @@ class EsClientTest extends Specification {
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByJson(null, queryString);
+        String data = esClient.getDataByJson(queryString);
 
         when:
 
@@ -169,7 +169,7 @@ class EsClientTest extends Specification {
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByJson(null, queryString);
+        String data = esClient.getDataByJson(queryString);
 
         when:
 
@@ -223,7 +223,7 @@ class EsClientTest extends Specification {
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByJson(null, jsonString);
+        String data = esClient.getDataByJson(jsonString);
 
         EsData esData = new EsDataImpl(data);
         List<Map<String, Object>> resultList = esData.getEsDataList();
@@ -269,7 +269,7 @@ class EsClientTest extends Specification {
 
         EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
         esClient.setOptionalIndex("sample-illuminati*");
-        String data = esClient.getDataByJson(null, queryString);
+        String data = esClient.getDataByJson(queryString);
 
         when:
 
