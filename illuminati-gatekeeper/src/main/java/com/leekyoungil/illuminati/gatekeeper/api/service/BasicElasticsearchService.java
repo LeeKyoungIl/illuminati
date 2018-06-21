@@ -14,7 +14,7 @@ import java.util.Map;
 
 public abstract class BasicElasticsearchService {
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final static SimpleDateFormat SIMPLE_DATA_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final EsClient eSclient;
 
@@ -22,7 +22,7 @@ public abstract class BasicElasticsearchService {
         this.eSclient = eSclient;
     }
 
-    protected List<Map<String, Object>> requestToElasticsearch (String jsonString) {
+    List<Map<String, Object>> requestToElasticsearch(String jsonString) {
         List<Map<String, Object>> resultList = null;
 
         try {
@@ -31,7 +31,6 @@ public abstract class BasicElasticsearchService {
             resultList = esData.getEsDataList();
 
             for (Map<String, Object> data : resultList) {
-                Map<String, Object> checkResultMap = data;
                 if (data.containsKey("source")) {
                     this.convertJsonTimestampToDate(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(data.get("source"))));
                 }

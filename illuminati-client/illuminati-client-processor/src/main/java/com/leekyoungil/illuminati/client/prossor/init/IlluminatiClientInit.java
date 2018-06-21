@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IlluminatiClientInit {
 
-    private static final Logger ILLUMINATI_INIT_LOGGER = LoggerFactory.getLogger(IlluminatiClientInit.class);
+    private final Logger illuminatiInitLogger = LoggerFactory.getLogger(IlluminatiClientInit.class);
 
     private static IlluminatiClientInit ILLUMINATI_CLIENT_INIT_INSTANCE;
 
@@ -100,15 +100,9 @@ public class IlluminatiClientInit {
                 illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
             }
 
-            if (illuminati == null) {
-                return true;
-            }
-
-            return illuminati.ignore();
-        } catch (Exception ex) {
-            // ignore
-            return true;
-        }
+            return illuminati != null ? illuminati.ignore() : true;
+        } catch (Exception ignore) {}
+        return true;
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
@@ -121,7 +115,7 @@ public class IlluminatiClientInit {
         }
 
         if (this.checkSamplingRate() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
+            this.illuminatiInitLogger.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
 
@@ -159,7 +153,7 @@ public class IlluminatiClientInit {
 
     private boolean isOnIlluminatiSwitch () {
         if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION  && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
+            this.illuminatiInitLogger.debug("illuminati processor is now off.");
             return false;
         }
 
@@ -214,7 +208,7 @@ public class IlluminatiClientInit {
             originMethodExecute.put("result", pjp.proceed());
         } catch (Throwable ex) {
             originMethodExecute.put("throwable", ex);
-            ILLUMINATI_INIT_LOGGER.error("error : check your process. ("+ex.toString()+")");
+            this.illuminatiInitLogger.error("error : check your process. ("+ex.toString()+")");
             originMethodExecute.put("result", StringObjectUtils.getExceptionMessageChain(ex));
         }
 

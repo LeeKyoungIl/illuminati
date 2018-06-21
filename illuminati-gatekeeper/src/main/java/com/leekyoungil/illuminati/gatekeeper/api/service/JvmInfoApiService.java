@@ -7,11 +7,9 @@ import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsQueryType;
 import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsParam;
 import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQueryBuilder;
 import com.leekyoungil.illuminati.elasticsearch.infra.param.sort.EsSortBuilder;
-import com.leekyoungil.illuminati.elasticsearch.infra.param.source.EsSource;
 import com.leekyoungil.illuminati.elasticsearch.infra.param.source.EsSourceBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,23 +54,24 @@ public class JvmInfoApiService extends BasicElasticsearchService {
 
     private String generateQueryForEs (RequestEsParam requestEsParam, Map<String, Object> param) {
         if (param != null && param.size() > 0) {
-            if (param.containsKey("size")) {
-                requestEsParam.setSize((int)param.get("size"));
+            final String sizeKey = "size", fromKey = "from", sortKey = "sort", matchKey = "match";
+            if (param.containsKey(sizeKey)) {
+                requestEsParam.setSize((int)param.get(sizeKey));
             }
-            if (param.containsKey("from")) {
-                requestEsParam.setFrom((int)param.get("from"));
+            if (param.containsKey(fromKey)) {
+                requestEsParam.setFrom((int)param.get(fromKey));
             }
-            if (param.containsKey("sort")) {
+            if (param.containsKey(sortKey)) {
                 final EsSortBuilder esSortBuilder = EsSortBuilder.Builder();
-                ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get("sort"))).forEach((k, v) -> {
+                ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get(sortKey))).forEach((k, v) -> {
                     esSortBuilder.setSort(EsOrderType.class.cast(v), k);
                 });
 
                 requestEsParam.setSort(esSortBuilder.build());
             }
-            if (param.containsKey("match")) {
+            if (param.containsKey(matchKey)) {
                 final EsQueryBuilder esQueryBuilder = EsQueryBuilder.Builder();
-                Map<String, Object> match = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get("match")));
+                Map<String, Object> match = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(param.get(matchKey)));
                 if (match != null && match.size() > 0) {
                     esQueryBuilder.setQueryType(EsQueryType.MATCH);
                     match.forEach((k, v) -> {
@@ -85,8 +84,6 @@ public class JvmInfoApiService extends BasicElasticsearchService {
             }
         }
 
-        String jsonQuery = requestEsParam.build();
-
-        return jsonQuery;
+        return requestEsParam.build();
     }
 }
