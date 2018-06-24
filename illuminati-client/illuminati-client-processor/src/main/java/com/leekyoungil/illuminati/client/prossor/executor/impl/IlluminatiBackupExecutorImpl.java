@@ -26,14 +26,14 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
     private static final int ILLUMINATI_BAK_LOG = 100000;
-    private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000;
-    private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000;
+    private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000L;
+    private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000L;
 
     // ################################################################################################################
     // ### init illuminati file backup queue                                                                        ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1000;
-    private static final long BACKUP_THREAD_SLEEP_TIME = 300000l;
+    private static final long BACKUP_THREAD_SLEEP_TIME = 300000L;
 
     private static final Backup<IlluminatiInterfaceModel> ILLUMINATI_BACKUP = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
 

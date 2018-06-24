@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class RequestGeneralModel {
 
     @Expose private String clientIp;
     @Expose private String methodName;
-    @Expose private String methodParams;
+    @Expose private Map<String, Object> methodParams;
     @Expose private String path;
     @Expose private String anotherPath;
     @Expose private String queryString;
@@ -99,23 +100,14 @@ public class RequestGeneralModel {
         // if java8 : StringJoin....
         try {
             if (paramNames != null && paramValues != null) {
+                Map<String, Object> paramMap = new HashMap<String, Object>();
                 final String[] param = new String[paramNames.length];
                 for (int i=0; i<paramNames.length; i++) {
-                    final StringBuilder tmpParams = new StringBuilder();
-                    tmpParams.append(paramNames[i]);
-                    tmpParams.append(" : ");
-
-                    String paramValue = StringObjectUtils.objectToString(paramValues[i]);
-
-                    if (StringObjectUtils.isValid(paramValue)) {
-                        tmpParams.append(paramValue);
-                    }
-
-                    param[i] = tmpParams.toString();
+                    paramMap.put(paramNames[i], paramValues[i]);
                 }
 
-                if (param.length > 0) {
-                    this.methodParams = StringUtils.join(param, ", ");
+                if (paramMap.size() > 0) {
+                    this.methodParams = paramMap;
                 }
             }
         } catch (Exception ex) {

@@ -26,7 +26,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### init illuminati template queue                                                                           ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1;
-    private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0l;
+    private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0L;
 
     // ################################################################################################################
     // ### init illuminati backup executor                                                                        ###
@@ -37,7 +37,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
-    private final long BROKER_HEALTH_CHECK_TIME = 300000l;
+    private final long BROKER_HEALTH_CHECK_TIME = 300000L;
 
     private IlluminatiShutdownHandler illuminatiShutdownHandler;
 

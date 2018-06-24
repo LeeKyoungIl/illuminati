@@ -20,7 +20,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 
-    private long enQueuingTimeout = 0l;
+    private final long enQueuingTimeout;
 
     public abstract void sendToNextStep(final T t);
     protected abstract void sendToNextStepByDebug(final T t);

@@ -23,7 +23,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ### init illuminati data queue                                                                               ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1;
-    private static final long ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS = 0l;
+    private static final long ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS = 0L;
 
     // ################################################################################################################
     // ### init illuminati template executor                                                                        ###
@@ -78,10 +78,10 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
 
     private void addDataOnIlluminatiModel (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
-        illuminatiTemplateInterfaceModelImpl.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO);
-        illuminatiTemplateInterfaceModelImpl.initBasicJvmInfo(JVM_INFO);
-        illuminatiTemplateInterfaceModelImpl.addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo());
-        illuminatiTemplateInterfaceModelImpl.setJavascriptUserAction();
+        illuminatiTemplateInterfaceModelImpl.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO)
+                .initBasicJvmInfo(JVM_INFO)
+                .addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo())
+                .setJavascriptUserAction();
     }
 
     private void sendToIlluminatiTemplateQueue (final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {

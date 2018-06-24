@@ -1,8 +1,6 @@
 package com.leekyoungil.illuminati.elasticsearch.model;
 
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
-import com.google.gson.reflect.TypeToken;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.GroupMapping;
 import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
@@ -39,7 +37,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();
 
     @Expose private Settings settings;
-    @Expose private Object resultData;
     @Expose private Map<String, String> postContentResultData;
 
     @Expose private Map<String, String> clientBrower;
@@ -65,7 +62,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     @Override public String getJsonString () {
         this.settings = new Settings(this.getEsDocumentAnnotation().indexStoreType().getType());
 
-        this.setResultData();
         this.setUserAgent();
         this.setPostContentResultData();
 
@@ -143,35 +139,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
                 }
             } catch (Exception ex) {
                 ES_CONSUMER_LOGGER.error("Sorry. an error occurred during parsing of post content. ("+ex.toString()+")");
-            }
-        }
-    }
-
-    private void setResultData () {
-        if (this.output != null) {
-            if (!(this.output instanceof String)) {
-                this.output = IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.output);
-            }
-
-            if (!StringObjectUtils.isValid((String) this.output)) {
-                return;
-            }
-
-            Map<String, Object> tmpResultData = null;
-            try {
-                tmpResultData = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
-            } catch (JsonSyntaxException ex) {
-                ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. - JsonSyntaxException ("+ex.toString()+")");
-            }
-
-            final String resultKey = "result";
-
-            if (tmpResultData != null && tmpResultData.containsKey(resultKey) && tmpResultData.get(resultKey) != null) {
-                this.resultData = tmpResultData.get(resultKey);
-                // ignore output json
-                this.output = null;
-            } else {
-                ES_CONSUMER_LOGGER.debug("Sorry. 'output' key of map is not exists.");
             }
         }
     }
