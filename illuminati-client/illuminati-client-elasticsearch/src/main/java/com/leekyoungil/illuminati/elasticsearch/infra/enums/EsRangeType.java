@@ -20,11 +20,11 @@ public enum EsRangeType {
     public static EsRangeType getRangeType (String rangeType) {
         if ("gt".equalsIgnoreCase(rangeType)) {
             return EsRangeType.GT;
-        } else if ("gt".equalsIgnoreCase(rangeType)) {
+        } else if ("lt".equalsIgnoreCase(rangeType)) {
             return EsRangeType.LT;
-        } else if ("gt".equalsIgnoreCase(rangeType)) {
+        } else if ("gte".equalsIgnoreCase(rangeType)) {
             return EsRangeType.GTE;
-        } else if ("gt".equalsIgnoreCase(rangeType)) {
+        } else if ("lte".equalsIgnoreCase(rangeType)) {
             return EsRangeType.LTE;
         } else {
             return null;
