@@ -11,56 +11,39 @@ Array.prototype.contains = function(obj) {
 var jvm = {
     requestUrl: "/api/v1/jvmInfo",
 
-    init: function () {
-        var data = {
-            var data = {
-                esOrderType : 'asc',
-                size : 30,
-                from : 0,
+    chartUpdate : function (data) {
+        var jvmFreeChart = {};
+        jvmFreeChart['date'] = [];
+        jvmFreeChart['label'] = [];
 
-            };
-        };
+        var jvmUsedChart = {};
+        jvmUsedChart['data'] = [];
+        jvmUsedChart['label'] = [];
+        for (var i = 0; i < data.length; i++) {
+            var dataSource = data[i].source;
+            jvmUsedChart['data'][jvmUsedChart['data'].length] = dataSource.jvmInfo.jvmUsedMemory;
+            jvmUsedChart['label'][jvmUsedChart['label'].length] = dataSource.timestamp;
 
-        $.ajax({
-            url: this.requestUrl,
-            method: 'POST',
-            contentType: "application/json",
-            async: true,
-            success: function (data) {
-                var jvmFreeChart = {};
-                jvmFreeChart['date'] = [];
-                jvmFreeChart['label'] = [];
+            jvmFreeChart['date'][jvmFreeChart['date'].length] = dataSource.jvmInfo.jvmFreeMemory;
+            jvmFreeChart['label'][jvmFreeChart['label'].length] = dataSource.timestamp;
+        }
 
-                var jvmUsedChart = {};
-                jvmUsedChart['data'] = [];
-                jvmUsedChart['label'] = [];
-                for (var i = 0; i < data.length; i++) {
-                    var dataSource = data[i].source;
-                    jvmUsedChart['data'][jvmUsedChart['data'].length] = dataSource.jvmInfo.jvmUsedMemory;
-                    jvmUsedChart['label'][jvmUsedChart['label'].length] = dataSource.timestamp;
+        var drawChartData = [];
+        drawChartData[0] = {};
+        drawChartData[0]['label'] = jvmUsedChart['label'];
+        drawChartData[0]['data'] = jvmUsedChart['data']
+        drawChartData[1] = {};
+        drawChartData[1]['label'] = jvmFreeChart['label'];
+        drawChartData[1]['data'] = jvmFreeChart['date'];
 
-                    jvmFreeChart['date'][jvmFreeChart['date'].length] = dataSource.jvmInfo.jvmFreeMemory;
-                    jvmFreeChart['label'][jvmFreeChart['label'].length] = dataSource.timestamp;
-                }
+        Chart.helpers.each(Chart.instances, function (chart, index) {
+            chart.data.labels = drawChartData[index].label;
 
-                var drawChartData = [];
-                drawChartData[0] = {};
-                drawChartData[0]['label'] = jvmUsedChart['label'];
-                drawChartData[0]['data'] = jvmUsedChart['data']
-                drawChartData[1] = {};
-                drawChartData[1]['label'] = jvmFreeChart['label'];
-                drawChartData[1]['data'] = jvmFreeChart['date'];
+            chart.data.datasets.forEach(function (dataset) {
+                dataset.data = drawChartData[index].data;
+            });
 
-                Chart.helpers.each(Chart.instances, function (chart, index) {
-                    chart.data.labels = drawChartData[index].label;
-
-                    chart.data.datasets.forEach(function (dataset) {
-                        dataset.data = drawChartData[index].data;
-                    });
-
-                    chart.update();
-                });
-            }
+            chart.update();
         });
     },
 
@@ -103,7 +86,7 @@ var jvm = {
     getJvmInfo : function (hostName) {
         var data = {
             esOrderType : 'desc',
-            size : 1,
+            size : 10,
             from : 0,
             hostName: hostName
         };
@@ -116,13 +99,15 @@ var jvm = {
             data: JSON.stringify(data),
             success: function (data) {
                 if (data != null) {
-                    data = data[0].source.jvmInfo;
-                    for (var key in data) {
+                    var tmpData = data[0].source.jvmInfo;
+                    for (var key in tmpData) {
                         var jvmInfoObj = $('#'+key);
                         if (jvmInfoObj != null && jvmInfoObj.length > 0) {
-                            jvmInfoObj.text(data[key]);
+                            jvmInfoObj.text(tmpData[key]);
                         }
                     }
+
+                    jvm.chartUpdate(data);
                 }
             }
         });

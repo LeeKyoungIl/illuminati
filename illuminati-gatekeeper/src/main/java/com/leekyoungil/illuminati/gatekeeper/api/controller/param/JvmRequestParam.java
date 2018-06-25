@@ -52,7 +52,7 @@ public class JvmRequestParam {
         }
         if (StringObjectUtils.isValid(this.hostName)) {
             Map<String, Object> match = new HashMap<>();
-            match.put("hostName", hostName);
+            match.put("serverInfo.hostName", hostName);
             param.put("match", match);
         }
 

@@ -30,9 +30,13 @@ public abstract class BasicElasticsearchService {
             EsData esData = new EsDataImpl(returnData);
             resultList = esData.getEsDataList();
 
-            for (Map<String, Object> data : resultList) {
-                if (data.containsKey("source")) {
-                    this.convertJsonTimestampToDate(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(data.get("source"))));
+            if (resultList == null) {
+                return null;
+            } else {
+                for (Map<String, Object> data : resultList) {
+                    if (data.containsKey("source")) {
+                        this.convertJsonTimestampToDate(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(data.get("source"))));
+                    }
                 }
             }
         } catch (Exception ex) {

@@ -80,7 +80,7 @@ public class JvmInfoApiService extends BasicElasticsearchService {
                 } else {
                     esQueryBuilder.setQueryType(EsQueryType.MATCH_ALL);
                 }
-                requestEsParam.setQuery(match);
+                requestEsParam.setQuery(esQueryBuilder.build());
             }
         }
 

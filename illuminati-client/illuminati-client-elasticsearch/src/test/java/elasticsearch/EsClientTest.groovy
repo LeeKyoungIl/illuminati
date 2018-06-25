@@ -259,7 +259,7 @@ class EsClientTest extends Specification {
 
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
                 .setQueryType(EsQueryType.MATCH)
-                .setMatch("serverInfo.hostName", "leekyoungils")
+                .setMatch("serverInfo.hostName", "leekyoungil-t480s")
                 .build();
 
         String queryString = new RequestEsParam(esQuery, esSource)
@@ -281,7 +281,7 @@ class EsClientTest extends Specification {
         resultList.each { map ->
             Map<String, Object> resultMap = map.get("source");
             Map<String, Object> resultMap2 = resultMap.get("serverInfo");
-            if ("leekyoungils".equals(resultMap2.get("hostName")) == true) {
+            if ("leekyoungil-t480s".equals(resultMap2.get("hostName")) == true) {
                 checkResult = true;
             } else {
                 checkResult = false
