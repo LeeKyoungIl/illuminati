@@ -45,6 +45,6 @@ public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends
             }
         }
 
-        return CollectionUtils.isEmpty(dataList) == true ? null : dataList;
+        return CollectionUtils.isEmpty(dataList) ? null : dataList;
     }
 }

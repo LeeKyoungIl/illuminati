@@ -1,8 +1,11 @@
 package com.leekyoungil.illuminati.client.prossor.infra.backup.impl;
 
+import com.google.gson.JsonSyntaxException;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.Backup;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.configuration.H2ConnectionFactory;
 import com.leekyoungil.illuminati.client.prossor.infra.backup.enums.TableDDLType;
+import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiH2Properties;
+import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import com.leekyoungil.illuminati.common.properties.IlluminatiCommonProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
@@ -19,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.ILLUMINATI_GSON_OBJ;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
@@ -39,10 +40,10 @@ public class H2Backup<T> implements Backup<T> {
 
     private H2Backup (Class<T> type) {
         this.type = type;
-        if (H2_CONN.isConnected() == true) {
+        if (H2_CONN.isConnected()) {
             this.connection = H2_CONN.getDbConnection();
 
-            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, null, "illuminati", "backTableReset", "false");
+            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class, "illuminati", "backTableReset", "false");
             if ("true".equalsIgnoreCase(backTableReset)) {
                 this.tableDDL(TableDDLType.DROP);
             }
@@ -138,7 +139,11 @@ public class H2Backup<T> implements Backup<T> {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 idList.add(rs.getInt("ID"));
-                dataList.add(ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                try {
+                    dataList.add(IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                } catch (JsonSyntaxException ex) {
+                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getMessage());
+                }
             }
             rs.close();
             preparedStatement.close();
@@ -147,7 +152,7 @@ public class H2Backup<T> implements Backup<T> {
             return null;
         }
 
-        if (isAfterDelete == true && CollectionUtils.isNotEmpty(idList) == true) {
+        if (isAfterDelete && CollectionUtils.isNotEmpty(idList)) {
             for (Integer id : idList) {
                 this.deleteById(id);
             }
@@ -169,7 +174,11 @@ public class H2Backup<T> implements Backup<T> {
             PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                dataMap.put(rs.getInt("ID"), ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                try {
+                    dataMap.put(rs.getInt("ID"), IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                } catch (JsonSyntaxException ex) {
+                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getMessage());
+                }
             }
             rs.close();
             preparedStatement.close();
@@ -178,7 +187,7 @@ public class H2Backup<T> implements Backup<T> {
             return null;
         }
 
-        if (isAfterDelete == true && dataMap.isEmpty() == false) {
+        if (isAfterDelete && dataMap.isEmpty() == false) {
             for (Map.Entry<Integer, T> entry : dataMap.entrySet()) {
                 this.deleteById(entry.getKey());
             }
@@ -214,7 +223,7 @@ public class H2Backup<T> implements Backup<T> {
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
             ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next() == true) {
+            if (rs.next()) {
                 resultCount = rs.getInt(1);
             }
             rs.close();
@@ -232,7 +241,7 @@ public class H2Backup<T> implements Backup<T> {
         selectExecuteCommand.append("SELECT ID, JSON_DATA FROM ");
         selectExecuteCommand.append(TABLE_NAME);
 
-        if (isPaging == true) {
+        if (isPaging) {
             selectExecuteCommand.append(" LIMIT "+from+", "+size);
         }
 

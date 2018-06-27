@@ -42,56 +42,34 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.leekyoungil.illuminati</groupId>
+			<artifactId>illuminati-client-elasticsearch</artifactId>
+			<version>0.8</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.20</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
 			<version>1.9.22</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>3.3.1-1</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.webjars/jquery-validation -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery-validation</artifactId>
-			<version>1.17.0</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>4.0.0-2</version>
-		</dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.webjars.bower/select2-bootstrap-theme -->
-        <dependency>
-            <groupId>org.webjars.bower</groupId>
-            <artifactId>select2-bootstrap-theme</artifactId>
-            <version>0.1.0-beta.10</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>font-awesome</artifactId>
-			<version>4.7.0</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.webjars/AdminLTE -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>AdminLTE</artifactId>
-			<version>2.4.2-1</version>
-		</dependency>
-
-
 
 		<!-- https://mvnrepository.com/artifact/org.spockframework/spock-core -->
 		<dependency>

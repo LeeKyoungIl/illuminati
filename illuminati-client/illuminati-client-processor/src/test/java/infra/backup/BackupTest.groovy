@@ -73,7 +73,7 @@ class BackupTest extends Specification {
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 9");
         h2Backup.append(IlluminatiInterfaceType.DATA_EXECUTOR, stringData + " 10");
 
-        Map<Integer, String> h2DataMap = h2Backup.getDataByMap(true,true, 0, 10);
+        Map<Integer, String> h2DataMap = h2Backup.getDataByMap(true, true, 0, 10);
         int afterCount = h2Backup.getCount();
 
         then:

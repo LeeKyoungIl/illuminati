@@ -20,7 +20,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     protected final IlluminatiBlockingQueue<T> illuminatiBlockingQueue;
 
-    private long enQueuingTimeout = 0l;
+    private final long enQueuingTimeout;
 
     public abstract void sendToNextStep(final T t);
     protected abstract void sendToNextStepByDebug(final T t);
@@ -75,7 +75,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
      */
     protected void addToQueueByDebug (final T illuminatiInterfaceModel) {
         // debug illuminati buffer queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             try {
                 illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE current size is "+String.valueOf(this.getQueueSize()));
                 final long start = System.currentTimeMillis();
@@ -140,7 +140,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                         StringBuilder errorMessage = new StringBuilder();
                         errorMessage.append("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ");
 
-                        if (thisClassName.contains("IlluminatiTemplateExecutorImpl") == true) {
+                        if (thisClassName.contains("IlluminatiTemplateExecutorImpl")) {
                             errorMessage.append("But Your data has already been safely stored. ");
                             errorMessage.append("It will be restored. When broker is restored. ");
                         }
@@ -159,7 +159,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     protected void createDebugThread () {
         // debug illuminati buffer queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             final Runnable queueCheckRunnable = new Runnable() {
                 public void run() {
                     while (true) {

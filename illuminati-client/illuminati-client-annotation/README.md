@@ -14,13 +14,13 @@
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.0</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.9.4</version>
+  <version>0.9.9.6</version>
 </dependency>
 ```
 
@@ -28,8 +28,8 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.2.0'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.6'
 ```
 
 ## add @Illuminati to Class
@@ -69,10 +69,27 @@ public class ApiSampleController {
     
     @Illuminati(ignore=true)
     @RequestMapping(value = "test2")
-        public String test2 (String a, Integer b) throws Exception {
-            String testJson = "{\"test\" : 2}";
-            return testJson;
-        }
+    public String test2 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 2}";
+        return testJson;
+    }
+}
+``` 
+
+   * apply to all sub methods, but If you want to collect at a certain rate.
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    // collect only 30%
+    @Illuminati(samplingRate = 30)
+    @RequestMapping(value = "test3")
+    public String test3 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 3}";
+        return testJson;
+    }
 }
 ``` 
 
@@ -92,10 +109,10 @@ public class ApiSampleController {
     
     @Illuminati
     @RequestMapping(value = "test2")
-        public String test2 (String a, Integer b) throws Exception {
-            String testJson = "{\"test\" : 2}";
-            return testJson;
-        }
+    public String test2 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 2}";
+        return testJson;
+    }
 }
 ```
 
@@ -115,13 +132,13 @@ public class ApiSampleController {
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.0</version>
 </dependency>
 
 <dependency>
   <groupId>com.leekyoungil.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.9.4</version>
+  <version>0.9.9.6</version>
 </dependency>
 ```
 
@@ -129,8 +146,8 @@ public class ApiSampleController {
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.1.1'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.4'
+compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.2.0'
+compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.6'
 ```
 
 
@@ -150,10 +167,10 @@ public class ApiSampleController {
     }
     
     @RequestMapping(value = "test2")
-        public String test2 (String a, Integer b) throws Exception {
-            String testJson = "{\"test\" : 2}";
-            return testJson;
-        }
+    public String test2 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 2}";
+        return testJson;
+    }
 }
 ```
     * 하위 모든 Method에 적용했는데 특정 메서드만 제외시키고 싶을 경우
@@ -171,12 +188,28 @@ public class ApiSampleController {
     
     @Illuminati(ignore=true)
     @RequestMapping(value = "test2")
-        public String test2 (String a, Integer b) throws Exception {
-            String testJson = "{\"test\" : 2}";
-            return testJson;
-        }
+    public String test2 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 2}";
+        return testJson;
+    }
 }
-```    
+```   
+
+    * 하위 모든 Method에 적용했는데 특정 비율로 수집하고 싶은 경우
+```java
+@Illuminati
+@RestController
+@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
+public class ApiSampleController {
+
+    // collect only 30%
+    @Illuminati(samplingRate = 30)
+    @RequestMapping(value = "test3")
+    public String test3 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 3}";
+        return testJson;
+    }
+} 
 
 ## Method에 @Illuminati 추가 
     * 해당 Method에 적용
@@ -194,9 +227,9 @@ public class ApiSampleController {
     
     @Illuminati
     @RequestMapping(value = "test2")
-        public String test2 (String a, Integer b) throws Exception {
-            String testJson = "{\"test\" : 2}";
-            return testJson;
-        }
+    public String test2 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 2}";
+        return testJson;
+    }
 }
 ```

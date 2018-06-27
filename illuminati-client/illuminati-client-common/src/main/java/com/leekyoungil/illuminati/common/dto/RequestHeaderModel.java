@@ -364,7 +364,9 @@ public class RequestHeaderModel {
 
     @Expose private Map<String, String> parsedCookie;
 
-    public RequestHeaderModel (final HttpServletRequest request) {
+    public RequestHeaderModel () { }
+
+    public RequestHeaderModel setRequestInfo (final HttpServletRequest request) {
         if (request != null) {
             this.init(request);
             //this.getIlluminatiProcId(request);
@@ -376,11 +378,10 @@ public class RequestHeaderModel {
                 }
             }
         }
+
+        return this;
     }
 
-    public void generateIlluminatiProcId () {
-
-    }
 
     /**
      * Get Header Info from HttpRequest
@@ -483,26 +484,30 @@ public class RequestHeaderModel {
 
         this.parsedCookie.put(key, value);
     }
-    public void setSessionTransactionId (String illuminatiSProcId) {
+    public RequestHeaderModel setSessionTransactionId (String illuminatiSProcId) {
         if (StringObjectUtils.isValid(illuminatiSProcId) == false) {
-            return;
+            return this;
         }
         this.illuminatiSProcId = illuminatiSProcId;
+
+        return this;
     }
 
 
-    public void setGlobalTransactionId (String illuminatiGProcId) {
+    public RequestHeaderModel setGlobalTransactionId (String illuminatiGProcId) {
         if (StringObjectUtils.isValid(illuminatiGProcId) == false) {
-            return;
+            return this;
         }
         this.illuminatiGProcId = illuminatiGProcId;
+        return this;
     }
 
-    public void setTransactionId (String illuminatiProcId) {
+    public RequestHeaderModel setTransactionId (String illuminatiProcId) {
         if (StringObjectUtils.isValid(illuminatiProcId) == false) {
-            return;
+            return this;
         }
         this.illuminatiProcId = illuminatiProcId;
+        return this;
     }
 
     public String getIlluminatiSProcId () {

@@ -1,6 +1,7 @@
 package com.leekyoungil.illuminati.common.util;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,5 +48,41 @@ public class ConvertUtil {
         }
 
         return false;
+    }
+
+    public static <K, V> Map<K, V> castToMapOf(Class<K> clazzK, Class<V> clazzV, Map<?, ?> map) {
+        for (Map.Entry<?, ?> e: map.entrySet()) {
+            checkCast(clazzK, e.getKey());
+            checkCast(clazzV, e.getValue());
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<K, V> result = (Map<K, V>) map;
+        return result;
+    }
+
+    private static <T> void checkCast(Class<T> clazz, Object obj) {
+        if (obj != null && clazz.isInstance(obj) == false) {
+            StringBuilder exMessage = new StringBuilder();
+            exMessage.append("Expected : " + clazz.getName());
+            exMessage.append("Was : " + obj.getClass().getName());
+            exMessage.append("Value : " + obj);
+
+            throw new ClassCastException(exMessage.toString());
+        }
+    }
+
+    public static Map<String, Object> ConvertObjectToMap (Object obj) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for(int i=0; i <fields.length; i++){
+            fields[i].setAccessible(true);
+            try{
+                map.put(fields[i].getName(), fields[i].get(obj));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return map;
     }
 }

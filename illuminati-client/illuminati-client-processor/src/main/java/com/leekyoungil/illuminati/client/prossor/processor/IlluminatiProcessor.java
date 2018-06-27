@@ -2,7 +2,6 @@ package com.leekyoungil.illuminati.client.prossor.processor;
 
 import com.google.auto.service.AutoService;
 import com.leekyoungil.illuminati.client.annotation.Illuminati;
-import com.leekyoungil.illuminati.client.prossor.properties.IlluminatiPropertiesImpl;
 import com.leekyoungil.illuminati.common.properties.IlluminatiPropertiesHelper;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 
@@ -16,11 +15,12 @@ import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
+
+import static com.leekyoungil.illuminati.common.constant.IlluminatiConstant.*;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -117,27 +117,14 @@ public class IlluminatiProcessor extends AbstractProcessor {
     private boolean setGeneratedIlluminatiTemplate (final String basePackageName) {
         // step 1.  set basicImport
         this.generatedIlluminatiTemplate = "package {basePackageName};\r\n" + this.getImport();
-
         // step 2.  base package name
-        this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}"
-                , basePackageName);
-
-        //BrokerType brokerType = BrokerType.getEnumType(illuminatiProperties.getBroker());
+        this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}", basePackageName);
 
         final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n \r\n";
-
-        // step 3.  properties by broker
-        String implClassName;
-
-        //if (BrokerType.RABBITMQ != brokerType && BrokerType.KAFKA != brokerType) {
-            // Exception
-        //    this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in properties read process.");
-        //   return false;
-        //}
-
         final String illuminatiAnnotationName = "com.leekyoungil.illuminati.client.annotation.Illuminati";
-        // step 4.  check chaosBomber is activated.
-        final String checkChaosBomber = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, this.messager, "illuminati", "chaosBomber", "false");
+        // step 3.  check chaosBomber is activated.
+        PropertiesHelper propertiesHelper = new PropertiesHelper(this.messager);
+        final String checkChaosBomber = propertiesHelper.getPropertiesValueByKey("chaosBomber", "false");
 
         String illuminatiExecuteMethod = "";
 
@@ -145,7 +132,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
             illuminatiExecuteMethod = "ByChaosBomber";
         }
 
-        // step 5.  set the method body
+        // step 4. set the method body
         this.generatedIlluminatiTemplate += ""
                 + "@Component\r\n"
                 + "@Aspect\r\n"
@@ -156,7 +143,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
-                + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp) == true) {\r\n"
+                + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp)) {\r\n"
                 + "             return pjp.proceed();\r\n"
                 + "         }\r\n"
                 + "         HttpServletRequest request = null;\r\n"
@@ -218,5 +205,122 @@ public class IlluminatiProcessor extends AbstractProcessor {
         }
 
         return importString.toString();
+    }
+
+    /**
+     *
+     */
+    private class PropertiesHelper {
+
+        private final static String DEFAULT_CONFIG_PROPERTIES_FILE_NAME = "illuminati";
+
+        private final Messager messager;
+
+        PropertiesHelper (Messager messager) {
+            this.messager = messager;
+        }
+
+        public String getPropertiesValueByKey (final String key, final String defaultValue) {
+            final IlluminatiProcessorPropertiesImpl illuminatiProperties = this.getIlluminatiProperties();
+            String propertiesValue = null;
+
+            if (StringObjectUtils.isValid(key) && illuminatiProperties != null) {
+                try {
+                    final String methodName = "get" + key.substring(0, 1).toUpperCase() + key.substring(1);
+                    final Method getNameMethod = IlluminatiProcessorPropertiesImpl.class.getMethod(methodName);
+                    propertiesValue = (String) getNameMethod.invoke(illuminatiProperties);
+                }
+                catch (Exception ex) {
+                    this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, unable to find method. (" + ex.toString() + ")");
+                }
+            }
+
+            return (StringObjectUtils.isValid(propertiesValue)) ? propertiesValue : defaultValue;
+        }
+
+        private IlluminatiProcessorPropertiesImpl getIlluminatiProperties () {
+            IlluminatiProcessorPropertiesImpl illuminatiProperties = null;
+
+            for (String extension : CONFIG_FILE_EXTENSTIONS) {
+                StringBuilder dotBeforeExtension = new StringBuilder(".");
+
+                if (StringObjectUtils.isValid(PROFILES_PHASE)) {
+                    dotBeforeExtension.append("-");
+                    dotBeforeExtension.append(PROFILES_PHASE);
+                    dotBeforeExtension.append(".");
+                }
+
+                StringBuilder fullFileName = new StringBuilder(DEFAULT_CONFIG_PROPERTIES_FILE_NAME);
+                fullFileName.append(dotBeforeExtension.toString());
+                fullFileName.append(extension);
+
+                illuminatiProperties = getIlluminatiPropertiesByFile(fullFileName.toString());
+
+                if (illuminatiProperties != null) {
+                    break;
+                }
+            }
+
+            if (illuminatiProperties == null) {
+                illuminatiProperties = getIlluminatiPropertiesFromBasicFiles();
+            }
+
+            if (illuminatiProperties == null) {
+                this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, unable to find config file");
+            }
+
+            return illuminatiProperties;
+        }
+    }
+
+    private IlluminatiProcessorPropertiesImpl getIlluminatiPropertiesByFile(final String configPropertiesFileName) {
+        final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
+
+        if (input == null) {
+            return null;
+        }
+
+        IlluminatiProcessorPropertiesImpl illuminatiProperties = null;
+        try {
+            if (configPropertiesFileName.indexOf(".yml") > -1 || configPropertiesFileName.indexOf(".yaml") > -1) {
+                illuminatiProperties = YAML_MAPPER.readValue(input, IlluminatiProcessorPropertiesImpl.class);
+            } else {
+                final Properties prop = new Properties();
+                prop.load(input);
+
+                if (prop == null) {
+                    this.messager.printMessage(Diagnostic.Kind.ERROR, "Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
+                    return null;
+                }
+
+                illuminatiProperties = new IlluminatiProcessorPropertiesImpl(prop);
+            }
+        } catch (IOException ex) {
+            this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in read process. (" + ex.toString() + ")");
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException ex) {
+                    this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
+                }
+            }
+        }
+
+        return illuminatiProperties;
+    }
+
+    private IlluminatiProcessorPropertiesImpl getIlluminatiPropertiesFromBasicFiles() {
+        IlluminatiProcessorPropertiesImpl illuminatiProperties = null;
+
+        for (String fileName : BASIC_CONFIG_FILES) {
+            illuminatiProperties = getIlluminatiPropertiesByFile(fileName);
+
+            if (illuminatiProperties != null) {
+                return illuminatiProperties;
+            }
+        }
+
+        return null;
     }
 }

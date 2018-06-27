@@ -3,7 +3,7 @@ package com.leekyoungil.illuminati.esconsumer.config;
 import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient;
 import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
-import com.leekyoungil.illuminati.esconsumer.config.model.ElasticsearchInfo;
+import com.leekyoungil.illuminati.elasticsearch.infra.model.EsInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class EsClientConfig {
 
     @NestedConfigurationProperty
-    private ElasticsearchInfo master;
+    private EsInfo master;
 
     @Bean
     public EsClient esClient () {

@@ -1,14 +1,15 @@
 package com.leekyoungil.illuminati.elasticsearch.model;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.reflect.TypeToken;
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.dto.GroupMapping;
+import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
 import com.leekyoungil.illuminati.elasticsearch.infra.EsDocument;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsIndexStoreType;
 import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsRefreshType;
 import com.leekyoungil.illuminati.elasticsearch.infra.model.Settings;
+import com.leekyoungil.illuminati.elasticsearch.infra.param.mapping.EsIndexMappingBuilder;
 import net.sf.uadetector.OperatingSystem;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
@@ -18,6 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Date;
@@ -35,7 +37,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();
 
     @Expose private Settings settings;
-    @Expose private Object resultData;
     @Expose private Map<String, String> postContentResultData;
 
     @Expose private Map<String, String> clientBrower;
@@ -45,9 +46,14 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     private String esUserName;
     private String esUserPass;
 
-    private final String encodingCharset = "UTF-8";
+    private final String objectPackageName = "java.lang.Object";
+    private final String mapPackageName = "java.util.Map";
+    private final String listPackageName = "java.util.List";
+    private final String mappingTargetPackageName = "com.leekyoungil";
 
-    public IlluminatiEsTemplateInterfaceModelImpl() {}
+    public IlluminatiEsTemplateInterfaceModelImpl() {
+        super();
+    }
 
 //    public IlluminatiEsTemplateInterfaceModelImpl(long elapsedTime, Object output, String id, long timestamp) {
 //        super(elapsedTime, output, id, timestamp);
@@ -56,15 +62,14 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     @Override public String getJsonString () {
         this.settings = new Settings(this.getEsDocumentAnnotation().indexStoreType().getType());
 
-        this.setResultData();
         this.setUserAgent();
         this.setPostContentResultData();
 
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
-    @Override public String getEsUrl(final String baseUrl) {
-        if (!StringObjectUtils.isValid(baseUrl)) {
+    @Override public String getBaseEsUrl(final String baseUrl) {
+        if (StringObjectUtils.isValid(baseUrl) == false) {
             ES_CONSUMER_LOGGER.error("Sorry. baseUrl of Elasticsearch is required value.");
             return null;
         }
@@ -72,12 +77,25 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         try {
             final EsDocument esDocument = this.getEsDocumentAnnotation();
 
-            final String[] dateForIndex = DATE_FORMAT_EVENT.format(new Date()).split("T");
+            final String[] dateForIndex = IlluminatiConstant.DATE_FORMAT_EVENT.format(new Date()).split("T");
 
-            return new StringBuilder()
-                .append(baseUrl)
-                .append("/")
-                .append(esDocument.indexName()+"-"+dateForIndex[0])
+            return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
+        } catch (Exception ex) {
+            ES_CONSUMER_LOGGER.error("Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")");
+            return null;
+        }
+    }
+
+    @Override public String getEsUrl(final String baseUrl) {
+        final String baseEsUrl = this.getBaseEsUrl(baseUrl);
+        if (StringObjectUtils.isValid(baseEsUrl) == false) {
+            return null;
+        }
+
+        try {
+            final EsDocument esDocument = this.getEsDocumentAnnotation();
+
+            return new StringBuilder(baseEsUrl)
                 .append("/")
                 .append(esDocument.type())
                 .append("/")
@@ -91,7 +109,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public void setEsUserAuth (String esUserName, String esUserPass) {
-        if (StringObjectUtils.isValid(esUserName) == true && StringObjectUtils.isValid(esUserPass) == true) {
+        if (StringObjectUtils.isValid(esUserName) && StringObjectUtils.isValid(esUserPass)) {
             this.esUserName = esUserName;
             this.esUserPass = esUserPass;
         }
@@ -106,7 +124,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
         if (StringObjectUtils.isValid(postContentBody)) {
             try {
-                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, "UTF-8").split("&");
+                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, IlluminatiConstant.BASE_CHARSET).split("&");
 
                 if (postContentBodyArray.length > 0) {
                     this.postContentResultData = new HashMap<String, String>();
@@ -121,33 +139,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
                 }
             } catch (Exception ex) {
                 ES_CONSUMER_LOGGER.error("Sorry. an error occurred during parsing of post content. ("+ex.toString()+")");
-            }
-        }
-    }
-
-    private void setResultData () {
-        if (this.output != null) {
-            if (!(this.output instanceof String)) {
-                this.output = IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this.output);
-            }
-
-            if (!StringObjectUtils.isValid((String) this.output)) {
-                return;
-            }
-
-            Map<String, Object> tmpResultData = null;
-            try {
-                tmpResultData = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) this.output, new TypeToken<Map<String, Object>>(){}.getType());
-            } catch (Exception ex) {
-                ES_CONSUMER_LOGGER.error("Sorry. an error occurred during casting. ("+ex.toString()+")");
-            }
-
-            if (tmpResultData != null && tmpResultData.containsKey("result") && tmpResultData.get("result") != null) {
-                this.resultData = tmpResultData.get("result");
-                // ignore output json
-                this.output = null;
-            } else {
-                ES_CONSUMER_LOGGER.debug("Sorry. 'output' key of map is not exists.");
             }
         }
     }
@@ -203,24 +194,61 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public boolean isSetUserAuth () {
-        if (StringObjectUtils.isValid(this.esUserName) == true && StringObjectUtils.isValid(this.esUserPass) == true) {
+        if (StringObjectUtils.isValid(this.esUserName) && StringObjectUtils.isValid(this.esUserPass)) {
             return true;
         }
-
         return false;
     }
 
     @Override public String getEsAuthString () {
-        if (this.isSetUserAuth() == true) {
+        if (this.isSetUserAuth()) {
             StringBuilder authInfo = new StringBuilder();
             authInfo.append(this.esUserName);
             authInfo.append(":");
             authInfo.append(this.esUserPass);
 
-            byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(this.encodingCharset))));
-            return new String(credentials, Charset.forName(this.encodingCharset));
+            byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(IlluminatiConstant.BASE_CHARSET))));
+            return new String(credentials, Charset.forName(IlluminatiConstant.BASE_CHARSET));
         }
 
         return null;
+    }
+
+    @Override public String getIndexMapping () {
+        return this.getGroupMappingAnnotation();
+    }
+
+    private String getGroupMappingAnnotation () {
+        final EsDocument esDocument = this.getEsDocumentAnnotation();
+
+        EsIndexMappingBuilder esIndexMappingBuilder = EsIndexMappingBuilder.Builder().setEsDataType(esDocument.type());
+        this.getMappingAnnotation(this.getClass(), esIndexMappingBuilder);
+
+        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(esIndexMappingBuilder.build());
+    }
+
+    private void getMappingAnnotation (final Class<?> clazz, EsIndexMappingBuilder esIndexMappingBuilder) {
+        if (this.objectPackageName.equalsIgnoreCase(clazz.getName())) {
+            return;
+        }
+
+        for (Field field : clazz.getDeclaredFields()) {
+            String className = field.getType().getName();
+            if (className.contains(this.mappingTargetPackageName)) {
+                try {
+                    this.getMappingAnnotation(Class.forName(className), esIndexMappingBuilder);
+                } catch (ClassNotFoundException ignored) {}
+            }
+
+            if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {
+                if (this.mapPackageName.equalsIgnoreCase(className) == false
+                        && this.listPackageName.equalsIgnoreCase(className) == false) {
+                    final GroupMapping annotatedOnField = field.getAnnotation(GroupMapping.class);
+                    esIndexMappingBuilder.setMapping(clazz.getSimpleName(), field.getName(), annotatedOnField.mappingType());
+                }
+            }
+        }
+
+        this.getMappingAnnotation(clazz.getSuperclass(), esIndexMappingBuilder);
     }
 }

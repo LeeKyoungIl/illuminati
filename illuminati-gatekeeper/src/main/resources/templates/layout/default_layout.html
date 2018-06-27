@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Illuminati Gatekeeper</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.7 -->
+        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+        <!-- Ionicons -->
+        <link rel="stylesheet" th:href="@{/Ionicons/css/ionicons.min.css}">
+        <!-- DataTables -->
+        <link rel="stylesheet" th:href="@{/datatables.net-bs/css/dataTables.bootstrap.min.css}">
+        <!-- Theme style -->
+        <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" th:href="@{/css/skins/_all-skins.min.css}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <link rel="stylesheet" th:href="@{/css/gatekeeper.css}">
+
+        <!-- jQuery 3 -->
+        <script th:src="@{/jquery/jquery.min.js}"></script>
+        <!-- Bootstrap 3.3.7 -->
+        <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+        <!-- DataTables -->
+        <script th:src="@{/datatables.net/js/jquery.dataTables.min.js}"></script>
+        <script th:src="@{/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+        <!-- SlimScroll -->
+        <script th:src="@{/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+        <!-- FastClick -->
+        <script th:src="@{/fastclick/lib/fastclick.js}"></script>
+        <!-- AdminLTE App -->
+        <script th:src="@{/js/adminlte.min.js}"></script>
+        <script th:src="@{/js/gatekeeper/menu.js}"></script>
+
+        <script>
+            $(document).ready(function() {
+                menu.initSystemStatus('hostInfo');
+            });
+        </script>
+    </head>
+
+    <body class="hold-transition pace-done skin-blue-light sidebar-mini fixed">
+        <div class="wrapper">
+
+            <header class="main-header">
+                <a href="/" class="logo">
+                    <span class="logo-mini"><img th:src="@{/img/illuminati-logo.png}" widtd="30px" height="30px"></span>
+                    <span class="logo-lg">Gatekeeper</span>
+                </a>
+                <nav class="navbar navbar-static-top">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" style="padding: 0px;">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" th:remove="${session.LOGIN_MEMBER_SESSION == null}? all : none" th:object="${session.LOGIN_MEMBER_SESSION}">
+                                    <img th:src="|http://tree.kakaocorp.com/main/public/krew-image?accountId=*{id}|" class="user-image" th:alt="*{name}">
+                                    <span class="hidden-xs" th:text="|*{name} ( *{id} )|"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="user-footer">
+                                        <div class="pull-right">
+                                            <a href="/member/logout" class="btn btn-default btn-flat">Logout</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+
+            <aside class="main-sidebar">
+                <section class="sidebar">
+                    <ul class="sidebar-menu" data-widget="tree">
+                        <li><a href="/dashboard/index"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                        <!--<li><a href="/search/orders/index"><i class="fa fa-shopping-cart"></i> <span>주문정보 조회</span></a></li>-->
+                        <!--<li><a href="/search/logs/index"><i class="fa fa-file-text-o"></i> <span>서버로그 확인</span></a></li>-->
+                        <!--<li><a href="#/order/status"><i class="fa fa-exchange"></i> <span>주문상태 변경</span></a></li>-->
+                        <!--<li><a href="#/mq/send"><i class="fa fa-send-o"></i> <span>MQ 재발행</span></a></li>-->
+                        <li class="active treeview menu-open">
+                            <a href="/joblog/index">
+                                <i class="fa fa-money"></i> <span>System</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+
+                            <ul id="systemStatusMenu" class="treeview-menu" style="display: block;">
+                                <!--<li><a href="/system/view/jvmStatus"><i class="fa fa-circle-o"></i> JVM Status</a></li>-->
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+
+            <div class="content-wrapper" layout:fragment="content" ></div>
+
+            <footer class="main-footer">
+                <div class="pull-right hidden-xs">
+                </div>
+                <strong>Copyright &copy; 2018 Illuminati Gatekeeper.</strong> All rights
+                reserved.
+            </footer>
+            <div class="control-sidebar-bg"></div>
+        </div>
+
+    </body>
+</html>
