@@ -114,7 +114,7 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        if (this.checkSamplingRate() == false) {
+        if (this.checkSamplingRate(pjp) == false) {
             this.illuminatiInitLogger.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -151,6 +151,22 @@ public class IlluminatiClientInit {
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
+    private int getCustomSamplingRate (final ProceedingJoinPoint pjp) {
+        try {
+            final MethodSignature signature = (MethodSignature) pjp.getSignature();
+            final Method method = signature.getMethod();
+
+            Illuminati illuminati = method.getAnnotation(Illuminati.class);
+
+            if (illuminati == null) {
+                illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
+            }
+
+            return illuminati.samplingRate();
+        } catch (Exception ignore) {}
+        return 0;
+    }
+
     private boolean isOnIlluminatiSwitch () {
         if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION  && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
             this.illuminatiInitLogger.debug("illuminati processor is now off.");
@@ -184,7 +200,12 @@ public class IlluminatiClientInit {
         return originMethodExecute.get("result");
     }
 
-    private boolean checkSamplingRate () {
+    private boolean checkSamplingRate (final ProceedingJoinPoint pjp) {
+        int customSamplingRate = this.getCustomSamplingRate(pjp);
+        if (customSamplingRate == 0) {
+            customSamplingRate = SAMPLING_RATE;
+        }
+
         //SAMPLING_RATE_CHECKER.compareAndSet(100, 1);
 
         // sometimes compareAndSet does not work.
@@ -194,11 +215,7 @@ public class IlluminatiClientInit {
             return true;
         }
 
-        if (SAMPLING_RATE_CHECKER.getAndIncrement() <= SAMPLING_RATE) {
-            return true;
-        }
-
-        return false;
+        return SAMPLING_RATE_CHECKER.getAndIncrement() <= customSamplingRate;
     }
 
     private Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {

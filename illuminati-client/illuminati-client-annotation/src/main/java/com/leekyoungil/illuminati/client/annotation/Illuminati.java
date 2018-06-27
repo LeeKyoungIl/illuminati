@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 public @interface Illuminati {
 
     boolean ignore () default false;
+
+    int samplingRate () default 0;
 }
