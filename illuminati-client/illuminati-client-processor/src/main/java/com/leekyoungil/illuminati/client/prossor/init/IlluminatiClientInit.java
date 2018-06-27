@@ -91,15 +91,7 @@ public class IlluminatiClientInit {
 
     public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
         try {
-            final MethodSignature signature = (MethodSignature) pjp.getSignature();
-            final Method method = signature.getMethod();
-
-            Illuminati illuminati = method.getAnnotation(Illuminati.class);
-
-            if (illuminati == null) {
-                illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
-            }
-
+            final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati != null ? illuminati.ignore() : true;
         } catch (Exception ignore) {}
         return true;
@@ -151,18 +143,23 @@ public class IlluminatiClientInit {
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
+    private Illuminati getIlluminatiAnnotation (final ProceedingJoinPoint pjp) {
+        final MethodSignature signature = (MethodSignature) pjp.getSignature();
+        final Method method = signature.getMethod();
+
+        Illuminati illuminati = method.getAnnotation(Illuminati.class);
+
+        if (illuminati == null) {
+            illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
+        }
+
+        return illuminati;
+    }
+
     private int getCustomSamplingRate (final ProceedingJoinPoint pjp) {
         try {
-            final MethodSignature signature = (MethodSignature) pjp.getSignature();
-            final Method method = signature.getMethod();
-
-            Illuminati illuminati = method.getAnnotation(Illuminati.class);
-
-            if (illuminati == null) {
-                illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
-            }
-
-            return illuminati.samplingRate();
+            final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
+            return illuminati != null ? illuminati.samplingRate() : 0;
         } catch (Exception ignore) {}
         return 0;
     }
