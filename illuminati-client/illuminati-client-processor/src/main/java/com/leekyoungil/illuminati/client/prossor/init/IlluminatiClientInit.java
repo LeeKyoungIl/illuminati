@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IlluminatiClientInit {
 
-    private static final Logger ILLUMINATI_INIT_LOGGER = LoggerFactory.getLogger(IlluminatiClientInit.class);
+    private final Logger illuminatiInitLogger = LoggerFactory.getLogger(IlluminatiClientInit.class);
 
     private static IlluminatiClientInit ILLUMINATI_CLIENT_INIT_INSTANCE;
 
@@ -47,7 +47,7 @@ public class IlluminatiClientInit {
     static {
         IlluminatiCommon.init();
 
-        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
             ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
             ILLUMINATI_BACKUP_EXECUTOR.init();
         } else {
@@ -60,14 +60,14 @@ public class IlluminatiClientInit {
         ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
         ILLUMINATI_DATA_EXECUTOR.init();
 
-        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
             RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
             RESTORE_TEMPLATE_DATA.init();
         } else {
             RESTORE_TEMPLATE_DATA = null;
         }
 
-        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "samplingRate", "20");
+        final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
         SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
     }
 
@@ -91,28 +91,14 @@ public class IlluminatiClientInit {
 
     public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
         try {
-            final MethodSignature signature = (MethodSignature) pjp.getSignature();
-            final Method method = signature.getMethod();
-
-            Illuminati illuminati = method.getAnnotation(Illuminati.class);
-
-            if (illuminati == null) {
-                illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
-            }
-
-            if (illuminati == null) {
-                return true;
-            }
-
-            return illuminati.ignore();
-        } catch (Exception ex) {
-            // ignore
-            return true;
-        }
+            final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
+            return illuminati != null ? illuminati.ignore() : true;
+        } catch (Exception ignore) {}
+        return true;
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
             return pjp.proceed();
         }
 
@@ -120,8 +106,8 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        if (this.checkSamplingRate() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("ignore illuminati processor.");
+        if (this.checkSamplingRate(pjp) == false) {
+            this.illuminatiInitLogger.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
 
@@ -138,7 +124,7 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == true) {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
             return pjp.proceed();
         }
 
@@ -157,9 +143,30 @@ public class IlluminatiClientInit {
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
+    private Illuminati getIlluminatiAnnotation (final ProceedingJoinPoint pjp) {
+        final MethodSignature signature = (MethodSignature) pjp.getSignature();
+        final Method method = signature.getMethod();
+
+        Illuminati illuminati = method.getAnnotation(Illuminati.class);
+
+        if (illuminati == null) {
+            illuminati = pjp.getTarget().getClass().getAnnotation(Illuminati.class);
+        }
+
+        return illuminati;
+    }
+
+    private int getCustomSamplingRate (final ProceedingJoinPoint pjp) {
+        try {
+            final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
+            return illuminati != null ? illuminati.samplingRate() : 0;
+        } catch (Exception ignore) {}
+        return 0;
+    }
+
     private boolean isOnIlluminatiSwitch () {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION == true && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            ILLUMINATI_INIT_LOGGER.debug("illuminati processor is now off.");
+        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION  && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
+            this.illuminatiInitLogger.debug("illuminati processor is now off.");
             return false;
         }
 
@@ -176,7 +183,7 @@ public class IlluminatiClientInit {
             throwable = (Throwable) originMethodExecute.get("throwable");
         }
 
-        if (isActiveChaosBomber == true && throwable == null && CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
+        if (isActiveChaosBomber && throwable == null && CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
             throwable = new Throwable("Illuminati ChaosBomber Exception Activate");
             request.setAttribute("ChaosBomber", "true");
         }
@@ -190,7 +197,12 @@ public class IlluminatiClientInit {
         return originMethodExecute.get("result");
     }
 
-    private boolean checkSamplingRate () {
+    private boolean checkSamplingRate (final ProceedingJoinPoint pjp) {
+        int customSamplingRate = this.getCustomSamplingRate(pjp);
+        if (customSamplingRate == 0) {
+            customSamplingRate = SAMPLING_RATE;
+        }
+
         //SAMPLING_RATE_CHECKER.compareAndSet(100, 1);
 
         // sometimes compareAndSet does not work.
@@ -200,11 +212,7 @@ public class IlluminatiClientInit {
             return true;
         }
 
-        if (SAMPLING_RATE_CHECKER.getAndIncrement() <= SAMPLING_RATE) {
-            return true;
-        }
-
-        return false;
+        return SAMPLING_RATE_CHECKER.getAndIncrement() <= customSamplingRate;
     }
 
     private Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {
@@ -214,7 +222,7 @@ public class IlluminatiClientInit {
             originMethodExecute.put("result", pjp.proceed());
         } catch (Throwable ex) {
             originMethodExecute.put("throwable", ex);
-            ILLUMINATI_INIT_LOGGER.error("error : check your process. ("+ex.toString()+")");
+            this.illuminatiInitLogger.error("error : check your process. ("+ex.toString()+")");
             originMethodExecute.put("result", StringObjectUtils.getExceptionMessageChain(ex));
         }
 

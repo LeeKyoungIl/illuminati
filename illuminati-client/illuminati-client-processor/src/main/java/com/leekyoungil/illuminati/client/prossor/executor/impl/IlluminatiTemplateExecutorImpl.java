@@ -26,7 +26,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### init illuminati template queue                                                                           ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1;
-    private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0l;
+    private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0L;
 
     // ################################################################################################################
     // ### init illuminati backup executor                                                                        ###
@@ -37,7 +37,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
     private final IlluminatiInfraTemplate illuminatiTemplate = this.initIlluminatiTemplate();
-    private final long BROKER_HEALTH_CHECK_TIME = 300000l;
+    private final long BROKER_HEALTH_CHECK_TIME = 300000L;
 
     private IlluminatiShutdownHandler illuminatiShutdownHandler;
 
@@ -63,7 +63,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             this.createSystemThread();
             this.createSystemThreadForIsCanConnectRemoteBroker();
 
-            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION == true) {
+            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
                 this.addShutdownHook();
             }
         }
@@ -106,7 +106,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
      */
     @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         // debug illuminati rabbitmq queue
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             final long start = System.currentTimeMillis();
             this.sendToNextStep(illuminatiTemplateInterfaceModelImpl);
             final long elapsedTime = System.currentTimeMillis() - start;
@@ -130,7 +130,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     private IlluminatiInfraTemplate initIlluminatiTemplate () {
-        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, null, "illuminati", "broker", "no broker");
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
         if ("kafka".equals(illuminatiBroker)) {

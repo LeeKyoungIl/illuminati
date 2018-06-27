@@ -15,13 +15,13 @@ public class IlluminatiSwitch {
 
     private static final Logger ILLUMINATI_SWITCH_LOGGER = LoggerFactory.getLogger(IlluminatiSwitch.class);
 
-    private final static String ILLUMINATI_SWITCH_VALUE_GIT_URL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, null, "illuminati", "illuminatiSwitchValueURL", null);
+    private final static String ILLUMINATI_SWITCH_VALUE_GIT_URL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, "illuminati", "illuminatiSwitchValueURL", null);
     private static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
 
     private static IlluminatiSwitchHttp ILLUMINATI_SWITCH_HTTP;
 
     static {
-        BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, null, "illuminati", "illuminatiSwitchValueURLCheckInterval", null);
+        BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, "illuminati", "illuminatiSwitchValueURLCheckInterval", null);
 
         if (BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL == null) {
             BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;

@@ -13,7 +13,9 @@ public class SampleEsTemplateInterfaceModelImpl extends IlluminatiEsTemplateInte
 
     private final static Logger SAMPLE_ES_CONSUMER_LOGGER = LoggerFactory.getLogger(SampleEsTemplateInterfaceModelImpl.class);
     
-    public SampleEsTemplateInterfaceModelImpl() {}
+    public SampleEsTemplateInterfaceModelImpl() {
+        super();
+    }
 
     public void customData () {
         this.general.setCustomForEnv();

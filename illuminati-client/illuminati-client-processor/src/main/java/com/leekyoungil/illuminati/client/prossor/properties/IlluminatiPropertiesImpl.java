@@ -2,6 +2,7 @@ package com.leekyoungil.illuminati.client.prossor.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
+import com.leekyoungil.illuminati.common.properties.IlluminatiBaseProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiCommonProperties;
 import com.leekyoungil.illuminati.common.properties.IlluminatiProperties;
 import com.leekyoungil.illuminati.common.util.StringObjectUtils;
@@ -10,25 +11,24 @@ import java.lang.reflect.Field;
 import java.util.Properties;
 
 /**
- * Created by leekyoungil (leekyoungil@gmail.com) on 09/17/2017.
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/16/2018.
  *
  * Sample
- *  - rabbitmq
- *      illuminati.client.broker=rabbitmq
- *      illuminati.client.clusterList=alpha-rabbitmq001.dakao.io:5672,alpha-rabbitmq002.dakao.io:5672,alpha-rabbitmq003.dakao.io:5672,alpha-rabbitmq004.dakao.io:5672,alpha-rabbitmq005.dakao.io:5672
- *      illuminati.client.virtualHost=illuminatiAlphaVhost
- *      illuminati.client.topic=alpha-illuminati-exchange
- *      illuminati.client.userName=illuminati-alpha
- *      illuminati.client.password=illuminati-alpha
- *      illuminati.client.isAsync=true
- *      illuminati.client.isCompression=true
- *      illuminati.client.performance=1
- *      illuminati.client.parentModuleName=apisample
- *      illuminati.client.samplingRate=50
- *
+ * - broker: rabbitmq
+ * - clusterList: pi.leekyoungil.com:5672
+ * - virtualHost: illuminatiPiDev
+ * - topic: pi-dev-illuminati-exchange
+ * - queueName: pi-dev-illuminati-exchange.illuminati
+ * - userName: illuminati-dev
+ * - password: yourpassword
+ * - isAsync: true
+ * - isCompression: true
+ * - parentModuleName: apisample
+ * - samplingRate: 100
+ * - performance: 0 // it's only using when you choose kafka.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IlluminatiPropertiesImpl extends IlluminatiCommonProperties implements IlluminatiProperties {
+public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
 
     private String parentModuleName;
     private String broker;
@@ -42,88 +42,62 @@ public class IlluminatiPropertiesImpl extends IlluminatiCommonProperties impleme
 
     private String isAsync;
     private String isCompression;
+    // it's only using when you choose kafka.
     private String performance;
 
-    private String illuminatiSwitchValueURL;
-
-    // * it is very dangerous function. it is activate when debug is true.
-    // * after using this function. you must have to re compile.(clean first)
-    private String chaosBomber;
-
-    public IlluminatiPropertiesImpl() {}
-
-    @Override public void setProperties(final Properties prop) {
-        for (String keys : IlluminatiConstant.PROPERTIES_KEYS) {
-            final String value = prop.getProperty(keys);
-            if (prop.containsKey(keys) && !value.isEmpty()) {
-                try {
-                    final Field field = this.getClass().getDeclaredField(keys);
-                    field.setAccessible(true);
-                    field.set(this, value);
-                } catch (IllegalAccessException e) {
-                    // ignore
-                    //e.printStackTrace();
-                } catch (NoSuchFieldException e) {
-                    // ignore
-                    //e.printStackTrace();
-                }
-            }
-        }
+    public IlluminatiPropertiesImpl () {
+        super();
     }
 
-    @Override public String getBroker() {
+    public IlluminatiPropertiesImpl(final Properties prop) {
+        super(prop);
+    }
+
+    public String getBroker() {
         return StringObjectUtils.isValid(this.broker) ? this.broker.toLowerCase() : null;
     }
 
-    @Override public String getClusterList() {
-        return this.clusterList;
+    public String getClusterList() {
+        return StringObjectUtils.isValid(this.clusterList) ? this.clusterList : null;
     }
 
-    @Override public String getVirtualHost() {
-        return this.virtualHost;
+    public String getVirtualHost() {
+        return StringObjectUtils.isValid(this.virtualHost) ? this.virtualHost : null;
     }
 
-    @Override public String getTopic() {
-        return StringObjectUtils.isValid(this.topic) ? this.topic : "";
+    public String getTopic() {
+        return StringObjectUtils.isValid(this.topic) ? this.topic : null;
     }
 
-    @Override public String getQueueName() {
-        return StringObjectUtils.isValid(this.queueName) ? this.queueName : "";
+    public String getQueueName() {
+        return StringObjectUtils.isValid(this.queueName) ? this.queueName : null;
     }
 
-    @Override public String getUserName() {
-        return StringObjectUtils.isValid(this.userName) ? this.userName : "";
+    public String getUserName() {
+        return StringObjectUtils.isValid(this.userName) ? this.userName : null;
     }
 
-    @Override public String getPassword() {
-        return StringObjectUtils.isValid(this.password) ? this.password : "";
+    public String getPassword() {
+        return StringObjectUtils.isValid(this.password) ? this.password : null;
     }
 
-    @Override public String getIsAsync() {
-        return StringObjectUtils.isValid(this.isAsync) ? this.isAsync : "";
+    public String getIsAsync() {
+        return StringObjectUtils.isValid(this.isAsync) ? this.isAsync : "true";
     }
 
-    @Override public String getIsCompression() {
-        return StringObjectUtils.isValid(this.isCompression) ? this.isCompression : "";
+    public String getIsCompression() {
+        return StringObjectUtils.isValid(this.isCompression) ? this.isCompression : "true";
     }
 
-    @Override public String getPerformance() {
-        return StringObjectUtils.isValid(this.performance) ? this.performance : "";
+    public String getPerformance() {
+        return StringObjectUtils.isValid(this.performance) ? this.performance : "0";
     }
 
-    @Override public String getSamplingRate() {
-        return this.samplingRate;
+    public String getSamplingRate() {
+        return StringObjectUtils.isValid(this.samplingRate) ? this.samplingRate : "20";
     }
 
-    @Override public String getChaosBomber() {
-        return StringObjectUtils.isValid(this.chaosBomber) ? this.chaosBomber : "";
-    }
-
-    @Override public String getParentModuleName() {
+    public String getParentModuleName() {
         return StringObjectUtils.isValid(this.parentModuleName) ? this.parentModuleName : "unknown";
-    }
-
-    @Override public String getIlluminatiSwitchValueURL() {
-        return StringObjectUtils.isValid(this.illuminatiSwitchValueURL) ? this.illuminatiSwitchValueURL : "false";
     }
 }

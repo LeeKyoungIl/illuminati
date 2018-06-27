@@ -79,7 +79,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
     @Override public void connectionClose() {
         try {
-            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen() == true) {
+            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen()) {
                 AMQP_CONNECTION.close();
             }
         } catch (IOException e) {
@@ -107,7 +107,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                     amqpChannel.waitForConfirms(VALUE_CONNECTION_WAIT_CONFIRM_TIMEOUT_MS);
                 }
 
-                if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+                if (IlluminatiConstant.ILLUMINATI_DEBUG) {
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send log");

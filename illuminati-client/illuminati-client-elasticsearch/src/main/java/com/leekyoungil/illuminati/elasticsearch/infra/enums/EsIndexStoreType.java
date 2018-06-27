@@ -21,13 +21,13 @@ public enum EsIndexStoreType {
     }
 
     public static EsIndexStoreType getEnumType(final String type) {
-        if ("fs".equals(type)) {
+        if ("fs".equalsIgnoreCase(type)) {
             return FS;
-        } else if ("simplefs".equals(type)) {
+        } else if ("simplefs".equalsIgnoreCase(type)) {
             return SIMPLEFS;
-        } else if ("niofs".equals(type)) {
+        } else if ("niofs".equalsIgnoreCase(type)) {
             return NIOFS;
-        } else if ("mmapfs".equals(type)) {
+        } else if ("mmapfs".equalsIgnoreCase(type)) {
             return MMAPFS;
         }
 

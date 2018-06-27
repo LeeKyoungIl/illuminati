@@ -1,0 +1,6 @@
+base:
+  keyName:
+    - timestamp
+jvm:
+  keyName:
+    - jvmInfo

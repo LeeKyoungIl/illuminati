@@ -19,16 +19,16 @@ public class IlluminatiCommon {
     private static final List<IlluminatiStorageType> ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY = Arrays.asList(IlluminatiStorageType.getEnumType(H2_CLASS_NAME));
 
     public synchronized static void init () {
-        final String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, null, "illuminati", "debug", null);
+        final String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, "illuminati", "debug", null);
         if (StringObjectUtils.isValid(debug)) {
             IlluminatiConstant.ILLUMINATI_DEBUG = Boolean.valueOf(debug);
         }
 
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == true) {
+        if (IlluminatiConstant.ILLUMINATI_DEBUG) {
             SystemUtil.createThreadStatusDebugThread();
         }
 
-        if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive() == true) {
+        if (IlluminatiPropertiesHelper.isIlluminatiSwitcherActive()) {
             IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION = true;
         }
 

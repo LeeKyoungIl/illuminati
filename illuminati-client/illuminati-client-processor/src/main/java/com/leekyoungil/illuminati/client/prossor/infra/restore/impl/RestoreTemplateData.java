@@ -60,7 +60,7 @@ public class RestoreTemplateData implements Restore {
         }
 
         final List<IlluminatiInterfaceModel> backupObjectList = H2_BACKUP.getDataByList(false, true, 0, LIMIT_COUNT);
-        if (CollectionUtils.isNotEmpty(backupObjectList) == true) {
+        if (CollectionUtils.isNotEmpty(backupObjectList)) {
             for (IlluminatiInterfaceModel illuminatiInterfaceModel : backupObjectList) {
                 this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel);
             }
@@ -80,7 +80,7 @@ public class RestoreTemplateData implements Restore {
             public void run() {
                 while (true) {
                     try {
-                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == true) {
+                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
                             if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
                                 restoreToQueue();
                             } else {

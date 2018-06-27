@@ -7,6 +7,10 @@ public interface EsClient<T, V> {
 
     V save(T entity);
 
+    String getDataByJson(String jsonRequestString);
+
+    String getMappingByIndex(T type);
+
 //    V save(T entity, EsRefreshType esRefreshType);
 
     // V update(T entity);

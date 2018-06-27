@@ -1,0 +1,5 @@
+elasticsearchInfo:
+  user:
+  pass:
+  host: pi.leekyoungil.com
+  port: 9200
