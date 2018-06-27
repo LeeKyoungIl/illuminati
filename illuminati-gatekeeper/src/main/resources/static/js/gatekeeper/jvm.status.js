@@ -13,28 +13,48 @@ var jvm = {
 
     chartUpdate : function (data) {
         var jvmFreeChart = {};
-        jvmFreeChart['date'] = [];
+        jvmFreeChart['data'] = [];
         jvmFreeChart['label'] = [];
 
         var jvmUsedChart = {};
         jvmUsedChart['data'] = [];
         jvmUsedChart['label'] = [];
+
+        var jvmCpuChart = {};
+        jvmCpuChart['data'] = [];
+        jvmCpuChart['label'] = [];
+
+        var jvmThreadChart = {};
+        jvmThreadChart['data'] = [];
+        jvmThreadChart['label'] = [];
         for (var i = 0; i < data.length; i++) {
             var dataSource = data[i].source;
             jvmUsedChart['data'][jvmUsedChart['data'].length] = dataSource.jvmInfo.jvmUsedMemory;
             jvmUsedChart['label'][jvmUsedChart['label'].length] = dataSource.timestamp;
 
-            jvmFreeChart['date'][jvmFreeChart['date'].length] = dataSource.jvmInfo.jvmFreeMemory;
+            jvmFreeChart['data'][jvmFreeChart['data'].length] = dataSource.jvmInfo.jvmFreeMemory;
             jvmFreeChart['label'][jvmFreeChart['label'].length] = dataSource.timestamp;
+
+            jvmCpuChart['data'][jvmCpuChart['data'].length] = dataSource.jvmInfo.jvmCpuUsage;
+            jvmCpuChart['label'][jvmCpuChart['label'].length] = dataSource.timestamp;
+
+            jvmThreadChart['data'][jvmThreadChart['data'].length] = dataSource.jvmInfo.jvmActiveThreadCount;
+            jvmThreadChart['label'][jvmThreadChart['label'].length] = dataSource.timestamp;
         }
 
         var drawChartData = [];
         drawChartData[0] = {};
         drawChartData[0]['label'] = jvmUsedChart['label'];
-        drawChartData[0]['data'] = jvmUsedChart['data']
+        drawChartData[0]['data'] = jvmUsedChart['data'];
         drawChartData[1] = {};
         drawChartData[1]['label'] = jvmFreeChart['label'];
-        drawChartData[1]['data'] = jvmFreeChart['date'];
+        drawChartData[1]['data'] = jvmFreeChart['data'];
+        drawChartData[2] = {};
+        drawChartData[2]['label'] = jvmCpuChart['label'];
+        drawChartData[2]['data'] = jvmCpuChart['data'];
+        drawChartData[3] = {};
+        drawChartData[3]['label'] = jvmThreadChart['label'];
+        drawChartData[3]['data'] = jvmThreadChart['data'];
 
         Chart.helpers.each(Chart.instances, function (chart, index) {
             chart.data.labels = drawChartData[index].label;

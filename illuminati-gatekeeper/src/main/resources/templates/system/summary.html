@@ -62,16 +62,12 @@
                             <tr>
                                 <th>Instance Process ID</th>
                                 <th>JVM Max Memory</th>
-                                <th>JVM Total Memory</th>
-                                <th>JVM Free Memory</th>
-                                <th>JVM Used Memory</th>
+                                <th th:colspan="3">JVM Total Memory</th>
                             </tr>
                             <tr>
                                 <td id="PID"></td>
                                 <td id="jvmMaxMemory"></td>
-                                <td id="jvmTotalMemory"></td>
-                                <td id="jvmFreeMemory"></td>
-                                <td id="jvmUsedMemory"></td>
+                                <td th:colspan="3" id="jvmTotalMemory"></td>
                             </tr>
                             <tr>
                                 <th>JVM Language</th>
@@ -112,17 +108,31 @@
                 <canvas id="jvmFreeMemoryStatus" width="600" height="400"></canvas>
             </div>
         </div>
+        <div class="row">
+            <div class="wrapper .col-2">
+                <canvas id="jvmUsedCpuStatus" width="600" height="400"></canvas>
+            </div>
+            <div class="wrapper .col-2">
+                <canvas id="jvmActiveThreadCountStatus" width="600" height="400"></canvas>
+            </div>
+        </div>
     </section>
 
     <script>
         var ctxMap = {};
         ctxMap['used'] = {};
         ctxMap['free'] = {};
+        ctxMap['cpu'] = {};
+        ctxMap['trd'] = {};
 
         ctxMap['used']['id'] = 'jvmUsedMemoryStatus';
         ctxMap['used']['label'] = 'JVM of used memory';
         ctxMap['free']['id'] = 'jvmFreeMemoryStatus';
         ctxMap['free']['label'] = 'JVM of free memory';
+        ctxMap['cpu']['id'] = 'jvmUsedCpuStatus';
+        ctxMap['cpu']['label'] = 'JVM of cpu usage';
+        ctxMap['trd']['id'] = 'jvmActiveThreadCountStatus';
+        ctxMap['trd']['label'] = 'JVM of active thread count';
 
         for (var key in ctxMap) {
             var tmpChartObj = document.getElementById(ctxMap[key]['id']).getContext('2d');

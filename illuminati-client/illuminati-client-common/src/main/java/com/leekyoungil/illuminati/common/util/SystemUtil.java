@@ -2,18 +2,23 @@ package com.leekyoungil.illuminati.common.util;
 
 import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
 import com.leekyoungil.illuminati.common.dto.enums.IlluminatiTransactionIdType;
+import com.sun.management.OperatingSystemMXBean;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.management.ManagementFactory;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class SystemUtil {
 
     public static final Logger SYSTEM_UTIL_LOGGER = LoggerFactory.getLogger(SystemUtil.class);
 
+    private final static DecimalFormat DECIMAL_POINT = new DecimalFormat("#.###");
     private final static Runtime RUNTIME = Runtime.getRuntime();
+    private final static OperatingSystemMXBean M_BEAN = (com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean();
 
     private static final String[] INCLUDE_JAVA_SYSTEM_PROPERTIES = new String[]{
             "user.timezone",
@@ -48,6 +53,8 @@ public class SystemUtil {
         jvmInfo.put("jvmFreeMemory", RUNTIME.freeMemory() / MEGA_BYTE);
         jvmInfo.put("jvmTotalMemory", RUNTIME.totalMemory() / MEGA_BYTE);
         jvmInfo.put("jvmMaxMemory", RUNTIME.maxMemory() / MEGA_BYTE);
+        jvmInfo.put("jvmCpuUsage", DECIMAL_POINT.format(M_BEAN.getProcessCpuLoad()));
+        jvmInfo.put("jvmActiveThreadCount", Thread.activeCount());
 
         return jvmInfo;
     }
