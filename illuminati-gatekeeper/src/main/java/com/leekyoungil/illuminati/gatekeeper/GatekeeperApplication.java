@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.gatekeeper;
+package me.phoboslabs.illuminati.gatekeeper;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

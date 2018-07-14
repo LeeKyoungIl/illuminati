@@ -1,6 +1,6 @@
-package com.leekyoungil.illuminati.common.util;
+package me.phoboslabs.illuminati.common.util;
 
-import com.leekyoungil.illuminati.common.properties.IlluminatiBaseProperties;
+import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;
 
 import java.util.List;
 import java.util.Properties;

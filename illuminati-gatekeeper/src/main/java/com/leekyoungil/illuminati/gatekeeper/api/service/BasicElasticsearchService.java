@@ -1,9 +1,9 @@
-package com.leekyoungil.illuminati.gatekeeper.api.service;
+package me.phoboslabs.illuminati.gatekeeper.api.service;
 
-import com.leekyoungil.illuminati.common.util.ConvertUtil;
-import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
-import com.leekyoungil.illuminati.elasticsearch.infra.model.EsData;
-import com.leekyoungil.illuminati.elasticsearch.infra.model.EsDataImpl;
+import me.phoboslabs.illuminati.common.util.ConvertUtil;
+import me.phoboslabs.illuminati.elasticsearch.infra.EsClient;
+import me.phoboslabs.illuminati.elasticsearch.infra.model.EsData;
+import me.phoboslabs.illuminati.elasticsearch.infra.model.EsDataImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

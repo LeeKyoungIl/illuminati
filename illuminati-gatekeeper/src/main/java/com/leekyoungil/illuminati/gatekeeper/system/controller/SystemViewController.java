@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.gatekeeper.system.controller;
+package me.phoboslabs.illuminati.gatekeeper.system.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

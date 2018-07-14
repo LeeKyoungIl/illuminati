@@ -1,5 +1,6 @@
-package com.leekyoungil.illuminati.common.util
+package me.phoboslabs.illuminati.common.util
 
+import me.phoboslabs.illuminati.common.util.FileUtil
 import spock.lang.Specification
 
 import java.text.DateFormat

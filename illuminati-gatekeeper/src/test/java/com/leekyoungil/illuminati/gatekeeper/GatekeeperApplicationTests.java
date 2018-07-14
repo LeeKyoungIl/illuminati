@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.gatekeeper;
+package me.phoboslabs.illuminati.gatekeeper;
 
 
 public class GatekeeperApplicationTests {

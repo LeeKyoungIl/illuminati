@@ -1,7 +1,7 @@
-package com.leekyoungil.illuminati.gatekeeper.api.controller.param;
+package me.phoboslabs.illuminati.gatekeeper.api.controller.param;
 
-import com.leekyoungil.illuminati.common.util.StringObjectUtils;
-import com.leekyoungil.illuminati.elasticsearch.infra.enums.EsOrderType;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsOrderType;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

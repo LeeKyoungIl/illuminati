@@ -1,12 +1,12 @@
-package com.leekyoungil.illuminati.gatekeeper.api.configuration;
+package me.phoboslabs.illuminati.gatekeeper.api.configuration;
 
-import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient;
-import com.leekyoungil.illuminati.common.util.PropertiesUtil;
-import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl;
-import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
-import com.leekyoungil.illuminati.elasticsearch.infra.properties.EsClientProperties;
-import com.leekyoungil.illuminati.gatekeeper.api.service.HostInfoService;
-import com.leekyoungil.illuminati.gatekeeper.api.service.JvmInfoApiService;
+import me.phoboslabs.illuminati.common.http.IlluminatiHttpClient;
+import me.phoboslabs.illuminati.common.util.PropertiesUtil;
+import me.phoboslabs.illuminati.elasticsearch.infra.ESclientImpl;
+import me.phoboslabs.illuminati.elasticsearch.infra.EsClient;
+import me.phoboslabs.illuminati.elasticsearch.infra.properties.EsClientProperties;
+import me.phoboslabs.illuminati.gatekeeper.api.service.HostInfoService;
+import me.phoboslabs.illuminati.gatekeeper.api.service.JvmInfoApiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

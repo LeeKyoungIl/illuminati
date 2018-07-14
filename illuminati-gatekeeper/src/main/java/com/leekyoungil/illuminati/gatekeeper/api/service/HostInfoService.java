@@ -1,9 +1,9 @@
-package com.leekyoungil.illuminati.gatekeeper.api.service;
+package me.phoboslabs.illuminati.gatekeeper.api.service;
 
-import com.leekyoungil.illuminati.elasticsearch.infra.EsClient;
-import com.leekyoungil.illuminati.elasticsearch.infra.param.RequestEsParam;
-import com.leekyoungil.illuminati.elasticsearch.infra.param.groupby.EsGroupByBuilder;
-import com.leekyoungil.illuminati.elasticsearch.infra.param.query.EsQueryBuilder;
+import me.phoboslabs.illuminati.elasticsearch.infra.EsClient;
+import me.phoboslabs.illuminati.elasticsearch.infra.param.RequestEsParam;
+import me.phoboslabs.illuminati.elasticsearch.infra.param.groupby.EsGroupByBuilder;
+import me.phoboslabs.illuminati.elasticsearch.infra.param.query.EsQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

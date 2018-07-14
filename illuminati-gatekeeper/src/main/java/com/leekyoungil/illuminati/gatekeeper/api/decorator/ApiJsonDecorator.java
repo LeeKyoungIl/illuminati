@@ -1,7 +1,7 @@
-package com.leekyoungil.illuminati.gatekeeper.api.decorator;
+package me.phoboslabs.illuminati.gatekeeper.api.decorator;
 
-import com.leekyoungil.illuminati.common.constant.IlluminatiConstant;
-import com.leekyoungil.illuminati.common.dto.IlluminatiRestApiResult;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.dto.IlluminatiRestApiResult;
 
 public class ApiJsonDecorator<T> implements ApiDecorator<T> {
 

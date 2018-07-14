@@ -1,8 +1,8 @@
-package com.leekyoungil.illuminati.gatekeeper.api.service
+package me.phoboslabs.illuminati.gatekeeper.api.service
 
-import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient
-import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
-import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
+import me.phoboslabs.illuminati.common.http.IlluminatiHttpClient
+import me.phoboslabs.illuminati.elasticsearch.infra.ESclientImpl
+import me.phoboslabs.illuminati.elasticsearch.infra.EsClient
 import spock.lang.Specification
 
 class HostInfoServiceTest extends Specification {

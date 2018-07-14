@@ -1,6 +1,6 @@
-package com.leekyoungil.illuminati.gatekeeper.api.decorator;
+package me.phoboslabs.illuminati.gatekeeper.api.decorator;
 
-import com.leekyoungil.illuminati.common.dto.IlluminatiRestApiResult;
+import me.phoboslabs.illuminati.common.dto.IlluminatiRestApiResult;
 
 public interface ApiDecorator<T> {
 

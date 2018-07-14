@@ -1,10 +1,10 @@
-package com.leekyoungil.illuminati.gatekeeper.api.decorator
+package me.phoboslabs.illuminati.gatekeeper.api.decorator
 
-import com.leekyoungil.illuminati.common.dto.IlluminatiRestApiResult
-import com.leekyoungil.illuminati.common.http.IlluminatiHttpClient
-import com.leekyoungil.illuminati.elasticsearch.infra.ESclientImpl
-import com.leekyoungil.illuminati.elasticsearch.infra.EsClient
-import com.leekyoungil.illuminati.gatekeeper.api.service.JvmInfoApiService
+import me.phoboslabs.illuminati.common.dto.IlluminatiRestApiResult
+import me.phoboslabs.illuminati.common.http.IlluminatiHttpClient
+import me.phoboslabs.illuminati.elasticsearch.infra.ESclientImpl
+import me.phoboslabs.illuminati.elasticsearch.infra.EsClient
+import me.phoboslabs.illuminati.gatekeeper.api.service.JvmInfoApiService
 import spock.lang.Specification
 
 class JsonDecoratorTest extends Specification {

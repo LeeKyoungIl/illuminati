@@ -1,8 +1,8 @@
-package com.leekyoungil.illuminati.gatekeeper.api.service;
+package me.phoboslabs.illuminati.gatekeeper.api.service;
 
-import com.leekyoungil.illuminati.gatekeeper.api.controller.param.JvmRequestParam;
-import com.leekyoungil.illuminati.gatekeeper.api.decorator.ApiDecorator;
-import com.leekyoungil.illuminati.gatekeeper.api.decorator.ApiJsonDecorator;
+import me.phoboslabs.illuminati.gatekeeper.api.controller.param.JvmRequestParam;
+import me.phoboslabs.illuminati.gatekeeper.api.decorator.ApiDecorator;
+import me.phoboslabs.illuminati.gatekeeper.api.decorator.ApiJsonDecorator;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
