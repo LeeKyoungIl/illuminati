@@ -15,7 +15,7 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.8</version>
+  <version>0.8.1</version>
 </dependency>
 ```
 
@@ -23,7 +23,7 @@
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8'
+compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8.1'
 ```
 
 
@@ -45,7 +45,7 @@ compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8'
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.8</version>
+  <version>0.8.1</version>
 </dependency>
 ```
 
@@ -53,5 +53,5 @@ compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8'
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8'
+compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8.1'
 ```

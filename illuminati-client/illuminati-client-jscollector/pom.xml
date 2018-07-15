@@ -5,7 +5,7 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
-    <version>0.5.7</version>
+    <version>0.5.8</version>
     <packaging>jar</packaging>
 
     <properties>

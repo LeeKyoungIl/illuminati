@@ -80,27 +80,27 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-annotation</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
    </dependency>
 
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.9.6</version>
+      <version>0.9.9.7</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
    <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-client-switch</artifactId>
-       <version>1.0.7</version>
+       <version>1.0.8</version>
    </dependency>
 
    <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-jscollector</artifactId>
-      <version>0.5.7</version>
+      <version>0.5.8</version>
    </dependency>
 </dependencies>
 ```
@@ -113,12 +113,12 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.0'
-compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.6'
+compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.8'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
-compile 'me.phoboslabs.illuminati:illuminati-client-jscollectorswitch:0.5.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-jscollectorswitch:0.5.8'
 ```
 
 ## add @Illuminati  to Class
@@ -271,27 +271,27 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-annotation</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
    </dependency>
 
    <dependency>
      <groupId>me.phoboslabs.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.9.6</version>
+     <version>0.9.9.7</version>
   </dependency>
       
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
   <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-switch</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.8</version>
   </dependency>
 
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다. -->
   <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-jscollector</artifactId>
-      <version>0.5.7</version>
+      <version>0.5.8</version>
   </dependency>
 </dependencies>
 ```
@@ -304,12 +304,12 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.0'
-compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.6'
+compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.8'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다.
-compile 'me.phoboslabs.illuminati:illuminati-client-jscollector:0.5.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-jscollector:0.5.8'
 ```
 
 ## Class에 @Illuminati 추가 
