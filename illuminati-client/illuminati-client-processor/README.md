@@ -6,7 +6,7 @@
  * RabbitMQ - completed test of heavy traffic
  * Kafka - not yet complete
 
-## I recommend the RabbitMQ for the current version.(0.9.9.6)
+## I recommend the RabbitMQ for the current version.(0.9.9.7)
 
 ## add to Maven Dependency
     * Maven
@@ -21,22 +21,22 @@
 
 <dependencies>
     <dependency>
-      <groupId>com.leekyoungil.illuminati</groupId>
+      <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-annotation</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
     </dependency>
     
     <dependency>
-      <groupId>com.leekyoungil.illuminati</groupId>
+      <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-processor</artifactId>
-      <version>0.9.9.6</version>
+      <version>0.9.9.7</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
-       <groupId>com.leekyoungil.illuminati</groupId>
+       <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-client-switch</artifactId>
-       <version>1.0.7</version>
+       <version>1.0.8</version>
     </dependency>
 
     <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
@@ -57,10 +57,10 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.2.0'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.6'
+compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.8'
 // This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. 
 compile 'com.h2database:h2:1.4.196'
 ```
@@ -184,7 +184,7 @@ chaosBomber: true
  * rabbitmq - 대용량 트래픽 테스트 완료 
  * kafka - 테스트 중 
  
-## 현 버전 (0.9.9.6) 에서는 rabbitmq를 권장 합니다.
+## 현 버전 (0.9.9.7) 에서는 rabbitmq를 권장 합니다.
 
 ## Maven Dependency 추가 
     * Maven
@@ -199,22 +199,22 @@ chaosBomber: true
 
 <dependencies>
     <dependency>
-      <groupId>com.leekyoungil.illuminati</groupId>
+      <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-annotation</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.1</version>
     </dependency>
     
     <dependency>
-     <groupId>com.leekyoungil.illuminati</groupId>
+     <groupId>me.phoboslabs.illuminati</groupId>
      <artifactId>illuminati-client-processor</artifactId>
-     <version>0.9.9.6</version>
+     <version>0.9.9.7</version>
     </dependency>
       
     <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
     <dependency>
-      <groupId>com.leekyoungil.illuminati</groupId>
+      <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-client-switch</artifactId>
-      <version>1.0.7</version>
+      <version>1.0.8</version>
     </dependency>
 
     <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 broker에 문제가 생겼을때 H2DB로 자동으로 백업할수 있습니다. -->
@@ -235,10 +235,10 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.2.0'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.6'
+compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.8'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 broker에 문제가 생겼을때 H2DB로 자동으로 백업할수 있습니다.
 compile 'com.h2database:h2:1.4.196'
 ```

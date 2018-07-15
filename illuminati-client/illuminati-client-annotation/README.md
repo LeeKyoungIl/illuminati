@@ -12,15 +12,15 @@
     
 ```java
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 </dependency>
 
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.9.6</version>
+  <version>0.9.9.7</version>
 </dependency>
 ```
 
@@ -28,8 +28,8 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.2.0'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.6'
+compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
 ```
 
 ## add @Illuminati to Class
@@ -130,15 +130,15 @@ public class ApiSampleController {
     
 ```java
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-annotation</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 </dependency>
 
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-processor</artifactId>
-  <version>0.9.9.6</version>
+  <version>0.9.9.7</version>
 </dependency>
 ```
 
@@ -146,8 +146,8 @@ public class ApiSampleController {
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-annotation:1.2.0'
-compile 'com.leekyoungil.illuminati:illuminati-client-processor:0.9.9.6'
+compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
 ```
 
 
