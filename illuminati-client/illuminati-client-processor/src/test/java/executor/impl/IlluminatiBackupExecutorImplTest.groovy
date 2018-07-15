@@ -1,11 +1,10 @@
 package executor.impl
 
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl
-import com.leekyoungil.illuminati.common.constant.IlluminatiConstant
-import com.leekyoungil.illuminati.common.dto.IlluminatiInterfaceModel
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl
-import com.leekyoungil.illuminati.common.util.FileUtil
+import me.phoboslabs.illuminati.client.prossor.executor.IlluminatiExecutor
+import me.phoboslabs.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant
+import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl
 import spock.lang.Specification
 
 class IlluminatiBackupExecutorImplTest extends Specification {
@@ -39,7 +38,7 @@ class IlluminatiBackupExecutorImplTest extends Specification {
     def "create system thread" () {
         setup:
         IlluminatiExecutor<String> illuminatiExecutor = IlluminatiBackupExecutorImpl.getInstance();
-        String threadName = "com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl : ILLUMINATI_SAVE_DATA_TO_FILE_THREAD";
+        String threadName = "me.phoboslabs.illuminati.client.prossor.executor.impl.IlluminatiBackupExecutorImpl : ILLUMINATI_SAVE_DATA_TO_FILE_THREAD";
 
         when:
         illuminatiExecutor.init();

@@ -21,7 +21,7 @@
 </repositories>
 
 <dependency>
-    <groupId>com.leekyoungil.illuminati</groupId>
+    <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
     <version>0.5.7</version>
     <scope>compile</scope>
@@ -36,7 +36,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-jscollector:0.5.7'
 ```
 
 ## 2. add to Javascript in HTML & initialization
@@ -111,7 +111,7 @@ compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.7'
 </repositories>
 
 <dependency>
-    <groupId>com.leekyoungil.illuminati</groupId>
+    <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-client-jscollector</artifactId>
     <version>0.5.7</version>
     <scope>compile</scope>
@@ -126,7 +126,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-jscollector:0.5.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-jscollector:0.5.7'
 ```
 
 ## 2. Javascript 추가 & 초기화

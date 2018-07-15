@@ -35,7 +35,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 </repositories>
 
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-switch</artifactId>
   <version>1.0.7</version>
 </dependency>
@@ -49,7 +49,7 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.7'
 ```
 
 ===============================================================================
@@ -90,7 +90,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 </repositories>
 
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-switch</artifactId>
   <version>1.0.7</version>
 </dependency>
@@ -104,5 +104,5 @@ repositories {
     jcenter()
 }
 
-compile 'com.leekyoungil.illuminati:illuminati-client-switch:1.0.7'
+compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.7'
 ```

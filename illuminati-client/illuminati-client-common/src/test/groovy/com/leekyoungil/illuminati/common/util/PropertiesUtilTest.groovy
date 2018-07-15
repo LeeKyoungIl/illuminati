@@ -1,4 +1,4 @@
-package com.leekyoungil.illuminati.common.util
+package me.phoboslabs.illuminati.common.util
 
 import spock.lang.Specification
 

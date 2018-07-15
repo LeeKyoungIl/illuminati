@@ -1,8 +1,8 @@
 package executor.impl
 
-import com.leekyoungil.illuminati.client.prossor.executor.IlluminatiExecutor
-import com.leekyoungil.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
-import com.leekyoungil.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
+import me.phoboslabs.illuminati.client.prossor.executor.IlluminatiExecutor
+import me.phoboslabs.illuminati.client.prossor.executor.impl.IlluminatiDataExecutorImpl
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
 
