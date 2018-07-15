@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.leekyoungil.illuminati</groupId>
+    <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>ApiServerSample</artifactId>
     <version>0.5</version>
     <packaging>jar</packaging>
@@ -66,21 +66,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.leekyoungil.illuminati</groupId>
+            <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-client-annotation</artifactId>
             <version>1.2.0</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.leekyoungil.illuminati</groupId>
+            <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-client-jscollector</artifactId>
             <version>0.5.7</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.leekyoungil.illuminati</groupId>
+            <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-client-processor</artifactId>
             <version>0.9.9.6</version>
             <scope>compile</scope>
@@ -88,7 +88,7 @@
 
         <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
         <!--<dependency>-->
-            <!--<groupId>com.leekyoungil.illuminati</groupId>-->
+            <!--<groupId>me.phoboslabs.illuminati</groupId>-->
             <!--<artifactId>illuminati-client-switch</artifactId>-->
             <!--<version>1.0.6</version>-->
             <!--<scope>compile</scope>-->
