@@ -12,7 +12,7 @@ Also collect and analysis must be performed in different processes.
 The illuminati is desinged to make collect all data easily and it can be possible scalability working by separated analysis process.
 
 ## required
- * Java6 or higher. 
+ * Java6 or higher. (*I confirmed the operate on openjdk8*)
  * Message queue (RabbitMQ or Kafka)
  * Java Application that can use AspectJ
 
