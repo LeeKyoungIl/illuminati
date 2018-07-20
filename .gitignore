@@ -7,3 +7,4 @@ illuminati-client/illuminati-client-switch/target/
 *.iml
 illuminati-client/illuminati-client-jscollector/target/
 *.db
+.DS_Store
