@@ -2,7 +2,7 @@ package me.phoboslabs.illuminati.client.prossor.infra.restore;
 
 public interface Restore {
 
-    void init ();
+    Restore init ();
 
     void restoreToQueue ();
 

@@ -53,10 +53,12 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         return ILLUMINATI_BACKUP_EXECUTOR_IMPL;
     }
 
-    @Override public void init() {
+    @Override public IlluminatiBackupExecutorImpl init() {
         if (ILLUMINATI_BACKUP != null) {
             this.createSystemThread();
         }
+
+        return this;
     }
 
     @Override public IlluminatiTemplateInterfaceModelImpl deQueue() {

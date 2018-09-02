@@ -21,6 +21,10 @@ public class RabbitmqConstant {
     public final static int VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS = 10000;
     public final static int VALUE_SET_WRITE_BUFFER_SIZE = 65536;
     public final static int VALUE_SET_SEND_BUFFER_SIZE = 65536;
+    // SO_LINGER time (sec)
+    public final static int VALUE_SO_LINGER_TIME = 180;
+    // Socket read timeout
+    public final static int VALUE_SOCKET_READ_BLOCK_TIMEOUT = 5000;
     /**
      *  TCP_NODELAY
      * - 1 : (TRUE) DONT USE NAGEL

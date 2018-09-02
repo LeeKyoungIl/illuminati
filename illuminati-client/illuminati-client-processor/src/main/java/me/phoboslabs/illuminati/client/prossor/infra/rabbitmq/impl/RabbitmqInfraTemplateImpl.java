@@ -52,8 +52,10 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         this.virtualHost = this.illuminatiProperties.getVirtualHost();
         this.queueName = this.illuminatiProperties.getQueueName();
 
-        this.setBasicProperties();
         this.initProperties();
+        this.setBasicProperties();
+
+        this.createConnection();
     }
 
     @Override protected void checkRequiredValuesForInit () {
@@ -161,13 +163,9 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         return false;
     }
 
-    private synchronized void initPublisher () {
-        this.createConnection();
-    }
-
-    private void createConnection () {
+    private synchronized void createConnection () {
         try {
-            final ExecutorService executor = Executors.newSingleThreadExecutor();
+            final ExecutorService executor = Executors.newFixedThreadPool(3);
             AMQP_CONNECTION = RABBITMQ_CONNECTION_FACTORY.newConnection(executor, this.getClusterList());
         } catch (IOException ex) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : cluster host had a problem. " + ex.toString());
@@ -221,20 +219,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     private void setBasicProperties () {
-        final NioParams nioParams = new NioParams()
-                .setNbIoThreads(1)
-                .setWriteEnqueuingTimeoutInMs(0)
-                .setWriteByteBufferSize(VALUE_SET_WRITE_BUFFER_SIZE);
-
-        RABBITMQ_CONNECTION_FACTORY.useNio();
-        RABBITMQ_CONNECTION_FACTORY.setNioParams(nioParams);
-        RABBITMQ_CONNECTION_FACTORY.setConnectionTimeout(VALUE_CONNECTION_TIMEOUT_MS);
-        RABBITMQ_CONNECTION_FACTORY.setChannelRpcTimeout(VALUE_RPC_CALL_TIMEOUT_MS);
-        RABBITMQ_CONNECTION_FACTORY.setHandshakeTimeout(VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS);
-
-        ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor();
-        RABBITMQ_CONNECTION_FACTORY.setShutdownExecutor(shutdownExecutor);
-
+        RABBITMQ_CONNECTION_FACTORY.setShutdownExecutor(Executors.newSingleThreadExecutor());
         RABBITMQ_CONNECTION_FACTORY.setShutdownTimeout(VALUE_SHUTDOWN_TIMEOUT_MS);
         RABBITMQ_CONNECTION_FACTORY.setRequestedHeartbeat(VALUE_REQUESTED_HEART_BEAT);
         RABBITMQ_CONNECTION_FACTORY.setAutomaticRecoveryEnabled(VALUE_AUTOMATIC_RECOVERY);
@@ -250,9 +235,25 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 socket.setPerformancePreferences(0, 2, 1);
                 socket.setReuseAddress(true);
                 socket.setKeepAlive(VALUE_TCP_KEELALIVE);
-                socket.setSoLinger(true, 1000);
+                socket.setSoLinger(true, VALUE_SO_LINGER_TIME);
+                socket.setSoTimeout(VALUE_SOCKET_READ_BLOCK_TIMEOUT);
             }
         });
+
+        if (this.communicationType == CommunicationType.ASYNC) {
+            final NioParams nioParams = new NioParams()
+                    .setNbIoThreads(4)
+                    .setWriteEnqueuingTimeoutInMs(0)
+                    .setWriteByteBufferSize(VALUE_SET_WRITE_BUFFER_SIZE);
+
+            RABBITMQ_CONNECTION_FACTORY.useNio();
+            RABBITMQ_CONNECTION_FACTORY.setNioParams(nioParams);
+        } else {
+            RABBITMQ_CONNECTION_FACTORY.useBlockingIo();
+            RABBITMQ_CONNECTION_FACTORY.setConnectionTimeout(VALUE_CONNECTION_TIMEOUT_MS);
+            RABBITMQ_CONNECTION_FACTORY.setChannelRpcTimeout(VALUE_RPC_CALL_TIMEOUT_MS);
+            RABBITMQ_CONNECTION_FACTORY.setHandshakeTimeout(VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS);
+        }
     }
 
     private void setTopicAndQueue () {
@@ -260,7 +261,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 .isValid(this.illuminatiProperties.getQueueName())) {
             this.topic = this.illuminatiProperties.getTopic();
             this.queueName = this.illuminatiProperties.getQueueName();
-            this.initPublisher();
         } else {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : topic or queueName is empty.");
         }

@@ -49,8 +49,9 @@ public class RestoreTemplateData implements Restore {
         return RESTORE_TEMPLATE_DATA;
     }
 
-    @Override public void init () {
+    @Override public RestoreTemplateData init () {
         this.createSystemThread();
+        return this;
     }
 
     @Override public void restoreToQueue () {

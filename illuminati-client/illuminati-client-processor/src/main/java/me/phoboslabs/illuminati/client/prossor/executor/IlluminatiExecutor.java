@@ -7,7 +7,7 @@ import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
  */
 public interface IlluminatiExecutor<T extends IlluminatiInterfaceModel> {
 
-    void init ();
+    IlluminatiExecutor init ();
 
     void addToQueue (final T t);
 

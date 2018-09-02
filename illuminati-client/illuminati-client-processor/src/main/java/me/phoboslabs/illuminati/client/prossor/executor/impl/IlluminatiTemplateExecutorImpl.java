@@ -58,7 +58,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         return ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
     }
 
-    @Override public synchronized void init () {
+    @Override public synchronized IlluminatiTemplateExecutorImpl init () {
         if (this.illuminatiTemplate != null) {
             this.createSystemThread();
             this.createSystemThreadForIsCanConnectRemoteBroker();
@@ -67,6 +67,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                 this.addShutdownHook();
             }
         }
+
+        return this;
     }
 
     // ################################################################################################################

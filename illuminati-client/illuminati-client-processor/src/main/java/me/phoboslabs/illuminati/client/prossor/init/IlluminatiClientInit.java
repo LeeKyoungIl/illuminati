@@ -43,29 +43,20 @@ public class IlluminatiClientInit {
     private static final IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
     private static final IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR;
 
-    private static final RestoreTemplateData RESTORE_TEMPLATE_DATA;
-
     static {
         IlluminatiCommon.init();
 
         if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
-            ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
-            ILLUMINATI_BACKUP_EXECUTOR.init();
+            ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance().init();
         } else {
             ILLUMINATI_BACKUP_EXECUTOR = null;
         }
 
-        ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR);
-        ILLUMINATI_TEMPLATE_EXECUTOR.init();
-
-        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-        ILLUMINATI_DATA_EXECUTOR.init();
+        ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR).init();
+        ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
 
         if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
-            RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-            RESTORE_TEMPLATE_DATA.init();
-        } else {
-            RESTORE_TEMPLATE_DATA = null;
+            RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
         }
 
         final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
@@ -90,7 +81,7 @@ public class IlluminatiClientInit {
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
+    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati != null ? illuminati.ignore() : true;
