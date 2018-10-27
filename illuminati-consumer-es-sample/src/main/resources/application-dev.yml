@@ -42,5 +42,5 @@ elasticsearchInfo:
   master:
 #    user: es_client_admin
 #    pass: dlruddlfWkd
-    host: pi.leekyoungil.com
+    host: 192.168.0.35
     port: 9200

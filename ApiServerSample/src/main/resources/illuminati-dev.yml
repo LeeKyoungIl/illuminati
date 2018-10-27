@@ -1,6 +1,6 @@
 #rabbitmq
 broker: rabbitmq
-clusterList: pi.leekyoungil.com:5672
+clusterList: 192.168.0.48:5672
 virtualHost: illuminatiPiDev
 topic: pi-dev-illuminati-exchange
 queueName: pi-dev-illuminati-exchange.illuminati
