@@ -12,9 +12,9 @@
     
 ```java
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.8</version>
+  <version>0.8.1</version>
 </dependency>
 ```
 
@@ -22,7 +22,7 @@
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.8'
+compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8.1'
 ```
 
 ===============================================================================
@@ -40,9 +40,9 @@ compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.8'
     
 ```java
 <dependency>
-  <groupId>com.leekyoungil.illuminati</groupId>
+  <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-client-elasticsearch</artifactId>
-  <version>0.8</version>
+  <version>0.8.1</version>
 </dependency>
 ```
 
@@ -50,5 +50,5 @@ compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.8'
     * Gradle
     
 ```java
-compile 'com.leekyoungil.illuminati:illuminati-client-elasticsearch:0.8'
+compile 'me.phoboslabs.illuminati:illuminati-client-elasticsearch:0.8.1'
 ```
