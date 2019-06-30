@@ -39,7 +39,7 @@ public class EsGroupByBuilder {
                         keyMap.put(AGGREGATION_KEY_NAME, groupBy);
                         Map<String, Object> aggsMap = new HashMap<String, Object>();
                         aggsMap.put(key, keyMap);
-                        groupBy = aggsMap;
+//                        groupBy = aggsMap;
                     }
                 }
                 lastResultMap = groupBy;
