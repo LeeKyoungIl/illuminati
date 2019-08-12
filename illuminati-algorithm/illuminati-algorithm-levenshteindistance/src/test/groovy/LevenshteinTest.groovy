@@ -3,22 +3,16 @@ import spock.lang.Specification
 
 class LevenshteinTest extends Specification {
 
-    def "Levenshtein test"() {
-        setup:
-            final String targetStr = "microSoft";
-            final String compareStr = "microsoFt";
-
-        when:
-            int result;
-            long beforeTime = System.currentTimeMillis();
-            for (int i=0; i<=100000; i++) {
-                result = Levenshtein.getInstance().distance(targetStr, compareStr, true);
-            }
-            long afterTime = System.currentTimeMillis();
-            long secDiffTime = (afterTime - beforeTime);
-            println("result (ms) : "+secDiffTime);
-
-        then:
-            result == 2;
+    def "Levenshtein test"(final String targetStr, final String compareStr, final boolean ignoreCase, final int result) {
+        expect:
+            Levenshtein.getInstance().distance(targetStr, compareStr, ignoreCase) == result
+        where:
+            targetStr | compareStr | ignoreCase | result
+            "leekyoungil" | "LeekyoungIl" | false | 2
+            "microSoft" | "microsoFt" | true | 0
+            "test" | "treeValue" | true | 7
+            "test" | "TreeValue" | false | 8
+            "microSoft" | "microsoFt" | false | 2
+            "leekyoungil" | "leekyoungil" | false | 0
     }
 }

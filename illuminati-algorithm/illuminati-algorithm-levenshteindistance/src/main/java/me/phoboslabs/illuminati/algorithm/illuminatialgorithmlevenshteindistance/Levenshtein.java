@@ -40,8 +40,11 @@ public class Levenshtein {
      *   if an error occurs will return 9999.
      */
     public int distance(final CharSequence targetStr, final CharSequence compareStr, final boolean ignoreCase) {
-        char[] targetStrCharArray = (ignoreCase ? targetStr.toString().toLowerCase() : targetStr.toString()).toCharArray();
-        char[] compareStrCharArray = (ignoreCase ? compareStr.toString().toLowerCase() : compareStr.toString()).toCharArray();
+        final String tmpTargetStr = " ".concat(targetStr.toString());
+        final String tmpCompareStr = " ".concat(compareStr.toString());
+
+        char[] targetStrCharArray = (ignoreCase ? tmpTargetStr.toLowerCase() : tmpTargetStr).toCharArray();
+        char[] compareStrCharArray = (ignoreCase ? tmpCompareStr.toLowerCase() : tmpCompareStr).toCharArray();
 
         final int targetStrCharArrayLength = targetStrCharArray.length;
         final int compareStrCharArrayLength = compareStrCharArray.length;
@@ -54,26 +57,25 @@ public class Levenshtein {
         int firstLoopCnt = 0;
         int secondLoopCnt;
         for (secondLoopCnt=0; secondLoopCnt<loopCnt; secondLoopCnt++) {
-            if (indexInBound(distanceArray[firstLoopCnt], secondLoopCnt)) {
-                if (targetStrCharArray[firstLoopCnt] == compareStrCharArray[secondLoopCnt]) {
-                    distanceArray[firstLoopCnt][secondLoopCnt] = (firstLoopCnt == 0)
-                                                                    ? 0 : distanceArray[firstLoopCnt-1][secondLoopCnt-1];
-                } else {
-                    if (firstLoopCnt == 0 || secondLoopCnt == 0) {
-                        distanceArray[firstLoopCnt][secondLoopCnt] = (firstLoopCnt == 0)
-                                                                        ? secondLoopCnt : firstLoopCnt;
-                    } else {
-                        final int left = distanceArray[firstLoopCnt-1][secondLoopCnt];
-                        final int top = distanceArray[firstLoopCnt][secondLoopCnt-1];
-                        final int diagonal = distanceArray[firstLoopCnt-1][secondLoopCnt-1];
-
-                        distanceArray[firstLoopCnt][secondLoopCnt] = getSmallerOne(left, top, diagonal)+1;
-                    }
-                }
-            } else {
+            if (this.indexInBound(distanceArray[firstLoopCnt], secondLoopCnt) == false) {
                 firstLoopCnt++;
                 secondLoopCnt = -1;
                 continue;
+            }
+            if (targetStrCharArray[firstLoopCnt] == compareStrCharArray[secondLoopCnt]) {
+                distanceArray[firstLoopCnt][secondLoopCnt] = (firstLoopCnt == 0)
+                                                             ? 0 : distanceArray[firstLoopCnt-1][secondLoopCnt-1];
+            } else {
+                if (firstLoopCnt == 0 || secondLoopCnt == 0) {
+                    distanceArray[firstLoopCnt][secondLoopCnt] = (firstLoopCnt == 0)
+                                                                 ? secondLoopCnt : firstLoopCnt;
+                } else {
+                    final int left = distanceArray[firstLoopCnt-1][secondLoopCnt];
+                    final int top = distanceArray[firstLoopCnt][secondLoopCnt-1];
+                    final int diagonal = distanceArray[firstLoopCnt-1][secondLoopCnt-1];
+
+                    distanceArray[firstLoopCnt][secondLoopCnt] = this.getSmallerOne(left, top, diagonal)+1;
+                }
             }
             if (firstLoopCnt == distanceArray.length - 1
                     && secondLoopCnt == distanceArray[firstLoopCnt].length - 1) {
@@ -89,17 +91,13 @@ public class Levenshtein {
     }
 
     private int getSmallerOne(final int left, final int top, final int diagonal) {
-        int smaller = left;
-        if (smaller > top) {
-            smaller = top;
+        if (left > top) {
+            return top > diagonal ? diagonal : top;
         }
-        if (smaller > diagonal) {
-            smaller = diagonal;
-        }
-        return smaller;
+        return (left > diagonal) ? diagonal : left;
     }
 
-    private boolean indexInBound(int[] data, int index){
+    private boolean indexInBound(int[] data, final int index){
         return data != null && index >= 0 && index < data.length;
     }
 }
