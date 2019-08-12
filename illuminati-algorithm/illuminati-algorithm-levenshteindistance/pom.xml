@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>me.phoboslabs.illuminati</groupId>
+		<artifactId>illuminati-algorithm</artifactId>
+		<version>0.1</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>me.phoboslabs.illuminati.algorithm</groupId>
+	<artifactId>illuminati-algorithm-levenshteindistance</artifactId>
+	<version>0.1</version>
+	<name>illuminati-algorithm-levenshteindistance</name>
+	<description>Levenshtein Distance Algorithm</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.7</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+	</build>
+
+</project>
