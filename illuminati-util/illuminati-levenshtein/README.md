@@ -10,6 +10,10 @@ Of course, the smaller the value is similar.
 This algorithm library added flag for case sensitive identify.<br>
 And I tried to make it using only one the for loop syntax.
 
+## See here for a description of Levenshtein distance algorithm
+
+[About_Levenshtein_algorithm](https://leekyoungil.github.io/blog/2019/08/13/About_Levenshtein_algorithm.html)
+
 ## How to use?
 Very Simple. 
 
