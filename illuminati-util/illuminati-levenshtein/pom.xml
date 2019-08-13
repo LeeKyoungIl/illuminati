@@ -5,14 +5,14 @@
 
 	<parent>
 		<groupId>me.phoboslabs.illuminati</groupId>
-		<artifactId>illuminati-algorithm</artifactId>
+		<artifactId>illuminati-util</artifactId>
 		<version>1.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>illuminati-algorithm-levenshtein</artifactId>
+	<artifactId>illuminati-levenshtein</artifactId>
 	<version>1.0.0</version>
-	<name>illuminati-algorithm-levenshtein</name>
+	<name>illuminati-levenshtein</name>
 	<description>Levenshtein Distance Algorithm</description>
 
 	<properties>
@@ -25,7 +25,7 @@
 		<repository>
 			<id>bintray-leekyoungil-illuminati</id>
 			<name>leekyoungil-illuminati</name>
-			<url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-algorithm-levenshtein/;publish=1</url>
+			<url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-levenshtein/;publish=1</url>
 		</repository>
 	</distributionManagement>
 

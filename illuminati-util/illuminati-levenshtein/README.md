@@ -1,4 +1,4 @@
-# Project illuminati algorithm : levenshtein distance
+# Project illuminati util : levenshtein distance
 
 ## What is the Levenshtein distance?
 The Levenshtein Algorithm compare A and B string.
@@ -7,7 +7,8 @@ The Integer value is the number of times you need to modify the two values to ve
 Of course, the smaller the value is similar.
 
 ## What is different from another algorithm library?
-This algorithm library Added flag for case sensitive identify.
+This algorithm library added flag for case sensitive identify.<br>
+And I tried to make it using only one the for loop syntax.
 
 ## How to use?
 Very Simple. 
@@ -45,7 +46,7 @@ System.out.println("result is " + result); // result is 0
 ```java
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
-  <artifactId>illuminati-algorithm-levenshtein</artifactId>
+  <artifactId>illuminati-levenshtein</artifactId>
   <version>1.0.0</version>
 </dependency>
 ```
@@ -54,5 +55,5 @@ System.out.println("result is " + result); // result is 0
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-algorithm-levenshtein:1.0.0'
+compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.0.0'
 ```

@@ -14,5 +14,16 @@ class LevenshteinTest extends Specification {
             "test" | "TreeValue" | false | 8
             "microSoft" | "microsoFt" | false | 2
             "leekyoungil" | "leekyoungil" | false | 0
+//            null | "test" | true | 99999 | IllegalArgumentException
+//            "TEST" | null | true | 99999 | IllegalArgumentException
+            "" | "" | true | 0 
+            "" | "a" | true | 1
+            "aaapppp" | "" | true | 7
+            "frog" | "fog" | true | 1
+            "fly" | "ant" | true | 3
+            "elephant" | "hippo" | true | 7
+            "hippo" | "elephant" | true | 7
+            "hippo" | "zzzzzzzz" | true | 8
+            "hello" | "hallo" | true | 1
     }
 }

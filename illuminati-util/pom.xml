@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>me.phoboslabs.illuminati</groupId>
-	<artifactId>illuminati-algorithm</artifactId>
+	<artifactId>illuminati-util</artifactId>
 	<version>1.0</version>
 	<modules>
-		<module>illuminati-algorithm-levenshtein</module>
+		<module>illuminati-levenshtein</module>
 	</modules>
 	<packaging>pom</packaging>
 
