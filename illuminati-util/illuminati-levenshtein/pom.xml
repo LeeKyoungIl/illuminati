@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>illuminati-levenshtein</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>illuminati-levenshtein</name>
 	<description>Levenshtein Distance Algorithm</description>
 
