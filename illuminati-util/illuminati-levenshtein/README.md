@@ -10,6 +10,10 @@ Of course, the smaller the value is similar.
 This algorithm library added flag for case sensitive identify.<br>
 And I tried to make it using only one the for loop syntax.
 
+## See here for a description of Levenshtein distance algorithm
+
+[About_Levenshtein_algorithm](https://leekyoungil.github.io/blog/2019/08/13/About_Levenshtein_algorithm.html)
+
 ## How to use?
 Very Simple. 
 
@@ -47,7 +51,7 @@ System.out.println("result is " + result); // result is 0
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-levenshtein</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
@@ -55,5 +59,5 @@ System.out.println("result is " + result); // result is 0
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.0.0'
+compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.0.1'
 ```
