@@ -5,9 +5,9 @@
 
 	<groupId>me.phoboslabs.illuminati</groupId>
 	<artifactId>illuminati-algorithm</artifactId>
-	<version>0.1</version>
+	<version>1.0</version>
 	<modules>
-		<module>illuminati-algorithm-levenshteindistance</module>
+		<module>illuminati-algorithm-levenshtein</module>
 	</modules>
 	<packaging>pom</packaging>
 
@@ -69,13 +69,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>bintray-leekyoungil-illuminati</id>
-			<name>leekyoungil-illuminati</name>
-			<url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-algorithm/;publish=1</url>
-		</repository>
-	</distributionManagement>
 
 </project>
