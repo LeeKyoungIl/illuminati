@@ -1,4 +1,4 @@
-package me.phoboslabs.illuminati.algorithm.illuminatialgorithmlevenshteindistance;
+package me.phoboslabs.illuminati.util.levenshteindistance;
 
 public class Levenshtein {
     private static final Levenshtein INSTANCE = new Levenshtein();
@@ -100,12 +100,7 @@ public class Levenshtein {
                 break;
             }
         }
-
-        try {
-            return distanceArray[firstLoopCnt][secondLoopCnt];
-        } catch (Exception ex) {
-            return 99999;
-        }
+        return distanceArray[firstLoopCnt][secondLoopCnt];
     }
 
     private int getSmallerOne(final int left, final int top, final int diagonal) {
