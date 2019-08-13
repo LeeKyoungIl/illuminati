@@ -8,6 +8,8 @@ public class Levenshtein {
     }
 
     /**
+     * GNU General Public License v3.0
+     *
      * The Levenshtein Algorithm compare A and B string.
      * Returns 0(zero) If both are equal and Integer value if both are different.
      * The Integer value is the number of times you need to modify the two values to ve the equal.
@@ -40,11 +42,27 @@ public class Levenshtein {
      *   if an error occurs will return 9999.
      */
     public int distance(final CharSequence targetStr, final CharSequence compareStr, final boolean ignoreCase) {
-        final String tmpTargetStr = " ".concat(targetStr.toString());
-        final String tmpCompareStr = " ".concat(compareStr.toString());
+        if (targetStr == null || compareStr == null) {
+            throw new IllegalArgumentException("targetStr or compareStr must not be null.");
+        }
 
-        char[] targetStrCharArray = (ignoreCase ? tmpTargetStr.toLowerCase() : tmpTargetStr).toCharArray();
-        char[] compareStrCharArray = (ignoreCase ? tmpCompareStr.toLowerCase() : tmpCompareStr).toCharArray();
+        StringBuilder targetBuilder = new StringBuilder(targetStr.length()+1).append(' ');
+        StringBuilder compareBuilder = new StringBuilder(compareStr.length()+1).append(' ');
+
+        for (int i=0; i<targetStr.length(); i++) {
+            targetBuilder.append(ignoreCase == false
+                                    ? targetStr.charAt(i) : Character.toLowerCase(targetStr.charAt(i)));
+        }
+        for (int i=0; i<compareStr.length(); i++) {
+            compareBuilder.append(ignoreCase == false
+                                    ? compareStr.charAt(i) : Character.toLowerCase(compareStr.charAt(i)));
+        }
+
+        char[] targetStrCharArray = new char[targetStr.length()+1];
+        char[] compareStrCharArray = new char[compareStr.length()+1];
+
+        targetBuilder.getChars(0, targetBuilder.length(), targetStrCharArray, 0);
+        compareBuilder.getChars(0, compareBuilder.length(), compareStrCharArray, 0);
 
         final int targetStrCharArrayLength = targetStrCharArray.length;
         final int compareStrCharArrayLength = compareStrCharArray.length;

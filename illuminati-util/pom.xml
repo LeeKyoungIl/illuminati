@@ -3,18 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>me.phoboslabs.illuminati</groupId>
-		<artifactId>illuminati-algorithm</artifactId>
-		<version>0.1</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-
-	<groupId>me.phoboslabs.illuminati.algorithm</groupId>
-	<artifactId>illuminati-algorithm-levenshteindistance</artifactId>
-	<version>0.1</version>
-	<name>illuminati-algorithm-levenshteindistance</name>
-	<description>Levenshtein Distance Algorithm</description>
+	<groupId>me.phoboslabs.illuminati</groupId>
+	<artifactId>illuminati-util</artifactId>
+	<version>1.0</version>
+	<modules>
+		<module>illuminati-levenshtein</module>
+	</modules>
+	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,10 +17,17 @@
 		<java.version>1.6</java.version>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+			<version>1.3-groovy-2.5</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
-
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -65,17 +67,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
-
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>bintray-leekyoungil-illuminati</id>
-			<name>leekyoungil-illuminati</name>
-			<url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-algorithm-levenshteindistance/;publish=1</url>
-		</repository>
-	</distributionManagement>
 
 </project>

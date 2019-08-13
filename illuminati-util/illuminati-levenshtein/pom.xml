@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>me.phoboslabs.illuminati</groupId>
+		<artifactId>illuminati-util</artifactId>
+		<version>1.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>illuminati-levenshtein</artifactId>
+	<version>1.0.0</version>
+	<name>illuminati-levenshtein</name>
+	<description>Levenshtein Distance Algorithm</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.6</java.version>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-leekyoungil-illuminati</id>
+			<name>leekyoungil-illuminati</name>
+			<url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-levenshtein/;publish=1</url>
+		</repository>
+	</distributionManagement>
+
+</project>
