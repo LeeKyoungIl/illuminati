@@ -8,3 +8,5 @@ illuminati-client/illuminati-client-switch/target/
 illuminati-client/illuminati-client-jscollector/target/
 *.db
 .DS_Store
+.mvn/
+.gradle/
