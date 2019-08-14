@@ -29,11 +29,10 @@ class LevenshteinTest extends Specification {
 
     def "Levenshtein IllegalArgumentException 1 test"() {
         setup:
-            final String targetStr = null;
             final String compareStr = "test";
 
         when:
-            Levenshtein.getInstance().distance(targetStr, compareStr, false)
+            Levenshtein.getInstance().distance(null, new CompareString(compareStr.toCharArray()), false)
 
         then:
             thrown IllegalArgumentException
@@ -42,22 +41,17 @@ class LevenshteinTest extends Specification {
     def "Levenshtein IllegalArgumentException 2 test"() {
         setup:
             final String targetStr = "TEST";
-            final String compareStr = null;
 
         when:
-            Levenshtein.getInstance().distance(targetStr, compareStr, false)
+            Levenshtein.getInstance().distance(new CompareString(targetStr.toCharArray()), null, false)
 
         then:
             thrown IllegalArgumentException
     }
 
     def "Levenshtein IllegalArgumentException 3 test"() {
-        setup:
-            final String targetStr = null;
-            final String compareStr = null;
-
         when:
-            Levenshtein.getInstance().distance(targetStr, compareStr, false)
+            Levenshtein.getInstance().distance(null, null, false)
 
         then:
             thrown IllegalArgumentException

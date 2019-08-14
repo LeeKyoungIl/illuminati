@@ -49,16 +49,6 @@ public class Levenshtein {
             throw new IllegalArgumentException("targetStr or compareStr must not be null.");
         }
 
-//        for (int i=0; i<targetStr.length(); i++) {
-//            targetBuilder.append(ignoreCase == false
-//                    ? targetStr.charAt(i) : Character.toLowerCase(targetStr.charAt(i)));
-//        }
-//        for (int i=0; i<compareStr.length(); i++) {
-//            compareBuilder.append(ignoreCase == false
-//                    ? compareStr.charAt(i) : Character.toLowerCase(compareStr.charAt(i)));
-//        }
-
-
         char[] targetStrCharArray = new char[targetStr.length()+1];
         targetStrCharArray[0] = ' ';
         System.arraycopy(ignoreCase ? targetStr.toCharArrayByIgnoreCase() : targetStr.toCharArray(), 0, targetStrCharArray, 1, targetStr.length());
