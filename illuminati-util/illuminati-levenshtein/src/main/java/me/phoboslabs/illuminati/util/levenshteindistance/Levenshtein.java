@@ -41,28 +41,20 @@ public class Levenshtein {
      *
      *   if an error occurs will return 9999.
      */
-    public int distance(final CharSequence targetStr, final CharSequence compareStr, final boolean ignoreCase) {
+    public int distance(CompareString targetStr, CompareString compareStr) {
+        return this.distance(targetStr, compareStr, false);
+    }
+    public int distance(CompareString targetStr, CompareString compareStr, final boolean ignoreCase) {
         if (targetStr == null || compareStr == null) {
             throw new IllegalArgumentException("targetStr or compareStr must not be null.");
         }
 
-        StringBuilder targetBuilder = new StringBuilder(targetStr.length()+1).append(' ');
-        StringBuilder compareBuilder = new StringBuilder(compareStr.length()+1).append(' ');
-
-        for (int i=0; i<targetStr.length(); i++) {
-            targetBuilder.append(ignoreCase == false
-                                    ? targetStr.charAt(i) : Character.toLowerCase(targetStr.charAt(i)));
-        }
-        for (int i=0; i<compareStr.length(); i++) {
-            compareBuilder.append(ignoreCase == false
-                                    ? compareStr.charAt(i) : Character.toLowerCase(compareStr.charAt(i)));
-        }
-
         char[] targetStrCharArray = new char[targetStr.length()+1];
+        targetStrCharArray[0] = ' ';
+        System.arraycopy(ignoreCase ? targetStr.toCharArrayByIgnoreCase() : targetStr.toCharArray(), 0, targetStrCharArray, 1, targetStr.length());
         char[] compareStrCharArray = new char[compareStr.length()+1];
-
-        targetBuilder.getChars(0, targetBuilder.length(), targetStrCharArray, 0);
-        compareBuilder.getChars(0, compareBuilder.length(), compareStrCharArray, 0);
+        compareStrCharArray[0] = ' ';
+        System.arraycopy(ignoreCase ? compareStr.toCharArrayByIgnoreCase() : compareStr.toCharArray(), 0, compareStrCharArray, 1, compareStr.length());
 
         final int targetStrCharArrayLength = targetStrCharArray.length;
         final int compareStrCharArrayLength = compareStrCharArray.length;
