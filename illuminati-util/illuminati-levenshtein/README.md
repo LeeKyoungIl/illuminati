@@ -21,7 +21,12 @@ Very Simple.
 String targetStr = "Illuminati";
 String compareStr = "illuninati";
 boolean ignoreCase = false;
+
 int result = Levenshtein.getInstance().distance(targetStr, compareStr, ignoreCase);
+
+or
+
+int result = Levenshtein.getInstance().distance(targetStr, compareStr);
 
 System.out.println("result is " + result); // result is 2
 ```
@@ -51,7 +56,7 @@ System.out.println("result is " + result); // result is 0
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-levenshtein</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -59,5 +64,5 @@ System.out.println("result is " + result); // result is 0
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.0.1'
+compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.1.0'
 ```
