@@ -67,29 +67,29 @@
 
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
-            <artifactId>illuminati-client-annotation</artifactId>
+            <artifactId>illuminati-annotation</artifactId>
             <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
-            <artifactId>illuminati-client-jscollector</artifactId>
-            <version>0.5.8</version>
+            <artifactId>illuminati-jscollector</artifactId>
+            <version>0.5.9</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
-            <artifactId>illuminati-client-processor</artifactId>
-            <version>0.9.9.7</version>
+            <artifactId>illuminati-processor</artifactId>
+            <version>0.9.9.8</version>
             <scope>compile</scope>
         </dependency>
 
         <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
         <!--<dependency>-->
             <!--<groupId>me.phoboslabs.illuminati</groupId>-->
-            <!--<artifactId>illuminati-client-switch</artifactId>-->
+            <!--<artifactId>illuminati-switch</artifactId>-->
             <!--<version>1.0.6</version>-->
             <!--<scope>compile</scope>-->
         <!--</dependency>-->

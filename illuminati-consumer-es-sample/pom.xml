@@ -76,7 +76,7 @@
 
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
-            <artifactId>illuminati-client-elasticsearch</artifactId>
+            <artifactId>illuminati-elasticsearch</artifactId>
             <version>0.8.1</version>
             <scope>compile</scope>
         </dependency>
