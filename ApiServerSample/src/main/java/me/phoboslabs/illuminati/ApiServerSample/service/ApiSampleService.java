@@ -1,8 +1,8 @@
 package me.phoboslabs.illuminati.ApiServerSample.service;
 
 import me.phoboslabs.illuminati.ApiServerSample.model.TestModel;
-import me.phoboslabs.illuminati.client.annotation.Illuminati;
-import me.phoboslabs.illuminati.client.annotation.enums.PackageType;
+import me.phoboslabs.illuminati.annotation.Illuminati;
+import me.phoboslabs.illuminati.annotation.enums.PackageType;
 import org.springframework.stereotype.Service;
 
 @Illuminati(packageType = PackageType.SERVICE)

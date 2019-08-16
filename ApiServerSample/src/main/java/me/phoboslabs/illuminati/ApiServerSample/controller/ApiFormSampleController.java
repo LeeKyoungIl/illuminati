@@ -1,7 +1,7 @@
 package me.phoboslabs.illuminati.ApiServerSample.controller;
 
-import me.phoboslabs.illuminati.client.annotation.Illuminati;
-import me.phoboslabs.illuminati.client.annotation.enums.PackageType;
+import me.phoboslabs.illuminati.annotation.Illuminati;
+import me.phoboslabs.illuminati.annotation.enums.PackageType;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
