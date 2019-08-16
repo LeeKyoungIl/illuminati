@@ -23,11 +23,12 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 
 ## struct of illuminati Project
  * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
- * [illuminati-client-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-annotation)
- * [illuminati-client-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-processor)
- * [illuminati-client-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-switch)
- * [illuminati-client-jscollector](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-jscollector)
- * [illuminati-client-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-elasticsearch)
+ * [illuminati-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
+ * [illuminati-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
+ * [illuminati-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
+ * [illuminati-jscollector](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
+ * [illuminati-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+ * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
  * [illuminati-consumer-es-sample	](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
 
 ## data to collect of illuminati.
@@ -79,27 +80,27 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 <dependencies>
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-client-annotation</artifactId>
+      <artifactId>illuminati-annotation</artifactId>
       <version>1.2.1</version>
    </dependency>
 
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-client-processor</artifactId>
+      <artifactId>illuminati-processor</artifactId>
       <version>0.9.9.7</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
    <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
-       <artifactId>illuminati-client-switch</artifactId>
+       <artifactId>illuminati-switch</artifactId>
        <version>1.0.8</version>
    </dependency>
 
    <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-client-jscollector</artifactId>
+      <artifactId>illuminati-jscollector</artifactId>
       <version>0.5.8</version>
    </dependency>
 </dependencies>
@@ -113,12 +114,12 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
+compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.7'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.8'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.8'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
-compile 'me.phoboslabs.illuminati:illuminati-client-jscollectorswitch:0.5.8'
+compile 'me.phoboslabs.illuminati:illuminati-jscollectorswitch:0.5.8'
 ```
 
 ## add @Illuminati  to Class
@@ -214,10 +215,11 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 
 ## illuminati Project 구조
    * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
-   * [illuminati-client-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-annotation)
-   * [illuminati-client-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-processor)
-   * [illuminati-client-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-switch)
-   * [illuminati-client-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati-client/illuminati-client-elasticsearch)
+   * [illuminati-annotation](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
+   * [illuminati-processor](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
+   * [illuminati-switch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
+   * [illuminati-elasticsearch](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+   * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
    * [illuminati-consumer-es-sample	](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
 
 # illuminati에서 수집을 하는 Event 데이터 정보
@@ -270,27 +272,27 @@ Application에서 발생하는 모든데이터를 수집하고 그중에 어떤 
 <dependencies>
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-client-annotation</artifactId>
+      <artifactId>illuminati-annotation</artifactId>
       <version>1.2.1</version>
    </dependency>
 
    <dependency>
      <groupId>me.phoboslabs.illuminati</groupId>
-     <artifactId>illuminati-client-processor</artifactId>
+     <artifactId>illuminati-processor</artifactId>
      <version>0.9.9.7</version>
   </dependency>
       
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다. -->
   <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-client-switch</artifactId>
+      <artifactId>illuminati-switch</artifactId>
       <version>1.0.8</version>
   </dependency>
 
   <!-- 이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다. -->
   <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-client-jscollector</artifactId>
+      <artifactId>illuminati-jscollector</artifactId>
       <version>0.5.8</version>
   </dependency>
 </dependencies>
@@ -304,12 +306,12 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-client-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-client-processor:0.9.9.7'
+compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.7'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 대시 배포 없이 on, off할수 있습니다.
-compile 'me.phoboslabs.illuminati:illuminati-client-switch:1.0.8'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.8'
 //이것은 옵션 입니다. 해당 모듈을 추가하면 브라우저에서 발생된 Event data까지 수집할수 있습니다.
-compile 'me.phoboslabs.illuminati:illuminati-client-jscollector:0.5.8'
+compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.8'
 ```
 
 ## Class에 @Illuminati 추가 
