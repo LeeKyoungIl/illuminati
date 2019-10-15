@@ -61,8 +61,7 @@ public class Levenshtein {
 
         int[][] distanceArray = new int[targetStrCharArrayLength][compareStrCharArrayLength];
 
-        int loopCnt = (targetStrCharArrayLength > compareStrCharArrayLength
-                        ? targetStrCharArrayLength : compareStrCharArrayLength) + 1;
+        int loopCnt = (Math.max(targetStrCharArrayLength, compareStrCharArrayLength)) + 1;
 
         int firstLoopCnt = 0;
         int secondLoopCnt;
@@ -96,10 +95,7 @@ public class Levenshtein {
     }
 
     private int getSmallerOne(final int left, final int top, final int diagonal) {
-        if (left > top) {
-            return top > diagonal ? diagonal : top;
-        }
-        return (left > diagonal) ? diagonal : left;
+        return (left > top) ? Math.min(top, diagonal) : Math.min(left, diagonal);
     }
 
     private boolean indexInBound(int[] data, final int index){
