@@ -1,12 +1,59 @@
-.idea/
-illuminati-client/illuminati-client-annotation/target/
-illuminati-client/illuminati-client-common/target/
-illuminati-client/illuminati-client-elasticsearch/target/
-illuminati-client/illuminati-client-processor/target/
-illuminati-client/illuminati-client-switch/target/
+### Compiled class file ###
+*.class
+
+### Log file ###
+*.log
+
+### BlueJ files ###
+*.ctxt
+
+### Mobile Tools for Java (J2ME) ###
+.mtj.tmp/
+
+### Package Files ###
+#*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml ###
+hs_err_pid*
+
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
-illuminati-client/illuminati-client-jscollector/target/
+*.ipr
+
+### Vscode
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.clover
+
+### BUILD ###
+target/
+bin/
+deploy/
+**/min/
+
+### TMP ###
+*.tmp
+
+### TEST ###
+logs
+tmp
 *.db
+
+### MAC FILE ###
 .DS_Store
-.mvn/
-.gradle/
+
+._*
+logging\.path_IS_UNDEFINED/
