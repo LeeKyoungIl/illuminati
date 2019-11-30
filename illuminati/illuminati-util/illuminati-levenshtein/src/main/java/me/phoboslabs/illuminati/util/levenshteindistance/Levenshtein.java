@@ -101,4 +101,8 @@ public class Levenshtein {
     private boolean indexInBound(int[] data, final int index){
         return data != null && index >= 0 && index < data.length;
     }
+
+    public void jsonStringDistance(final String originJson, final String compareJson) {
+
+    }
 }

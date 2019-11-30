@@ -1,0 +1,52 @@
+{
+  "ocrResult": {
+    "result": "success",
+    "message": "",
+    "base64Image": "",
+    "point": 66.67,
+    "uncorrectedPoint": 0,
+    "annotations": {
+      "OCRApiType": "CLOVA_OCR",
+      "roiImage": null,
+      "features": {
+        "name": "イタリアンワイン&カフェレストラン",
+        "phone": "055-920-6177",
+        "date": "2018-04-10",
+        "time": "19:30",
+        "totalAmount": "1676",
+        "menuItem": [
+          {
+            "item": "00843ほうれん草のソテー",
+            "price": "199",
+            "count": "1",
+            "menuItemId": "menu_c96b93a0a3cd40148488cac4c470ce4b"
+          },
+          {
+            "item": "00417コーンクリームスープ",
+            "price": "149",
+            "count": "1",
+            "menuItemId": "menu_cbe26106254842579cb027feca75f883"
+          },
+          {
+            "item": "01087リブステーキ",
+            "price": "999",
+            "count": "1",
+            "menuItemId": "menu_37ae91b4021a43b4bc67ad20206a6d4d"
+          },
+          {
+            "item": "01141プチフォッカ",
+            "price": "139",
+            "count": "1",
+            "menuItemId": "menu_e5826a0fad7340fbbdbe8ff29b08f4f0"
+          },
+          {
+            "item": "01530セットドリンクバー190",
+            "price": "190",
+            "count": "1",
+            "menuItemId": "menu_73ce37c0b7184d9fbc3d32c1c6e6b0c2"
+          }
+        ]
+      }
+    }
+  }
+}
