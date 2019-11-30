@@ -53,14 +53,23 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     private void initDataFromHttpRequest (final HttpServletRequest request) {
-        this.requestHeaderModel = new RequestHeaderModel()
-            .setRequestInfo(request)
-            .setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID))
-            .setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID))
-            .setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
+        this.requestHeaderModel = new RequestHeaderModel().setRequestInfo(request);
+        try {
+            this.requestHeaderModel
+                    .setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID))
+                    .setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID))
+                    .setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
+        } catch (Exception ignore) {
+            this.logger.warn(ignore.getMessage());
+        }
 
-        this.illuminatiUniqueUserId = SystemUtil.getValueFromHeaderByKey(request, ILLUMINATI_UNIQUE_USER_ID_KEY);
-        this.clientInfoMap = ConvertUtil.getClientInfoFromHttpRequest(request);
+        try {
+            this.illuminatiUniqueUserId = SystemUtil.getValueFromHeaderByKey(request, ILLUMINATI_UNIQUE_USER_ID_KEY);
+            this.clientInfoMap = ConvertUtil.getClientInfoFromHttpRequest(request);
+        } catch (Exception ignore) {
+            this.logger.warn(ignore.getMessage());
+        }
+
         this.staticInfo = ConvertUtil.getStaticInfoFromHttpRequest(request);
         this.isActiveChaosBomber = ConvertUtil.getChaosBomberFromHttpRequest(request);
 
@@ -77,27 +86,25 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
         return resultObjectMap;
     }
 
+    private boolean argsValidated() {
+        return this.args != null && this.args.length > 0;
+    }
+
     private void setChangedJsElement () {
         for (Class paramType : this.signature.getParameterTypes()) {
-            if (CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName())
-                    && this.args != null && this.args.length > 0) {
+            if (CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName()) && this.argsValidated()) {
                 this.changedJsElement = (ChangedJsElement) this.args[0];
             }
         }
-
     }
 
     public boolean isValid () {
-        if (this.requestHeaderModel == null) {
-            this.logger.warn("request is must not null");
-            return  false;
+        if (this.requestHeaderModel == null || this.signature == null) {
+            this.logger.warn("request or signature are must not null");
+            return false;
+        } else {
+            return true;
         }
-        if (signature == null) {
-            this.logger.warn("signature is must not null");
-            return  false;
-        }
-
-        return true;
     }
 
     public IlluminatiDataInterfaceModelImpl setPackageType (String packageType) {
@@ -143,12 +150,12 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     @Override
-    public IlluminatiInterfaceType getInterfaceType() {
-        return null;
+    public IlluminatiInterfaceType getInterfaceType() throws Exception {
+        throw new Exception("This feature is not available here.");
     }
 
     @Override
-    public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) {
-
+    public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) throws Exception {
+        throw new Exception("This feature is not available here.");
     }
 }

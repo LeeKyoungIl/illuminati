@@ -24,92 +24,77 @@ public class FileUtil {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public static String generateFileName() {
-        Date nowDate = new Date();
-        StringBuilder illuminatiDataFileName = new StringBuilder();
-        String stringDate = FileUtil.DATE_FORMAT.format(nowDate);
-        illuminatiDataFileName.append(stringDate);
-        illuminatiDataFileName.append(ILLUMINATI_DATA_FILE_NAME_POSTFIX);
-
-        return illuminatiDataFileName.toString();
+        return new StringBuilder().append(FileUtil.DATE_FORMAT.format(new Date()))
+                .append(ILLUMINATI_DATA_FILE_NAME_POSTFIX).toString();
     }
 
-    public static File generateFile(String basePath, String fileName) {
-        File file = new File(basePath, fileName);
+    public static File generateFile(String basePath, String fileName) throws Exception {
+        final File file = new File(basePath, fileName);
 
         try {
-            if (file.createNewFile()) {
+            if (file.exists()) {
                 return file;
-            } else if (file.exists()) {
+            } else if (file.createNewFile()) {
                 return file;
             }
-        } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File create error : ", e.getMessage());
-            return null;
-        }
 
-        return null;
+            final String errorMessage = "File create error";
+            FILE_UTIL_LOGGER.error(errorMessage);
+            throw new Exception(errorMessage);
+        } catch (IOException e) {
+            final String errorMessage = "File create error : ".concat(e.getMessage());
+            FILE_UTIL_LOGGER.error(errorMessage);
+            throw new Exception(errorMessage);
+        }
     }
 
     public static boolean isFileExists(String basePath, String fileName) {
-        File file = new File(basePath, fileName);
-
-        if (file.exists()) {
-            return true;
-        }
-
-        return false;
+        return new File(basePath, fileName).exists();
     }
 
     public static void appendDataToFileByOnce(File file, String textData) {
-        if (file.canWrite()) {
-            try {
-                long start = System.currentTimeMillis();
-                FileWriter writer = new FileWriter(file, true);
-                writer.append(textData);
-                writer.flush();
-                writer.close();
-                long end = System.currentTimeMillis();
-                FILE_UTIL_LOGGER.info("Time spent writing files : " + ((end - start) / 1000f) + " seconds");
-            } catch (IOException e) {
-                FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
-            }
-        } else {
+        if (file.canWrite() == false) {
             FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
+            return;
+        }
+
+        try {
+            final long start = System.currentTimeMillis();
+            FileWriter writer = new FileWriter(file, true);
+            writer.append(textData);
+            writer.flush();
+            writer.close();
+
+            FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds");
+        } catch (IOException e) {
+            FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
         }
     }
 
     public static void appendDataToFile(File file, List<String> dataList) {
-        if (file.canWrite()) {
-            try {
-                FileWriter writer = new FileWriter(file, true);
-                write(dataList, writer);
-            } catch (IOException e) {
-                FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
-            }
-        } else {
+        if (file.canWrite() == false) {
             FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
+            return;
         }
-    }
 
-    private static void write(List<String> dataList, Writer writer) throws IOException {
-        long start = System.currentTimeMillis();
-        for (String data: dataList) {
-            writer.append(data + LINE_SEPARATOR);
+        try {
+            FileWriter writer = new FileWriter(file, true);
+            final long start = System.currentTimeMillis();
+            for (String data: dataList) {
+                writer.append(data.concat(LINE_SEPARATOR));
+            }
+            writer.flush();
+            writer.close();
+
+            FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds (" + dataList.size() + " line)");
+        } catch (IOException e) {
+            FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
         }
-        writer.flush();
-        writer.close();
-        long end = System.currentTimeMillis();
-        FILE_UTIL_LOGGER.info("Time spent writing files : " + ((end - start) / 1000f) + " seconds (" + dataList.size() + " line)");
     }
 
     public static boolean isDirectoryExists(String directoryName) {
-        File file = new File(directoryName);
-
-        if (file.exists() && file.isDirectory()) {
-            return true;
-        }
-
-        return false;
+        final File file = new File(directoryName);
+        return file.exists() && file.isDirectory();
     }
 
     public static boolean createDirectory(String directoryName) {
@@ -119,22 +104,20 @@ public class FileUtil {
         }
 
         try {
-            File file = new File(directoryName);
-            return file.mkdir();
+            return new File(directoryName).mkdir();
         } catch (SecurityException ex) {
             FILE_UTIL_LOGGER.info("check your dir permission.");
             return false;
         }
     }
 
-    public static List<String> getDataFromFile (File fileOb) {
-        List<String> readDataLines = null;
+    public static List<String> getDataFromFile (File fileOb) throws Exception {
         try {
-            readDataLines = FileUtils.readLines(fileOb, ENCODING);
+            return FileUtils.readLines(fileOb, ENCODING);
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.info("check your file.", e.getMessage());
+            final String errorMessage = "check your file.".concat(e.getMessage());
+            FILE_UTIL_LOGGER.info(errorMessage);
+            throw new Exception(errorMessage);
         }
-
-        return readDataLines;
     }
 }

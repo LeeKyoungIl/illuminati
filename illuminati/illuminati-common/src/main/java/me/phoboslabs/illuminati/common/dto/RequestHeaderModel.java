@@ -366,15 +366,17 @@ public class RequestHeaderModel {
     public RequestHeaderModel () { }
 
     public RequestHeaderModel setRequestInfo (final HttpServletRequest request) {
-        if (request != null) {
-            this.init(request);
-            //this.getIlluminatiProcId(request);
-            if ("post".equalsIgnoreCase(request.getMethod())) {
-                try {
-                    this.postContentBody = StringObjectUtils.getPostBodyString(request);
-                } catch (IOException ex) {
-                    REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ("+ex.toString()+")");
-                }
+        if (request == null) {
+            return this;
+        }
+
+        this.init(request);
+        //this.getIlluminatiProcId(request);
+        if ("post".equalsIgnoreCase(request.getMethod())) {
+            try {
+                this.postContentBody = StringObjectUtils.getPostBodyString(request);
+            } catch (IOException ex) {
+                REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ("+ex.toString()+")");
             }
         }
 
@@ -396,10 +398,10 @@ public class RequestHeaderModel {
 
         while (headerNames.hasMoreElements()) {
             try {
-                String key = (String) headerNames.nextElement();
-                String value = request.getHeader(key);
+                final String originKey = (String) headerNames.nextElement();
+                final String value = request.getHeader(originKey);
 
-                key = key.toLowerCase();
+                String key = originKey.toLowerCase();
 
                 if (key.indexOf("-") > -1) {
                     final StringBuilder methodKey = new StringBuilder();
@@ -409,7 +411,8 @@ public class RequestHeaderModel {
                         String partOfString = splitedKey[i];
 
                         if (i > 0) {
-                            partOfString = partOfString.substring(0, 1).toUpperCase() + partOfString.substring(1);
+                            partOfString = partOfString.substring(0, 1).toUpperCase()
+                                            .concat(partOfString.substring(1));
                         }
 
                         methodKey.append(partOfString);
@@ -430,9 +433,7 @@ public class RequestHeaderModel {
                     final String key = (String) headerNames.nextElement();
                     final String value = request.getHeader(key);
                     this.anotherHeader.put(key, value);
-                } catch (Exception ex1) {
-                    // ignore
-                }
+                } catch (Exception ignore) {}
 
                 REQUEST_HEADER_MODEL_LOGGER.debug("Sorry. check your header (There Exception is no problem in operation). ("+ex.toString()+")");
             }
@@ -467,9 +468,8 @@ public class RequestHeaderModel {
             return;
         }
 
-
         for (String cookieData : this.cookie.split(";")) {
-            String[] tmpCookieData = cookieData.split("=");
+            final String[] tmpCookieData = cookieData.split("=");
             if (tmpCookieData.length == 2) {
                 this.setParsedCookieElement(tmpCookieData[0].trim(), tmpCookieData[1].trim());
             }
@@ -483,29 +483,26 @@ public class RequestHeaderModel {
 
         this.parsedCookie.put(key, value);
     }
-    public RequestHeaderModel setSessionTransactionId (String illuminatiSProcId) {
-        if (StringObjectUtils.isValid(illuminatiSProcId) == false) {
-            return this;
-        }
-        this.illuminatiSProcId = illuminatiSProcId;
 
+    public RequestHeaderModel setSessionTransactionId (String illuminatiSProcId) {
+        if (StringObjectUtils.isValid(illuminatiSProcId)) {
+            this.illuminatiSProcId = illuminatiSProcId;return this;
+        }
         return this;
     }
 
 
     public RequestHeaderModel setGlobalTransactionId (String illuminatiGProcId) {
-        if (StringObjectUtils.isValid(illuminatiGProcId) == false) {
-            return this;
+        if (StringObjectUtils.isValid(illuminatiGProcId)) {
+            this.illuminatiGProcId = illuminatiGProcId;
         }
-        this.illuminatiGProcId = illuminatiGProcId;
         return this;
     }
 
     public RequestHeaderModel setTransactionId (String illuminatiProcId) {
-        if (StringObjectUtils.isValid(illuminatiProcId) == false) {
-            return this;
+        if (StringObjectUtils.isValid(illuminatiProcId)) {
+            this.illuminatiProcId = illuminatiProcId;
         }
-        this.illuminatiProcId = illuminatiProcId;
         return this;
     }
 

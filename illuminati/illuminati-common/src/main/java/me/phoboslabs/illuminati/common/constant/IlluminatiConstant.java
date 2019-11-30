@@ -1,7 +1,9 @@
 package me.phoboslabs.illuminati.common.constant;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,21 +36,23 @@ abstract public class IlluminatiConstant {
 
     public final static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = "5000";
 
-    public static final String[] PROPERTIES_KEYS;
+    public static final List<String> PROPERTIES_KEYS;
+    public final static List<String> CONFIG_FILE_EXTENSTIONS;
+    public final static List<String> BASIC_CONFIG_FILES;
 
     static {
-        PROPERTIES_KEYS = new String[]{"parentModuleName", "samplingRate"
+        PROPERTIES_KEYS = Collections.unmodifiableList(Arrays.asList("parentModuleName", "samplingRate"
                 , "broker", "clusterList", "virtualHost", "topic", "queueName"
                 , "userName", "password", "isAsync", "isCompression"
-                , "performance", "debug", "chaosBomber"};
+                , "performance", "debug", "chaosBomber"));
+
+        CONFIG_FILE_EXTENSTIONS = Collections.unmodifiableList(Arrays.asList("properties", "yml", "yaml"));
+        BASIC_CONFIG_FILES = Collections.unmodifiableList(Arrays.asList("application.properties", "application.yml", "application.yaml"));
     }
 
     public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
     public final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
-
-    public final static List<String> CONFIG_FILE_EXTENSTIONS = Arrays.asList(new String[] { "properties", "yml", "yaml" });
-    public final static List<String> BASIC_CONFIG_FILES = Arrays.asList(new String[] { "application.properties", "application.yml", "application.yaml" });
 
     public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
@@ -63,6 +67,13 @@ abstract public class IlluminatiConstant {
     }
 
     public final static ObjectMapper BASIC_OBJECT_MAPPER = new ObjectMapper();
+
+    public final static ObjectMapper BASIC_OBJECT_STRING_MAPPER;
+    static {
+        BASIC_OBJECT_STRING_MAPPER = new ObjectMapper();
+        BASIC_OBJECT_STRING_MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
+        BASIC_OBJECT_STRING_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
 
     public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(IlluminatiJsonCodeProperties.class, "jsonStatusCode");
 

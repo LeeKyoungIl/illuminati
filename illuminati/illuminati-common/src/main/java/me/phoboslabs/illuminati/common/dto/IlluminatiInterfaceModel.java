@@ -8,7 +8,7 @@ public interface IlluminatiInterfaceModel {
     static final String ILLUMINATI_SPROC_ID_KEY = "illuminatiSProcId";
     static final String ILLUMINATI_UNIQUE_USER_ID_KEY = "illuminatiUniqueUserId";
 
-    IlluminatiInterfaceType getInterfaceType();
+    IlluminatiInterfaceType getInterfaceType() throws Exception;
 
-    void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType);
+    void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) throws Exception;
 }

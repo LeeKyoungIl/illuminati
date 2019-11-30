@@ -17,7 +17,7 @@ public class EsIndexMapping {
     }
 
     public void setMappingIndexByField (String rootField, String field, String type) {
-        rootField = StringObjectUtils.convertFirstLetterToLowerize(rootField);
+        rootField = StringObjectUtils.convertFirstLetterToLowerlize(rootField);
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put(TYPE_KEY, type);
 

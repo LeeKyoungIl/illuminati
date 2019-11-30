@@ -28,17 +28,12 @@ public class StringObjectUtils {
     private final static Logger STRINGUTIL_LOGGER = LoggerFactory.getLogger(StringObjectUtils.class);
 
     public static boolean isValid (final String value) {
-        if (value == null || value.equals("")) {
-            return false;
-        }
-
-        return true;
+        return value != null && value.trim().length() > 0;
     }
 
-    public static byte[] gzipMessage(final String message) {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
+    public static byte[] gzipMessage(final String message) throws Exception {
         try {
+            final ByteArrayOutputStream bos = new ByteArrayOutputStream();
             GZIPOutputStream stream = new GZIPOutputStream(bos);
             byte[] bytes;
             try {
@@ -54,15 +49,16 @@ public class StringObjectUtils {
             bos.close();
             return zipped;
         } catch (IOException e) {
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
 
-    public static String decompressGzip (final byte[] compressed) throws IOException {
-        final StringBuilder outStr = new StringBuilder();
-        if ((compressed == null) || (compressed.length == 0)) {
-            return "";
+    public static String decompressGzip (final byte[] compressed) throws Exception {
+        if (compressed == null || compressed.length == 0) {
+            throw new Exception("compressed byte array must not be null.");
         }
+
+        final StringBuilder outStr = new StringBuilder();
         if (isCompressed(compressed)) {
             final GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(compressed));
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gis, IlluminatiConstant.BASE_CHARSET));
@@ -71,6 +67,9 @@ public class StringObjectUtils {
             while ((line = bufferedReader.readLine()) != null) {
                 outStr.append(line);
             }
+
+            gis.close();
+            bufferedReader.close();
         } else {
             outStr.append(compressed);
         }
@@ -108,14 +107,18 @@ public class StringObjectUtils {
             }
         }
         writer.flush();
+        writer.close();
 
-        return new String(bos.toByteArray(), IlluminatiConstant.BASE_CHARSET);
+        byte[] returnByteArray = bos.toByteArray().clone();
+        bos.close();
+
+        return new String(returnByteArray, IlluminatiConstant.BASE_CHARSET);
     }
 
     public static String getExceptionMessageChain (Throwable throwable) {
-        final StringBuilder result = new StringBuilder();
-        result.append("[IlluminatiException] : An exception occurred while running");
-        result.append("\r\n\r\n");
+        final StringBuilder result = new StringBuilder()
+                                        .append("[IlluminatiException] : An exception occurred while running")
+                                        .append("\r\n\r\n");
 
         ///["THIRD EXCEPTION", "SECOND EXCEPTION", "FIRST EXCEPTION"]
         while (throwable != null) {
@@ -126,9 +129,9 @@ public class StringObjectUtils {
         return result.toString();
     }
 
-    public static String removeDotAndUpperCase (final String value) {
-        if (!isValid(value)) {
-            return null;
+    public static String removeDotAndUpperCase (final String value) throws Exception {
+        if (isValid(value) == false) {
+            throw new Exception("value must not be null.");
         }
 
         final StringBuilder returnValue = new StringBuilder(value);
@@ -142,40 +145,46 @@ public class StringObjectUtils {
         return returnValue.toString().replace(".", "");
     }
 
-    public static String objectToString (final Object object) {
+    public static String objectToString (final Object object) throws Exception {
         if (object == null) {
-            return null;
+            throw new Exception("object must not be null.");
         }
 
         try {
             final StringWriter stringWriter = new StringWriter();
+            IlluminatiConstant.BASIC_OBJECT_STRING_MAPPER.writeValue(stringWriter, object);
 
-            final ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-            objectMapper.writeValue(stringWriter, object);
+            final String resultString = stringWriter.toString();
 
-            return stringWriter.toString().replaceAll(System.getProperty("line.separator"), "");
+            stringWriter.close();
+
+            return resultString.replaceAll(System.getProperty("line.separator"), "");
         } catch (IOException ex) {
-            STRINGUTIL_LOGGER.info("Sorry. had a error on during Object to String. ("+ex.toString()+")");
-            return null;
+            final String errorMessage = "Sorry. had a error on during Object to String. ("+ex.toString()+")";
+            STRINGUTIL_LOGGER.info(errorMessage);
+            throw new Exception(errorMessage);
         }
     }
 
+    private static boolean isDeleteKeywordArrayValidated(final String[] deleteKeyword, final int deleteKeywordLocationIndexLength) {
+        return deleteKeyword != null && deleteKeyword.length > 0 && deleteKeyword.length == deleteKeywordLocationIndexLength;
+    }
+
     public static String deleteKeywordInString (String origin, final String[] deleteKeyword, final int[] deleteKeywordLocationIndex) {
-        if (StringObjectUtils.isValid(origin) && deleteKeyword != null && deleteKeyword.length > 0
-                && deleteKeyword.length == deleteKeywordLocationIndex.length) {
+        if (StringObjectUtils.isValid(origin) && isDeleteKeywordArrayValidated(deleteKeyword, deleteKeywordLocationIndex.length)) {
             for (int i=0; i<deleteKeyword.length; i++) {
-                if (origin.indexOf(deleteKeyword[i]) == deleteKeywordLocationIndex[i]) {
-                    origin = origin.replace(deleteKeyword[i], "");
+                if (origin.indexOf(deleteKeyword[i]) != deleteKeywordLocationIndex[i]) {
+                    continue;
                 }
+
+                origin = origin.replace(deleteKeyword[i], "");
             }
         }
 
         return origin;
     }
 
-    public static byte[] encode (final char[] charArray){
+    public static byte[] encode (final char[] charArray) throws Exception {
         try {
             final CharsetEncoder encoder = Charset.forName(IlluminatiConstant.BASE_CHARSET).newEncoder();
             final ByteBuffer bb = encoder.encode(CharBuffer.wrap(charArray));
@@ -185,15 +194,16 @@ public class StringObjectUtils {
 
             return ba;
         } catch (CharacterCodingException ex) {
-            STRINGUTIL_LOGGER.error("Sorry. had a error on during string encode. ("+ex.toString()+")");
-            return null;
+            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.toString()+")";
+            STRINGUTIL_LOGGER.error(errorMessage);
+            throw new Exception(errorMessage);
         }
     }
 
     public static String generateId (final long idTimestamp, final String postfix) {
         final StringBuilder id = new StringBuilder();
         id.append(UUID.randomUUID().toString().replace("-", ""));
-        id.append(String.valueOf(idTimestamp));
+        id.append(idTimestamp);
 
         if (StringObjectUtils.isValid(postfix)) {
             id.append("-");
@@ -203,10 +213,10 @@ public class StringObjectUtils {
         return id.toString();
     }
 
-    public static String convertFirstLetterToLowerize (String str) {
-        StringBuilder convertString = new StringBuilder();
-        convertString.append(str.substring(0, 1).toLowerCase());
-        convertString.append(str.substring(1));
+    public static String convertFirstLetterToLowerlize (final String str) {
+        StringBuilder convertString = new StringBuilder()
+                                        .append(str.substring(0, 1).toLowerCase())
+                                        .append(str.substring(1));
         return convertString.toString();
     }
 }

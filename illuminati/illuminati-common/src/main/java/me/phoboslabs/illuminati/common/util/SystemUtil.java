@@ -20,7 +20,7 @@ public class SystemUtil {
     private final static Runtime RUNTIME = Runtime.getRuntime();
     private final static OperatingSystemMXBean M_BEAN = (com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean();
 
-    private static final String[] INCLUDE_JAVA_SYSTEM_PROPERTIES = new String[]{
+    private static final List<String> INCLUDE_JAVA_SYSTEM_PROPERTIES = Collections.unmodifiableList(Arrays.asList(
             "user.timezone",
             "user.country.format",
             "user.country",
@@ -28,19 +28,22 @@ public class SystemUtil {
             "user.language",
             "file.encoding",
             "catalina.home",
-            "PID"};
+            "PID"));
 
 
     private static final int MEGA_BYTE = 1024*1024;
+    private static final String JAVA_VM_PREFIX = "java.vm.";
 
     public static Map<String, Object> getJvmInfo () {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
-        final List<String> includeJavaSystemPropertiesList = Arrays.asList(INCLUDE_JAVA_SYSTEM_PROPERTIES);
-
         final Properties javaSystemProperties = System.getProperties();
         for (final String name : javaSystemProperties.stringPropertyNames()) {
-            if (name.indexOf("java.vm.") > -1 || includeJavaSystemPropertiesList.contains(name)) {
-                jvmInfo.put(StringObjectUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
+            if (name.indexOf(JAVA_VM_PREFIX) > -1 || INCLUDE_JAVA_SYSTEM_PROPERTIES.contains(name)) {
+                try {
+                    jvmInfo.put(StringObjectUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
+                } catch (Exception ex) {
+                    SYSTEM_UTIL_LOGGER.error(ex.getMessage());
+                }
             }
         }
 
@@ -59,7 +62,7 @@ public class SystemUtil {
         return jvmInfo;
     }
 
-    public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) {
+    public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) throws Exception {
         final String keyName = illuminatiTransactionIdType.getValue();
 
         String trxId = SystemUtil.getValueFromHeaderByKey(request, keyName);
@@ -76,10 +79,14 @@ public class SystemUtil {
             }
         }
 
-        return (StringObjectUtils.isValid(trxId)) ? trxId : null;
+        if (StringObjectUtils.isValid(trxId) == false) {
+            throw new Exception("trxId must not be null.");
+        }
+
+        return trxId;
     }
 
-    public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) {
+    public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) throws Exception {
         Object value = null;
 
         if (request != null && keyName != null) {
@@ -90,12 +97,20 @@ public class SystemUtil {
             }
         }
 
-        return (value != null) ? value.toString() : null;
+        if (value != null) {
+            throw new Exception("value must not be null.");
+        }
+
+        return value.toString();
+    }
+
+    private static boolean isThreadNameValidated(final String threadName) {
+        return StringUtils.isEmpty(threadName) == false
+                && IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == false;
     }
 
     public static void createSystemThread (final Runnable runnable, final String threadName) {
-        if (runnable != null && StringUtils.isEmpty(threadName) == false
-                && IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == false) {
+        if (runnable != null && isThreadNameValidated(threadName)) {
             final Thread newThread = new Thread(runnable);
 
             if (!"debug".equalsIgnoreCase(threadName)) {
@@ -141,9 +156,7 @@ public class SystemUtil {
 
                         try {
                             Thread.sleep(10000);
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
+                        } catch (InterruptedException ignore) {}
                     }
                 }
             };
