@@ -15,15 +15,16 @@ public enum EsQueryType {
         return this.matchType;
     }
 
-    public static EsQueryType getMatchType (String matchType) {
-        if ("match".equalsIgnoreCase(matchType)) {
-            return EsQueryType.MATCH;
-        } else if ("match_all".equalsIgnoreCase(matchType)) {
-            return EsQueryType.MATCH_ALL;
-        } else if ("term".equalsIgnoreCase(matchType)) {
-            return EsQueryType.TERM;
-        } else {
-            return null;
+    public static EsQueryType getMatchType (final String matchType) throws Exception {
+        switch (matchType) {
+            case "match" :
+                return EsQueryType.MATCH;
+            case "match_all" :
+                return EsQueryType.MATCH_ALL;
+            case "term" :
+                return EsQueryType.TERM;
+            default:
+                throw new Exception("matchType must not be null.");
         }
     }
 

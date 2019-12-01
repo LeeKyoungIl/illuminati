@@ -29,25 +29,24 @@ public class EsGroupByBuilder {
         return this;
     }
 
-    public Map<String, Object> build () {
-        if (CollectionUtils.isNotEmpty(this.esGroupBy.getGroupByList())) {
-            Map<String, Object> lastResultMap = null;
-            for (Map<String, Object> groupBy : this.esGroupBy.getGroupByList()) {
-                if (lastResultMap != null) {
-                    for (String key : lastResultMap.keySet()) {
-                        Map<String, Object> keyMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(lastResultMap.get(key)));
-                        keyMap.put(AGGREGATION_KEY_NAME, groupBy);
-                        Map<String, Object> aggsMap = new HashMap<String, Object>();
-                        aggsMap.put(key, keyMap);
-                        groupBy = aggsMap;
-                    }
+    public Map<String, Object> build () throws Exception {
+        if (CollectionUtils.isEmpty(this.esGroupBy.getGroupByList())) {
+            throw new Exception("check esGroupBy.");
+        }
+        Map<String, Object> lastResultMap = null;
+        for (Map<String, Object> groupBy : this.esGroupBy.getGroupByList()) {
+            if (lastResultMap != null) {
+                for (String key : lastResultMap.keySet()) {
+                    Map<String, Object> keyMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(lastResultMap.get(key)));
+                    keyMap.put(AGGREGATION_KEY_NAME, groupBy);
+                    Map<String, Object> aggsMap = new HashMap<String, Object>();
+                    aggsMap.put(key, keyMap);
+                    groupBy = aggsMap;
                 }
-                lastResultMap = groupBy;
             }
-
-            return lastResultMap;
+            lastResultMap = groupBy;
         }
 
-        return null;
+        return lastResultMap;
     }
 }

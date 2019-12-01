@@ -44,15 +44,18 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
 
     public ESclientImpl (final HttpClient httpClient, final String esUrl, final int esPort) {
         this.httpClient = httpClient;
-        this.esUrl = "http://" + esUrl + ":" + String.valueOf(esPort);
+        this.esUrl = "http://".concat(esUrl).concat(":").concat(String.valueOf(esPort));
     }
 
     public void setOptionalIndex (String optionalIndex) {
         this.optionalIndex = optionalIndex;
     }
 
-    @Override public HttpResponse save (final IlluminatiEsModel entity) {
-        this.esAuthString = entity.getEsAuthString();
+    @Override public HttpResponse save (final IlluminatiEsModel entity) throws Exception {
+        try {
+            this.esAuthString = entity.getEsAuthString();
+        } catch (Exception ignore) {}
+
         this.checkIndexAndGenerate(entity);
         return this.saveToEs(entity.getEsUrl(this.esUrl + this.optionalIndex), entity.getJsonString());
     }
@@ -82,16 +85,13 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
             } catch (Exception ignored) {}
         }
 
-        if (httpResponse == null) {
-            httpResponse = getHttpResponseByData(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Sorry. something is wrong in Http Request.");
-        }
-
-        return httpResponse;
+        return httpResponse != null ? httpResponse
+                                    : this.getHttpResponseByData(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Sorry. something is wrong in Http Request.");
     }
 
-    @Override public String getDataByJson(final String jsonRequestString) {
+    @Override public String getDataByJson(final String jsonRequestString) throws Exception {
         if (StringObjectUtils.isValid(jsonRequestString) == false) {
-            return null;
+            throw new Exception("jsonRequestString must not be null.");
         }
         final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(ES_SEARCH_KEYWORD));
         ((HttpPost) httpPostRequest).setEntity(this.getHttpEntity(jsonRequestString));
@@ -99,7 +99,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return this.requestToEsByHttp(httpPostRequest);
     }
 
-    @Override public String getMappingByIndex(final IlluminatiEsModel entity) {
+    @Override public String getMappingByIndex(final IlluminatiEsModel entity) throws Exception {
         return this.requestToEsByHttp(new HttpGet(this.getRequestUrl(entity, ES_MAPPING_KEYWORD)));
     }
 
@@ -107,7 +107,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return this.generateRequestUrl(this.getBaseEsHttpUrl(), command);
     }
 
-    private String getRequestUrl (final IlluminatiEsModel entity, String command) {
+    private String getRequestUrl (final IlluminatiEsModel entity, String command) throws Exception {
         return this.generateRequestUrl(entity.getBaseEsUrl(this.getBaseEsHttpUrl()), command);
     }
 
@@ -121,13 +121,8 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     private String generateRequestUrl (String baseEsUrl, String command) {
-        StringBuilder requestEsUrl = new StringBuilder(baseEsUrl);
-        requestEsUrl.append("/_");
-        requestEsUrl.append(command);
-        requestEsUrl.append("?");
-        requestEsUrl.append(IS_RESPONSE_JSON);
-
-        return requestEsUrl.toString();
+        return new StringBuilder(baseEsUrl).append("/_").append(command)
+                    .append("?").append(IS_RESPONSE_JSON).toString();
     }
 
     private String requestToEsByHttp (HttpRequestBase httpRequestBase) {
@@ -162,7 +157,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return factory.newHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, httpStatus, message), null);
     }
 
-    private void checkIndexAndGenerate (final IlluminatiEsModel entity) {
+    private void checkIndexAndGenerate (final IlluminatiEsModel entity) throws Exception {
         try {
             Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.getMappingByIndex(entity), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
             if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY)

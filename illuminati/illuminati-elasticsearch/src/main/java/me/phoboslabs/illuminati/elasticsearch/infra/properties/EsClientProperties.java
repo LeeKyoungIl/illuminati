@@ -24,28 +24,23 @@ public class EsClientProperties extends IlluminatiBaseProperties {
         return this.elasticsearchInfo;
     }
 
-    public String getHost () {
+    public String getHost () throws Exception {
         if (this.elasticsearchInfo != null) {
             return this.elasticsearchInfo.getHost();
-        } else {
-            return null;
         }
+
+        throw new Exception("elasticsearch host info must not be null.");
     }
 
-    public int getPort () {
+    public int getPort () throws Exception {
         if (this.elasticsearchInfo != null) {
             return this.elasticsearchInfo.getPort();
-        } else {
-            return 0;
         }
+        throw new Exception("elasticsearch port info must not be null.");
     }
 
     public boolean isValid () {
-        if (this.elasticsearchInfo != null && StringObjectUtils.isValid(this.elasticsearchInfo.getHost())
-                && this.elasticsearchInfo.getPort() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.elasticsearchInfo != null && StringObjectUtils.isValid(this.elasticsearchInfo.getHost())
+                && this.elasticsearchInfo.getPort() > 0;
     }
 }
