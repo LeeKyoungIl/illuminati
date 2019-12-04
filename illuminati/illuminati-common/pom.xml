@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.6</java.version>
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
@@ -157,5 +157,13 @@
         </plugins>
 
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-leekyoungil-illuminati</id>
+            <name>leekyoungil-illuminati</name>
+            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-common/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
 </project>

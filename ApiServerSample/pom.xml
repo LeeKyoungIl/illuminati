@@ -75,7 +75,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-jscollector</artifactId>
-            <version>0.5.9</version>
+            <version>0.5.10</version>
             <scope>compile</scope>
         </dependency>
 

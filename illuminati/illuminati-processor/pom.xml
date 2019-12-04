@@ -6,25 +6,22 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-processor</artifactId>
-    <version>0.9.9.8</version>
+    <version>0.9.9.11</version>
     <packaging>jar</packaging>
 
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.6</java.version>
+        <java.version>1.8</java.version>
 
     </properties>
 
     <repositories>
-
         <repository>
-            <id>spring-libs-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>http://repo.spring.io/libs-snapshot</url>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
         </repository>
-
     </repositories>
 
     <dependencies>
@@ -39,7 +36,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
-            <version>1.3.0</version>
+            <version>1.4.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -141,14 +138,6 @@
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
