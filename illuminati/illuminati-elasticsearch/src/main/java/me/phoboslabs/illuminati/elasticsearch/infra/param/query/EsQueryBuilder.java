@@ -2,6 +2,7 @@ package me.phoboslabs.illuminati.elasticsearch.infra.param.query;
 
 import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsQueryType;
 import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsRangeType;
+import org.apache.commons.collections.MapUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class EsQueryBuilder {
     }
 
     private void makeRangeQuery () {
-        if (this.range == null && this.range.size() == 0) {
+        if (MapUtils.isEmpty(this.range)) {
             return;
         }
         Map<String, Object> range = new HashMap<String, Object>();
@@ -99,22 +100,14 @@ public class EsQueryBuilder {
     }
 
     private String getQueryKeyName () {
-        if (this.esVersion.indexOf("2") > -1) {
-            return QUERY_KEY_NAME_2_x;
-        } else {
-            return QUERY_KEY_NAME_5_x;
-        }
+        return this.esVersion.indexOf("2") > -1 ? QUERY_KEY_NAME_2_x : QUERY_KEY_NAME_5_x;
     }
 
     private String getFilteredKeyName () {
-        if (this.esVersion.indexOf("2") > -1) {
-            return FILTERED_KEY_NAME_2_x;
-        } else {
-            return FILTERED_KEY_NAME_5_x;
-        }
+        return this.esVersion.indexOf("2") > -1 ? FILTERED_KEY_NAME_2_x : FILTERED_KEY_NAME_5_x;
     }
 
-    public Map<String, Object> build () {
+    public Map<String, Object> build () throws Exception {
         if (this.queryType == EsQueryType.MATCH_ALL) {
             Map<String, Object> innerQuery = new HashMap<String, Object>();
             innerQuery.put(this.getFilteredKeyName(), this.match);
@@ -136,8 +129,8 @@ public class EsQueryBuilder {
             outerQuery.put("bool", innerQuery);
 
             return outerQuery;
+        } else {
+            throw new Exception("check queryType. (queryType must be MATCH or MATCH_ALL.");
         }
-
-        return null;
     }
 }

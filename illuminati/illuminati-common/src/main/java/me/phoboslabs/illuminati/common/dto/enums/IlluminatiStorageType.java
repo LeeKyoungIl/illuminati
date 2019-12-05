@@ -17,18 +17,18 @@ public enum IlluminatiStorageType {
         return this.type;
     }
 
-    public static IlluminatiStorageType getEnumType(String type) {
-        if ("org.h2.Driver".equals(type)) {
-            return H2;
-        } else if ("mysql".equals(type)) {
-            return MYSQL;
-        } else if ("file".equals(type)) {
-            return FILE;
-        } else if ("broker".equals(type)) {
-            return BROKER;
+    public static IlluminatiStorageType getEnumType(final String type) throws Exception {
+        switch (type) {
+            case "org.h2.Driver" :
+                return H2;
+            case "mysql" :
+                return MYSQL;
+            case "file" :
+                return FILE;
+            case "broker" :
+                return BROKER;
+            default :
+                throw new Exception(type + " is not support yet.");
         }
-
-        return null;
-
     }
 }

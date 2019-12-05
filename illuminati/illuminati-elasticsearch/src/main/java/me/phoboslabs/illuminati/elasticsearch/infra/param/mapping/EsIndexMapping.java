@@ -16,13 +16,13 @@ public class EsIndexMapping {
     public EsIndexMapping () {
     }
 
-    public void setMappingIndexByField (String rootField, String field, String type) {
-        rootField = StringObjectUtils.convertFirstLetterToLowerize(rootField);
+    public void setMappingIndexByField (String rootField, final String field, final String type) {
+        rootField = StringObjectUtils.convertFirstLetterToLowerlize(rootField);
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put(TYPE_KEY, type);
 
         Map<String, Object> targetMap = null;
-        if (this.rootMappingIndex.containsKey(rootField) == Boolean.TRUE) {
+        if (this.rootMappingIndex.containsKey(rootField)) {
             targetMap = this.rootMappingIndex.get(rootField);
             Map<String, Object> fieldMap = (Map<String, Object>) targetMap.get(PROPERTIES_KEY);
             fieldMap.put(field, fieldTypeMap);

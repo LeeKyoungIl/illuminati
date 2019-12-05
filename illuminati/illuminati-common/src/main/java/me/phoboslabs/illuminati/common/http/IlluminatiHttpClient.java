@@ -65,7 +65,7 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
 
         final RequestConfig requestConfig = requestConfigBuilder.build();
 
-        HashSet<Header> defaultHeaders = new HashSet<Header>();
+        HashSet<Header> defaultHeaders = new HashSet<>();
         defaultHeaders.add(new BasicHeader(HttpHeaders.PRAGMA, "no-cache"));
         defaultHeaders.add(new BasicHeader(HttpHeaders.CACHE_CONTROL, "no-cache"));
 

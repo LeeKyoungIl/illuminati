@@ -22,6 +22,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 #topic: illuminati-alpha
 #isAsync: true
 #isCompression: true
+#compressionType: gzip
 #performance: 1
 #parentModuleName: apisample
 #samplingRate: 50

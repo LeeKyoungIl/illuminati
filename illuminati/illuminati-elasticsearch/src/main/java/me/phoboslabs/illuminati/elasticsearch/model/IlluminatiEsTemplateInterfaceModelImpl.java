@@ -55,10 +55,6 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         super();
     }
 
-//    public IlluminatiEsTemplateInterfaceModelImpl(long elapsedTime, Object output, String id, long timestamp) {
-//        super(elapsedTime, output, id, timestamp);
-//    }
-
     @Override public String getJsonString () {
         this.settings = new Settings(this.getEsDocumentAnnotation().indexStoreType().getType());
 
@@ -68,10 +64,11 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
-    @Override public String getBaseEsUrl(final String baseUrl) {
+    @Override public String getBaseEsUrl(final String baseUrl) throws Exception {
         if (StringObjectUtils.isValid(baseUrl) == false) {
-            ES_CONSUMER_LOGGER.error("Sorry. baseUrl of Elasticsearch is required value.");
-            return null;
+            final String errorMessage = "Sorry. baseUrl of Elasticsearch is required value.";
+            ES_CONSUMER_LOGGER.error(errorMessage);
+            throw new Exception(errorMessage);
         }
 
         try {
@@ -81,30 +78,32 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
         } catch (Exception ex) {
-            ES_CONSUMER_LOGGER.error("Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")");
-            return null;
+            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.getMessage()+")";
+            ES_CONSUMER_LOGGER.error(errorMessage, ex);
+            throw new Exception(errorMessage);
         }
     }
 
-    @Override public String getEsUrl(final String baseUrl) {
+    @Override public String getEsUrl(final String baseUrl) throws Exception {
         final String baseEsUrl = this.getBaseEsUrl(baseUrl);
         if (StringObjectUtils.isValid(baseEsUrl) == false) {
-            return null;
+            throw new Exception("baseEsUrl must not be null.");
         }
 
         try {
             final EsDocument esDocument = this.getEsDocumentAnnotation();
 
             return new StringBuilder(baseEsUrl)
-                .append("/")
-                .append(esDocument.type())
-                .append("/")
-                .append(this.getId())
-                .append("?refresh=")
-                .append(esDocument.refreshType().getValue()).toString();
+                    .append("/")
+                    .append(esDocument.type())
+                    .append("/")
+                    .append(this.getId())
+                    .append("?refresh=")
+                    .append(esDocument.refreshType().getValue()).toString();
         } catch (Exception ex) {
-            ES_CONSUMER_LOGGER.error("Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")");
-            return null;
+            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.getMessage()+")";
+            ES_CONSUMER_LOGGER.error(errorMessage, ex);
+            throw new Exception(errorMessage);
         }
     }
 
@@ -122,24 +121,26 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     private void setPostContentResultData () {
         final String postContentBody = this.header.getPostContentBody();
 
-        if (StringObjectUtils.isValid(postContentBody)) {
-            try {
-                final String[] postContentBodyArray = URLDecoder.decode(postContentBody, IlluminatiConstant.BASE_CHARSET).split("&");
+        if (StringObjectUtils.isValid(postContentBody) == false) {
+            return;
+        }
 
-                if (postContentBodyArray.length > 0) {
-                    this.postContentResultData = new HashMap<String, String>();
-                }
+        try {
+            final String[] postContentBodyArray = URLDecoder.decode(postContentBody, IlluminatiConstant.BASE_CHARSET).split("&");
 
-                for (String element : postContentBodyArray) {
-                    final String[] elementArray = element.split("=");
-
-                    if (elementArray.length == 2) {
-                        this.postContentResultData.put(elementArray[0], elementArray[1]);
-                    }
-                }
-            } catch (Exception ex) {
-                ES_CONSUMER_LOGGER.error("Sorry. an error occurred during parsing of post content. ("+ex.toString()+")");
+            if (postContentBodyArray.length > 0) {
+                this.postContentResultData = new HashMap<String, String>();
             }
+
+            for (String element : postContentBodyArray) {
+                final String[] elementArray = element.split("=");
+
+                if (elementArray.length == 2) {
+                    this.postContentResultData.put(elementArray[0], elementArray[1]);
+                }
+            }
+        } catch (Exception ex) {
+            ES_CONSUMER_LOGGER.error("Sorry. an error occurred during parsing of post content. ({})", ex.getMessage(), ex);
         }
     }
 
@@ -147,15 +148,17 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         try {
             final String userAgent = this.header.getUserAgent();
 
-            if (StringObjectUtils.isValid(userAgent)) {
-                final ReadableUserAgent agent = UA_PARSER.parse(userAgent);
-
-                this.setUserBrower(agent);
-                this.setUserOs(agent);
-                this.setUserDevice(agent);
+            if (StringObjectUtils.isValid(userAgent) == false) {
+                return;
             }
+
+            final ReadableUserAgent agent = UA_PARSER.parse(userAgent);
+
+            this.setUserBrower(agent);
+            this.setUserOs(agent);
+            this.setUserDevice(agent);
         } catch (Exception ex) {
-            ES_CONSUMER_LOGGER.error("Sorry. parsing failed. ("+ex.toString()+")");
+            ES_CONSUMER_LOGGER.error("Sorry. parsing failed. ({})", ex.getMessage(), ex);
         }
     }
 
@@ -194,24 +197,17 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public boolean isSetUserAuth () {
-        if (StringObjectUtils.isValid(this.esUserName) && StringObjectUtils.isValid(this.esUserPass)) {
-            return true;
-        }
-        return false;
+        return StringObjectUtils.isValid(this.esUserName) && StringObjectUtils.isValid(this.esUserPass);
     }
 
-    @Override public String getEsAuthString () {
-        if (this.isSetUserAuth()) {
-            StringBuilder authInfo = new StringBuilder();
-            authInfo.append(this.esUserName);
-            authInfo.append(":");
-            authInfo.append(this.esUserPass);
-
-            byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(IlluminatiConstant.BASE_CHARSET))));
-            return new String(credentials, Charset.forName(IlluminatiConstant.BASE_CHARSET));
+    @Override public String getEsAuthString () throws Exception {
+        if (this.isSetUserAuth() == false) {
+            throw new Exception("Elasticsearch user auth not set.");
         }
+        StringBuilder authInfo = new StringBuilder(this.esUserName).append(":").append(this.esUserPass);
 
-        return null;
+        byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(IlluminatiConstant.BASE_CHARSET))));
+        return new String(credentials, Charset.forName(IlluminatiConstant.BASE_CHARSET));
     }
 
     @Override public String getIndexMapping () {

@@ -23,8 +23,7 @@ public class IlluminatiPropertiesHelper {
 
         try {
             Class.forName(ILLUMINATI_SWITCH_CONFIGURATION_CLASS_NAME);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             //my class isn't there!
             isIlluminatiSwitcherActive = false;
         }
@@ -41,8 +40,7 @@ public class IlluminatiPropertiesHelper {
                 final String methodName = "get" + key.substring(0, 1).toUpperCase() + key.substring(1);
                 final Method getNameMethod = clazz.getMethod(methodName);
                 propertiesValue = (String) getNameMethod.invoke(illuminatiProperties);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 FILE_UTIL_LOGGER.debug("Sorry, unable to find method. (" + ex.toString() + ")");
             }
         }

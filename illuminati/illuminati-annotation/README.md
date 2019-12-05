@@ -20,7 +20,7 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-processor</artifactId>
-  <version>0.9.9.8</version>
+  <version>0.9.9.18</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@
     
 ```java
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.8'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.18'
 ```
 
 ## add @Illuminati to Class
@@ -95,124 +95,6 @@ public class ApiSampleController {
 
 ## add @Illuminati to Method
     * apply to all target method
-    
-```java
-@RestController
-@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ApiSampleController {
-
-    @RequestMapping(value = "test1")
-    public String test1 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 1}";
-        return testJson;
-    }
-    
-    @Illuminati
-    @RequestMapping(value = "test2")
-    public String test2 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 2}";
-        return testJson;
-    }
-}
-```
-
-===============================================================================
-
-
-## illuminati를 사용하기위해 필요한 annotation 모듈 입니다.
-
-## illuminati는 유저가 필요한(원하는) 곳에 손쉽게 적용이 가능 합니다. 
- * 모든 곳에 전부다 데이터를 수집할 필요는 없습니다. 
- * illuminati는 annotation을 이용하여 중요하고 필요한 곳에 선별 적용이 가능합니다.
-
-## Maven Dependency 추가 
-    * Maven
-    
-```java
-<dependency>
-  <groupId>me.phoboslabs.illuminati</groupId>
-  <artifactId>illuminati-annotation</artifactId>
-  <version>1.2.1</version>
-</dependency>
-
-<dependency>
-  <groupId>me.phoboslabs.illuminati</groupId>
-  <artifactId>illuminati-processor</artifactId>
-  <version>0.9.9.8</version>
-</dependency>
-```
-
-## Gradle Dependency 추가 
-    * Gradle
-    
-```java
-compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.8'
-```
-
-
-## Class에 @Illuminati 추가 
-    * 하위 모든 Method에 적용
-    
-```java
-@Illuminati
-@RestController
-@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ApiSampleController {
-
-    @RequestMapping(value = "test1")
-    public String test1 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 1}";
-        return testJson;
-    }
-    
-    @RequestMapping(value = "test2")
-    public String test2 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 2}";
-        return testJson;
-    }
-}
-```
-    * 하위 모든 Method에 적용했는데 특정 메서드만 제외시키고 싶을 경우
-```java
-@Illuminati
-@RestController
-@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ApiSampleController {
-
-    @RequestMapping(value = "test1")
-    public String test1 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 1}";
-        return testJson;
-    }
-    
-    @Illuminati(ignore=true)
-    @RequestMapping(value = "test2")
-    public String test2 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 2}";
-        return testJson;
-    }
-}
-```   
-
-    * 하위 모든 Method에 적용했는데 특정 비율로 수집하고 싶은 경우
-```java
-@Illuminati
-@RestController
-@RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ApiSampleController {
-
-    // collect only 30%
-    @Illuminati(samplingRate = 30)
-    @RequestMapping(value = "test3")
-    public String test3 (String a, Integer b) throws Exception {
-        String testJson = "{\"test\" : 3}";
-        return testJson;
-    }
-} 
-
-## Method에 @Illuminati 추가 
-    * 해당 Method에 적용
     
 ```java
 @RestController

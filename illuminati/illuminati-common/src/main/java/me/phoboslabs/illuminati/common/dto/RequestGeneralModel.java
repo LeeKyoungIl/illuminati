@@ -2,15 +2,13 @@ package me.phoboslabs.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -28,14 +26,15 @@ public class RequestGeneralModel {
 
     private transient Method method;
 
-    private static final List<String> CLIENT_INFO_KEY_LIST = Arrays.asList(new String[]{"path", "queryString", "clientIp", "anotherPath"});
+    private static final List<String> CLIENT_INFO_KEY_LIST = Collections.unmodifiableList(Arrays.asList("path", "queryString", "clientIp", "anotherPath"));
 
     public RequestGeneralModel () {}
 
-    public RequestGeneralModel (final Map<String, Object> requestMap) {
-        if (requestMap == null || requestMap.isEmpty()) {
-            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your requestMap variable.");
-            return;
+    public RequestGeneralModel (final Map<String, Object> requestMap) throws Exception {
+        if (MapUtils.isEmpty(requestMap)) {
+            final String errorMessage = "Sorry. check your requestMap variable.";
+            REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage);
+            throw new Exception(errorMessage);
         }
 
         for (Map.Entry<String, Object> entry : requestMap.entrySet() ) {
@@ -54,36 +53,42 @@ public class RequestGeneralModel {
                     field.set(this, entry.getValue().toString());
                 }
             } catch (NoSuchFieldException ex) {
-                REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class field. ("+ex.toString()+")");
+                final String errorMessage = "Sorry. check your class field. ("+ex.getMessage()+")";
+                REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage, ex);
+                throw new Exception(errorMessage);
             } catch (IllegalAccessException ex) {
-                REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class field permission. ("+ex.toString()+")");
+                final String errorMessage = "Sorry. check your class field permission. ("+ex.getMessage()+")";
+                REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage, ex);
+                throw new Exception(errorMessage);
             }
         }
     }
 
+    private static final String CLIENT_IP_KEYWORD = "clientIp";
+    private static final String REMOTE_ADDR_KEYWORD = "remoteAddr";
+
     public void initClientInfo (final Map<String, String> clientInfoMap) {
-        if (clientInfoMap == null) {
+        if (MapUtils.isEmpty(clientInfoMap)) {
             return;
         }
 
         for (String key : CLIENT_INFO_KEY_LIST) {
-            if (clientInfoMap.containsKey(key)) {
-                try {
-                    String value = clientInfoMap.get(key);
-
-                    if ("clientIp".equals(key) && StringObjectUtils.isValid(value) == false) {
-                        value = clientInfoMap.get("remoteAddr");
-                    }
-
-                    if (StringObjectUtils.isValid(value)) {
-                        final Field field = this.getClass().getDeclaredField(key);
-                        field.setAccessible(true);
-                        field.set(this, value);
-                    }
-                } catch (Exception e) {
-                    // ignore this exception
-                }
+            if (clientInfoMap.containsKey(key) == false) {
+                continue;
             }
+            try {
+                String value = clientInfoMap.get(key);
+
+                if (CLIENT_IP_KEYWORD.equals(key) && StringObjectUtils.isValid(value) == false) {
+                    value = clientInfoMap.get(REMOTE_ADDR_KEYWORD);
+                }
+
+                if (StringObjectUtils.isValid(value)) {
+                    final Field field = this.getClass().getDeclaredField(key);
+                    field.setAccessible(true);
+                    field.set(this, value);
+                }
+            } catch (Exception ignore) {}
         }
     }
 
@@ -91,25 +96,24 @@ public class RequestGeneralModel {
         return this.getServerIp();
     }
 
+    private boolean isParamValidated(final String[] paramNames, final Object[] paramValues) {
+        return paramNames != null && paramNames.length == 0 && paramValues != null;
+    }
+
     public void setMethod(final Method method, final String[] paramNames, final Object[] paramValues) {
         this.method = method;
         this.methodName = this.method.toString();
 
-        // if java8 : StringJoin....
         try {
-            if (paramNames != null && paramValues != null) {
-                Map<String, Object> paramMap = new HashMap<String, Object>();
-                final String[] param = new String[paramNames.length];
+            if (this.isParamValidated(paramNames, paramValues)) {
+                Map<String, Object> paramMap = new HashMap<>();
                 for (int i=0; i<paramNames.length; i++) {
                     paramMap.put(paramNames[i], paramValues[i]);
                 }
-
-                if (paramMap.size() > 0) {
-                    this.methodParams = paramMap;
-                }
+                this.methodParams = paramMap;
             }
         } catch (Exception ex) {
-            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class method params. ("+ex.toString()+")");
+            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class method params. ({})", ex.getMessage(), ex);
         }
     }
 
@@ -125,12 +129,6 @@ public class RequestGeneralModel {
     }
 
     private void setPathForGrails () {
-        // grails always edit path in header ex) /gift/list => /grails/gift/list.dispatch
-        //final String[] deleteKeyword = new String[]{"/grails", ".dispatch"};
-        //final int[] deleteKeywordIndex = new int[]{0, -1};
-
-        //this.path = StringObjectUtils.deleteKeywordInString(this.path, deleteKeyword, deleteKeywordIndex);
-
         // It should not affect anything other than grails. Fuxx grails
         if (this.path.indexOf("/grails") == 0 && this.path.indexOf(".dispatch") > -1
                 && (this.path.indexOf(".dispatch") + 9) == this.path.length()) {

@@ -5,11 +5,11 @@ package me.phoboslabs.illuminati.elasticsearch.infra;
  */
 public interface EsClient<T, V> {
 
-    V save(T entity);
+    V save(T entity) throws Exception;
 
-    String getDataByJson(String jsonRequestString);
+    String getDataByJson(String jsonRequestString) throws Exception;
 
-    String getMappingByIndex(T type);
+    String getMappingByIndex(T type) throws Exception;
 
 //    V save(T entity, EsRefreshType esRefreshType);
 

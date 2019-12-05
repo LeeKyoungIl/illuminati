@@ -15,13 +15,7 @@ public enum EsOrderType {
         return this.orderType;
     }
 
-    public static EsOrderType getOrderType (String orderType) {
-        if ("asc".equalsIgnoreCase(orderType) == Boolean.TRUE) {
-            return EsOrderType.ASC;
-        } else if ("desc".equalsIgnoreCase(orderType) == Boolean.TRUE) {
-            return EsOrderType.DESC;
-        } else {
-            return null;
-        }
+    public static EsOrderType getOrderType (final String orderType) {
+        return "asc".equalsIgnoreCase(orderType) ? EsOrderType.ASC : EsOrderType.DESC;
     }
 }
