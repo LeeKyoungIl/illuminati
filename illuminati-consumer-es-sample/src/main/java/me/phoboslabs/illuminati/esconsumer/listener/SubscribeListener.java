@@ -47,21 +47,17 @@ public class SubscribeListener {
                 sampleBuyEsModel.setEsUserAuth(this.esUserName, this.esUserPass);
             }
 
-            // if your Application (an application that generates illuminati dto) is using grails. have to this code activation.
-            //String[] excludeMethodName = new String[]{".getMetaClass()", ".getProperty(java.lang.String)"};
-            //for (String excludeMethodNameData : excludeMethodName) {
-            //    if (sampleBuyEsModel.getMethodName().indexOf(excludeMethodNameData) > -1) {
-            //        return;
-            //    }
-            //}
-
             sampleBuyEsModel.customData();
-            HttpResponse result = (HttpResponse) this.esClient.save(sampleBuyEsModel);
+            try {
+                HttpResponse result = (HttpResponse) this.esClient.save(sampleBuyEsModel);
 
-            if ("2".equals(String.valueOf(result.getStatusLine().getStatusCode()).substring(0, 1))) {
-                SUB_LOGGER.info("successfully transferred dto to Elasticsearch.");
-            } else {
-                SUB_LOGGER.error("Sorry. something is wrong in send to Elasticsearch. (code : "+result.getStatusLine().getStatusCode()+")");
+                if ("2".equals(String.valueOf(result.getStatusLine().getStatusCode()).substring(0, 1))) {
+                    SUB_LOGGER.info("successfully transferred dto to Elasticsearch.");
+                } else {
+                    SUB_LOGGER.error("Sorry. something is wrong in send to Elasticsearch. (code : "+result.getStatusLine().getStatusCode()+")");
+                }
+            } catch (Exception ex) {
+                SUB_LOGGER.error("Sorry. something is wrong in send to Elasticsearch. (code : {})", ex.getMessage(), ex);
             }
         }
     }

@@ -19,6 +19,7 @@ import java.util.Properties;
  * - password: yourpassword
  * - isAsync: true
  * - isCompression: true
+ * - compressionType: zstd
  * - parentModuleName: apisample
  * - samplingRate: 100
  * - performance: 0 // it's only using when you choose kafka.
@@ -38,8 +39,10 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
 
     private String isAsync;
     private String isCompression;
+
     // it's only using when you choose kafka.
     private String performance;
+    private String compressionType;
 
     public IlluminatiPropertiesImpl () {
         super();
@@ -87,6 +90,11 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
 
     public String getPerformance() {
         return StringObjectUtils.isValid(this.performance) ? this.performance : "0";
+    }
+
+    public String getCompressionType() {
+        return StringObjectUtils.isValid(this.compressionType)
+                && "true".equalsIgnoreCase(this.getIsCompression()) ? this.compressionType : "none";
     }
 
     public String getSamplingRate() {

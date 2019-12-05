@@ -29,7 +29,8 @@ broker: kafka
 clusterList: 10.112.182.165:9092, 10.113.112.171:9092, 10.113.107.1:9092
 topic: tapasocr-data1
 isAsync: true
-isCompression: true
+isCompression: false
+compressionType: zstd
 performance: 1
 parentModuleName: apisample
 samplingRate: 100

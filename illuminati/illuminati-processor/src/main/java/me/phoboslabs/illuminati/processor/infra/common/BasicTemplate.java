@@ -62,7 +62,8 @@ public abstract class BasicTemplate {
     protected void isCompression () {
         boolean isComperession = false;
 
-        if (StringObjectUtils.isValid(this.illuminatiProperties.getIsCompression()) && "true".equals(this.illuminatiProperties.getIsCompression().toLowerCase())) {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getIsCompression())
+                && "true".equals(this.illuminatiProperties.getIsCompression().toLowerCase())) {
             isComperession = true;
         }
 

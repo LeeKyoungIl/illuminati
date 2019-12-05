@@ -43,7 +43,7 @@ abstract public class IlluminatiConstant {
     static {
         PROPERTIES_KEYS = Collections.unmodifiableList(Arrays.asList("parentModuleName", "samplingRate"
                 , "broker", "clusterList", "virtualHost", "topic", "queueName"
-                , "userName", "password", "isAsync", "isCompression"
+                , "userName", "password", "isAsync", "isCompression", "compressionType"
                 , "performance", "debug", "chaosBomber"));
 
         CONFIG_FILE_EXTENSTIONS = Collections.unmodifiableList(Arrays.asList("properties", "yml", "yaml"));

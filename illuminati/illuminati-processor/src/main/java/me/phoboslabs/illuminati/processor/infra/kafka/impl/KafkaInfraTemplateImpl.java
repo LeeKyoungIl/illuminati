@@ -7,6 +7,7 @@ import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.processor.infra.kafka.constants.KafkaConstant;
+import me.phoboslabs.illuminati.processor.infra.kafka.enums.CompressionCodecType;
 import org.apache.kafka.clients.producer.*;
 
 import java.util.Properties;
@@ -137,6 +138,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     private void setIsCompression () {
         super.isCompression();
-        this.setKafkaProperties(ProducerConfig.COMPRESSION_TYPE_CONFIG, this.compressionCodecType.getType());
+        final CompressionCodecType compressionCodecType = CompressionCodecType.getCompressionCodecType(this.illuminatiProperties.getCompressionType());
+        this.setKafkaProperties(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionCodecType.getType());
     }
 }
