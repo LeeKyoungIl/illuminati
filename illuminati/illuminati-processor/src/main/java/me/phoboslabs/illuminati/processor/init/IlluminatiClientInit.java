@@ -118,7 +118,7 @@ public class IlluminatiClientInit {
             return pjp.proceed();
         }
 
-        if (this.isOnIlluminatiSwitch() == false) {
+        if (this.isActivateIlluminatiSwitch() && this.isOnIlluminatiSwitch() == false) {
             return pjp.proceed();
         }
 
@@ -180,8 +180,12 @@ public class IlluminatiClientInit {
         return 0;
     }
 
-    private boolean isOnIlluminatiSwitch () {
-        return IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get();
+    private boolean isActivateIlluminatiSwitch () {
+        return IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION;
+    }
+
+    private boolean isOnIlluminatiSwitch() {
+        return IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get();
     }
 
     private Object addToQueue (final ProceedingJoinPoint pjp, final HttpServletRequest request, final boolean isActiveChaosBomber) throws Throwable {
