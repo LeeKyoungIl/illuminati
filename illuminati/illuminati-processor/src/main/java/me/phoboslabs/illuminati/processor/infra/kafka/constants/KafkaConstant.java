@@ -6,7 +6,7 @@ package me.phoboslabs.illuminati.processor.infra.kafka.constants;
 public class KafkaConstant {
 
     public final static String VALUE_SERIALIZER_TYPE_BYTE = "org.apache.kafka.common.serialization.ByteArraySerializer";
-    public final static String VALUE_PARTITIONER = "RoundRobinPartitioner";
+    public final static String VALUE_PARTITIONER = "me.phoboslabs.illuminati.processor.infra.kafka.impl.RoundRobinPartitioner";
     public final static String VALUE_ASYNC_MAX_MESSAGE_AT_ONCE = "256";
     public final static String VALUE_LINGER_MS_SIZE = "0";
     public final static String VALUE_RETRIES_CONFIG = "3";

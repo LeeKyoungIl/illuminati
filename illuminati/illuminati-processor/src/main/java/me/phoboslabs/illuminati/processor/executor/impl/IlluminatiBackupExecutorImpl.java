@@ -38,7 +38,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     private final Backup<IlluminatiInterfaceModel> backup;
 
     private IlluminatiBackupExecutorImpl() throws Exception {
-        super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
+        super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.backup = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
     }
 
@@ -122,12 +122,12 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                     } else {
                         deQueueByDebug();
                     }
-
+                } catch (Exception e) {
+                    illuminatiExecutorLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
+                } finally {
                     try {
                         Thread.sleep(BACKUP_THREAD_SLEEP_TIME);
                     } catch (InterruptedException ignore) {}
-                } catch (Exception e) {
-                    illuminatiExecutorLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
                 }
             }
             }

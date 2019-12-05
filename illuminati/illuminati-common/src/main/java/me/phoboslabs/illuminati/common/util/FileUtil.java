@@ -43,7 +43,7 @@ public class FileUtil {
             throw new Exception(errorMessage);
         } catch (IOException e) {
             final String errorMessage = "File create error : ".concat(e.getMessage());
-            FILE_UTIL_LOGGER.error(errorMessage);
+            FILE_UTIL_LOGGER.error(errorMessage, e);
             throw new Exception(errorMessage);
         }
     }
@@ -67,7 +67,7 @@ public class FileUtil {
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds");
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
+            FILE_UTIL_LOGGER.error("File write error : {}", e.getMessage(), e);
         }
     }
 
@@ -77,18 +77,16 @@ public class FileUtil {
             return;
         }
 
-        try {
-            FileWriter writer = new FileWriter(file, true);
+        try(FileWriter writer = new FileWriter(file, true)) {
             final long start = System.currentTimeMillis();
             for (String data: dataList) {
                 writer.append(data.concat(LINE_SEPARATOR));
             }
             writer.flush();
-            writer.close();
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds (" + dataList.size() + " line)");
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : ", e.getMessage());
+            FILE_UTIL_LOGGER.error("File write error : {}", e.getMessage(), e);
         }
     }
 

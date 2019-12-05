@@ -21,12 +21,9 @@ public class IlluminatiStringBuilder {
         if (CollectionUtils.isEmpty(this.bufStringData)) {
             return "";
         } else {
-            StringBuilder returnStringData = new StringBuilder();
-
-            for (int i=0; i<this.bufStringData.size(); i++) {
-                if (i > 0) {
-                    returnStringData.append(delimeter);
-                }
+            StringBuilder returnStringData = new StringBuilder(this.bufStringData.get(0));
+            for (int i=1; i<this.bufStringData.size(); i++) {
+                returnStringData.append(delimeter);
                 returnStringData.append(this.bufStringData.get(i));
             }
 

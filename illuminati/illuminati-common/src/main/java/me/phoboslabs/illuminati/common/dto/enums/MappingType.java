@@ -15,13 +15,14 @@ public enum MappingType {
         return this.mappingType;
     }
 
-    public static MappingType getMappingType (String mappingType) {
-        if ("text".equalsIgnoreCase(mappingType) == true) {
-            return MappingType.TEXT;
-        } else if ("keyword".equalsIgnoreCase(mappingType) == true) {
-            return MappingType.KEYWORD;
-        } else {
-            return null;
+    public static MappingType getMappingType (final String mappingType) throws Exception {
+        switch (mappingType.toLowerCase()) {
+            case "text" :
+                return MappingType.TEXT;
+            case "keyword" :
+                return MappingType.KEYWORD;
+            default :
+                throw new Exception(mappingType + " is not support yet.");
         }
     }
 }

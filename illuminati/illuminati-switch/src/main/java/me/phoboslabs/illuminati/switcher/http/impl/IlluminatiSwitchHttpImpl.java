@@ -26,36 +26,29 @@ public class IlluminatiSwitchHttpImpl implements IlluminatiSwitchHttp<String> {
         this.url = url;
     }
 
-    @Override public String getByGetMethod() {
+    @Override public String getByGetMethod() throws Exception {
         final HttpRequestBase httpGetRequest = new HttpGet(this.url);
 
         HttpResponse httpResponse = null;
 
         try {
             httpResponse = this.httpClient.execute(httpGetRequest);
-        }
-        catch (IOException e) {
-            this.logger.error("Sorry. something is wrong in Http Request. (" + e.toString() + ")");
-        }
-        finally {
+        } catch (IOException e) {
+            final String errorMessage = "Sorry. something is wrong in Http Request. (" + e.getMessage() + ")";
+            this.logger.error(errorMessage, e);
+            throw new Exception(errorMessage);
+        } finally {
             httpGetRequest.releaseConnection();
         }
 
-        String responseString = null;
-
-        if (httpResponse == null) {
-            return null;
-        }
-
-        if ("2".equals(String.valueOf(httpResponse.getStatusLine().getStatusCode()).substring(0, 1))) {
+        final String responseData = String.valueOf(httpResponse.getStatusLine().getStatusCode()).substring(0, 1);
+        if ("2".equals(responseData)) {
             HttpEntity entity = httpResponse.getEntity();
             try {
-                responseString = EntityUtils.toString(entity);
-            } catch (IOException e) {
-                // ignore
-            }
+                return EntityUtils.toString(entity);
+            } catch (IOException ignore) {}
         }
 
-        return responseString;
+        throw new Exception("check the value in the Http Response body. ("+responseData+")");
     }
 }

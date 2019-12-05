@@ -5,7 +5,7 @@ import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
 import org.springframework.stereotype.Service;
 
-@Illuminati(packageType = PackageType.SERVICE)
+
 @Service
 public class ApiSampleService {
 
@@ -13,7 +13,14 @@ public class ApiSampleService {
             return "illuminati Cool";
     }
 
+    @Illuminati(packageType = PackageType.SERVICE)
     public String sampleTestByObject (TestModel testModel) {
+        this.sampleTestByObject1(null);
+        return "illuminatu param test";
+    }
+
+    @Illuminati(packageType = PackageType.SERVICE)
+    public String sampleTestByObject1 (TestModel testModel) {
         return "illuminatu param test";
     }
 }

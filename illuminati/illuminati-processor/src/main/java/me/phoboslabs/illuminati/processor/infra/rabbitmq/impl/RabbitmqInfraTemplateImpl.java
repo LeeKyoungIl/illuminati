@@ -164,11 +164,11 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             final ExecutorService executor = Executors.newSingleThreadExecutor();
             AMQP_CONNECTION = RABBITMQ_CONNECTION_FACTORY.newConnection(executor, this.getClusterList());
         } catch (IOException ex) {
-            final String errorMessage = "error : cluster host had a problem. " + ex.toString();
+            final String errorMessage = "error : cluster host had a problem. " + ex.getMessage();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new CommunicationException(errorMessage);
         } catch (TimeoutException ex) {
-            final String errorMessage = "error : there was a problem communicating with the spring. " + ex.toString();
+            final String errorMessage = "error : there was a problem communicating with the spring. " + ex.getMessage();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new CommunicationException(errorMessage);
         }
@@ -188,14 +188,14 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
             return amqpChannel;
         } catch (IOException ex) {
-            final String errorMessage = "error : create connection channel has failed.. ("+ex.toString()+")";
+            final String errorMessage = "error : create connection channel has failed.. ("+ex.getMessage()+")";
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }
 
     private List<Address> getClusterList () {
-        final List<Address> clusterAddressList = new ArrayList<Address>();
+        final List<Address> clusterAddressList = new ArrayList<>();
         for (String serverData : Arrays.asList(this.clusterList.split(","))) {
             Address address;
             if (serverData.indexOf(":") > -1) {

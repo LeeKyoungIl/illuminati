@@ -74,7 +74,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     private synchronized void initPublisher () {
         if (this.KAFKA_PUBLISHER == null) {
-            this.KAFKA_PUBLISHER = new KafkaProducer<String,  byte[]>(this.PROPERTIES);
+            this.KAFKA_PUBLISHER = new KafkaProducer<>(this.PROPERTIES);
         }
     }
 
@@ -103,8 +103,9 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
             KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
         } catch (Exception ex) {
-            KAFKA_TEMPLATE_IMPL_LOGGER.error("failed to publish message : " + ex.toString());
-            throw new PublishMessageException("failed to publish message : " + ex.toString());
+            final String errorMessage = "failed to publish message : ("+ex.getMessage()+")";
+            KAFKA_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
+            throw new PublishMessageException(errorMessage);
         }
     }
 

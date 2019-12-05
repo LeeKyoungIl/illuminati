@@ -84,10 +84,7 @@ public class RestoreTemplateData implements Restore {
         }
 
         final int restoreQueueSize = IlluminatiBasicExecutor.ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize();
-        if (restoreQueueSize <= RESTORE_CHECK_QUEUE_SIZE) {
-            return false;
-        }
-        return true;
+        return restoreQueueSize > RESTORE_CHECK_QUEUE_SIZE;
     }
 
     @Override public void restoreToQueueByDebug () {
@@ -123,7 +120,7 @@ public class RestoreTemplateData implements Restore {
                         // ignore
                     }
                 } catch (Exception e) {
-                    restoreTemplateDataLogger.warn("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
+                    restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
                 }
             }
             }

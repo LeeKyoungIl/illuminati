@@ -15,13 +15,14 @@ public enum TableDDLType {
         return this.type;
     }
 
-    public static TableDDLType getEnumType(String type) {
-        if ("create".equals(type)) {
-            return CREATE;
-        } else if ("drop".equals(type)) {
-            return DROP;
+    public static TableDDLType getEnumType(String type) throws Exception {
+        switch (type.toLowerCase()) {
+            case "create" :
+                return CREATE;
+            case "drop" :
+                return DROP;
+            default :
+                throw new Exception(type + " is not support yet.");
         }
-
-        return null;
     }
 }

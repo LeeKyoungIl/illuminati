@@ -38,7 +38,7 @@ public class SubscribeListener {
             String jsonString = (String) message.getPayload();
             sampleBuyEsModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, SampleEsTemplateInterfaceModelImpl.class);
         } catch (Exception ex) {
-            SUB_LOGGER.error("Sorry. something is wrong in Parsing received dto. ("+ex.toString()+")");
+            SUB_LOGGER.error("Sorry. something is wrong in Parsing received dto. ({})", ex.getMessage(), ex);
             return;
         }
 

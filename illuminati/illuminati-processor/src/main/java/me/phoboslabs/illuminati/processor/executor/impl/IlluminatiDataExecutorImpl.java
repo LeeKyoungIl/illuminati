@@ -39,7 +39,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();
 
     private IlluminatiDataExecutorImpl (final IlluminatiExecutor illuminatiExecutor) {
-        super(ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
+        super(ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 

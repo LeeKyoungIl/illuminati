@@ -40,16 +40,17 @@ public class H2Backup<T> implements Backup<T> {
     private H2Backup (Class<T> type) throws Exception {
         this.h2Conn = H2ConnectionFactory.getInstance();
         this.type = type;
-        if (h2Conn.isConnected()) {
-            this.connection = h2Conn.getDbConnection();
+        if (this.h2Conn.isConnected()) {
+            this.connection = this.h2Conn.getDbConnection();
 
             final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class, "illuminati", "backTableReset", "false");
             if ("true".equalsIgnoreCase(backTableReset)) {
                 this.tableDDL(TableDDLType.DROP);
             }
             this.tableDDL(TableDDLType.CREATE);
+        } else {
+            throw new Exception("H2 is can't connect.");
         }
-        throw new Exception("H2 is can't connect.");
     }
 
     public static H2Backup getInstance (Class type) throws Exception {
@@ -81,23 +82,18 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     private void deleteTable() {
-        StringBuilder tableExecuteCommand = new StringBuilder();
-        tableExecuteCommand.append("DROP TABLE IF EXISTS ");
-        tableExecuteCommand.append(TABLE_NAME);
-
+        StringBuilder tableExecuteCommand = new StringBuilder("DROP TABLE IF EXISTS ").append(TABLE_NAME);
         this.executeDDL(tableExecuteCommand.toString(), TableDDLType.DROP.name());
     }
 
     private void createTable () {
-        StringBuilder tableExecuteCommand = new StringBuilder();
-        tableExecuteCommand.append("CREATE TABLE IF NOT EXISTS ");
-        tableExecuteCommand.append(TABLE_NAME);
-        tableExecuteCommand.append(" ( ");
-        tableExecuteCommand.append(" ID INTEGER PRIMARY KEY AUTO_INCREMENT");
-        tableExecuteCommand.append(", EXECUTOR_TYPE INTEGER NOT NULL");
-        tableExecuteCommand.append(", JSON_DATA TEXT NOT NULL ");
-        tableExecuteCommand.append(" ) ");
-
+        StringBuilder tableExecuteCommand = new StringBuilder("CREATE TABLE IF NOT EXISTS ")
+                                                .append(TABLE_NAME)
+                                                .append(" ( ")
+                                                .append(" ID INTEGER PRIMARY KEY AUTO_INCREMENT")
+                                                .append(", EXECUTOR_TYPE INTEGER NOT NULL")
+                                                .append(", JSON_DATA TEXT NOT NULL ")
+                                                .append(" ) ");
         this.executeDDL(tableExecuteCommand.toString(), TableDDLType.CREATE.name());
     }
 
@@ -113,11 +109,10 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     @Override public void appendByJsonString(IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData) {
-        StringBuilder insertExecuteCommand = new StringBuilder();
-        insertExecuteCommand.append("INSERT INTO ");
-        insertExecuteCommand.append(TABLE_NAME);
-        insertExecuteCommand.append(" (EXECUTOR_TYPE, JSON_DATA) ");
-        insertExecuteCommand.append("VALUES (?, ?)");
+        StringBuilder insertExecuteCommand = new StringBuilder("INSERT INTO ")
+                                                .append(TABLE_NAME)
+                                                .append(" (EXECUTOR_TYPE, JSON_DATA) ")
+                                                .append("VALUES (?, ?)");
 
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(insertExecuteCommand.toString());
@@ -132,12 +127,13 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     @Override public List<T> getDataByList(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception {
-        List<T> dataList = new ArrayList<T>();
-        List<Integer> idList = new ArrayList<Integer>();
+        List<T> dataList = new ArrayList<>();
+        List<Integer> idList = new ArrayList<>();
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(this.getSelectQuery(isPaging, from, size));
-            ResultSet rs = preparedStatement.executeQuery();
+        try(
+                PreparedStatement preparedStatement = this.connection.prepareStatement(this.getSelectQuery(isPaging, from, size));
+                ResultSet rs = preparedStatement.executeQuery();
+                ) {
             while (rs.next()) {
                 idList.add(rs.getInt("ID"));
                 try {
@@ -146,8 +142,6 @@ public class H2Backup<T> implements Backup<T> {
                     this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getMessage());
                 }
             }
-            rs.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             final String errorMessage = "Failed to select data from Table. ("+e.getMessage()+")";
             this.h2BackupLogger.warn(errorMessage, e);
@@ -170,11 +164,12 @@ public class H2Backup<T> implements Backup<T> {
             throw new Exception("Check your select query.");
         }
 
-        Map<Integer, T> dataMap = new HashMap<Integer, T>();
+        Map<Integer, T> dataMap = new HashMap<>();
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
-            ResultSet rs = preparedStatement.executeQuery();
+        try(
+                PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
+                ResultSet rs = preparedStatement.executeQuery();
+                ) {
             while (rs.next()) {
                 try {
                     dataMap.put(rs.getInt("ID"), IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
@@ -182,8 +177,6 @@ public class H2Backup<T> implements Backup<T> {
                     this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getMessage());
                 }
             }
-            rs.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             final String errorMessage = "Failed to select data from Table. ("+e.getMessage()+")";
             this.h2BackupLogger.warn(errorMessage, e);
@@ -200,36 +193,30 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     @Override public void deleteById(int id) {
-        StringBuilder deleteExecuteCommand = new StringBuilder();
-        deleteExecuteCommand.append("DELETE FROM ");
-        deleteExecuteCommand.append(TABLE_NAME);
-        deleteExecuteCommand.append(" WHERE ID = ");
-        deleteExecuteCommand.append(id);
+        StringBuilder deleteExecuteCommand = new StringBuilder("DELETE FROM ")
+                                                .append(TABLE_NAME)
+                                                .append(" WHERE ID = ")
+                                                .append(id);
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(deleteExecuteCommand.toString());
+        try(PreparedStatement preparedStatement = this.connection.prepareStatement(deleteExecuteCommand.toString());) {
             preparedStatement.execute();
             this.connection.commit();
-            preparedStatement.close();
         } catch (SQLException e) {
             this.h2BackupLogger.warn("Failed to delete data from Table.");
         }
     }
 
     @Override public int getCount() throws Exception {
-        StringBuilder countExecuteCommand = new StringBuilder();
-        countExecuteCommand.append("SELECT count(1) FROM ");
-        countExecuteCommand.append(TABLE_NAME);
+        StringBuilder countExecuteCommand = new StringBuilder("SELECT count(1) FROM ").append(TABLE_NAME);
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
-            ResultSet rs = preparedStatement.executeQuery();
+        try(
+                PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
+                ResultSet rs = preparedStatement.executeQuery();
+                ) {
             int count = 0;
             if (rs.next()) {
                 count = rs.getInt(1);
             }
-            rs.close();
-            preparedStatement.close();
             return count;
         } catch (SQLException e) {
             final String errorMessage = "Failed to select data from Table. ("+e.getMessage()+")";
@@ -239,9 +226,7 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     private String getSelectQuery (boolean isPaging, int from, int size) {
-        StringBuilder selectExecuteCommand = new StringBuilder();
-        selectExecuteCommand.append("SELECT ID, JSON_DATA FROM ");
-        selectExecuteCommand.append(TABLE_NAME);
+        StringBuilder selectExecuteCommand = new StringBuilder("SELECT ID, JSON_DATA FROM ").append(TABLE_NAME);
 
         if (isPaging) {
             selectExecuteCommand.append(" LIMIT "+from+", "+size);

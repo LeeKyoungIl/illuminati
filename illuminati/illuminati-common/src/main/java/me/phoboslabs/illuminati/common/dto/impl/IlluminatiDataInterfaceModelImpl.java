@@ -59,16 +59,12 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
                     .setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID))
                     .setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID))
                     .setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
-        } catch (Exception ignore) {
-            this.logger.warn(ignore.getMessage());
-        }
+        } catch (Exception ignore) {}
 
         try {
             this.illuminatiUniqueUserId = SystemUtil.getValueFromHeaderByKey(request, ILLUMINATI_UNIQUE_USER_ID_KEY);
             this.clientInfoMap = ConvertUtil.getClientInfoFromHttpRequest(request);
-        } catch (Exception ignore) {
-            this.logger.warn(ignore.getMessage());
-        }
+        } catch (Exception ignore) {}
 
         this.staticInfo = ConvertUtil.getStaticInfoFromHttpRequest(request);
         this.isActiveChaosBomber = ConvertUtil.getChaosBomberFromHttpRequest(request);
@@ -99,12 +95,7 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     public boolean isValid () {
-        if (this.requestHeaderModel == null || this.signature == null) {
-            this.logger.warn("request or signature are must not null");
-            return false;
-        } else {
-            return true;
-        }
+        return this.requestHeaderModel != null && this.signature != null;
     }
 
     public IlluminatiDataInterfaceModelImpl setPackageType (String packageType) {

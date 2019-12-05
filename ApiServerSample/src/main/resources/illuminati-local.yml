@@ -1,18 +1,18 @@
-#rabbitmq
-broker: rabbitmq
-clusterList: localhost:32773
-virtualHost: illuminatiLocal
-topic: local-illuminati-exchange
-queueName: local-illuminati-exchange.illuminati
-userName: illuminati-local
-password: illuminati-local
-isAsync: true
-isCompression: true
-parentModuleName: apisample
-samplingRate: 100
-debug: false
-illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
-illuminatiSwitchValueURLCheckInterval: 5000
+##rabbitmq
+#broker: rabbitmq
+#clusterList: localhost:32773
+#virtualHost: illuminatiLocal
+#topic: local-illuminati-exchange
+#queueName: local-illuminati-exchange.illuminati
+#userName: illuminati-local
+#password: illuminati-local
+#isAsync: true
+#isCompression: true
+#parentModuleName: apisample
+#samplingRate: 100
+#debug: false
+#illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
+#illuminatiSwitchValueURLCheckInterval: 5000
 
 #kafka
 #broker: kafka
@@ -23,3 +23,14 @@ illuminatiSwitchValueURLCheckInterval: 5000
 #performance: 1
 #parentModuleName: apisample
 #samplingRate: 50
+
+#kafka
+broker: kafka
+clusterList: 10.112.182.165:9092, 10.113.112.171:9092, 10.113.107.1:9092
+topic: tapasocr-data1
+isAsync: true
+isCompression: true
+performance: 1
+parentModuleName: apisample
+samplingRate: 100
+debug: false

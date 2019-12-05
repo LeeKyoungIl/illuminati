@@ -40,7 +40,7 @@ public abstract class BasicElasticsearchService {
                 }
             }
         } catch (Exception ex) {
-            this.logger.error("Exception occurred at getting data from Elasticsearch.", ex.getMessage());
+            this.logger.error("Exception occurred at getting data from Elasticsearch. {}", ex.getMessage(), ex);
             return null;
         }
 
@@ -57,7 +57,7 @@ public abstract class BasicElasticsearchService {
                 String lastStringDate = SIMPLE_DATA_FORMAT.format(targetDate);
                 mapData.put(checkKey, lastStringDate);
             } catch (Exception ex) {
-                this.logger.error("Exception occurred at casting timestamp data.");
+                this.logger.error("Exception occurred at casting timestamp data. {}", ex.getMessage(), ex);
             }
         }
 

@@ -23,7 +23,7 @@ abstract public class IlluminatiConstant {
 
     public static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
 
-    public static Map<String, Thread> SYSTEM_THREAD_MAP = new HashMap<String, Thread>();
+    public static Map<String, Thread> SYSTEM_THREAD_MAP = new HashMap<>();
 
     public static boolean ILLUMINATI_DEBUG = false;
 

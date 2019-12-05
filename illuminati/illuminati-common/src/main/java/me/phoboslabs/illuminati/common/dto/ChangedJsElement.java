@@ -40,7 +40,7 @@ public class ChangedJsElement {
         }
 
         if (this.changedValueMap == null) {
-            this.changedValueMap = new HashMap<Integer, ChangedValue>();
+            this.changedValueMap = new HashMap<>();
         }
 
         for (int i=0; i<this.changedValues.size(); i++) {

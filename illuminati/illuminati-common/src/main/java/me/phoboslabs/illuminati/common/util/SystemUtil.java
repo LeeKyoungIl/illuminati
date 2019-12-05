@@ -42,7 +42,7 @@ public class SystemUtil {
                 try {
                     jvmInfo.put(StringObjectUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
                 } catch (Exception ex) {
-                    SYSTEM_UTIL_LOGGER.error(ex.getMessage());
+                    SYSTEM_UTIL_LOGGER.error(ex.getMessage(), ex);
                 }
             }
         }
@@ -98,7 +98,7 @@ public class SystemUtil {
         }
 
         if (value != null) {
-            throw new Exception("value must not be null.");
+            throw new Exception("value must not be null. (you can ignore this message)");
         }
 
         return value.toString();

@@ -32,9 +32,10 @@ public class StringObjectUtils {
     }
 
     public static byte[] gzipMessage(final String message) throws Exception {
-        try {
-            final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            GZIPOutputStream stream = new GZIPOutputStream(bos);
+        try (
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                GZIPOutputStream stream = new GZIPOutputStream(bos);
+                ) {
             byte[] bytes;
             try {
                 bytes = message.getBytes(IlluminatiConstant.BASE_CHARSET);
@@ -44,10 +45,8 @@ public class StringObjectUtils {
             }
             stream.write(bytes);
             stream.finish();
-            stream.close();
-            byte[] zipped = bos.toByteArray();
-            bos.close();
-            return zipped;
+
+            return bos.toByteArray();
         } catch (IOException e) {
             throw new Exception(e.getMessage());
         }
@@ -150,14 +149,9 @@ public class StringObjectUtils {
             throw new Exception("object must not be null.");
         }
 
-        try {
-            final StringWriter stringWriter = new StringWriter();
+        try(StringWriter stringWriter = new StringWriter()) {
             IlluminatiConstant.BASIC_OBJECT_STRING_MAPPER.writeValue(stringWriter, object);
-
             final String resultString = stringWriter.toString();
-
-            stringWriter.close();
-
             return resultString.replaceAll(System.getProperty("line.separator"), "");
         } catch (IOException ex) {
             final String errorMessage = "Sorry. had a error on during Object to String. ("+ex.toString()+")";
@@ -194,8 +188,8 @@ public class StringObjectUtils {
 
             return ba;
         } catch (CharacterCodingException ex) {
-            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.toString()+")";
-            STRINGUTIL_LOGGER.error(errorMessage);
+            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.getMessage()+")";
+            STRINGUTIL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }

@@ -73,7 +73,12 @@ public class IlluminatiClientInit {
                 RESTORE_TEMPLATE_DATA = null;
             }
             ILLUMINATI_INITIALIZED = true;
+
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            System.out.println("@ The illuminati is now activated.                            @");
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         } catch (Exception ex) {
+            ex.printStackTrace();
             System.out.println("The illuminati failed to initialize. check configuration files.");
         }
     }
@@ -176,12 +181,7 @@ public class IlluminatiClientInit {
     }
 
     private boolean isOnIlluminatiSwitch () {
-        if (IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION  && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get() == false) {
-            this.illuminatiInitLogger.debug("illuminati processor is now off.");
-            return false;
-        }
-
-        return true;
+        return IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION && IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get();
     }
 
     private Object addToQueue (final ProceedingJoinPoint pjp, final HttpServletRequest request, final boolean isActiveChaosBomber) throws Throwable {
@@ -243,7 +243,7 @@ public class IlluminatiClientInit {
             originMethodExecute.put("result", pjp.proceed());
         } catch (Throwable ex) {
             originMethodExecute.put("throwable", ex);
-            this.illuminatiInitLogger.error("error : check your process. ("+ex.toString()+")");
+            this.illuminatiInitLogger.error("error : check your process. ({})", ex.getMessage(), ex);
             originMethodExecute.put("result", StringObjectUtils.getExceptionMessageChain(ex));
         }
 

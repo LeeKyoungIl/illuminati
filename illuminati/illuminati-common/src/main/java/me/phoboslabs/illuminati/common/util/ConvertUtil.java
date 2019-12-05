@@ -12,7 +12,7 @@ public class ConvertUtil {
             throw new Exception("The Request must not be null.");
         }
 
-        final Map<String, String> clientInfoMap = new HashMap<String, String>();
+        final Map<String, String> clientInfoMap = new HashMap<>();
         clientInfoMap.put("clientIp", request.getHeader("X-FORWARDED-FOR"));
         clientInfoMap.put("path", request.getRequestURI());
         clientInfoMap.put("remoteAddr", request.getRemoteAddr());
@@ -31,7 +31,7 @@ public class ConvertUtil {
     private static final String CHAOS_BOMBER_KEYWORD = "ChaosBomber";
 
     public static Map<String, Object> getStaticInfoFromHttpRequest (final HttpServletRequest request) {
-        final Map<String, Object> staticInfoMap = new HashMap<String, Object>();
+        final Map<String, Object> staticInfoMap = new HashMap<>();
         staticInfoMap.put("domain", request.getServerName());
         staticInfoMap.put("serverPort", request.getLocalPort());
 
@@ -75,7 +75,7 @@ public class ConvertUtil {
     }
 
     public static Map<String, Object> convertObjectToMap (Object obj) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         final Field[] fields = obj.getClass().getDeclaredFields();
         for(int i=0; i <fields.length; i++){
             fields[i].setAccessible(true);

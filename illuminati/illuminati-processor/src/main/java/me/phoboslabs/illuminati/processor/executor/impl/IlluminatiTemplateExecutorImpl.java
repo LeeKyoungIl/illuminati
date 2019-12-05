@@ -42,7 +42,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private IlluminatiShutdownHandler illuminatiShutdownHandler;
 
     private IlluminatiTemplateExecutorImpl (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) throws Exception {
-        super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<IlluminatiTemplateInterfaceModelImpl>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
+        super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiBackupExecutor = illuminatiBackupExecutor;
         this.illuminatiTemplate = this.initIlluminatiTemplate();
     }
@@ -134,14 +134,17 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
-        if ("kafka".equals(illuminatiBroker)) {
-            illuminatiInfraTemplate = new KafkaInfraTemplateImpl("illuminati");
-        } else if ("rabbitmq".equals(illuminatiBroker)) {
-            illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
-        } else {
-            final String errorMessage = "Sorry. check your properties of Illuminati";
-            illuminatiExecutorLogger.warn(errorMessage);
-            throw new Exception(errorMessage);
+        switch (illuminatiBroker) {
+            case "kafka" :
+                illuminatiInfraTemplate = new KafkaInfraTemplateImpl("illuminati");
+                break;
+            case "rabbitmq" :
+                illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
+                break;
+            default :
+                final String errorMessage = "Sorry. check your properties of Illuminati";
+                illuminatiExecutorLogger.warn(errorMessage);
+                throw new Exception(errorMessage);
         }
 
         IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());

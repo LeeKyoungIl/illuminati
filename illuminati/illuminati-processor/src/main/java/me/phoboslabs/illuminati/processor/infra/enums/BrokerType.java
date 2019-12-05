@@ -18,13 +18,14 @@ public enum BrokerType {
         return this.type;
     }
 
-    public static BrokerType getEnumType(String type) {
-        if ("rabbitmq".equals(type)) {
-            return RABBITMQ;
-        } else if ("kafka".equals(type)) {
-            return KAFKA;
+    public static BrokerType getEnumType(String type) throws Exception {
+        switch (type.toLowerCase()) {
+            case "rabbitmq" :
+                return RABBITMQ;
+            case "kafka" :
+                return KAFKA;
+            default :
+                throw new Exception(type + "is not support yet.");
         }
-
-        return null;
     }
 }

@@ -371,12 +371,11 @@ public class RequestHeaderModel {
         }
 
         this.init(request);
-        //this.getIlluminatiProcId(request);
         if ("post".equalsIgnoreCase(request.getMethod())) {
             try {
                 this.postContentBody = StringObjectUtils.getPostBodyString(request);
             } catch (IOException ex) {
-                REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ("+ex.toString()+")");
+                REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ({})", ex.getMessage(), ex);
             }
         }
 

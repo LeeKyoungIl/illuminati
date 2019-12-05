@@ -6,15 +6,31 @@ import me.phoboslabs.illuminati.common.properties.IlluminatiCommonProperties;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class IlluminatiCommon {
 
+    private final static Logger COMMON_LOGGER = LoggerFactory.getLogger(IlluminatiCommon.class);
+
     private static final String H2_CLASS_NAME = "org.h2.Driver";
 
-    private static final List<IlluminatiStorageType> ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY = Arrays.asList(IlluminatiStorageType.getEnumType(H2_CLASS_NAME));
+    private static final List<IlluminatiStorageType> ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY;
+    static {
+        List<IlluminatiStorageType> classNameArray;
+        try {
+            classNameArray = Arrays.asList(IlluminatiStorageType.getEnumType(H2_CLASS_NAME));
+        } catch (Exception ex) {
+            classNameArray = new ArrayList<>();
+            COMMON_LOGGER.error("check backup stage type.");
+        }
+        ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY = Collections.unmodifiableList(classNameArray);
+    }
 
     public synchronized static void init () {
         final String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, "illuminati", "debug", null);

@@ -30,7 +30,7 @@ public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends
             superQueueSize = this.listCount;
         }
 
-        List<E> dataList = new ArrayList<E>(superQueueSize);
+        List<E> dataList = new ArrayList<>(superQueueSize);
 
         for (int i=0; i<superQueueSize; i++) {
             try {

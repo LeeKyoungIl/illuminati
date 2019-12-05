@@ -96,7 +96,7 @@ public abstract class BasicTemplate {
             try {
                 performance = Integer.parseInt(this.illuminatiProperties.getPerformance());
             } catch (Exception ex) {
-                BASIC_TEMPLATE_LOGGER.error("error : casting exception. ("+ex.toString()+")");
+                BASIC_TEMPLATE_LOGGER.error("error : casting exception. ({})", ex.getMessage(), ex);
             }
         }
 

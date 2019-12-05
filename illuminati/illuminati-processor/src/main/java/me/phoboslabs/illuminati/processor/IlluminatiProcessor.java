@@ -14,10 +14,12 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.*;
 
 import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.*;
@@ -41,7 +43,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
     }
 
     @Override public Set<String> getSupportedAnnotationTypes() {
-        Set<String> annotataions = new LinkedHashSet<String>();
+        Set<String> annotataions = new LinkedHashSet<>();
         annotataions.add(Illuminati.class.getCanonicalName());
         return annotataions;
     }
@@ -121,7 +123,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
         this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}", basePackageName);
 
         final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit;\r\n \r\n";
-        final String illuminatiAnnotationName = "Illuminati";
+        final String illuminatiAnnotationName = "me.phoboslabs.illuminati.annotation.Illuminati";
         // step 3.  check chaosBomber is activated.
         PropertiesHelper propertiesHelper = new PropertiesHelper(this.messager);
         final String checkChaosBomber = propertiesHelper.getPropertiesValueByKey("chaosBomber", "false");
@@ -185,7 +187,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 "javax.servlet.http.HttpServletRequest"
         };
 
-        final Map<String, String[]> imports = new HashMap<String, String[]>();
+        final Map<String, String[]> imports = new HashMap<>();
         imports.put("me.phoboslabs.illuminati.processor", illuminatis);
         imports.put("org.aspectj.lang", aspectjs);
         imports.put("org.springframework", springs);
@@ -326,4 +328,5 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         return null;
     }
+
 }
