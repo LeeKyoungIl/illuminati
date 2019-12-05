@@ -18,23 +18,24 @@ public class ApiConfiguration {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean
-    public EsClient getEsClient () {
+    public EsClient getEsClient () throws Exception {
         EsClientProperties esInfo = PropertiesUtil.getIlluminatiProperties(EsClientProperties.class, "elasticsearch/elasticsearch");
         if (esInfo.isValid()) {
             return new ESclientImpl(new IlluminatiHttpClient(), esInfo.getHost(), esInfo.getPort());
         } else {
-            this.logger.error("failed to generate Elasticsearch client.");
-            return null;
+            final String errorMessage = "failed to generate Elasticsearch client.";
+            this.logger.error(errorMessage);
+            throw new Exception(errorMessage);
         }
     }
 
     @Bean
-    public JvmInfoApiService getJvmInfoApiService () {
+    public JvmInfoApiService getJvmInfoApiService () throws Exception {
         return new JvmInfoApiService(this.getEsClient());
     }
 
     @Bean
-    public HostInfoService getHostInfoService () {
+    public HostInfoService getHostInfoService () throws Exception {
         return new HostInfoService(this.getEsClient());
     }
 }

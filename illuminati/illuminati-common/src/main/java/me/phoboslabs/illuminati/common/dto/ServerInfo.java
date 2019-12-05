@@ -40,7 +40,7 @@ public class ServerInfo {
             this.serverIp = ip.getHostAddress();
             this.hostName = ip.getHostName();
         } catch (UnknownHostException ex) {
-            SERVER_INFO_LOGGER.error("Sorry. check your spring network. ("+ex.toString()+")");
+            SERVER_INFO_LOGGER.error("Sorry. check your spring network. ({})", ex.getMessage(), ex);
         }
     }
 
@@ -48,20 +48,23 @@ public class ServerInfo {
         return this.serverIp;
     }
 
-    public boolean isAreadySetServerDomainAndPort () {
-        if (!StringObjectUtils.isValid(this.domain) || this.serverPort == 0) {
-            return false;
-        }
+    public boolean isAlreadySetServerDomainAndPort () {
+        return StringObjectUtils.isValid(this.domain) && this.serverPort > 0;
+    }
 
-        return true;
+    private final static String DOMAIN_KEYWORD = "domain";
+    private final static String SERVER_PORT_KEYWORD = "serverPort";
+
+    private boolean isKeywordValidatedOnStaticInfo(final Map<String, Object> staticInfo, final String keyword) {
+        return staticInfo.containsKey(keyword) && staticInfo.get(keyword) != null;
     }
 
     public void setStaticInfoFromRequest(final Map<String, Object> staticInfo) {
-        if (staticInfo.containsKey("domain") && staticInfo.get("domain") != null) {
-            this.domain = (String) staticInfo.get("domain");
+        if (this.isKeywordValidatedOnStaticInfo(staticInfo, DOMAIN_KEYWORD)) {
+            this.domain = (String) staticInfo.get(DOMAIN_KEYWORD);
         }
-        if (staticInfo.containsKey("serverPort") && staticInfo.get("serverPort") != null) {
-            this.serverPort = (Integer) staticInfo.get("serverPort");
+        if (this.isKeywordValidatedOnStaticInfo(staticInfo, SERVER_PORT_KEYWORD)) {
+            this.serverPort = (Integer) staticInfo.get(SERVER_PORT_KEYWORD);
         }
     }
 }

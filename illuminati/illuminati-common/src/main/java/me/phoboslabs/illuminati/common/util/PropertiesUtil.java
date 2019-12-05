@@ -22,7 +22,7 @@ public class PropertiesUtil {
         List<String> fileNames = new ArrayList<String>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
-            final String fullFileName = configPropertiesFileName + getDotBeforeExtension() + extension;
+            final String fullFileName = configPropertiesFileName.concat(getDotBeforeExtension()).concat(extension);
             fileNames.add(fullFileName);
         }
 
@@ -33,7 +33,7 @@ public class PropertiesUtil {
         List<String> fileNames = new ArrayList<String>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
-            final String fullFileName = configPropertiesFileName + "." + extension;
+            final String fullFileName = configPropertiesFileName.concat(".").concat(extension);
             fileNames.add(fullFileName);
         }
 
@@ -44,7 +44,7 @@ public class PropertiesUtil {
         String dotBeforeExtension = ".";
 
         if (StringObjectUtils.isValid(PROFILES_PHASE)) {
-            dotBeforeExtension = "-" + PROFILES_PHASE + ".";
+            dotBeforeExtension = "-".concat(PROFILES_PHASE).concat(".");
         }
 
         return dotBeforeExtension;
@@ -98,12 +98,11 @@ public class PropertiesUtil {
 
     private static <T extends IlluminatiProperties> T getIlluminatiPropertiesByFile(final Class<T> clazz, final String configPropertiesFileName) {
         final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
-        T illuminatiProperties = null;
-
         if (input == null) {
             return null;
         }
 
+        T illuminatiProperties = null;
         try {
             if (configPropertiesFileName.indexOf(".yml") > -1 || configPropertiesFileName.indexOf(".yaml") > -1) {
                 illuminatiProperties = IlluminatiConstant.YAML_MAPPER.readValue(input, clazz);
@@ -113,18 +112,15 @@ public class PropertiesUtil {
 
                 if (prop == null) {
                     PROPERTIES_UTIL_LOGGER.debug("Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
-
                     return null;
                 }
 
                 try {
                     illuminatiProperties = clazz.newInstance();
                     illuminatiProperties.setProperties(prop);
-                } catch (InstantiationException e) {
-                    // ignore
-                } catch (IllegalAccessException e) {
-                    // ignore
                 }
+                catch (InstantiationException ignore) {}
+                catch (IllegalAccessException ignore) {}
             }
         } catch (IOException ex) {
             PROPERTIES_UTIL_LOGGER.debug("Sorry, something is wrong in read process. (" + ex.toString() + ")");

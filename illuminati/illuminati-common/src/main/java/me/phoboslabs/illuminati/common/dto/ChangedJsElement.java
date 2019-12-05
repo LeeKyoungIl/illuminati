@@ -35,16 +35,18 @@ public class ChangedJsElement {
     }
 
     public void convertListToMap () {
-        if (CollectionUtils.isNotEmpty(this.changedValues)) {
-            if (this.changedValueMap == null) {
-                this.changedValueMap = new HashMap<Integer, ChangedValue>();
-            }
-
-            for (int i=0; i<this.changedValues.size(); i++) {
-                this.changedValueMap.put(i, this.changedValues.get(i));
-            }
-
-            this.changedValues = null;
+        if (CollectionUtils.isEmpty(this.changedValues)) {
+            return;
         }
+
+        if (this.changedValueMap == null) {
+            this.changedValueMap = new HashMap<>();
+        }
+
+        for (int i=0; i<this.changedValues.size(); i++) {
+            this.changedValueMap.put(i, this.changedValues.get(i));
+        }
+
+        this.changedValues = null;
     }
 }

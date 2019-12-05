@@ -20,17 +20,18 @@ public enum EsIndexStoreType {
         return this.type;
     }
 
-    public static EsIndexStoreType getEnumType(final String type) {
-        if ("fs".equalsIgnoreCase(type)) {
-            return FS;
-        } else if ("simplefs".equalsIgnoreCase(type)) {
-            return SIMPLEFS;
-        } else if ("niofs".equalsIgnoreCase(type)) {
-            return NIOFS;
-        } else if ("mmapfs".equalsIgnoreCase(type)) {
-            return MMAPFS;
+    public static EsIndexStoreType getEnumType(final String type) throws Exception {
+        switch (type) {
+            case "fs" :
+                return FS;
+            case "simplefs" :
+                return SIMPLEFS;
+            case "niofs" :
+                return NIOFS;
+            case "mmapfs" :
+                return MMAPFS;
+            default:
+                throw new Exception("check type value.");
         }
-
-        return null;
     }
 }

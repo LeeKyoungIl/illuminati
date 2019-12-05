@@ -7,8 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
-@EnableAutoConfiguration
-@EnableAspectJAutoProxy
 @ComponentScan(basePackages = {"me.phoboslabs"})
 public class ApiServerSampleApplication {
 

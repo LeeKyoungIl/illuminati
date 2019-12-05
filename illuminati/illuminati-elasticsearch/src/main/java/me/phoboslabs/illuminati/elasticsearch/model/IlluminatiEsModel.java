@@ -7,15 +7,15 @@ public interface IlluminatiEsModel {
 
     String getJsonString ();
 
-    String getEsUrl (String baseUrl);
+    String getEsUrl (String baseUrl) throws Exception;
 
-    String getBaseEsUrl (String baseUrl);
+    String getBaseEsUrl (String baseUrl) throws Exception;
 
     void setEsUserAuth (String esUserName, String esUserPass);
 
     boolean isSetUserAuth ();
 
-    String getEsAuthString ();
+    String getEsAuthString () throws Exception;
 
     String getIndexMapping ();
 }

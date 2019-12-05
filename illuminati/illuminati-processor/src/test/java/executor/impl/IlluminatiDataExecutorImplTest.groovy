@@ -1,7 +1,7 @@
 package executor.impl
 
-import me.phoboslabs.illuminati.prossor.executor.IlluminatiExecutor
-import me.phoboslabs.illuminati.prossor.executor.impl.IlluminatiDataExecutorImpl
+import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor
+import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
