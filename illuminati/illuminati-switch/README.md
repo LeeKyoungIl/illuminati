@@ -37,7 +37,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-switch</artifactId>
-  <version>1.0.10</version>
+  <version>1.0.11</version>
 </dependency>
 ```
 
@@ -49,5 +49,5 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.10'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.11'
 ```

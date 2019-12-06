@@ -27,14 +27,14 @@
     <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.18</version>
+      <version>0.9.9.19</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-switch</artifactId>
-       <version>1.0.10</version>
+       <version>1.0.11</version>
     </dependency>
 
     <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
@@ -56,9 +56,9 @@ repositories {
 }
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.18'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.19'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.10'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.11'
 // This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. 
 compile 'com.h2database:h2:1.4.196'
 ```
@@ -136,6 +136,7 @@ clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
 topic: illuminati-local
 isAsync: true
 isCompression: true
+compressionType: gzip
 performance: 1
 parentModuleName: apisample
 samplingRate: 50
