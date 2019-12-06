@@ -6,7 +6,7 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-elasticsearch</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.7</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.4</version>
             <scope>compile</scope>
         </dependency>
 
@@ -28,6 +28,7 @@
             <groupId>net.sf.uadetector</groupId>
             <artifactId>uadetector-resources</artifactId>
             <version>2014.10</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.spockframework/spock-core -->

@@ -18,7 +18,7 @@ public class PropertiesUtil {
 
     private final static Logger PROPERTIES_UTIL_LOGGER = LoggerFactory.getLogger(PropertiesUtil.class);
 
-    public static List<String> getPropertiesFileNames (final String configPropertiesFileName) {
+    private static List<String> getPropertiesFileNames (final String configPropertiesFileName) {
         List<String> fileNames = new ArrayList<String>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
@@ -29,7 +29,7 @@ public class PropertiesUtil {
         return fileNames;
     }
 
-    public static List<String> getPropertiesFileNamesWithoutProfiles (final String configPropertiesFileName) {
+    private static List<String> getPropertiesFileNamesWithoutProfiles (final String configPropertiesFileName) {
         List<String> fileNames = new ArrayList<String>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
@@ -44,7 +44,12 @@ public class PropertiesUtil {
         String dotBeforeExtension = ".";
 
         if (StringObjectUtils.isValid(PROFILES_PHASE)) {
-            dotBeforeExtension = "-".concat(PROFILES_PHASE).concat(".");
+            final int indexOfFirstComma = PROFILES_PHASE.indexOf(",");
+            dotBeforeExtension = "-".concat(
+                    indexOfFirstComma > 0
+                            ? PROFILES_PHASE.substring(0, PROFILES_PHASE.indexOf(","))
+                            : PROFILES_PHASE
+            ).concat(".");
         }
 
         return dotBeforeExtension;
@@ -53,7 +58,7 @@ public class PropertiesUtil {
     public static <T extends IlluminatiProperties> T getIlluminatiProperties(final Class<T> clazz, final String configPropertiesFileName) {
         T illuminatiProperties = null;
 
-        for (String fullFileName : PropertiesUtil.getPropertiesFileNames(configPropertiesFileName)) {
+        for (String fullFileName : getPropertiesFileNames(configPropertiesFileName)) {
             illuminatiProperties = getIlluminatiPropertiesByFile(clazz, fullFileName);
 
             if (illuminatiProperties != null) {
@@ -62,7 +67,7 @@ public class PropertiesUtil {
         }
 
         if (illuminatiProperties == null) {
-            for (String fullFileName : PropertiesUtil.getPropertiesFileNamesWithoutProfiles(configPropertiesFileName)) {
+            for (String fullFileName : getPropertiesFileNamesWithoutProfiles(configPropertiesFileName)) {
                 illuminatiProperties = getIlluminatiPropertiesByFile(clazz, fullFileName);
 
                 if (illuminatiProperties != null) {

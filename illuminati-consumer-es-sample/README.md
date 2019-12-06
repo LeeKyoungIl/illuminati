@@ -15,7 +15,7 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-elasticsearch</artifactId>
-  <version>0.8.4</version>
+  <version>0.8.7</version>
 </dependency>
 ```
 
@@ -23,5 +23,5 @@
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-elasticsearch:0.8.4'
+compile 'me.phoboslabs.illuminati:illuminati-elasticsearch:0.8.7'
 ```
