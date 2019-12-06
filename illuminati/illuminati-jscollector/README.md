@@ -23,7 +23,7 @@
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-jscollector</artifactId>
-    <version>0.5.12</version>
+    <version>0.5.14</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,7 +36,7 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.12'
+compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.14'
 ```
 
 ## 2. add to Javascript in HTML & initialization
