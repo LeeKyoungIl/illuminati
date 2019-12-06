@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class IlluminatiConstant {
 
+    public static final String PROFILES_PHASE = System.getProperty("spring.profiles.active");
+
     public static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
 
     public static Map<String, Thread> SYSTEM_THREAD_MAP = new HashMap<>();
@@ -51,8 +53,6 @@ abstract public class IlluminatiConstant {
     }
 
     public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-
-    public final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
 
     public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-common</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.4</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -19,6 +19,7 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.10</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -38,14 +39,14 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.29</version>
+            <version>[1.7.29, )</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>[3.0.1, )</version>
             <scope>provided</scope>
         </dependency>
 
@@ -88,12 +89,14 @@
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
