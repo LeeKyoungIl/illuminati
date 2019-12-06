@@ -52,7 +52,11 @@ abstract public class IlluminatiConstant {
 
     public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
-    public final static String PROFILES_PHASE = System.getProperty("spring.profiles.active");
+    public final static String PROFILES_PHASE;
+    static {
+        final String[] profilesPhase = System.getProperty("spring.profiles.active").split(",");
+        PROFILES_PHASE = profilesPhase[0];
+    }
 
     public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
