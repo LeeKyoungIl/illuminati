@@ -97,7 +97,7 @@ public class RequestGeneralModel {
     }
 
     private boolean isParamValidated(final String[] paramNames, final Object[] paramValues) {
-        return paramNames != null && paramNames.length == 0 && paramValues != null;
+        return paramNames != null && paramNames.length > 0 && paramValues != null && paramValues.length > 0;
     }
 
     public void setMethod(final Method method, final String[] paramNames, final Object[] paramValues) {

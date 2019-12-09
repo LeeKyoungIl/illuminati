@@ -32,13 +32,13 @@ public class EsIndexMappingBuilder {
     }
 
     public Map<String, Object> build () {
-        Map<String, Object> propertiesMap = new HashMap<String, Object>();
+        Map<String, Object> propertiesMap = new HashMap<>();
         propertiesMap.put(PROPERTIES_KEY, this.esIndexMapping.getMappingIndex());
 
-        Map<String, Object> typeMap = new HashMap<String, Object>();
+        Map<String, Object> typeMap = new HashMap<>();
         typeMap.put(this.esDataType, propertiesMap);
 
-        Map<String, Object> mappingResultMap = new HashMap<String, Object>();
+        Map<String, Object> mappingResultMap = new HashMap<>();
         mappingResultMap.put(MAPPINGS_KEY, typeMap);
 
         return mappingResultMap;
