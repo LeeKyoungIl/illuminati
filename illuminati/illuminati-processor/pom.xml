@@ -6,7 +6,7 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-processor</artifactId>
-    <version>0.9.9.24</version>
+    <version>0.9.9.26</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.5</version>
             <scope>compile</scope>
         </dependency>
 

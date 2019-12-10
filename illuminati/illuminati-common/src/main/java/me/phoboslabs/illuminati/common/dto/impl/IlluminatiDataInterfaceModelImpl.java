@@ -54,15 +54,24 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
 
     private void initDataFromHttpRequest (final HttpServletRequest request) {
         this.requestHeaderModel = new RequestHeaderModel().setRequestInfo(request);
+
         try {
-            this.requestHeaderModel
-                    .setSessionTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID))
-                    .setGlobalTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID))
-                    .setTransactionId(SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID));
+            final String sProcId = SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID);
+            this.requestHeaderModel.setSessionTransactionId(sProcId);
+        } catch (Exception ignore) {}
+        try {
+            final String gProcId = SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID);
+            this.requestHeaderModel.setGlobalTransactionId(gProcId);
+        } catch (Exception ignore) {}
+        try {
+            final String procId = SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID);
+            this.requestHeaderModel.setTransactionId(procId);
         } catch (Exception ignore) {}
 
         try {
             this.illuminatiUniqueUserId = SystemUtil.getValueFromHeaderByKey(request, ILLUMINATI_UNIQUE_USER_ID_KEY);
+        } catch (Exception ignore) {}
+        try {
             this.clientInfoMap = ConvertUtil.getClientInfoFromHttpRequest(request);
         } catch (Exception ignore) {}
 
@@ -73,7 +82,7 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     private Map<String, Object> getOutputData (Map<String, Object> resultMap) {
-        Map<String, Object> resultObjectMap = new HashMap<String, Object>();
+        Map<String, Object> resultObjectMap = new HashMap<>();
         try {
             resultObjectMap.put(OUTPUT_RESULT_OBJECT_KEY_NAME, IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) resultMap.get(OUTPUT_RESULT_KEY_NAME), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN));
         } catch (Exception ignore) {
