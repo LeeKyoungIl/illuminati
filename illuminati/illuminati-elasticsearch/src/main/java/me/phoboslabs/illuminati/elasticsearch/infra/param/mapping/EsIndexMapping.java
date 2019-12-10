@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class EsIndexMapping {
 
-    private final Map<String, Map<String, Object>> rootMappingIndex = new HashMap<String, Map<String, Object>>();
-    private final Map<String, Object> mappingIndex = new HashMap<String, Object>();
+    private final Map<String, Map<String, Object>> rootMappingIndex = new HashMap<>();
+    private final Map<String, Object> mappingIndex = new HashMap<>();
 
     private final static String TYPE_KEY = "type";
     private final static String PROPERTIES_KEY = "properties";
@@ -18,7 +18,7 @@ public class EsIndexMapping {
 
     public void setMappingIndexByField (String rootField, final String field, final String type) {
         rootField = StringObjectUtils.convertFirstLetterToLowerlize(rootField);
-        Map<String, String> fieldTypeMap = new HashMap<String, String>();
+        Map<String, String> fieldTypeMap = new HashMap<>();
         fieldTypeMap.put(TYPE_KEY, type);
 
         Map<String, Object> targetMap = null;
@@ -28,10 +28,10 @@ public class EsIndexMapping {
             fieldMap.put(field, fieldTypeMap);
             targetMap.put(PROPERTIES_KEY, fieldMap);
         } else {
-            Map<String, Object> fieldMap = new HashMap<String, Object>();
+            Map<String, Object> fieldMap = new HashMap<>();
             fieldMap.put(field, fieldTypeMap);
 
-            targetMap = new HashMap<String, Object>();
+            targetMap = new HashMap<>();
             targetMap.put(PROPERTIES_KEY, fieldMap);
         }
 

@@ -14,7 +14,7 @@ public class KafkaConstant {
     public final static String VALUE_MAX_REQUEST_SIZE_CONFIG = "5000000";
     public final static String VALUE_RECONNECT_BACKOFF_MS_CONFIG = "100";
     public final static String VALUE_MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION = "1024";
-    public final static String VALUE_BUFFER_MEMORY_CONFIG = "1024000";
-    public final static String VALUE_SEND_BUFFER_CONFIG = "102400";
-    public final static String VALUE_RECEIVE_BUFFER_CONFIG = "102400";
+    public final static String VALUE_BUFFER_MEMORY_CONFIG = "10485760";
+    public final static String VALUE_SEND_BUFFER_CONFIG = "10485760";
+    public final static String VALUE_RECEIVE_BUFFER_CONFIG = "10485760";
 }
