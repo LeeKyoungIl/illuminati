@@ -22,16 +22,22 @@ The illuminati is desinged to make collect all data easily and it can be possibl
  * Spring Cloud Stream - used to create a consumer application
 
 ## struct of illuminati Project
- * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
- * [illuminati-annotation 1.2.1](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
- * [illuminati-common 1.4.5](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
- * [illuminati-processor 0.9.9.26](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
- * [illuminati-switch 1.0.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
- * [illuminati-jscollector 0.5.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
- * [illuminati-elasticsearch 0.8.8](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
- * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
-  - [illuminati-levenshtein 1.1.3](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util/illuminati-levenshtein)
- * [illuminati-consumer-es-sample](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
+
+ - library     
+     * [illuminati-annotation:1.2.1](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
+     * [illuminati-common:1.4.5](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
+     * [illuminati-processor:0.9.9.26](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
+     * [illuminati-switch:1.0.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
+     * [illuminati-jscollector:0.5.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
+     * [illuminati-elasticsearch:0.8.8](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+ 
+ - util
+     * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
+          * [illuminati-levenshtein:1.1.3](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util/illuminati-levenshtein)
+
+ - sample
+     * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
+     * [illuminati-consumer-es-sample](https://github.com/LeeKyoungIl/illuminati/tree/feature/es_sample_readme/illuminati-consumer-es-sample)
 
 ## data to collect of illuminati.
  1. Applied server information(IP, HOST_NAME...ETC), status of JVM MEMORY.
