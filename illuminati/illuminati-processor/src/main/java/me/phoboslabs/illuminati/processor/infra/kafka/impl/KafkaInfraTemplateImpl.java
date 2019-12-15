@@ -3,6 +3,7 @@ package me.phoboslabs.illuminati.processor.infra.kafka.impl;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
 import me.phoboslabs.illuminati.processor.exception.ValidationException;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
+import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
@@ -71,6 +72,8 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.setKafkaProperties(ProducerConfig.BUFFER_MEMORY_CONFIG, KafkaConstant.VALUE_BUFFER_MEMORY_CONFIG);
         this.setKafkaProperties(ProducerConfig.SEND_BUFFER_CONFIG, KafkaConstant.VALUE_SEND_BUFFER_CONFIG);
         this.setKafkaProperties(ProducerConfig.RECEIVE_BUFFER_CONFIG, KafkaConstant.VALUE_RECEIVE_BUFFER_CONFIG);
+        this.setKafkaProperties(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, KafkaConstant.VALUE_TRANSACTION_TIMEOUT_MS_CONFIG);
+        this.setKafkaProperties(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, KafkaConstant.VALUE_REQUEST_TIMEOUT_MS_CONFIG);
     }
 
     private synchronized void initPublisher () {
@@ -79,7 +82,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         }
     }
 
-    private void setKafkaProperties (String key, String value) {
+    private void setKafkaProperties (String key, Object value) {
         this.PROPERTIES.put(key, value);
     }
 
@@ -89,14 +92,16 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.setIsCompression();
     }
 
-    public void sendToIlluminati (String entity) {
+    @Override
+    public void sendToIlluminati (String entity) throws Exception, PublishMessageException {
         if (this.KAFKA_PUBLISHER == null) {
             KAFKA_TEMPLATE_IMPL_LOGGER.error("kafka publisher not initialized.");
             throw new PublishMessageException("kafka publisher not initialized.");
         }
 
         try {
-            final Future<RecordMetadata> sendResult = this.KAFKA_PUBLISHER.send(new ProducerRecord<String, byte[]>(this.topic, entity.getBytes()));
+            this.sending = true;
+            final Future<RecordMetadata> sendResult = this.KAFKA_PUBLISHER.send(new ProducerRecord<>(this.topic, entity.getBytes()));
 
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, offset: " + sendResult.get().offset());
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, partition : " + sendResult.get().partition());
@@ -104,9 +109,9 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
             KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
         } catch (Exception ex) {
-            final String errorMessage = "failed to publish message : ("+ex.getMessage()+")";
-            KAFKA_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
-            throw new PublishMessageException(errorMessage);
+            throw new PublishMessageException("failed to publish message : ("+ex.getMessage()+")");
+        } finally {
+            this.sending = false;
         }
     }
 
@@ -116,12 +121,13 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     @Override
     public void connectionClose() {
+        this.waitBeforeClosing();
         KAFKA_PUBLISHER.close();
     }
 
     private void setPerformance () {
         super.performanceType();
-        this.setKafkaProperties(ProducerConfig.ACKS_CONFIG, String.valueOf(this.performanceType.getType()));
+        this.setKafkaProperties(ProducerConfig.ACKS_CONFIG, this.performanceType.getType());
     }
 
     /**
@@ -138,7 +144,6 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     private void setIsCompression () {
         super.isCompression();
-        final CompressionCodecType compressionCodecType = CompressionCodecType.getCompressionCodecType(this.illuminatiProperties.getCompressionType());
-        this.setKafkaProperties(ProducerConfig.COMPRESSION_TYPE_CONFIG, compressionCodecType.getType());
+        this.setKafkaProperties(ProducerConfig.COMPRESSION_TYPE_CONFIG, this.compressionCodecType.getType());
     }
 }

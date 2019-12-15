@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.processor.executor.impl;
 
+import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
@@ -85,7 +86,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         return this.illuminatiBackupExecutor.getQueueSize();
     }
 
-    public void sendToIlluminati (final String jsonString) throws Exception {
+    public void sendToIlluminati (final String jsonString) throws Exception, PublishMessageException {
         this.illuminatiTemplate.sendToIlluminati(jsonString);
     }
 
@@ -96,7 +97,11 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             return;
         }
         if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
-            this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
+            try {
+                this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
+            } catch (Exception | PublishMessageException ex) {
+                this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
+            }
         } else {
             this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
         }

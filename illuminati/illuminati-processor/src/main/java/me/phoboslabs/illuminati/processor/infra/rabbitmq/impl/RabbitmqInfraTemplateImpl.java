@@ -78,6 +78,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     @Override public void connectionClose() {
+        this.waitBeforeClosing();
         try {
             if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen()) {
                 AMQP_CONNECTION.close();
@@ -94,11 +95,13 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                         .build();
     }
 
-    public void sendToIlluminati (final String entity) throws Exception {
+    @Override
+    public void sendToIlluminati (final String entity) throws Exception, PublishMessageException {
         final Channel amqpChannel = this.createAmqpChannel();
 
         try {
             if (amqpChannel != null && AMQP_CONNECTION.isOpen()) {
+                this.sending = true;
                 amqpChannel.basicPublish(this.topic,"", this.PROPS, entity.getBytes());
 
                 if (this.communicationType == CommunicationType.SYNC) {
@@ -125,6 +128,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
             throw new PublishMessageException("failed to publish message : " + ex.toString());
         } finally {
+            this.sending = false;
             if (amqpChannel != null) {
                 String amqpChannelExceptionMessage = null;
                 String amqpChannelExceptionLog = null;
