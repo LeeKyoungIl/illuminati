@@ -26,6 +26,8 @@ public abstract class BasicTemplate {
 
     protected IlluminatiPropertiesImpl illuminatiProperties;
 
+    protected boolean sending = false;
+
     abstract protected void checkRequiredValuesForInit ();
     abstract protected void initProperties () throws Exception;
 
@@ -63,12 +65,12 @@ public abstract class BasicTemplate {
         boolean isComperession = false;
 
         if (StringObjectUtils.isValid(this.illuminatiProperties.getIsCompression())
-                && "true".equals(this.illuminatiProperties.getIsCompression().toLowerCase())) {
+                && "true".equalsIgnoreCase(this.illuminatiProperties.getIsCompression())) {
             isComperession = true;
         }
 
         if (isComperession) {
-            this.compressionCodecType = CompressionCodecType.SNAPPY;
+            this.compressionCodecType = CompressionCodecType.getCompressionCodecType(this.illuminatiProperties.getCompressionType());
         } else {
             this.compressionCodecType = CompressionCodecType.NONE;
         }
@@ -105,11 +107,6 @@ public abstract class BasicTemplate {
             case 0 :
                 this.performanceType = PerformanceType.FASTEST_BUT_NO_GUARANTEE_DATA;
                 break;
-
-            case 1 :
-                this.performanceType = PerformanceType.FAST_BUT_SOMETIMES_DISAPPEAR;
-                break;
-
             case -1 :
                 this.performanceType = PerformanceType.SLOW_BUT_GUARANTEE_DATA;
                 break;
@@ -117,6 +114,17 @@ public abstract class BasicTemplate {
             default:
                 this.performanceType = PerformanceType.FAST_BUT_SOMETIMES_DISAPPEAR;
                 break;
+        }
+    }
+
+    protected void waitBeforeClosing() {
+        int timeoutTryCount = 0;
+        while (this.sending && timeoutTryCount < 60) {
+            try {
+                System.out.println("Waiting for transaction with the Illuminati to end.... ("+timeoutTryCount+" up to 60)");
+                timeoutTryCount++;
+                Thread.sleep(2000);
+            } catch (Exception ignore) {}
         }
     }
 }

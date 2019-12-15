@@ -78,18 +78,17 @@ public class IlluminatiClientInit {
             System.out.println("@ The illuminati is now activated.                            @");
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         } catch (Exception ex) {
-            ex.printStackTrace();
             System.out.println("The illuminati failed to initialize. check configuration files.");
         }
     }
 
-    private IlluminatiClientInit () throws Exception {
-        if (ILLUMINATI_INITIALIZED == false) {
-            throw new Exception("The illuminati failed to initialize. check configuration files.");
-        }
+    public static boolean illuminatiIsInitialized() {
+        return ILLUMINATI_INITIALIZED;
     }
 
-    public static IlluminatiClientInit getInstance () throws Exception {
+    private IlluminatiClientInit () {}
+
+    public static IlluminatiClientInit getInstance () {
         if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
             synchronized (IlluminatiClientInit.class) {
                 if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {

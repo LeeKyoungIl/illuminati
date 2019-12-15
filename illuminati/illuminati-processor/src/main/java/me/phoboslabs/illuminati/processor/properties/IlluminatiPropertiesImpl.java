@@ -89,7 +89,7 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
     }
 
     public String getPerformance() {
-        return StringObjectUtils.isValid(this.performance) ? this.performance : "0";
+        return StringObjectUtils.isValid(this.performance) ? this.performance : "1";
     }
 
     public String getCompressionType() {
