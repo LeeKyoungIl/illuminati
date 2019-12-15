@@ -52,6 +52,8 @@ public class IlluminatiProcessor extends AbstractProcessor {
         return SourceVersion.RELEASE_8;// SourceVersion.latestSupported();
     }
 
+    private static final List<ElementKind> ANNOTATION_ELEMENT_KIND = Collections.unmodifiableList(Arrays.asList(ElementKind.CLASS, ElementKind.METHOD));
+
     @Override public boolean process(Set<? extends TypeElement> typeElements, RoundEnvironment env)  {
         this.messager.printMessage(Kind.WARNING, "start illuminati compile");
         outerloop:
@@ -59,40 +61,43 @@ public class IlluminatiProcessor extends AbstractProcessor {
             for (Element element : env.getElementsAnnotatedWith(typeElement)) {
                 Illuminati illuminati = element.getAnnotation(Illuminati.class);
 
-                if (illuminati != null) {
-                    if (element.getKind() != ElementKind.CLASS && element.getKind() != ElementKind.METHOD) {
-                        this.messager.printMessage(Kind.ERROR, "The class %s is not class or method."+ element.getSimpleName());
-                        break outerloop;
+                if (illuminati == null) {
+                    continue;
+                }
+
+                if (ANNOTATION_ELEMENT_KIND.contains(element.getKind()) == false) {
+                    this.messager.printMessage(Kind.ERROR, "The class %s is not class or method."+ element.getSimpleName());
+                    break outerloop;
+                }
+
+                final PackageElement pkg = processingEnv.getElementUtils().getPackageOf(element);
+
+                if (pkg == null) {
+                    this.messager.printMessage(Kind.ERROR, "Sorry, basePackage is wrong in properties read process.");
+                    break outerloop;
+                }
+
+                if (this.setGeneratedIlluminatiTemplate(pkg.toString()) == false) {
+                    continue;
+                }
+
+                try {
+                    final JavaFileObject javaFile = this.filer.createSourceFile("IlluminatiPointcutGenerated");
+                    final Writer writer = javaFile.openWriter();
+
+                    if (writer != null) {
+                        writer.write(this.generatedIlluminatiTemplate);
+                        writer.close();
+                        this.messager.printMessage(Kind.NOTE, "generate source code!!");
+                    } else {
+                        this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in writer 'IlluminatiPointcutGenerated.java' process.");
                     }
 
-                    final PackageElement pkg = processingEnv.getElementUtils().getPackageOf(element);
-
-                    if (pkg == null) {
-                        // Exception
-                        this.messager.printMessage(Kind.ERROR, "Sorry, basePackage is wrong in properties read process.");
-                        break outerloop;
-                    }
-
-                    if(this.setGeneratedIlluminatiTemplate(pkg.toString())) {
-                        try {
-                            final JavaFileObject javaFile = this.filer.createSourceFile("IlluminatiPointcutGenerated");
-                            final Writer writer = javaFile.openWriter();
-
-                            if (writer != null) {
-                                writer.write(this.generatedIlluminatiTemplate);
-                                writer.close();
-                                this.messager.printMessage(Kind.NOTE, "generate source code!!");
-                            } else {
-                                this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in writer 'IlluminatiPointcutGenerated.java' process.");
-                            }
-
-                            // IlluminatiPointcutGenerated must exists only one on classloader.
-                            break outerloop;
-                        } catch (IOException e) {
-                            this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in generated 'IlluminatiPointcutGenerated.java' process.");
-                            break outerloop;
-                        }
-                    }
+                    // IlluminatiPointcutGenerated must exists only one on classloader.
+                    break outerloop;
+                } catch (IOException e) {
+                    this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in generated 'IlluminatiPointcutGenerated.java' process.");
+                    break outerloop;
                 }
             }
         }
@@ -118,7 +123,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
      */
     private boolean setGeneratedIlluminatiTemplate (final String basePackageName) {
         // step 1.  set basicImport
-        this.generatedIlluminatiTemplate = "package {basePackageName};\r\n" + this.getImport();
+        this.generatedIlluminatiTemplate = "package {basePackageName};\r\n".concat(this.getImport());
         // step 2.  base package name
         this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}", basePackageName);
 
@@ -130,7 +135,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         String illuminatiExecuteMethod = "";
 
-        if (StringObjectUtils.isValid(checkChaosBomber) && "true".equals(checkChaosBomber.toLowerCase())) {
+        if (StringObjectUtils.isValid(checkChaosBomber) && "true".equalsIgnoreCase(checkChaosBomber)) {
             illuminatiExecuteMethod = "ByChaosBomber";
         }
 
@@ -140,7 +145,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 + "@Aspect\r\n"
                 + "public class IlluminatiPointcutGenerated {\r\n\r\n"
                 + staticConfigurationTemplate
-                + "     public IlluminatiPointcutGenerated() throws Exception {\r\n"
+                + "     public IlluminatiPointcutGenerated() {\r\n"
                 + "         this.illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n"
                 + "     }\r\n\r\n"
                 + "     @Pointcut(\"@within("+illuminatiAnnotationName+") || @annotation("+illuminatiAnnotationName+")\")\r\n"
@@ -148,15 +153,16 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
+                + "         if (this.illuminatiClientInit.illuminatiIsInitialized() == false) {\n"
+                + "           return pjp.proceed();\n"
+                + "         }\n"
                 + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp)) {\r\n"
                 + "             return pjp.proceed();\r\n"
                 + "         }\r\n"
                 + "         HttpServletRequest request = null;\r\n"
                 + "         try {\r\n"
                 + "             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();\r\n"
-                + "         } catch (Exception ex) {\r\n"
-                + "             //ignore this exception.\r\n"
-                + "         }\r\n"
+                + "         } catch (Exception ignore) {}\r\n"
                 + "         return illuminatiClientInit.executeIlluminati"+illuminatiExecuteMethod+"(pjp, request);\r\n"
                 + "     }\r\n"
                 + "}\r\n"
@@ -200,7 +206,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 importString.append("import ");
                 importString.append(entry.getKey());
 
-                if (!"".equals(entry.getKey())) {
+                if ("".equals(entry.getKey()) == false) {
                     importString.append(".");
                 }
 
@@ -227,11 +233,14 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         public String getPropertiesValueByKey (final String key, final String defaultValue) {
             final IlluminatiProcessorPropertiesImpl illuminatiProperties = this.getIlluminatiProperties();
+            if (illuminatiProperties == null) {
+                return defaultValue;
+            }
             String propertiesValue = null;
 
-            if (StringObjectUtils.isValid(key) && illuminatiProperties != null) {
+            if (StringObjectUtils.isValid(key)) {
                 try {
-                    final String methodName = "get" + key.substring(0, 1).toUpperCase() + key.substring(1);
+                    final String methodName = "get".concat(key.substring(0, 1).toUpperCase()).concat(key.substring(1));
                     final Method getNameMethod = IlluminatiProcessorPropertiesImpl.class.getMethod(methodName);
                     propertiesValue = (String) getNameMethod.invoke(illuminatiProperties);
                 }
@@ -287,28 +296,20 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         IlluminatiProcessorPropertiesImpl illuminatiProperties = null;
         try {
-            if (configPropertiesFileName.indexOf(".yml") > -1 || configPropertiesFileName.indexOf(".yaml") > -1) {
+            if (configPropertiesFileName.contains(".yml") || configPropertiesFileName.contains(".yaml")) {
                 illuminatiProperties = YAML_MAPPER.readValue(input, IlluminatiProcessorPropertiesImpl.class);
             } else {
                 final Properties prop = new Properties();
                 prop.load(input);
-
-                if (prop == null) {
-                    this.messager.printMessage(Diagnostic.Kind.ERROR, "Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
-                    return null;
-                }
-
                 illuminatiProperties = new IlluminatiProcessorPropertiesImpl(prop);
             }
         } catch (IOException ex) {
             this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in read process. (" + ex.toString() + ")");
         } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException ex) {
-                    this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
-                }
+            try {
+                input.close();
+            } catch (IOException ex) {
+                this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
             }
         }
 
@@ -316,7 +317,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
     }
 
     private IlluminatiProcessorPropertiesImpl getIlluminatiPropertiesFromBasicFiles() {
-        IlluminatiProcessorPropertiesImpl illuminatiProperties = null;
+        IlluminatiProcessorPropertiesImpl illuminatiProperties;
 
         for (String fileName : BASIC_CONFIG_FILES) {
             illuminatiProperties = getIlluminatiPropertiesByFile(fileName);

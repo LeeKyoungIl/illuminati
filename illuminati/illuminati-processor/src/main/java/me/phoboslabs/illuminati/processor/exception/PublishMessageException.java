@@ -3,7 +3,7 @@ package me.phoboslabs.illuminati.processor.exception;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class PublishMessageException extends RuntimeException {
+public class PublishMessageException extends Throwable {
 
     private Throwable cause;
 
