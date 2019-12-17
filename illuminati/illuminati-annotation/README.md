@@ -14,13 +14,13 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-annotation</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
 </dependency>
 
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-processor</artifactId>
-  <version>0.9.9.28</version>
+  <version>0.9.9.29</version>
 </dependency>
 ```
 
@@ -28,8 +28,8 @@
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.28'
+compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.2'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.29'
 ```
 
 ## add @Illuminati to Class
@@ -55,6 +55,8 @@ public class ApiSampleController {
 }
 ```
     * apply to all sub methods, but if you want to exclude some method.
+    * you can select exclude by the Profiles. Basic Value is the value of the "spring.profiles.active". You can change the key by profileKeyword option. 
+
 ```java
 @Illuminati
 @RestController
@@ -71,6 +73,20 @@ public class ApiSampleController {
     @RequestMapping(value = "test2")
     public String test2 (String a, Integer b) throws Exception {
         String testJson = "{\"test\" : 2}";
+        return testJson;
+    }
+
+    @Illuminati(ignoreProfile = {"local", "test"})
+    @RequestMapping(value = "test2")
+    public String test3 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 3}";
+        return testJson;
+    }
+
+    @Illuminati(ignoreProfile = {"local", "test"}, profileKeyword = "another.profiles")
+    @RequestMapping(value = "test2")
+    public String test4 (String a, Integer b) throws Exception {
+        String testJson = "{\"test\" : 4}";
         return testJson;
     }
 }

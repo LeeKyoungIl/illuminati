@@ -113,11 +113,7 @@ public class IlluminatiClientInit {
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
-            return pjp.proceed();
-        }
-
-        if (this.isActivateIlluminatiSwitch() && this.isOnIlluminatiSwitch() == false) {
+        if (this.checkConditionOfIlluminatiBasicExecution(pjp) == false) {
             return pjp.proceed();
         }
 
@@ -139,11 +135,7 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
-            return pjp.proceed();
-        }
-
-        if (this.isOnIlluminatiSwitch() == false) {
+        if (this.checkConditionOfIlluminatiBasicExecution(pjp) == false) {
             return pjp.proceed();
         }
 
@@ -157,6 +149,41 @@ public class IlluminatiClientInit {
     // ################################################################################################################
     // ### private methods                                                                                          ###
     // ################################################################################################################
+
+    private boolean checkConditionOfIlluminatiBasicExecution(final ProceedingJoinPoint pjp) {
+        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
+            return false;
+        }
+        if (this.checkIgnoreProfile(pjp)) {
+            return false;
+        }
+        if (this.isActivateIlluminatiSwitch() && this.isOnIlluminatiSwitch() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean checkIgnoreProfile(final ProceedingJoinPoint pjp) {
+        boolean checkResult = false;
+        try {
+            Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
+            if (illuminati.ignoreProfile().length == 0) {
+                return false;
+            }
+
+            final String activeProfileKeyword = illuminati.profileKeyword();
+            final String activatedProfileKeyword = System.getProperty(activeProfileKeyword);
+            for (String checkKeyword : illuminati.ignoreProfile()) {
+                if (activatedProfileKeyword.equalsIgnoreCase(checkKeyword)) {
+                    checkResult = true;
+                    break;
+                }
+            }
+        } catch (Exception ignore) {}
+
+        return checkResult;
+    }
 
     private Illuminati getIlluminatiAnnotation (final ProceedingJoinPoint pjp) {
         final MethodSignature signature = (MethodSignature) pjp.getSignature();
