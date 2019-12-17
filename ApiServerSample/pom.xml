@@ -54,7 +54,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-annotation</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
 
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-processor</artifactId>
-            <version>0.9.9.28</version>
+            <version>0.9.9.29</version>
             <scope>compile</scope>
         </dependency>
 

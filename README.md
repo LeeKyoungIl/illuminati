@@ -24,9 +24,9 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 ## struct of illuminati Project
 
  - library     
-     * [illuminati-annotation:1.2.1](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
+     * [illuminati-annotation:1.2.2](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
      * [illuminati-common:1.4.5](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
-     * [illuminati-processor:0.9.9.28](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
+     * [illuminati-processor:0.9.9.29](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
      * [illuminati-switch:1.0.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
      * [illuminati-jscollector:0.5.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
      * [illuminati-elasticsearch:0.8.8](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
@@ -90,13 +90,13 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-annotation</artifactId>
-      <version>1.2.1</version>
+      <version>1.2.2</version>
    </dependency>
 
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.28</version>
+      <version>0.9.9.29</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
@@ -123,8 +123,8 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.1'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.28'
+compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.2'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.29'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
 compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.14'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->

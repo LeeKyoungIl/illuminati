@@ -18,7 +18,7 @@ public class ApiSampleService {
             return "illuminati Cool";
     }
 
-    @Illuminati(packageType = PackageType.SERVICE)
+    @Illuminati(packageType = PackageType.SERVICE, ignoreProfile = {"local"})
     public String sampleTestByObject (TestModel testModel) {
         this.sampleTestByObject1(null);
         apiSampleService1.sampleTestByObject1(null);
