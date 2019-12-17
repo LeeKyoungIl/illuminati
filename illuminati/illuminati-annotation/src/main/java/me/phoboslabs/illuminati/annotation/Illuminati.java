@@ -14,9 +14,13 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Illuminati {
 
-    boolean ignore () default false;
+    boolean ignore() default false;
 
-    int samplingRate () default 0;
+    int samplingRate() default 0;
 
-    PackageType packageType () default PackageType.DEFAULT;
+    PackageType packageType() default PackageType.DEFAULT;
+
+    String[] ignoreProfile() default {};
+
+    String profileKeyword() default "spring.profiles.active";
 }
