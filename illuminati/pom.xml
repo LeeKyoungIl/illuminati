@@ -14,6 +14,7 @@
         <module>illuminati-elasticsearch</module>
         <module>illuminati-switch</module>
         <module>illuminati-jscollector</module>
+        <module>illuminati-hdfs</module>
     </modules>
     <packaging>pom</packaging>
 
