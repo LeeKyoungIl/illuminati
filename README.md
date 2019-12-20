@@ -25,7 +25,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 
  - library     
      * [illuminati-annotation:1.2.2](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
-     * [illuminati-common:1.4.5](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
+     * [illuminati-common:1.4.6](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
      * [illuminati-processor:0.9.9.29](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
      * [illuminati-switch:1.0.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
      * [illuminati-jscollector:0.5.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
