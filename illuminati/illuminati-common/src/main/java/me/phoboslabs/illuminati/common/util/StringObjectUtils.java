@@ -1,9 +1,5 @@
 package me.phoboslabs.illuminati.common.util;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +25,10 @@ public class StringObjectUtils {
 
     public static boolean isValid (final String value) {
         return value != null && value.trim().length() > 0;
+    }
+
+    public static boolean isNotValid(final String value) {
+        return isValid(value) == false;
     }
 
     public static byte[] gzipMessage(final String message) throws Exception {
