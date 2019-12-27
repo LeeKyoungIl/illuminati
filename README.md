@@ -18,6 +18,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 
 ## recommendations
  * ElasticSearch (5.x or higher) 
+ * Hadoop (3.x or higher)
  * Kibana
  * Spring Cloud Stream - used to create a consumer application
 
@@ -30,6 +31,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
      * [illuminati-switch:1.0.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
      * [illuminati-jscollector:0.5.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
      * [illuminati-elasticsearch:0.8.8](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+     * [illuminati-hdfs:0.1.2](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
  
  - util
      * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
