@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -59,6 +60,8 @@ public class HDFSDataBroker implements DataBorker {
     }
 
     private final String URI_KEY = "fs.defaultFS";
+    private final String HDFS_IMPLE_KEY = "fs.hdfs.impl";
+    private final String FILE_IMPLE_KEY = "fs.file.impl";
     private final String SECURITY_AUTHENTICATION_KEY = "hadoop.security.authentication";
     private final String SECURITY_AUTHORIZATION_KEY = "hadoop.security.authorization";
     private final String RPC_TIMEOUT = "fs.mapr.rpc.timeout";
@@ -70,6 +73,8 @@ public class HDFSDataBroker implements DataBorker {
         System.setProperty(USER_NAME_KEY, hdfsConnectionInfo.getHDFSUser());
         System.setProperty(HOME_DIR_KEY, hdfsConnectionInfo.getHomeDir());
 
+        this.configuration.set(HDFS_IMPLE_KEY, org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        this.configuration.set(FILE_IMPLE_KEY, org.apache.hadoop.fs.LocalFileSystem.class.getName());
         this.configuration.set(URI_KEY, hdfsConnectionInfo.getHdfsUriAddress());
         this.configuration.set(SECURITY_AUTHENTICATION_KEY, hdfsConnectionInfo.getHDFSSecurityAuthenticationType());
         this.configuration.set(SECURITY_AUTHORIZATION_KEY, hdfsConnectionInfo.getHDFSSecurityAuthorizationValue());
@@ -78,8 +83,8 @@ public class HDFSDataBroker implements DataBorker {
 
     @Override
     public boolean addFile(final String source, final String dest, final boolean overwrite) {
-        try (FileSystem fileSystem = FileSystem.get(this.configuration)) {
-            PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
+            PathInfo pathInfo = this.checkPathAndGet(dest, fileSystem);
             if (overwrite == false && pathInfo.isExists()) {
                 HDFS_PROCESSOR_LOGGER.info("File {} already exists", dest);
                 return false;
@@ -109,7 +114,8 @@ public class HDFSDataBroker implements DataBorker {
             while ((numBytes = inputStream.read(byteData)) > 0) {
                 out.write(byteData, 0, numBytes);
             }
-            return true;
+            final int wroteSize = out.size();
+            return wroteSize > 0;
         } catch (Exception ex) {
             HDFS_PROCESSOR_LOGGER.error("An error occurred writing to file system. ({})", ex.getMessage());
         }
@@ -118,7 +124,7 @@ public class HDFSDataBroker implements DataBorker {
 
     @Override
     public String readFile(final String source) throws Exception {
-        try (FileSystem fileSystem = FileSystem.get(this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isNotExists()) {
                 throw new Exception("File is not exists. check this("+source+") location.");
@@ -156,7 +162,7 @@ public class HDFSDataBroker implements DataBorker {
 
     @Override
     public boolean deleteFile(final String source, boolean forceDelete) {
-        try (FileSystem fileSystem = FileSystem.get(this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isNotExists()) {
                 return false;
@@ -170,7 +176,7 @@ public class HDFSDataBroker implements DataBorker {
 
     @Override
     public boolean mkdir(final String source) {
-        try (FileSystem fileSystem = FileSystem.get(this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isExists()) {
                 return false;
@@ -184,9 +190,10 @@ public class HDFSDataBroker implements DataBorker {
 
     private PathInfo checkPathAndGet(final String source, final FileSystem fileSystem) throws IOException {
         final Path path = new Path(source);
-        if (fileSystem.exists(path) == false) {
+        final boolean fileExists = fileSystem.exists(path);
+        if (fileExists == false) {
             HDFS_PROCESSOR_LOGGER.info("Target {} does not exists.", source);
         }
-        return new PathInfo(path, true);
+        return new PathInfo(path, fileExists);
     }
 }
