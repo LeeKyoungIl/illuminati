@@ -23,7 +23,7 @@
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,5 +36,5 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.2'
+compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.3'
 ```
