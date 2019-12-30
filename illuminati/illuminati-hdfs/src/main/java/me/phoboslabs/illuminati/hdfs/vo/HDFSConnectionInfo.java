@@ -6,13 +6,16 @@ import me.phoboslabs.illuminati.hdfs.enums.HDFSSecurityAuthorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Properties;
+
 public class HDFSConnectionInfo {
 
     private final static Logger HDFS_LOGGER = LoggerFactory.getLogger(HDFSConnectionInfo.class);
 
-    private final String uriAddress;
-    private final int port;
-    private final String hdfsUser;
+    protected String uriAddress;
+    protected int port;
+    protected String hdfsUser;
+
     private String homeDir = "/";
     private HDFSSecurityAuthentication hdfsSecurityAuthentication = HDFSSecurityAuthentication.SIMPLE;
     private HDFSSecurityAuthorization hdfsSecurityAuthorization = HDFSSecurityAuthorization.FALSE;
@@ -21,6 +24,31 @@ public class HDFSConnectionInfo {
     private final static String HADOOP_PREFIX = "hdfs://";
     private final static String HADOOP_CENTERFIX_WITH_PORT = ":";
     private final static String HADOOP_POSTFIX = "/";
+
+    private final static String HDFS_CONNECTION_URI = "hdfs.connection.uri";
+    private final static String HDFS_CONNECTION_PORT = "hdfs.connection.port";
+    private final static String HDFS_CONNECTION_AUTHENTICATION = "hdfs.connection.authentication";
+    private final static String HDFS_CONNECTION_AUTHORIZATION = "hdfs.connection.authorization";
+    private final static String HDFS_CONNECTION_USER = "hdfs.connection.user";
+    private final static String HDFS_CONNECTION_HOME = "hdfs.connection.home";
+    private final static String HDFS_CONNECTION_TIMEOUT = "hdfs.connection.timeout";
+
+    public HDFSConnectionInfo(Properties prop) {
+        this.uriAddress = prop.getProperty(HDFS_CONNECTION_URI);
+
+        try {
+            this.port = Integer.parseInt(prop.getProperty(HDFS_CONNECTION_PORT));
+        } catch (Exception ignore) {}
+
+        this.hdfsUser = prop.getProperty(HDFS_CONNECTION_USER);
+        this.hdfsSecurityAuthentication = HDFSSecurityAuthentication.valueOf(prop.getProperty(HDFS_CONNECTION_AUTHENTICATION));
+        this.hdfsSecurityAuthorization = HDFSSecurityAuthorization.valueOf(prop.getProperty(HDFS_CONNECTION_AUTHORIZATION));
+        this.homeDir = prop.getProperty(HDFS_CONNECTION_HOME);
+
+        try {
+            this.rpcTimeout = Integer.parseInt(prop.getProperty(HDFS_CONNECTION_TIMEOUT));
+        } catch (Exception ignore) {}
+    }
 
     public HDFSConnectionInfo(final String uriAddress, final int port, final String hdfsUser) {
         this.uriAddress = uriAddress;
