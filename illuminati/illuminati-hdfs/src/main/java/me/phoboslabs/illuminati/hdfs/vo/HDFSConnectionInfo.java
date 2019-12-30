@@ -10,9 +10,9 @@ public class HDFSConnectionInfo {
 
     private final static Logger HDFS_LOGGER = LoggerFactory.getLogger(HDFSConnectionInfo.class);
 
-    private String uriAddress;
-    private int port;
-    private String hdfsUser;
+    private final String uriAddress;
+    private final int port;
+    private final String hdfsUser;
     private String homeDir = "/";
     private HDFSSecurityAuthentication hdfsSecurityAuthentication = HDFSSecurityAuthentication.SIMPLE;
     private HDFSSecurityAuthorization hdfsSecurityAuthorization = HDFSSecurityAuthorization.FALSE;
@@ -21,6 +21,12 @@ public class HDFSConnectionInfo {
     private final static String HADOOP_PREFIX = "hdfs://";
     private final static String HADOOP_CENTERFIX_WITH_PORT = ":";
     private final static String HADOOP_POSTFIX = "/";
+
+    public HDFSConnectionInfo(final String uriAddress, final int port, final String hdfsUser) {
+        this.uriAddress = uriAddress;
+        this.port = port;
+        this.hdfsUser = hdfsUser;
+    }
 
     public boolean isValid () throws Exception {
         if (StringObjectUtils.isNotValid(this.uriAddress)) {
@@ -54,6 +60,14 @@ public class HDFSConnectionInfo {
             throw new Exception(errorMessage);
         }
         return true;
+    }
+
+    public void setHomeDir(final String homeDir) {
+        this.homeDir = homeDir;
+    }
+
+    public void setRpcTimeout(final int rpcTimeout) {
+        this.rpcTimeout = rpcTimeout;
     }
 
     public String getHDFSUser() {

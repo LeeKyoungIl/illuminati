@@ -8,12 +8,9 @@ class HDFSBrokerTest extends Specification {
     private DataBorker dataBorker;
 
     def setup() {
-        HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo();
-        hdfsConnectionInfo.uriAddress = "your hdfs ip address";
-        hdfsConnectionInfo.port = 8020;
+        HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo("your hdfs ip address", 8020, "hdfs");
         hdfsConnectionInfo.hdfsSecurityAuthentication = "SIMPLE";
         hdfsConnectionInfo.hdfsSecurityAuthorization = "FALSE";
-        hdfsConnectionInfo.hdfsUser = "hdfs";
         hdfsConnectionInfo.homeDir = "/";
         hdfsConnectionInfo.rpcTimeout = 6000;
 
