@@ -18,8 +18,8 @@ public class PropertiesUtil {
 
     private final static Logger PROPERTIES_UTIL_LOGGER = LoggerFactory.getLogger(PropertiesUtil.class);
 
-    private static List<String> getPropertiesFileNames (final String configPropertiesFileName) {
-        List<String> fileNames = new ArrayList<String>();
+    private static List<String> getPropertiesFileNames(final String configPropertiesFileName) {
+        List<String> fileNames = new ArrayList<>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
             final String fullFileName = configPropertiesFileName.concat(getDotBeforeExtension()).concat(extension);
@@ -29,8 +29,8 @@ public class PropertiesUtil {
         return fileNames;
     }
 
-    private static List<String> getPropertiesFileNamesWithoutProfiles (final String configPropertiesFileName) {
-        List<String> fileNames = new ArrayList<String>();
+    private static List<String> getPropertiesFileNamesWithoutProfiles(final String configPropertiesFileName) {
+        List<String> fileNames = new ArrayList<>();
 
         for (String extension : CONFIG_FILE_EXTENSTIONS) {
             final String fullFileName = configPropertiesFileName.concat(".").concat(extension);
@@ -40,7 +40,7 @@ public class PropertiesUtil {
         return fileNames;
     }
 
-    private static String getDotBeforeExtension () {
+    private static String getDotBeforeExtension() {
         String dotBeforeExtension = ".";
 
         if (StringObjectUtils.isValid(PROFILES_PHASE)) {
@@ -141,5 +141,15 @@ public class PropertiesUtil {
         }
 
         return illuminatiProperties;
+    }
+
+    public static Properties getPropertiesFromFile(final String filePath) throws IOException {
+        try (InputStream input = PropertiesUtil.class.getClassLoader().getResourceAsStream(filePath)) {
+            Properties prop = new Properties();
+            prop.load(input);
+            return prop;
+        } catch (IOException ex) {
+            throw new IOException(ex.getMessage());
+        }
     }
 }

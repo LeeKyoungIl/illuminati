@@ -23,7 +23,7 @@
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.5</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,5 +36,32 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.3'
+compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.5'
+```
+
+## Example
+
+Add properties to '/resources/hdfs/connection-local.properties'
+ 
+```properties
+hdfs.connection.uri: your HDFS namenode address
+hdfs.connection.port: your HDFS namenode port
+hdfs.connection.authentication: SIMPLE
+hdfs.connection.authorization: FALSE
+hdfs.connection.user: hdfs
+hdfs.connection.home: /
+hdfs.connection.timeout: 6000
+``` 
+
+Make the Spring Bean
+
+```java
+@Bean
+public HDFSDataBroker hdfsDataBroker() {
+    StringBuilder filePath = new StringBuilder("hdfs/connection-")
+                                    .append("local")
+                                    .append(".properties");
+
+    return new HDFSDataBroker(PropertiesUtil.getPropertiesFromFile(filePath.toString()));
+}
 ```
