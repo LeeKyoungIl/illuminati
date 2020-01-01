@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 class HDFSBrokerTest extends Specification {
 
-    private DataBorker dataBorker;
+    private DataBroker dataBorker;
 
     def setup() {
         HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo("your hdfs ip address", 8020, "hdfs");
