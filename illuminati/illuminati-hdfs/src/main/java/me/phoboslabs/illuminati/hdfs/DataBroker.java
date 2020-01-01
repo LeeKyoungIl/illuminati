@@ -1,6 +1,6 @@
 package me.phoboslabs.illuminati.hdfs;
 
-public interface DataBorker {
+public interface DataBroker {
 
     boolean addFile(final String source, final String dest, final boolean overwrite);
 
