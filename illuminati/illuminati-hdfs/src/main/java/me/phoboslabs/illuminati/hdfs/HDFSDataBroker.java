@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
  *              return new HDFSDataBroker(hdfsConnectionInfo);
  *          }
  */
-public class HDFSDataBroker implements DataBorker {
+public class HDFSDataBroker implements DataBroker {
 
     private final static Logger HDFS_PROCESSOR_LOGGER = LoggerFactory.getLogger(HDFSDataBroker.class);
 
