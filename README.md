@@ -31,7 +31,7 @@ The illuminati is desinged to make collect all data easily and it can be possibl
      * [illuminati-switch:1.0.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
      * [illuminati-jscollector:0.5.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
      * [illuminati-elasticsearch:0.8.8](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
-     * [illuminati-hdfs:0.1.6](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
+     * [illuminati-hdfs:0.1.7](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
  
  - util
      * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)

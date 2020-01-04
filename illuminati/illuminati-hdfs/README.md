@@ -23,7 +23,7 @@
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,7 +36,7 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.6'
+compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.7'
 ```
 
 ## Example
@@ -53,7 +53,8 @@ hdfs.connection.home: /
 hdfs.connection.timeout: 6000
 ``` 
 
-Make the Spring Bean
+You should be made of the Spring Bean or Singleton.
+Example of Make the Spring Bean.
 
 ```java
 @Bean
