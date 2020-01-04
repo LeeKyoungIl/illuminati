@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/19/2019.
  *
- *  - It should be made of the Spring Bean or Singleton used.
+ *  - It should be made of the Spring Bean or Singleton.
  *    example)
  *        * Singleton : HDFSDataBroker.getInstance({HDFSConnectionInfo.class});
  *        * Spring Bean :
@@ -59,31 +59,31 @@ public class HDFSDataBroker implements DataBroker {
         this.init(hdfsConnectionInfo);
     }
 
-    private final String URI_KEY = "fs.defaultFS";
-    private final String HDFS_IMPLE_KEY = "fs.hdfs.impl";
-    private final String FILE_IMPLE_KEY = "fs.file.impl";
-    private final String SECURITY_AUTHENTICATION_KEY = "hadoop.security.authentication";
-    private final String SECURITY_AUTHORIZATION_KEY = "hadoop.security.authorization";
-    private final String RPC_TIMEOUT = "fs.mapr.rpc.timeout";
+    private final String uriKey = "fs.defaultFS";
+    private final String hdfsImplKey = "fs.hdfs.impl";
+    private final String fileImplKey = "fs.file.impl";
+    private final String securityAuthenticationKey = "hadoop.security.authentication";
+    private final String securityAuthorizationKey = "hadoop.security.authorization";
+    private final String rpcTimeout = "fs.mapr.rpc.timeout";
 
-    final String USER_NAME_KEY = "HADOOP_USER_NAME";
-    final String HOME_DIR_KEY = "hadoop.home.dir";
+    private final String userNameKey = "HADOOP_USER_NAME";
+    private final String homeDirKey = "hadoop.home.dir";
 
     private void init(HDFSConnectionInfo hdfsConnectionInfo) {
-        System.setProperty(USER_NAME_KEY, hdfsConnectionInfo.getHDFSUser());
-        System.setProperty(HOME_DIR_KEY, hdfsConnectionInfo.getHomeDir());
+        System.setProperty(this.userNameKey, hdfsConnectionInfo.getHDFSUser());
+        System.setProperty(this.homeDirKey, hdfsConnectionInfo.getHomeDir());
 
-        this.configuration.set(HDFS_IMPLE_KEY, org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-        this.configuration.set(FILE_IMPLE_KEY, org.apache.hadoop.fs.LocalFileSystem.class.getName());
-        this.configuration.set(URI_KEY, hdfsConnectionInfo.getHdfsUriAddress());
-        this.configuration.set(SECURITY_AUTHENTICATION_KEY, hdfsConnectionInfo.getHDFSSecurityAuthenticationType());
-        this.configuration.set(SECURITY_AUTHORIZATION_KEY, hdfsConnectionInfo.getHDFSSecurityAuthorizationValue());
-        this.configuration.set(RPC_TIMEOUT, hdfsConnectionInfo.getRpcTimeout());
+        this.configuration.set(this.hdfsImplKey, org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        this.configuration.set(this.fileImplKey, org.apache.hadoop.fs.LocalFileSystem.class.getName());
+        this.configuration.set(this.uriKey, hdfsConnectionInfo.getHdfsUriAddress());
+        this.configuration.set(this.securityAuthenticationKey, hdfsConnectionInfo.getHDFSSecurityAuthenticationType());
+        this.configuration.set(this.securityAuthorizationKey, hdfsConnectionInfo.getHDFSSecurityAuthorizationValue());
+        this.configuration.set(this.rpcTimeout, hdfsConnectionInfo.getRpcTimeout());
     }
 
     @Override
     public boolean addFile(final String source, final String dest, final boolean overwrite) {
-        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(dest, fileSystem);
             if (overwrite == false && pathInfo.isExists()) {
                 HDFS_PROCESSOR_LOGGER.info("File {} already exists", dest);
@@ -124,7 +124,7 @@ public class HDFSDataBroker implements DataBroker {
 
     @Override
     public String readFile(final String source) throws Exception {
-        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isNotExists()) {
                 throw new Exception("File is not exists. check this("+source+") location.");
@@ -162,7 +162,7 @@ public class HDFSDataBroker implements DataBroker {
 
     @Override
     public boolean deleteFile(final String source, boolean forceDelete) {
-        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isNotExists()) {
                 return false;
@@ -176,7 +176,7 @@ public class HDFSDataBroker implements DataBroker {
 
     @Override
     public boolean mkdir(final String source) {
-        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(URI_KEY)), this.configuration)) {
+        try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isExists()) {
                 return false;
@@ -192,7 +192,7 @@ public class HDFSDataBroker implements DataBroker {
         final Path path = new Path(source);
         final boolean fileExists = fileSystem.exists(path);
         if (fileExists == false) {
-            HDFS_PROCESSOR_LOGGER.info("Target {} does not exists.", source);
+            HDFS_PROCESSOR_LOGGER.debug("Target {} does not exists.", source);
         }
         return new PathInfo(path, fileExists);
     }
