@@ -41,7 +41,7 @@ class HDFSBrokerTest extends Specification {
 
     def "TEST : delete the file in hadoop"() {
         setup:
-        String source = "/tapas-ocr/receipt-info";
+        String source = "/tmp/testdir";
 
         when:
         boolean deleteResult = this.dataBorker.deleteFile(source, true);
