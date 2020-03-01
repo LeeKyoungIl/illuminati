@@ -23,7 +23,7 @@
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.11</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -36,7 +36,7 @@ repositories {
     jcenter()
 }
 
-compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.7'
+compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.11'
 ```
 
 ## Example
@@ -51,6 +51,7 @@ hdfs.connection.authorization: FALSE
 hdfs.connection.user: hdfs
 hdfs.connection.home: /
 hdfs.connection.timeout: 6000
+hdfs.connection.dfsSupportAppend: true
 ``` 
 
 You should be made of the Spring Bean or Singleton.

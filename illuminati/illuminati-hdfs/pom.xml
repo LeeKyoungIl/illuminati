@@ -5,7 +5,7 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.11</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -15,6 +15,13 @@
         <java.version>1.8</java.version>
 
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
 
@@ -42,6 +49,7 @@
             <artifactId>hadoop-client</artifactId>
             <version>3.2.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.spockframework</groupId>
