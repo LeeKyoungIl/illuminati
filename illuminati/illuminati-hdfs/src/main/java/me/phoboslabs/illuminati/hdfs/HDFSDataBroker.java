@@ -65,6 +65,7 @@ public class HDFSDataBroker implements DataBroker {
     private final String securityAuthenticationKey = "hadoop.security.authentication";
     private final String securityAuthorizationKey = "hadoop.security.authorization";
     private final String rpcTimeout = "fs.mapr.rpc.timeout";
+    private final String dfsSupportAppendKey = "dfs.support.append";
 
     private final String userNameKey = "HADOOP_USER_NAME";
     private final String homeDirKey = "hadoop.home.dir";
@@ -79,22 +80,36 @@ public class HDFSDataBroker implements DataBroker {
         this.configuration.set(this.securityAuthenticationKey, hdfsConnectionInfo.getHDFSSecurityAuthenticationType());
         this.configuration.set(this.securityAuthorizationKey, hdfsConnectionInfo.getHDFSSecurityAuthorizationValue());
         this.configuration.set(this.rpcTimeout, hdfsConnectionInfo.getRpcTimeout());
+        this.configuration.set(this.dfsSupportAppendKey, hdfsConnectionInfo.isDfsSupportAppend());
     }
 
     @Override
-    public boolean addFile(final String source, final String dest, final boolean overwrite) {
+    public boolean addFile(final String source, final String dest, final boolean overwrite, final boolean withNewLine) {
         try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(dest, fileSystem);
-            if (overwrite == false && pathInfo.isExists()) {
-                HDFS_PROCESSOR_LOGGER.info("File {} already exists", dest);
-                return false;
+            Path path = pathInfo.getPath();
+            FSDataOutputStream out;
+            if (pathInfo.isExists() == false) {
+                out = fileSystem.create(path);
+            } else {
+                if (overwrite) {
+                    fileSystem.delete(path, true);
+                    out = fileSystem.create(path);
+                } else {
+                    out = fileSystem.append(path);
+                    if (withNewLine) {
+                        out.writeBytes(System.lineSeparator());
+                    }
+                }
             }
 
             File sourceFile = new File(source);
             try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
-                return this.writeFileSystem(fileSystem, pathInfo.getPath(), fileInputStream);
+                return this.writeFileSystem(fileInputStream, out);
             } catch (Exception ex) {
                 HDFS_PROCESSOR_LOGGER.error("An error occurred checking of file input stream. ({})", ex.getMessage());
+            } finally {
+                out.close();
             }
         } catch (Exception ex) {
             HDFS_PROCESSOR_LOGGER.error("An error occurred checking of file system. ({})", ex.getMessage());
@@ -104,11 +119,8 @@ public class HDFSDataBroker implements DataBroker {
 
     private int bytePerOnce = 1024;
 
-    private boolean writeFileSystem(final FileSystem fileSystem, final Path path, final FileInputStream fileInputStream) {
-        try (
-                FSDataOutputStream out = fileSystem.create(path);
-                InputStream inputStream = new BufferedInputStream(fileInputStream);
-        ) {
+    private boolean writeFileSystem(final FileInputStream fileInputStream, FSDataOutputStream out) {
+        try (InputStream inputStream = new BufferedInputStream(fileInputStream)) {
             byte[] byteData = new byte[this.bytePerOnce];
             int numBytes = 0;
             while ((numBytes = inputStream.read(byteData)) > 0) {
@@ -186,6 +198,11 @@ public class HDFSDataBroker implements DataBroker {
             HDFS_PROCESSOR_LOGGER.error("An error occurred make dir. ({})", ex.getMessage());
         }
         return false;
+    }
+
+    @Override
+    public Configuration getConfiguration() {
+        return this.configuration;
     }
 
     private PathInfo checkPathAndGet(final String source, final FileSystem fileSystem) throws IOException {

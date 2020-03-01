@@ -8,7 +8,7 @@ class HDFSBrokerTest extends Specification {
     private DataBroker dataBorker;
 
     def setup() {
-        HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo("your hdfs ip address", 8020, "hdfs");
+        HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo("your hdfs address", 0000, "hdfs");
         hdfsConnectionInfo.hdfsSecurityAuthentication = "SIMPLE";
         hdfsConnectionInfo.hdfsSecurityAuthorization = "FALSE";
         hdfsConnectionInfo.homeDir = "/";
@@ -41,7 +41,7 @@ class HDFSBrokerTest extends Specification {
 
     def "TEST : delete the file in hadoop"() {
         setup:
-        String source = "/tmp/test2.txt";
+        String source = "/tmp/test1.txt";
 
         when:
         boolean deleteResult = this.dataBorker.deleteFile(source, true);

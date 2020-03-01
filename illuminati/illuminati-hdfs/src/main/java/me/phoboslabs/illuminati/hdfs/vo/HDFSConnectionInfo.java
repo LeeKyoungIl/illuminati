@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.hdfs.vo;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.hdfs.enums.HDFSSecurityAuthentication;
 import me.phoboslabs.illuminati.hdfs.enums.HDFSSecurityAuthorization;
@@ -20,6 +21,7 @@ public class HDFSConnectionInfo {
     private HDFSSecurityAuthentication hdfsSecurityAuthentication = HDFSSecurityAuthentication.SIMPLE;
     private HDFSSecurityAuthorization hdfsSecurityAuthorization = HDFSSecurityAuthorization.FALSE;
     private int rpcTimeout = 10000;
+    private boolean dfsSupportAppend = false;
 
     private final static String HADOOP_PREFIX = "hdfs://";
     private final static String HADOOP_CENTERFIX_WITH_PORT = ":";
@@ -32,6 +34,7 @@ public class HDFSConnectionInfo {
     private final static String HDFS_CONNECTION_USER = "hdfs.connection.user";
     private final static String HDFS_CONNECTION_HOME = "hdfs.connection.home";
     private final static String HDFS_CONNECTION_TIMEOUT = "hdfs.connection.timeout";
+    private final static String HDFS_CONNECTION_DFS_SUPPORT_APPEND = "hdfs.connection.dfsSupportAppend";
 
     public HDFSConnectionInfo(Properties prop) {
         this.uriAddress = prop.getProperty(HDFS_CONNECTION_URI);
@@ -47,6 +50,10 @@ public class HDFSConnectionInfo {
 
         try {
             this.rpcTimeout = Integer.parseInt(prop.getProperty(HDFS_CONNECTION_TIMEOUT));
+        } catch (Exception ignore) {}
+
+        try {
+            this.dfsSupportAppend = Boolean.parseBoolean(prop.getProperty(HDFS_CONNECTION_DFS_SUPPORT_APPEND));
         } catch (Exception ignore) {}
     }
 
@@ -128,7 +135,11 @@ public class HDFSConnectionInfo {
         return this.hdfsSecurityAuthorization.getIsAuthorization();
     }
 
-    public String getRpcTimeout () {
+    public String getRpcTimeout() {
         return String.valueOf(this.rpcTimeout);
+    }
+
+    public String isDfsSupportAppend() {
+        return String.valueOf(this.dfsSupportAppend);
     }
 }
