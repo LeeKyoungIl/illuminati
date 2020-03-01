@@ -8,7 +8,7 @@ class HDFSBrokerTest extends Specification {
     private DataBroker dataBorker;
 
     def setup() {
-        HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo("10.106.164.50", 8020, "hdfs");
+        HDFSConnectionInfo hdfsConnectionInfo = new HDFSConnectionInfo("your hdfs address", 0000, "hdfs");
         hdfsConnectionInfo.hdfsSecurityAuthentication = "SIMPLE";
         hdfsConnectionInfo.hdfsSecurityAuthorization = "FALSE";
         hdfsConnectionInfo.homeDir = "/";
