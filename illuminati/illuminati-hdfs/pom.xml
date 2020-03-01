@@ -5,7 +5,7 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.10</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -42,6 +42,7 @@
             <artifactId>hadoop-client</artifactId>
             <version>3.2.1</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.spockframework</groupId>
