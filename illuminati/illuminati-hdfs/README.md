@@ -13,17 +13,11 @@
     * Maven
     
 ```java
-<repositories>
-   <repository>
-   <id>jcenter</id>
-   <url>https://jcenter.bintray.com/</url>
-   </repository>
-</repositories>
 
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.11</version>
+    <version>0.1.13</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -32,11 +26,8 @@
     * Gradle
     
 ```java
-repositories {
-    jcenter()
-}
 
-compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.11'
+compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.13'
 ```
 
 ## Example

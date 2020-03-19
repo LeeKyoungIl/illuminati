@@ -5,8 +5,31 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-common</artifactId>
-    <version>1.4.7</version>
+    <version>1.4.10</version>
     <packaging>jar</packaging>
+
+    <name>illuminati-common</name>
+    <description>Project illuminati base common library.</description>
+    <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>leekyoungil</name>
+            <email>leekyoungil@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/LeeKyoungIl/illuminati</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -150,6 +173,21 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>

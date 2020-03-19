@@ -1,20 +1,34 @@
+/*
+ * Copyright 2017 Phoboslabs.me
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.phoboslabs.illuminati.processor.infra.kafka.impl;
 
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
 import me.phoboslabs.illuminati.processor.exception.ValidationException;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
-import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.processor.infra.kafka.constants.KafkaConstant;
-import me.phoboslabs.illuminati.processor.infra.kafka.enums.CompressionCodecType;
+import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
 import org.apache.kafka.clients.producer.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.Future;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 06/07/2017.

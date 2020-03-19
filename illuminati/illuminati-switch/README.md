@@ -27,17 +27,10 @@ illuminatiSwitchValueURLCheckInterval: 5000
     * Maven
     
 ```java
-<repositories>
-   <repository>
-   <id>jcenter</id>
-   <url>https://jcenter.bintray.com/</url>
-   </repository>
-</repositories>
-
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-switch</artifactId>
-  <version>1.0.14</version>
+  <version>1.0.16</version>
 </dependency>
 ```
 
@@ -45,9 +38,6 @@ illuminatiSwitchValueURLCheckInterval: 5000
     * Gradle
     
 ```java
-repositories {
-    jcenter()
-}
 
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.14'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.16'
 ```

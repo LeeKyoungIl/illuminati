@@ -10,31 +10,25 @@
     * Maven
     
 ```java
-<repositories>
-   <repository>
-   <id>jcenter</id>
-   <url>https://jcenter.bintray.com/</url>
-   </repository>
-</repositories>
 
 <dependencies>
     <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-annotation</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.4</version>
     </dependency>
     
     <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.29</version>
+      <version>0.9.9.32</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-switch</artifactId>
-       <version>1.0.14</version>
+       <version>1.0.16</version>
     </dependency>
 
     <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
@@ -51,14 +45,11 @@
     * Gradle
     
 ```java
-repositories {
-    jcenter()
-}
 
-compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.2'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.29'
+compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.32'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.14'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.16'
 // This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. 
 compile 'com.h2database:h2:1.4.196'
 ```

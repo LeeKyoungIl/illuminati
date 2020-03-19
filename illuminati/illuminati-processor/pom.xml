@@ -6,8 +6,31 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-processor</artifactId>
-    <version>0.9.9.29</version>
+    <version>0.9.9.32</version>
     <packaging>jar</packaging>
+
+    <name>illuminati-processor</name>
+    <description>Project illuminati processor library.</description>
+    <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>leekyoungil</name>
+            <email>leekyoungil@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/LeeKyoungIl/illuminati</url>
+    </scm>
 
     <properties>
 
@@ -16,13 +39,6 @@
         <java.version>1.8</java.version>
 
     </properties>
-
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
 
@@ -36,7 +52,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
-            <version>1.4.5</version>
+            <version>1.4.10</version>
             <scope>compile</scope>
         </dependency>
 
@@ -160,6 +176,21 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>

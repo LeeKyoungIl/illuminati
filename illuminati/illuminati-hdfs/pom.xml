@@ -5,8 +5,31 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.11</version>
+    <version>0.1.13</version>
     <packaging>jar</packaging>
+
+    <name>illuminati-hdfs</name>
+    <description>Project illuminati hadoop HDFS client library.</description>
+    <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>leekyoungil</name>
+            <email>leekyoungil@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/LeeKyoungIl/illuminati</url>
+    </scm>
 
     <properties>
 
@@ -16,19 +39,12 @@
 
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
 
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
-            <version>1.4.7</version>
+            <version>1.4.10</version>
             <scope>compile</scope>
         </dependency>
 
@@ -105,26 +121,18 @@
             </plugin>
 
             <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>yuicompressor-maven-plugin</artifactId>
-                <version>1.5.1</version>
-                <configuration>
-                    <jswarn>false</jswarn>
-                    <sourceDirectory>${project.basedir}/javascript/src</sourceDirectory>
-                    <outputDirectory>${project.basedir}/javascript/dist</outputDirectory>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <suffix>.min</suffix>
-                    <disableOptimizations>false</disableOptimizations>
-                    <nomunge>false</nomunge>
-                    <linebreakpos>50000</linebreakpos>
-                    <force>true</force>
-                    <excludes>
-                        <exclude>**/*min.js</exclude>
-                        <exclude>**/*min.css</exclude>
-                        <exclude>**/*.xml</exclude>
-                        <exclude>**/*.properties</exclude>
-                    </excludes>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
