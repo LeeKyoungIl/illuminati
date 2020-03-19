@@ -13,17 +13,11 @@
     * Maven
     
 ```java
-<repositories>
-   <repository>
-   <id>jcenter</id>
-   <url>https://jcenter.bintray.com/</url>
-   </repository>
-</repositories>
 
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-jscollector</artifactId>
-    <version>0.5.15</version>
+    <version>0.5.18</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -32,11 +26,8 @@
     * Gradle
     
 ```java
-repositories {
-    jcenter()
-}
 
-compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.15'
+compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.18'
 ```
 
 ## 2. add to Javascript in HTML & initialization
