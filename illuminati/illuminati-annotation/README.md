@@ -14,13 +14,13 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-annotation</artifactId>
-  <version>1.2.2</version>
+  <version>1.2.4</version>
 </dependency>
 
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-processor</artifactId>
-  <version>0.9.9.29</version>
+  <version>0.9.9.32</version>
 </dependency>
 ```
 
@@ -28,8 +28,8 @@
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.2'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.29'
+compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.32'
 ```
 
 ## add @Illuminati to Class
