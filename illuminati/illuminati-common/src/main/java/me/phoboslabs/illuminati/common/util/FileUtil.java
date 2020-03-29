@@ -57,7 +57,7 @@ public class FileUtil {
             FILE_UTIL_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         } catch (IOException e) {
-            final String errorMessage = "File create error : ".concat(e.getMessage());
+            final String errorMessage = "File create error : ".concat(e.getCause().getMessage());
             FILE_UTIL_LOGGER.error(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -82,7 +82,7 @@ public class FileUtil {
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds");
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : {}", e.getMessage(), e);
+            FILE_UTIL_LOGGER.error("File write error : {}", e.getCause().getMessage(), e);
         }
     }
 
@@ -101,7 +101,7 @@ public class FileUtil {
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds (" + dataList.size() + " line)");
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : {}", e.getMessage(), e);
+            FILE_UTIL_LOGGER.error("File write error : {}", e.getCause().getMessage(), e);
         }
     }
 
@@ -128,7 +128,7 @@ public class FileUtil {
         try {
             return FileUtils.readLines(fileOb, ENCODING);
         } catch (IOException e) {
-            final String errorMessage = "check your file.".concat(e.getMessage());
+            final String errorMessage = "check your file.".concat(e.getCause().getMessage());
             FILE_UTIL_LOGGER.info(errorMessage);
             throw new Exception(errorMessage);
         }

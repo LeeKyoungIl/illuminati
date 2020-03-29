@@ -69,11 +69,11 @@ public class RequestGeneralModel {
                     field.set(this, entry.getValue().toString());
                 }
             } catch (NoSuchFieldException ex) {
-                final String errorMessage = "Sorry. check your class field. ("+ex.getMessage()+")";
+                final String errorMessage = "Sorry. check your class field. ("+ex.getCause().getMessage()+")";
                 REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage, ex);
                 throw new Exception(errorMessage);
             } catch (IllegalAccessException ex) {
-                final String errorMessage = "Sorry. check your class field permission. ("+ex.getMessage()+")";
+                final String errorMessage = "Sorry. check your class field permission. ("+ex.getCause().getMessage()+")";
                 REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage, ex);
                 throw new Exception(errorMessage);
             }
@@ -129,7 +129,7 @@ public class RequestGeneralModel {
                 this.methodParams = paramMap;
             }
         } catch (Exception ex) {
-            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class method params. ({})", ex.getMessage(), ex);
+            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class method params. ({})", ex.getCause().getMessage(), ex);
         }
     }
 

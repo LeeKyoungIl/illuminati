@@ -50,7 +50,7 @@ public class IlluminatiSwitchHttpImpl implements IlluminatiSwitchHttp<String> {
         try {
             httpResponse = this.httpClient.execute(httpGetRequest);
         } catch (IOException e) {
-            final String errorMessage = "Sorry. something is wrong in Http Request. (" + e.getMessage() + ")";
+            final String errorMessage = "Sorry. something is wrong in Http Request. (" + e.getCause().getMessage() + ")";
             this.logger.error(errorMessage, e);
             throw new Exception(errorMessage);
         } finally {

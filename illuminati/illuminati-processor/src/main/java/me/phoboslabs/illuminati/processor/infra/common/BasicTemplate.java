@@ -115,7 +115,7 @@ public abstract class BasicTemplate {
             try {
                 performance = Integer.parseInt(this.illuminatiProperties.getPerformance());
             } catch (Exception ex) {
-                BASIC_TEMPLATE_LOGGER.error("error : casting exception. ({})", ex.getMessage(), ex);
+                BASIC_TEMPLATE_LOGGER.error("error : casting exception. ({})", ex.getCause().getMessage(), ex);
             }
         }
 
@@ -135,7 +135,7 @@ public abstract class BasicTemplate {
 
     protected void waitBeforeClosing() {
         int timeoutTryCount = 0;
-        while (this.sending && timeoutTryCount < 60) {
+        while (this.sending && timeoutTryCount < 30) {
             try {
                 System.out.println("Waiting for transaction with the Illuminati to end.... ("+timeoutTryCount+" up to 60)");
                 timeoutTryCount++;

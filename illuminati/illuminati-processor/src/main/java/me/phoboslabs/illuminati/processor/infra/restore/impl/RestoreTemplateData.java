@@ -70,7 +70,7 @@ public class RestoreTemplateData implements Restore {
     }
 
     @Override public void restoreToQueue () {
-        if (this.readyToRestoreQueue() == false) {
+        if (!this.readyToRestoreQueue()) {
             return;
         }
 
@@ -114,31 +114,31 @@ public class RestoreTemplateData implements Restore {
     private void createSystemThread () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-            while (true) {
-                try {
-                    if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
-                        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
-                            restoreToQueue();
-                        } else {
-                            restoreToQueueByDebug();
+                while (true) {
+                    try {
+                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
+                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                                restoreToQueue();
+                            } else {
+                                restoreToQueueByDebug();
 
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                // ignore
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    // ignore
+                                }
                             }
                         }
-                    }
 
-                    try {
-                        Thread.sleep(300000);
-                    } catch (InterruptedException e) {
-                        // ignore
+                        try {
+                            Thread.sleep(300000);
+                        } catch (InterruptedException e) {
+                            // ignore
+                        }
+                    } catch (Exception e) {
+                        restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ("+e.getMessage()+")");
                     }
-                } catch (Exception e) {
-                    restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
                 }
-            }
             }
         };
 

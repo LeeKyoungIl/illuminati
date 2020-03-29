@@ -109,10 +109,10 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) throws Exception {
         // something to check validation.. but.. now not exists.
         if (this.illuminatiTemplate == null) {
-            illuminatiExecutorLogger.warn("ILLUMINATI_TEMPLATE is must not null.");
+            ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_TEMPLATE is must not null.");
             return;
         }
-        if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
+        if (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
             try {
                 this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
             } catch (Exception | PublishMessageException ex) {
@@ -128,15 +128,15 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
      * @param illuminatiTemplateInterfaceModelImpl
      */
     @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) throws Exception {
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             return;
         }
         // debug illuminati rabbitmq queue
         final long start = System.currentTimeMillis();
         this.sendToNextStep(illuminatiTemplateInterfaceModelImpl);
         final long elapsedTime = System.currentTimeMillis() - start;
-        illuminatiExecutorLogger.info("template queue current size is "+String.valueOf(this.getQueueSize()));
-        illuminatiExecutorLogger.info("elapsed time of Illuminati sent is "+elapsedTime+" millisecond");
+        ILLUMINATI_EXECUTOR_LOGGER.info("template queue current size is {}", this.getQueueSize());
+        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of Illuminati sent is {} millisecond", elapsedTime);
 
         try {
             Thread.sleep(5000);
@@ -169,13 +169,13 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             }
         } catch (Exception ex) {
             final String errorMessage = ex.getMessage();
-            illuminatiExecutorLogger.warn(errorMessage);
+            ILLUMINATI_EXECUTOR_LOGGER.warn(errorMessage);
             throw new Exception(errorMessage);
         }
 
         IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());
 
-        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == false) {
+        if (!IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
             throw new Exception("Check your message broker.");
         }
 
@@ -201,7 +201,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                             Thread.sleep(BROKER_HEALTH_CHECK_TIME);
                         } catch (InterruptedException ignore) {}
                     } catch (Exception e) {
-                        illuminatiExecutorLogger.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ("+e.getMessage()+")");
+                        ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})", e.getMessage());
                     }
                 }
             }

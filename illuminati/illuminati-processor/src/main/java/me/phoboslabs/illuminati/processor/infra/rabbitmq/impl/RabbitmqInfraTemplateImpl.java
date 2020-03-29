@@ -47,29 +47,20 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
     private static final Logger RABBITMQ_TEMPLATE_IMPL_LOGGER = LoggerFactory.getLogger(RabbitmqInfraTemplateImpl.class);
 
-    private String clusterList;
-    private String virtualHost;
-    private String queueName;
-
     private String compressionCodec = "gzip; charset=UTF-8";
     private String contentType = "application/json";
-    private boolean durable = true;
 
-    private static BasicProperties PROPS;
-    private static Connection AMQP_CONNECTION;
+    private BasicProperties props;
+    private Connection amqpConnection;
+    private Channel amqpChannel;
 
     public RabbitmqInfraTemplateImpl(final String propertiesName) throws Exception {
         super(propertiesName);
 
         this.checkRequiredValuesForInit();
 
-        this.clusterList = this.illuminatiProperties.getClusterList();
-        this.virtualHost = this.illuminatiProperties.getVirtualHost();
-        this.queueName = this.illuminatiProperties.getQueueName();
-
-        ConnectionFactory connectionFactory = this.setBasicProperties();
         this.initProperties();
-        this.createConnection(connectionFactory);
+        this.createConnection(this.setBasicProperties());
     }
 
     @Override protected void checkRequiredValuesForInit () {
@@ -90,14 +81,21 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         this.setProps();
         this.isAsync();
         this.isCompression();
-        this.setTopicAndQueue();
+        this.setTopic();
     }
 
     @Override public void connectionClose() {
         this.waitBeforeClosing();
+
         try {
-            if (AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen()) {
-                AMQP_CONNECTION.close();
+            if (this.amqpChannel != null && this.amqpChannel.isOpen()) {
+                this.amqpChannel.close();
+            }
+        } catch (Exception ignore) {}
+
+        try {
+            if (this.amqpConnection != null && this.amqpConnection.isOpen()) {
+                this.amqpConnection.close();
             }
         } catch (IOException ignore) {}
     }
@@ -109,12 +107,12 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         try {
             Class.forName(RABBIT_BROKER_CLASS_NAME);
         } catch (ClassNotFoundException cex) {
-            throw new ValidationException(cex.toString());
+            throw new ValidationException(cex.getCause().getMessage());
         }
     }
 
     private void setProps () {
-        this.PROPS = new BasicProperties.Builder()
+        this.props = new BasicProperties.Builder()
                         .contentEncoding(this.compressionCodec)
                         .contentType(this.contentType)
                         .deliveryMode(2)
@@ -124,15 +122,13 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
     @Override
     public void sendToIlluminati (final String entity) throws Exception, PublishMessageException {
-        final Channel amqpChannel = this.createAmqpChannel();
-
         try {
-            if (amqpChannel != null && AMQP_CONNECTION.isOpen()) {
+            if (this.amqpConnection.isOpen() && this.amqpChannel.isOpen()) {
                 this.sending = true;
-                amqpChannel.basicPublish(this.topic,"", this.PROPS, entity.getBytes());
+                this.amqpChannel.basicPublish(this.topic,"", this.props, entity.getBytes());
 
                 if (this.communicationType == CommunicationType.SYNC) {
-                    amqpChannel.waitForConfirms(RabbitmqConstant.VALUE_CONNECTION_WAIT_CONFIRM_TIMEOUT_MS);
+                    this.amqpChannel.waitForConfirms(RabbitmqConstant.VALUE_CONNECTION_WAIT_CONFIRM_TIMEOUT_MS);
                 }
 
                 if (IlluminatiConstant.ILLUMINATI_DEBUG) {
@@ -150,81 +146,73 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send exception log");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : "+ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : "+ex.getCause().getMessage());
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
 
-            throw new PublishMessageException("failed to publish message : " + ex.toString());
-        } finally {
+            throw new PublishMessageException("failed to publish message : " + ex.getCause().getMessage());
+        }
+        finally {
             this.sending = false;
-            if (amqpChannel != null) {
-                String amqpChannelExceptionMessage = null;
-                String amqpChannelExceptionLog = null;
-                try {
-                    amqpChannel.close();
-                } catch (IOException e) {
-                    amqpChannelExceptionMessage = "there was a problem close a nio channel (IO).";
-                    amqpChannelExceptionLog = e.toString();
-                } catch (TimeoutException e) {
-                    amqpChannelExceptionMessage = "there was a problem close a nio channel (timeout).";
-                    amqpChannelExceptionLog = e.toString();
-                }
-
-                if (amqpChannelExceptionMessage != null && amqpChannelExceptionLog != null) {
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## amqp channel close exception log");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("## exception message : " + amqpChannelExceptionMessage);
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.warn("## exception log : " + amqpChannelExceptionLog);
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
-                }
-            }
         }
     }
 
     @Override public boolean canIConnect() {
-        return AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen();
+        return this.amqpChannel != null && this.amqpChannel.isOpen()
+            && this.amqpConnection != null && this.amqpConnection.isOpen();
     }
 
     private synchronized void createConnection (ConnectionFactory rabbitMQConnectionFactory) {
         try {
             this.setConnectUserInfo(rabbitMQConnectionFactory);
             final ExecutorService executor = Executors.newSingleThreadExecutor();
-            AMQP_CONNECTION = rabbitMQConnectionFactory.newConnection(executor, this.getClusterList());
+            this.amqpConnection = rabbitMQConnectionFactory.newConnection(executor, this.getClusterList());
         } catch (IOException ex) {
-            final String errorMessage = "error : cluster host had a problem. " + ex.getMessage();
+            final String errorMessage = "error : cluster host had a problem. " + ex.getCause().getMessage();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new CommunicationException(errorMessage);
         } catch (TimeoutException ex) {
-            final String errorMessage = "error : there was a problem communicating with the spring. " + ex.getMessage();
+            final String errorMessage = "error : there was a problem communicating with the spring. " + ex.getCause().getMessage();
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
+            throw new CommunicationException(errorMessage);
+        }
+
+        try {
+            this.amqpChannel = this.createAmqpChannel();
+        } catch (Exception ex) {
+            final String errorMessage = "error : amqp channel create had a problem. " + ex.getMessage();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new CommunicationException(errorMessage);
         }
     }
 
     private Channel createAmqpChannel () throws Exception {
-        if (AMQP_CONNECTION == null) {
+        if (this.amqpConnection == null) {
             throw new Exception("AMQP_CONNECTION must not be null.");
         }
         try {
-            final Channel amqpChannel = AMQP_CONNECTION.createChannel();
-            amqpChannel.queueDeclare(this.queueName, true, false, false, null);
+            final Channel amqpChannel = this.amqpConnection.createChannel();
+            amqpChannel.queueDeclare(this.illuminatiProperties.getQueueName(), true, false, false, null);
 
             if (this.communicationType == CommunicationType.SYNC) {
                 amqpChannel.confirmSelect();
             }
-
             return amqpChannel;
         } catch (IOException ex) {
-            final String errorMessage = "error : create connection channel has failed.. ("+ex.getMessage()+")";
+            final String errorMessage = "error : create connection channel has failed.. ("+ex.getCause().getMessage()+")";
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }
 
     private List<Address> getClusterList () {
+        final String clusterList = this.illuminatiProperties.getClusterList();
+        if (!StringObjectUtils.isValid(clusterList)) {
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : cluster list is empty.");
+            throw new ValidationException("error : cluster list is empty.");
+        }
+
         final List<Address> clusterAddressList = new ArrayList<>();
-        for (String serverData : Arrays.asList(this.clusterList.split(","))) {
+        for (String serverData : Arrays.asList(clusterList.split(","))) {
             Address address;
             if (serverData.indexOf(":") > -1) {
                 final String[] tmpServerData = serverData.split(":");
@@ -267,7 +255,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         rabbitMQConnectionFactory.setAutomaticRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY);
         rabbitMQConnectionFactory.setTopologyRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_EXCHANGE_RECOVERY);
         rabbitMQConnectionFactory.setNetworkRecoveryInterval(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS);
-        rabbitMQConnectionFactory.setVirtualHost(this.virtualHost);
+        rabbitMQConnectionFactory.setVirtualHost(this.illuminatiProperties.getVirtualHost());
         rabbitMQConnectionFactory.setSocketConfigurator(new DefaultSocketConfigurator() {
             @Override
             public void configure(Socket socket) throws IOException {
@@ -284,13 +272,11 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         return rabbitMQConnectionFactory;
     }
 
-    private void setTopicAndQueue () throws Exception {
-        if (StringObjectUtils.isValid(this.illuminatiProperties.getTopic()) && StringObjectUtils
-                .isValid(this.illuminatiProperties.getQueueName())) {
+    private void setTopic () throws Exception {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getTopic())) {
             this.topic = this.illuminatiProperties.getTopic();
-            this.queueName = this.illuminatiProperties.getQueueName();
         } else {
-            final String errorMessage = "\"error : topic or queueName is empty.\"";
+            final String errorMessage = "\"error : topic is empty.\"";
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }

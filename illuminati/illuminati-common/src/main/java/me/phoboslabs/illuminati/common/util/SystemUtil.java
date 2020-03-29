@@ -58,7 +58,7 @@ public class SystemUtil {
                 try {
                     jvmInfo.put(StringObjectUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
                 } catch (Exception ex) {
-                    SYSTEM_UTIL_LOGGER.error(ex.getMessage(), ex);
+                    SYSTEM_UTIL_LOGGER.error(ex.getCause().getMessage(), ex);
                 }
             }
         }

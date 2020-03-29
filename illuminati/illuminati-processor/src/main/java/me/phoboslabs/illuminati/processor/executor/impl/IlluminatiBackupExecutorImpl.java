@@ -92,7 +92,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override public IlluminatiTemplateInterfaceModelImpl deQueueByDebug () throws Exception {
-        illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE current size is "+this.getQueueSize());
+        ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
             throw new Exception("backupObjectList is empty.");
@@ -101,19 +101,19 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         final long start = System.currentTimeMillis();
         this.deQueue();
         final long elapsedTime = System.currentTimeMillis() - start;
-        illuminatiExecutorLogger.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is "+String.valueOf(this.getQueueSize()));
-        illuminatiExecutorLogger.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is "+elapsedTime+" millisecond");
+        ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is {}", this.getQueueSize());
+        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is {}  millisecond", elapsedTime);
 
         throw new Exception("Backup Executor is not returned messages.");
     }
 
     @Override public void sendToNextStep(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
         if (illuminatiTemplateInterfaceModel == null) {
-            illuminatiExecutorLogger.warn("data is not valid");
+            ILLUMINATI_EXECUTOR_LOGGER.warn("data is not valid");
             return;
         }
         if (this.backup == null) {
-            illuminatiExecutorLogger.warn("ILLUMINATI_BACKUP Object is null");
+            ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_BACKUP Object is null");
             return;
         }
         //## Save file
@@ -125,21 +125,21 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         //## Save file
         this.sendToNextStep(illuminatiBackupInterfaceModel);
         final long elapsedTime = System.currentTimeMillis() - start;
-        illuminatiExecutorLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
+        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of template queue sent is {} millisecond", elapsedTime);
     }
 
     @Override protected void createSystemThread () {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-            while (true && IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
+            while (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
                 try {
-                    if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                    if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
                         deQueue();
                     } else {
                         deQueueByDebug();
                     }
                 } catch (Exception e) {
-                    illuminatiExecutorLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE.. ("+e.getMessage()+")");
+                    ILLUMINATI_EXECUTOR_LOGGER.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ({})", e.getMessage());
                 } finally {
                     try {
                         Thread.sleep(BACKUP_THREAD_SLEEP_TIME);
@@ -162,11 +162,11 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     public void createStopThread() {
         final Runnable runnableFirst = new Runnable() {
             public void run() {
-            while (getQueueSize() > 0) {
-                try {
-                    deQueue();
-                } catch (Exception ignore) {}
-            }
+                while (getQueueSize() > 0) {
+                    try {
+                        deQueue();
+                    } catch (Exception ignore) {}
+                }
             }
         };
 

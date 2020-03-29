@@ -37,21 +37,11 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     private static final Logger KAFKA_TEMPLATE_IMPL_LOGGER = LoggerFactory.getLogger(KafkaInfraTemplateImpl.class);
 
-    /**
-     * This is for bootstrapping and the producer will only use it for getting metadata.
-     * the socket connections for sending the actual dto will be established based on the broker informaion returned
-     * is the metadata.
-     *
-     * The format is host1:port1,host2:port2,host3:port3 and the list can be a subset of brokers or a VIP pointing to
-     * a subset of brokers.
-     */
-    private String brokerList;
-
     private String topic;
 
-    private static final Properties PROPERTIES = new Properties();
+    private final Properties kafkaProperties = new Properties();
 
-    private static Producer<String,  byte[]> KAFKA_PUBLISHER;
+    private Producer<String,  byte[]> kafkaProducer;
 
     public KafkaInfraTemplateImpl(final String propertiesName) {
         super(propertiesName);
@@ -61,22 +51,32 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.checkRequiredValuesForInit();
 
         this.topic = this.illuminatiProperties.getTopic();
-        this.brokerList = this.illuminatiProperties.getClusterList();
 
-        this.setBasicProperties();
         this.initProperties();
         this.initPublisher();
     }
 
     @Override protected void checkRequiredValuesForInit () {
-         if (!StringObjectUtils.isValid(this.illuminatiProperties.getTopic())) {
-             KAFKA_TEMPLATE_IMPL_LOGGER.error("error : topic variable is empty.");
-             throw new ValidationException("error : topic variable is empty.");
+        if (!StringObjectUtils.isValid(this.illuminatiProperties.getTopic())) {
+            KAFKA_TEMPLATE_IMPL_LOGGER.error("error : topic variable is empty.");
+            throw new ValidationException("error : topic variable is empty.");
+        }
+        if (!StringObjectUtils.isValid(this.illuminatiProperties.getClusterList())) {
+            KAFKA_TEMPLATE_IMPL_LOGGER.error("error : brokerList variable is empty.");
+            throw new ValidationException("error : brokerList variable is empty.");
         }
     }
 
+    /**
+     * ClusterList is for bootstrapping and the producer will only use it for getting metadata.
+     * the socket connections for sending the actual dto will be established based on the broker informaion returned
+     * is the metadata.
+     *
+     * The format is host1:port1,host2:port2,host3:port3 and the list can be a subset of brokers or a VIP pointing to
+     * a subset of brokers.
+     */
     private void setBasicProperties () {
-        this.setKafkaProperties(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.brokerList);
+        this.setKafkaProperties(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.illuminatiProperties.getClusterList());
         this.setKafkaProperties(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KafkaConstant.VALUE_SERIALIZER_TYPE_BYTE);
         this.setKafkaProperties(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaConstant.VALUE_SERIALIZER_TYPE_BYTE);
         this.setKafkaProperties(ProducerConfig.PARTITIONER_CLASS_CONFIG, KafkaConstant.VALUE_PARTITIONER);
@@ -93,16 +93,17 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     }
 
     private synchronized void initPublisher () {
-        if (this.KAFKA_PUBLISHER == null) {
-            this.KAFKA_PUBLISHER = new KafkaProducer<>(this.PROPERTIES);
+        if (this.kafkaProducer == null) {
+            this.kafkaProducer = new KafkaProducer<>(this.kafkaProperties);
         }
     }
 
     private void setKafkaProperties (String key, Object value) {
-        this.PROPERTIES.put(key, value);
+        this.kafkaProperties.put(key, value);
     }
 
     @Override protected void initProperties () {
+        this.setBasicProperties();
         this.setPerformance();
         this.setIsAsync();
         this.setIsCompression();
@@ -110,14 +111,14 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     @Override
     public void sendToIlluminati (String entity) throws Exception, PublishMessageException {
-        if (this.KAFKA_PUBLISHER == null) {
+        if (this.kafkaProducer == null) {
             KAFKA_TEMPLATE_IMPL_LOGGER.error("kafka publisher not initialized.");
             throw new PublishMessageException("kafka publisher not initialized.");
         }
 
         try {
             this.sending = true;
-            final Future<RecordMetadata> sendResult = this.KAFKA_PUBLISHER.send(new ProducerRecord<>(this.topic, entity.getBytes()));
+            final Future<RecordMetadata> sendResult = this.kafkaProducer.send(new ProducerRecord<>(this.topic, entity.getBytes()));
 
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, offset: " + sendResult.get().offset());
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, partition : " + sendResult.get().partition());
@@ -125,20 +126,20 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
             KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
         } catch (Exception ex) {
-            throw new PublishMessageException("failed to publish message : ("+ex.getMessage()+")");
+            throw new PublishMessageException("failed to publish message : ("+ex.getCause().getMessage()+")");
         } finally {
             this.sending = false;
         }
     }
 
     @Override public boolean canIConnect() {
-        return this.KAFKA_PUBLISHER != null;
+        return this.kafkaProducer != null;
     }
 
     @Override
     public void connectionClose() {
         this.waitBeforeClosing();
-        KAFKA_PUBLISHER.close();
+        kafkaProducer.close();
     }
 
     private static final String KAFKA_BROKER_CLASS_NAME = "org.apache.kafka.clients.producer.KafkaProducer";
@@ -148,7 +149,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         try {
             Class.forName(KAFKA_BROKER_CLASS_NAME);
         } catch (ClassNotFoundException cex) {
-            throw new ValidationException(cex.toString());
+            throw new ValidationException(cex.getCause().getMessage());
         }
     }
 
