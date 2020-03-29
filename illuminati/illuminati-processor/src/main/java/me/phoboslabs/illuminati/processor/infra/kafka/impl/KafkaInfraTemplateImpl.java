@@ -56,6 +56,8 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     public KafkaInfraTemplateImpl(final String propertiesName) {
         super(propertiesName);
 
+        this.validateBasicTemplateClass();
+
         this.checkRequiredValuesForInit();
 
         this.topic = this.illuminatiProperties.getTopic();
@@ -137,6 +139,17 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     public void connectionClose() {
         this.waitBeforeClosing();
         KAFKA_PUBLISHER.close();
+    }
+
+    private static final String KAFKA_BROKER_CLASS_NAME = "org.apache.kafka.clients.producer.KafkaProducer";
+
+    @Override
+    public void validateBasicTemplateClass() throws ValidationException {
+        try {
+            Class.forName(KAFKA_BROKER_CLASS_NAME);
+        } catch (ClassNotFoundException cex) {
+            throw new ValidationException(cex.toString());
+        }
     }
 
     private void setPerformance () {

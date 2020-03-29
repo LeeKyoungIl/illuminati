@@ -155,17 +155,22 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
-        switch (illuminatiBroker) {
-            case "kafka" :
-                illuminatiInfraTemplate = new KafkaInfraTemplateImpl("illuminati");
-                break;
-            case "rabbitmq" :
-                illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
-                break;
-            default :
-                final String errorMessage = "Sorry. check your properties of Illuminati";
-                illuminatiExecutorLogger.warn(errorMessage);
-                throw new Exception(errorMessage);
+        try {
+            switch (illuminatiBroker) {
+                case "kafka" :
+                    illuminatiInfraTemplate = new KafkaInfraTemplateImpl("illuminati");
+                    break;
+                case "rabbitmq" :
+                    illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
+                    break;
+                default :
+                    final String errorMessage = "Sorry. check your properties of Illuminati";
+                    throw new Exception(errorMessage);
+            }
+        } catch (Exception ex) {
+            final String errorMessage = ex.getMessage();
+            illuminatiExecutorLogger.warn(errorMessage);
+            throw new Exception(errorMessage);
         }
 
         IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());

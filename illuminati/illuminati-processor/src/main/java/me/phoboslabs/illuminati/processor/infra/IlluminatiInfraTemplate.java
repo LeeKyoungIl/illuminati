@@ -17,6 +17,7 @@
 package me.phoboslabs.illuminati.processor.infra;
 
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
+import me.phoboslabs.illuminati.processor.exception.ValidationException;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -28,4 +29,6 @@ public interface IlluminatiInfraTemplate<T> {
     boolean canIConnect ();
 
     void connectionClose();
+
+    void validateBasicTemplateClass() throws ValidationException;
 }

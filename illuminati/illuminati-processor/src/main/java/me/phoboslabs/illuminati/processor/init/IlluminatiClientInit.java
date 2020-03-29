@@ -94,7 +94,15 @@ public class IlluminatiClientInit {
             System.out.println("@ The illuminati is now activated.                            @");
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         } catch (Exception ex) {
-            System.out.println("The illuminati failed to initialize. check configuration files.");
+            System.out.println("################################################################");
+            System.out.println("# The illuminati is not activated.                             #");
+            System.out.println("################################################################");
+            System.out.println("");
+            System.out.println("The illuminati failed to initialize. check "+System.getProperty("spring.profiles.active")+" configuration files.");
+            System.out.println("");
+            System.out.println("Check the following message. ↓↓");
+            System.out.println(ex.toString());
+            System.out.println("");
         }
     }
 

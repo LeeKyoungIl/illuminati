@@ -55,7 +55,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     private String contentType = "application/json";
     private boolean durable = true;
 
-    private static final ConnectionFactory RABBITMQ_CONNECTION_FACTORY = new ConnectionFactory();
     private static BasicProperties PROPS;
     private static Connection AMQP_CONNECTION;
 
@@ -68,11 +67,14 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         this.virtualHost = this.illuminatiProperties.getVirtualHost();
         this.queueName = this.illuminatiProperties.getQueueName();
 
-        this.setBasicProperties();
+        ConnectionFactory connectionFactory = this.setBasicProperties();
         this.initProperties();
+        this.createConnection(connectionFactory);
     }
 
     @Override protected void checkRequiredValuesForInit () {
+        this.validateBasicTemplateClass();
+
         if (!StringObjectUtils.isValid(this.illuminatiProperties.getVirtualHost())) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : virtualHostName is empty.");
             throw new ValidationException("error : virtualHostName is empty.");
@@ -85,8 +87,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     @Override protected void initProperties () throws Exception {
-        this.setConnectUserInfo();
-
         this.setProps();
         this.isAsync();
         this.isCompression();
@@ -100,6 +100,17 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 AMQP_CONNECTION.close();
             }
         } catch (IOException ignore) {}
+    }
+
+    private static final String RABBIT_BROKER_CLASS_NAME = "com.rabbitmq.client.ConnectionFactory";
+
+    @Override
+    public void validateBasicTemplateClass() throws ValidationException {
+        try {
+            Class.forName(RABBIT_BROKER_CLASS_NAME);
+        } catch (ClassNotFoundException cex) {
+            throw new ValidationException(cex.toString());
+        }
     }
 
     private void setProps () {
@@ -175,14 +186,11 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         return AMQP_CONNECTION != null && AMQP_CONNECTION.isOpen();
     }
 
-    private synchronized void initPublisher () {
-        this.createConnection();
-    }
-
-    private void createConnection () {
+    private synchronized void createConnection (ConnectionFactory rabbitMQConnectionFactory) {
         try {
+            this.setConnectUserInfo(rabbitMQConnectionFactory);
             final ExecutorService executor = Executors.newSingleThreadExecutor();
-            AMQP_CONNECTION = RABBITMQ_CONNECTION_FACTORY.newConnection(executor, this.getClusterList());
+            AMQP_CONNECTION = rabbitMQConnectionFactory.newConnection(executor, this.getClusterList());
         } catch (IOException ex) {
             final String errorMessage = "error : cluster host had a problem. " + ex.getMessage();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
@@ -237,28 +245,30 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         return clusterAddressList;
     }
 
-    private void setBasicProperties () {
+    private ConnectionFactory setBasicProperties () {
+        ConnectionFactory rabbitMQConnectionFactory = new ConnectionFactory();
+
         final NioParams nioParams = new NioParams()
                 .setNbIoThreads(1)
                 .setWriteEnqueuingTimeoutInMs(0)
                 .setWriteByteBufferSize(RabbitmqConstant.VALUE_SET_WRITE_BUFFER_SIZE);
 
-        RABBITMQ_CONNECTION_FACTORY.useNio();
-        RABBITMQ_CONNECTION_FACTORY.setNioParams(nioParams);
-        RABBITMQ_CONNECTION_FACTORY.setConnectionTimeout(RabbitmqConstant.VALUE_CONNECTION_TIMEOUT_MS);
-        RABBITMQ_CONNECTION_FACTORY.setChannelRpcTimeout(RabbitmqConstant.VALUE_RPC_CALL_TIMEOUT_MS);
-        RABBITMQ_CONNECTION_FACTORY.setHandshakeTimeout(RabbitmqConstant.VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS);
+        rabbitMQConnectionFactory.useNio();
+        rabbitMQConnectionFactory.setNioParams(nioParams);
+        rabbitMQConnectionFactory.setConnectionTimeout(RabbitmqConstant.VALUE_CONNECTION_TIMEOUT_MS);
+        rabbitMQConnectionFactory.setChannelRpcTimeout(RabbitmqConstant.VALUE_RPC_CALL_TIMEOUT_MS);
+        rabbitMQConnectionFactory.setHandshakeTimeout(RabbitmqConstant.VALUE_HANDSHAKE_CONNECTION_TIMEOUT_MS);
 
         ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor();
-        RABBITMQ_CONNECTION_FACTORY.setShutdownExecutor(shutdownExecutor);
+        rabbitMQConnectionFactory.setShutdownExecutor(shutdownExecutor);
 
-        RABBITMQ_CONNECTION_FACTORY.setShutdownTimeout(RabbitmqConstant.VALUE_SHUTDOWN_TIMEOUT_MS);
-        RABBITMQ_CONNECTION_FACTORY.setRequestedHeartbeat(RabbitmqConstant.VALUE_REQUESTED_HEART_BEAT);
-        RABBITMQ_CONNECTION_FACTORY.setAutomaticRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY);
-        RABBITMQ_CONNECTION_FACTORY.setTopologyRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_EXCHANGE_RECOVERY);
-        RABBITMQ_CONNECTION_FACTORY.setNetworkRecoveryInterval(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS);
-        RABBITMQ_CONNECTION_FACTORY.setVirtualHost(this.virtualHost);
-        RABBITMQ_CONNECTION_FACTORY.setSocketConfigurator(new DefaultSocketConfigurator() {
+        rabbitMQConnectionFactory.setShutdownTimeout(RabbitmqConstant.VALUE_SHUTDOWN_TIMEOUT_MS);
+        rabbitMQConnectionFactory.setRequestedHeartbeat(RabbitmqConstant.VALUE_REQUESTED_HEART_BEAT);
+        rabbitMQConnectionFactory.setAutomaticRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY);
+        rabbitMQConnectionFactory.setTopologyRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_EXCHANGE_RECOVERY);
+        rabbitMQConnectionFactory.setNetworkRecoveryInterval(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY_NETWORK_DELAY_MS);
+        rabbitMQConnectionFactory.setVirtualHost(this.virtualHost);
+        rabbitMQConnectionFactory.setSocketConfigurator(new DefaultSocketConfigurator() {
             @Override
             public void configure(Socket socket) throws IOException {
                 socket.setTcpNoDelay(RabbitmqConstant.VALUE_DONT_USE_NAGLE);
@@ -270,6 +280,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 socket.setSoLinger(true, 1000);
             }
         });
+
+        return rabbitMQConnectionFactory;
     }
 
     private void setTopicAndQueue () throws Exception {
@@ -277,7 +289,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                 .isValid(this.illuminatiProperties.getQueueName())) {
             this.topic = this.illuminatiProperties.getTopic();
             this.queueName = this.illuminatiProperties.getQueueName();
-            this.initPublisher();
         } else {
             final String errorMessage = "\"error : topic or queueName is empty.\"";
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage);
@@ -285,11 +296,11 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         }
     }
 
-    private void setConnectUserInfo () {
+    private void setConnectUserInfo (ConnectionFactory rabbitMQConnectionFactory) {
         if (StringObjectUtils.isValid(this.illuminatiProperties.getUserName()) && StringObjectUtils
                 .isValid(this.illuminatiProperties.getPassword())) {
-            RABBITMQ_CONNECTION_FACTORY.setUsername(this.illuminatiProperties.getUserName());
-            RABBITMQ_CONNECTION_FACTORY.setPassword(this.illuminatiProperties.getPassword());
+            rabbitMQConnectionFactory.setUsername(this.illuminatiProperties.getUserName());
+            rabbitMQConnectionFactory.setPassword(this.illuminatiProperties.getPassword());
         }
     }
 }
