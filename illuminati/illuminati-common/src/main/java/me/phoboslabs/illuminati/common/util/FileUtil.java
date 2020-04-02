@@ -68,7 +68,7 @@ public class FileUtil {
     }
 
     public static void appendDataToFileByOnce(File file, String textData) {
-        if (file.canWrite() == false) {
+        if (!file.canWrite()) {
             FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
             return;
         }
@@ -87,7 +87,7 @@ public class FileUtil {
     }
 
     public static void appendDataToFile(File file, List<String> dataList) {
-        if (file.canWrite() == false) {
+        if (!file.canWrite()) {
             FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
             return;
         }

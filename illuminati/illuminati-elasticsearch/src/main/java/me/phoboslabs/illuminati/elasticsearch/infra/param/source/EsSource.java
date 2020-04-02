@@ -31,7 +31,7 @@ public class EsSource {
     }
 
     public void setSource (String columnName) {
-        if (this.source.contains(columnName) == false) {
+        if (!this.source.contains(columnName)) {
             this.source.add(columnName);
         }
     }

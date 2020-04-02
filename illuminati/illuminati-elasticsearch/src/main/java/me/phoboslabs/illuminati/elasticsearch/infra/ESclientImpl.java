@@ -106,7 +106,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     @Override public String getDataByJson(final String jsonRequestString) throws Exception {
-        if (StringObjectUtils.isValid(jsonRequestString) == false) {
+        if (!StringObjectUtils.isValid(jsonRequestString)) {
             throw new Exception("jsonRequestString must not be null.");
         }
         final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(ES_SEARCH_KEYWORD));

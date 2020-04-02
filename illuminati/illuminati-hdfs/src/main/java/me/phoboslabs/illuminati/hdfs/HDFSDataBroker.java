@@ -105,7 +105,7 @@ public class HDFSDataBroker implements DataBroker {
             PathInfo pathInfo = this.checkPathAndGet(dest, fileSystem);
             Path path = pathInfo.getPath();
             FSDataOutputStream out;
-            if (pathInfo.isExists() == false) {
+            if (!pathInfo.isExists()) {
                 out = fileSystem.create(path);
             } else {
                 if (overwrite) {
@@ -224,7 +224,7 @@ public class HDFSDataBroker implements DataBroker {
     private PathInfo checkPathAndGet(final String source, final FileSystem fileSystem) throws IOException {
         final Path path = new Path(source);
         final boolean fileExists = fileSystem.exists(path);
-        if (fileExists == false) {
+        if (!fileExists) {
             HDFS_PROCESSOR_LOGGER.debug("Target {} does not exists.", source);
         }
         return new PathInfo(path, fileExists);

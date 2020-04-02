@@ -142,11 +142,11 @@ public class IlluminatiClientInit {
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (this.checkConditionOfIlluminatiBasicExecution(pjp) == false) {
+        if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
 
-        if (this.checkSamplingRate(pjp) == false) {
+        if (!this.checkSamplingRate(pjp)) {
             this.illuminatiInitLogger.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -164,11 +164,11 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (this.checkConditionOfIlluminatiBasicExecution(pjp) == false) {
+        if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
 
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             return addToQueue(pjp, request, false);
         }
 
@@ -186,7 +186,7 @@ public class IlluminatiClientInit {
         if (this.checkIgnoreProfile(pjp)) {
             return false;
         }
-        if (this.isActivateIlluminatiSwitch() && this.isOnIlluminatiSwitch() == false) {
+        if (this.isActivateIlluminatiSwitch() && !this.isOnIlluminatiSwitch()) {
             return false;
         }
 

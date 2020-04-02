@@ -176,7 +176,7 @@ public class H2Backup<T> implements Backup<T> {
     @Override public Map<Integer, T> getDataByMap(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception {
         final String selectQuery = this.getSelectQuery(isPaging, from, size);
 
-        if (StringObjectUtils.isValid(selectQuery) == false) {
+        if (!StringObjectUtils.isValid(selectQuery)) {
             throw new Exception("Check your select query.");
         }
 
@@ -199,7 +199,7 @@ public class H2Backup<T> implements Backup<T> {
             throw new Exception(errorMessage);
         }
 
-        if (isAfterDelete && dataMap.isEmpty() == false) {
+        if (isAfterDelete && !dataMap.isEmpty()) {
             for (Map.Entry<Integer, T> entry : dataMap.entrySet()) {
                 this.deleteById(entry.getKey());
             }

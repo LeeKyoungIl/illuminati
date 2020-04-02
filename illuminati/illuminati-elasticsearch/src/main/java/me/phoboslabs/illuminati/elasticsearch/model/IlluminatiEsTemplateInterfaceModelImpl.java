@@ -81,7 +81,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public String getBaseEsUrl(final String baseUrl) throws Exception {
-        if (StringObjectUtils.isValid(baseUrl) == false) {
+        if (!StringObjectUtils.isValid(baseUrl)) {
             final String errorMessage = "Sorry. baseUrl of Elasticsearch is required value.";
             ES_CONSUMER_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
@@ -102,7 +102,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
     @Override public String getEsUrl(final String baseUrl) throws Exception {
         final String baseEsUrl = this.getBaseEsUrl(baseUrl);
-        if (StringObjectUtils.isValid(baseEsUrl) == false) {
+        if (!StringObjectUtils.isValid(baseEsUrl)) {
             throw new Exception("baseEsUrl must not be null.");
         }
 
@@ -137,7 +137,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     private void setPostContentResultData () {
         final String postContentBody = this.header.getPostContentBody();
 
-        if (StringObjectUtils.isValid(postContentBody) == false) {
+        if (!StringObjectUtils.isValid(postContentBody)) {
             return;
         }
 
@@ -164,7 +164,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         try {
             final String userAgent = this.header.getUserAgent();
 
-            if (StringObjectUtils.isValid(userAgent) == false) {
+            if (!StringObjectUtils.isValid(userAgent)) {
                 return;
             }
 
@@ -217,7 +217,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     @Override public String getEsAuthString () throws Exception {
-        if (this.isSetUserAuth() == false) {
+        if (!this.isSetUserAuth()) {
             throw new Exception("Elasticsearch user auth not set.");
         }
         StringBuilder authInfo = new StringBuilder(this.esUserName).append(":").append(this.esUserPass);
@@ -253,8 +253,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             }
 
             if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {
-                if (this.mapPackageName.equalsIgnoreCase(className) == false
-                        && this.listPackageName.equalsIgnoreCase(className) == false) {
+                if (!this.mapPackageName.equalsIgnoreCase(className)
+                        && !this.listPackageName.equalsIgnoreCase(className)) {
                     final GroupMapping annotatedOnField = field.getAnnotation(GroupMapping.class);
                     esIndexMappingBuilder.setMapping(clazz.getSimpleName(), field.getName(), annotatedOnField.mappingType());
                 }

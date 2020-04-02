@@ -82,7 +82,7 @@ public class SystemUtil {
         final String keyName = illuminatiTransactionIdType.getValue();
 
         String trxId = SystemUtil.getValueFromHeaderByKey(request, keyName);
-        if (StringObjectUtils.isValid(trxId) == false && request != null) {
+        if (!StringObjectUtils.isValid(trxId) && request != null) {
             switch (illuminatiTransactionIdType) {
                 case ILLUMINATI_PROC_ID :
                 case ILLUMINATI_G_PROC_ID :
@@ -95,7 +95,7 @@ public class SystemUtil {
             }
         }
 
-        if (StringObjectUtils.isValid(trxId) == false) {
+        if (!StringObjectUtils.isValid(trxId)) {
             throw new Exception("trxId must not be null.");
         }
 
@@ -121,8 +121,8 @@ public class SystemUtil {
     }
 
     private static boolean isThreadNameValidated(final String threadName) {
-        return StringUtils.isEmpty(threadName) == false
-                && IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName) == false;
+        return !StringUtils.isEmpty(threadName)
+                && !IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName);
     }
 
     public static void createSystemThread (final Runnable runnable, final String threadName) {

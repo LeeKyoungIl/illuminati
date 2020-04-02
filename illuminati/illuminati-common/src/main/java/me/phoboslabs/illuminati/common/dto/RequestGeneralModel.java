@@ -89,13 +89,13 @@ public class RequestGeneralModel {
         }
 
         for (String key : CLIENT_INFO_KEY_LIST) {
-            if (clientInfoMap.containsKey(key) == false) {
+            if (!clientInfoMap.containsKey(key)) {
                 continue;
             }
             try {
                 String value = clientInfoMap.get(key);
 
-                if (CLIENT_IP_KEYWORD.equals(key) && StringObjectUtils.isValid(value) == false) {
+                if (CLIENT_IP_KEYWORD.equals(key) && !StringObjectUtils.isValid(value)) {
                     value = clientInfoMap.get(REMOTE_ADDR_KEYWORD);
                 }
 

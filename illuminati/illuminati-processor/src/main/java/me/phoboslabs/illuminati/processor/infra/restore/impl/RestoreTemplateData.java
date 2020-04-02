@@ -87,7 +87,7 @@ public class RestoreTemplateData implements Restore {
     }
 
     private boolean readyToRestoreQueue() {
-        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get() == false) {
+        if (!IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
             return false;
         }
 
@@ -117,7 +117,7 @@ public class RestoreTemplateData implements Restore {
                 while (true) {
                     try {
                         if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
-                            if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+                            if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
                                 restoreToQueue();
                             } else {
                                 restoreToQueueByDebug();

@@ -54,7 +54,7 @@ public class EsDataImpl implements EsData {
     }
 
     public EsDataImpl (final String sourceData) throws ValidationException {
-        if (StringObjectUtils.isValid(sourceData) == false) {
+        if (!StringObjectUtils.isValid(sourceData)) {
             throw new ValidationException("source data is a required value.");
         }
 
@@ -86,11 +86,11 @@ public class EsDataImpl implements EsData {
     }
 
     private void initBasicSearchData (Map<String, Object> resultMap) {
-        if (resultMap.containsKey(HITS_KEYWORD) == false) {
+        if (!resultMap.containsKey(HITS_KEYWORD)) {
             return;
         }
         Map<String, Object> bufEsDataMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(HITS_KEYWORD)));
-        if (bufEsDataMap.containsKey(HITS_KEYWORD) == false) {
+        if (!bufEsDataMap.containsKey(HITS_KEYWORD)) {
             return;
         }
         if (bufEsDataMap.containsKey(MAX_SCORE_KEYWORD)) {

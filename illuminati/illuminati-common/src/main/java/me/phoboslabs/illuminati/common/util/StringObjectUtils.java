@@ -44,7 +44,7 @@ public class StringObjectUtils {
     }
 
     public static boolean isNotValid(final String value) {
-        return isValid(value) == false;
+        return !isValid(value);
     }
 
     public static byte[] gzipMessage(final String message) throws Exception {
@@ -145,7 +145,7 @@ public class StringObjectUtils {
     }
 
     public static String removeDotAndUpperCase (final String value) throws Exception {
-        if (isValid(value) == false) {
+        if (!isValid(value)) {
             throw new Exception("value must not be null.");
         }
 
