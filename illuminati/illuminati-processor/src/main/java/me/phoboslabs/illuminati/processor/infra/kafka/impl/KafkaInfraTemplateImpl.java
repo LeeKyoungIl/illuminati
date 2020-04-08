@@ -16,6 +16,7 @@
 
 package me.phoboslabs.illuminati.processor.infra.kafka.impl;
 
+import me.phoboslabs.illuminati.common.util.NetworkUtil;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
 import me.phoboslabs.illuminati.processor.exception.ValidationException;
@@ -133,7 +134,30 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     }
 
     @Override public boolean canIConnect() {
-        return this.kafkaProducer != null;
+        if (this.kafkaProducer == null ) {
+            return false;
+        }
+
+        try {
+            for (String clusterAddress : this.illuminatiProperties.getClusterArrayList()) {
+                final String[] clusterAddressInfo = clusterAddress.split(":");
+                if (clusterAddressInfo.length != 2) {
+                    this.kafkaProducer.close();
+                    return false;
+                } else {
+                    boolean connectResult = NetworkUtil.canIConnect(clusterAddressInfo[0], Integer.parseInt(clusterAddressInfo[1]));
+                    if (!connectResult) {
+                        this.kafkaProducer.close();
+                        return false;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            this.kafkaProducer.close();
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -149,7 +173,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         try {
             Class.forName(KAFKA_BROKER_CLASS_NAME);
         } catch (ClassNotFoundException cex) {
-            throw new ValidationException(cex.getCause().getMessage());
+            throw new ValidationException(cex.toString());
         }
     }
 

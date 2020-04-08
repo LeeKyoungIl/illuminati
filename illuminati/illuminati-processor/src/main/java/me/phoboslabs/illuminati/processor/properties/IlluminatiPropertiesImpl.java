@@ -20,7 +20,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/16/2018.
@@ -74,6 +78,15 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
 
     public String getClusterList() {
         return StringObjectUtils.isValid(this.clusterList) ? this.clusterList : null;
+    }
+
+    public List<String> getClusterArrayList() throws Exception {
+        if (StringObjectUtils.isValid(this.clusterList)) {
+            final String[] splitedClusterList = this.clusterList.split(",");
+            return Arrays.stream(splitedClusterList).map(String::trim).collect(Collectors.toList());
+        } else {
+            throw new Exception("clusterList is empty.");
+        }
     }
 
     public String getVirtualHost() {

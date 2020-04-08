@@ -25,7 +25,7 @@ public class KafkaConstant {
     public final static String VALUE_PARTITIONER = "me.phoboslabs.illuminati.processor.infra.kafka.impl.RoundRobinPartitioner";
     public final static int VALUE_ASYNC_MAX_MESSAGE_AT_ONCE = 256;
     public final static int VALUE_LINGER_MS_SIZE = 10000;
-    public final static int VALUE_RETRIES_CONFIG = 1;
+    public final static int VALUE_RETRIES_CONFIG = 0;
     public final static int VALUE_METADATA_MAX_AGE_CONFIG = 100000;
     public final static int VALUE_MAX_REQUEST_SIZE_CONFIG = 5000000;
     public final static int VALUE_RECONNECT_BACKOFF_MS_CONFIG = 100;

@@ -80,18 +80,18 @@
             <!--<scope>compile</scope>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>4.3.0</version>
-            <scope>compile</scope>
-        </dependency>
-
 <!--        <dependency>-->
-<!--            <groupId>org.apache.kafka</groupId>-->
-<!--            <artifactId>kafka-clients</artifactId>-->
-<!--            <version>2.3.1</version>-->
+<!--            <groupId>com.rabbitmq</groupId>-->
+<!--            <artifactId>amqp-client</artifactId>-->
+<!--            <version>4.3.0</version>-->
+<!--            <scope>compile</scope>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
         <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
         <dependency>
