@@ -24,6 +24,7 @@ import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
 import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
 import me.phoboslabs.illuminati.processor.infra.kafka.constants.KafkaConstant;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.kafka.clients.producer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,23 +139,33 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
             return false;
         }
 
+        boolean canIConnect = true;
         try {
-            for (String clusterAddress : this.illuminatiProperties.getClusterArrayList()) {
-                final String[] clusterAddressInfo = clusterAddress.split(":");
-                if (clusterAddressInfo.length != 2) {
-                    this.kafkaProducer.close();
-                    return false;
-                } else {
-                    boolean connectResult = NetworkUtil.canIConnect(clusterAddressInfo[0], Integer.parseInt(clusterAddressInfo[1]));
-                    if (!connectResult) {
-                        this.kafkaProducer.close();
-                        return false;
+            if (CollectionUtils.isNotEmpty(this.illuminatiProperties.getClusterArrayList())) {
+                for (String clusterAddress : this.illuminatiProperties.getClusterArrayList()) {
+                    final String[] clusterAddressInfo = clusterAddress.split(":");
+                    if (clusterAddressInfo.length != 2) {
+                        KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster({}). maybe typo in cluster address string.", clusterAddress);
+                        canIConnect = false;
+                    } else {
+                        boolean connectResult = NetworkUtil.canIConnect(clusterAddressInfo[0], Integer.parseInt(clusterAddressInfo[1]));
+                        if (!connectResult) {
+                            KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster. connection error ({})", clusterAddress);
+                            canIConnect = false;
+                        }
                     }
                 }
+            } else {
+                KAFKA_TEMPLATE_IMPL_LOGGER.error("cluster address string is required value.");
+                canIConnect = false;
             }
         } catch (Exception ex) {
+            KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster.", ex);
+            canIConnect = false;
+        }
+
+        if (!canIConnect) {
             this.kafkaProducer.close();
-            return false;
         }
 
         return true;
