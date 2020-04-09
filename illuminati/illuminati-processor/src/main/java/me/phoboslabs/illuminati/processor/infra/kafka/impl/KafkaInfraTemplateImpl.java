@@ -29,6 +29,7 @@ import org.apache.kafka.clients.producer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
@@ -141,8 +142,9 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
         boolean canIConnect = true;
         try {
-            if (CollectionUtils.isNotEmpty(this.illuminatiProperties.getClusterArrayList())) {
-                for (String clusterAddress : this.illuminatiProperties.getClusterArrayList()) {
+            List<String> clusterList = this.illuminatiProperties.getClusterArrayList();
+            if (CollectionUtils.isNotEmpty(clusterList)) {
+                for (String clusterAddress : clusterList) {
                     final String[] clusterAddressInfo = clusterAddress.split(":");
                     if (clusterAddressInfo.length != 2) {
                         KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster({}). maybe typo in cluster address string.", clusterAddress);
