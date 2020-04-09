@@ -302,7 +302,7 @@ public class IlluminatiClientInit {
             originMethodExecute.put("result", pjp.proceed());
         } catch (Throwable ex) {
             originMethodExecute.put("throwable", ex);
-            this.illuminatiInitLogger.error("error : check your process. ({})", ex.getCause().getMessage(), ex);
+            this.illuminatiInitLogger.error("error : check your process. ({})", ex.toString(), ex);
             originMethodExecute.put("result", StringObjectUtils.getExceptionMessageChain(ex));
         }
 

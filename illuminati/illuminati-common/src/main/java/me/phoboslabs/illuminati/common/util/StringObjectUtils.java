@@ -64,7 +64,7 @@ public class StringObjectUtils {
 
             return bos.toByteArray();
         } catch (IOException e) {
-            throw new Exception(e.getCause().getMessage());
+            throw new Exception(e.toString());
         }
     }
 
@@ -204,7 +204,7 @@ public class StringObjectUtils {
 
             return ba;
         } catch (CharacterCodingException ex) {
-            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.toString()+")";
             STRINGUTIL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }

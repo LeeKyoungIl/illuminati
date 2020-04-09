@@ -123,12 +123,12 @@ public class HDFSDataBroker implements DataBroker {
             try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
                 return this.writeFileSystem(fileInputStream, out);
             } catch (Exception ex) {
-                HDFS_PROCESSOR_LOGGER.error("An error occurred checking of file input stream. ({})", ex.getCause().getMessage());
+                HDFS_PROCESSOR_LOGGER.error("An error occurred checking of file input stream. ({})", ex.toString());
             } finally {
                 out.close();
             }
         } catch (Exception ex) {
-            HDFS_PROCESSOR_LOGGER.error("An error occurred checking of file system. ({})", ex.getCause().getMessage());
+            HDFS_PROCESSOR_LOGGER.error("An error occurred checking of file system. ({})", ex.toString());
         }
         return false;
     }
@@ -145,7 +145,7 @@ public class HDFSDataBroker implements DataBroker {
             final int wroteSize = out.size();
             return wroteSize > 0;
         } catch (Exception ex) {
-            HDFS_PROCESSOR_LOGGER.error("An error occurred writing to file system. ({})", ex.getCause().getMessage());
+            HDFS_PROCESSOR_LOGGER.error("An error occurred writing to file system. ({})", ex.toString());
         }
         return false;
     }
@@ -159,7 +159,7 @@ public class HDFSDataBroker implements DataBroker {
             }
             return this.readFileSystem(fileSystem, pathInfo.getPath());
         } catch (Exception ex) {
-            final String errorMessage = "An error occurred reading of file system. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "An error occurred reading of file system. ("+ex.toString()+")";
             HDFS_PROCESSOR_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }
@@ -169,7 +169,7 @@ public class HDFSDataBroker implements DataBroker {
         try (FSDataInputStream in = fileSystem.open(path)) {
             return this.getStringFromFSDataInputStream(in);
         } catch (Exception ex) {
-            final String errorMessage = "An error occurred reading from file system. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "An error occurred reading from file system. ("+ex.toString()+")";
             HDFS_PROCESSOR_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }
@@ -182,7 +182,7 @@ public class HDFSDataBroker implements DataBroker {
             IOUtils.copy(in, stringWriter, this.utf8CharsetString);
             return stringWriter.toString();
         } catch (Exception ex) {
-            final String errorMessage = "An error occurred processing of StringWriter. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "An error occurred processing of StringWriter. ("+ex.toString()+")";
             HDFS_PROCESSOR_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }
@@ -197,7 +197,7 @@ public class HDFSDataBroker implements DataBroker {
             }
             return fileSystem.delete(pathInfo.getPath(), forceDelete);
         } catch (Exception ex) {
-            HDFS_PROCESSOR_LOGGER.error("An error occurred deleting of file. ({})", ex.getCause().getMessage());
+            HDFS_PROCESSOR_LOGGER.error("An error occurred deleting of file. ({})", ex.toString());
         }
         return false;
     }
@@ -211,7 +211,7 @@ public class HDFSDataBroker implements DataBroker {
             }
             return fileSystem.mkdirs(pathInfo.getPath());
         } catch (Exception ex) {
-            HDFS_PROCESSOR_LOGGER.error("An error occurred make dir. ({})", ex.getCause().getMessage());
+            HDFS_PROCESSOR_LOGGER.error("An error occurred make dir. ({})", ex.toString());
         }
         return false;
     }

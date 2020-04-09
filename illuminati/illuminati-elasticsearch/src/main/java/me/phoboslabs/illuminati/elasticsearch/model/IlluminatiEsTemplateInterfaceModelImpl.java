@@ -94,7 +94,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
         } catch (Exception ex) {
-            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")";
             ES_CONSUMER_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
@@ -117,7 +117,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
                     .append("?refresh=")
                     .append(esDocument.refreshType().getValue()).toString();
         } catch (Exception ex) {
-            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")";
             ES_CONSUMER_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
@@ -156,7 +156,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
                 }
             }
         } catch (Exception ex) {
-            ES_CONSUMER_LOGGER.error("Sorry. an error occurred during parsing of post content. ({})", ex.getCause().getMessage(), ex);
+            ES_CONSUMER_LOGGER.error("Sorry. an error occurred during parsing of post content. ({})", ex.toString(), ex);
         }
     }
 
@@ -174,7 +174,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             this.setUserOs(agent);
             this.setUserDevice(agent);
         } catch (Exception ex) {
-            ES_CONSUMER_LOGGER.error("Sorry. parsing failed. ({})", ex.getCause().getMessage(), ex);
+            ES_CONSUMER_LOGGER.error("Sorry. parsing failed. ({})", ex.toString(), ex);
         }
     }
 

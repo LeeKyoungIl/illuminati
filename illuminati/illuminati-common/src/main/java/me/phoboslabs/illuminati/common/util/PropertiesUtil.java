@@ -165,7 +165,7 @@ public class PropertiesUtil {
             prop.load(input);
             return prop;
         } catch (IOException ex) {
-            throw new IOException(ex.getCause().getMessage());
+            throw new IOException(ex.toString());
         }
     }
 }

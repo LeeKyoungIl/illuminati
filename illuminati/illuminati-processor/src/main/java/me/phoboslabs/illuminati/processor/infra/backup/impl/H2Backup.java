@@ -155,11 +155,11 @@ public class H2Backup<T> implements Backup<T> {
                 try {
                     dataList.add(IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
                 } catch (JsonSyntaxException ex) {
-                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getCause().getMessage());
+                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.toString());
                 }
             }
         } catch (SQLException e) {
-            final String errorMessage = "Failed to select data from Table. ("+e.getCause().getMessage()+")";
+            final String errorMessage = "Failed to select data from Table. ("+e.toString()+")";
             this.h2BackupLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -190,11 +190,11 @@ public class H2Backup<T> implements Backup<T> {
                 try {
                     dataMap.put(rs.getInt("ID"), IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
                 } catch (JsonSyntaxException ex) {
-                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.getCause().getMessage());
+                    this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.toString());
                 }
             }
         } catch (SQLException e) {
-            final String errorMessage = "Failed to select data from Table. ("+e.getCause().getMessage()+")";
+            final String errorMessage = "Failed to select data from Table. ("+e.toString()+")";
             this.h2BackupLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -235,7 +235,7 @@ public class H2Backup<T> implements Backup<T> {
             }
             return count;
         } catch (SQLException e) {
-            final String errorMessage = "Failed to select data from Table. ("+e.getCause().getMessage()+")";
+            final String errorMessage = "Failed to select data from Table. ("+e.toString()+")";
             this.h2BackupLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }

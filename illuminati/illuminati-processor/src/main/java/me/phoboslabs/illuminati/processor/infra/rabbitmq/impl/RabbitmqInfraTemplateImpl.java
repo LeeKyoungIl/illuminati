@@ -107,7 +107,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         try {
             Class.forName(RABBIT_BROKER_CLASS_NAME);
         } catch (ClassNotFoundException cex) {
-            throw new ValidationException(cex.getCause().getMessage());
+            throw new ValidationException(cex.toString());
         }
     }
 
@@ -146,10 +146,10 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send exception log");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : "+ex.getCause().getMessage());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : "+ex.toString());
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
 
-            throw new PublishMessageException("failed to publish message : " + ex.getCause().getMessage());
+            throw new PublishMessageException("failed to publish message : " + ex.toString());
         }
         finally {
             this.sending = false;
@@ -157,8 +157,12 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     }
 
     @Override public boolean canIConnect() {
-        return this.amqpChannel != null && this.amqpChannel.isOpen()
-            && this.amqpConnection != null && this.amqpConnection.isOpen();
+        boolean canIConnect = this.amqpChannel != null && this.amqpChannel.isOpen()
+                                && this.amqpConnection != null && this.amqpConnection.isOpen();
+        if (!canIConnect) {
+            this.connectionClose();
+        }
+        return canIConnect;
     }
 
     private synchronized void createConnection (ConnectionFactory rabbitMQConnectionFactory) {
@@ -167,11 +171,11 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             final ExecutorService executor = Executors.newSingleThreadExecutor();
             this.amqpConnection = rabbitMQConnectionFactory.newConnection(executor, this.getClusterList());
         } catch (IOException ex) {
-            final String errorMessage = "error : cluster host had a problem. " + ex.getCause().getMessage();
+            final String errorMessage = "error : cluster host had a problem. " + ex.toString();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new CommunicationException(errorMessage);
         } catch (TimeoutException ex) {
-            final String errorMessage = "error : there was a problem communicating with the spring. " + ex.getCause().getMessage();
+            final String errorMessage = "error : there was a problem communicating with the spring. " + ex.toString();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new CommunicationException(errorMessage);
         }
@@ -181,6 +185,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         } catch (Exception ex) {
             final String errorMessage = "error : amqp channel create had a problem. " + ex.getMessage();
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
+            this.connectionClose();
             throw new CommunicationException(errorMessage);
         }
     }
@@ -198,7 +203,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             }
             return amqpChannel;
         } catch (IOException ex) {
-            final String errorMessage = "error : create connection channel has failed.. ("+ex.getCause().getMessage()+")";
+            final String errorMessage = "error : create connection channel has failed.. ("+ex.toString()+")";
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }

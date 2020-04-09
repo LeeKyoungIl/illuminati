@@ -71,7 +71,7 @@ public class EsDataImpl implements EsData {
                 this.initBasicSearchData(resultMap);
             }
         } catch (JsonSyntaxException ex) {
-            this.logger.error("Failed to Read json - JsonSyntaxException {}", ex.getCause().getMessage(), ex);
+            this.logger.error("Failed to Read json - JsonSyntaxException {}", ex.toString(), ex);
         }
     }
 

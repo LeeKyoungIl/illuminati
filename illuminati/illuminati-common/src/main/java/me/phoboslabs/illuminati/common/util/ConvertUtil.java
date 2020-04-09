@@ -98,7 +98,7 @@ public class ConvertUtil {
             try{
                 map.put(fields[i].getName(), fields[i].get(obj));
             } catch(Exception e){
-                throw new Exception(e.getCause().getMessage());
+                throw new Exception(e.toString());
             }
         }
         return map;
