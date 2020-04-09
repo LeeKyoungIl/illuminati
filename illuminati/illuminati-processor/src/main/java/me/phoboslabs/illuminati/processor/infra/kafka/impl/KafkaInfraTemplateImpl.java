@@ -170,7 +170,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
             this.kafkaProducer.close();
         }
 
-        return true;
+        return canIConnect;
     }
 
     @Override
