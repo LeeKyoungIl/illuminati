@@ -391,7 +391,7 @@ public class RequestHeaderModel {
             try {
                 this.postContentBody = StringObjectUtils.getPostBodyString(request);
             } catch (IOException ex) {
-                REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ({})", ex.getMessage(), ex);
+                REQUEST_HEADER_MODEL_LOGGER.error("Sorry. check your formData. ({})", ex.toString(), ex);
             }
         }
 

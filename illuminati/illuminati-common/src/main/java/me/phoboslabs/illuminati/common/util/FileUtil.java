@@ -57,7 +57,7 @@ public class FileUtil {
             FILE_UTIL_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         } catch (IOException e) {
-            final String errorMessage = "File create error : ".concat(e.getMessage());
+            final String errorMessage = "File create error : ".concat(e.toString());
             FILE_UTIL_LOGGER.error(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -68,7 +68,7 @@ public class FileUtil {
     }
 
     public static void appendDataToFileByOnce(File file, String textData) {
-        if (file.canWrite() == false) {
+        if (!file.canWrite()) {
             FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
             return;
         }
@@ -82,12 +82,12 @@ public class FileUtil {
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds");
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : {}", e.getMessage(), e);
+            FILE_UTIL_LOGGER.error("File write error : {}", e.toString(), e);
         }
     }
 
     public static void appendDataToFile(File file, List<String> dataList) {
-        if (file.canWrite() == false) {
+        if (!file.canWrite()) {
             FILE_UTIL_LOGGER.error("Can't write file : " + file.getAbsolutePath());
             return;
         }
@@ -101,7 +101,7 @@ public class FileUtil {
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds (" + dataList.size() + " line)");
         } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : {}", e.getMessage(), e);
+            FILE_UTIL_LOGGER.error("File write error : {}", e.toString(), e);
         }
     }
 
@@ -128,7 +128,7 @@ public class FileUtil {
         try {
             return FileUtils.readLines(fileOb, ENCODING);
         } catch (IOException e) {
-            final String errorMessage = "check your file.".concat(e.getMessage());
+            final String errorMessage = "check your file.".concat(e.toString());
             FILE_UTIL_LOGGER.info(errorMessage);
             throw new Exception(errorMessage);
         }

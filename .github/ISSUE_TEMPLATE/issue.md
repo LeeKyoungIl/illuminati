@@ -1,7 +1,5 @@
 ---
-name: 일반 이슈
+name: general issue
 about: blank template
 
 ---
-
-

@@ -90,11 +90,24 @@ public class IlluminatiClientInit {
             }
             ILLUMINATI_INITIALIZED = true;
 
+            final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "broker", "unknown");
+            final String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "clusterList", "unknown");
+
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            System.out.println("@ The illuminati is now activated.                            @");
+            System.out.println("@ The illuminati is now activated.                             ");
+            System.out.println("@ Broker Type : "+brokerType+"                                 ");
+            System.out.println("@ Cluster List : "+clusterList+"                               ");
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         } catch (Exception ex) {
-            System.out.println("The illuminati failed to initialize. check configuration files.");
+            System.out.println("################################################################");
+            System.out.println("# The illuminati is not activated.                             #");
+            System.out.println("################################################################");
+            System.out.println("");
+            System.out.println("The illuminati failed to initialize. check "+System.getProperty("spring.profiles.active")+" configuration files.");
+            System.out.println("");
+            System.out.println("Check the following message. ↓↓");
+            System.out.println(ex.toString());
+            System.out.println("");
         }
     }
 
@@ -129,11 +142,11 @@ public class IlluminatiClientInit {
     }
 
     public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (this.checkConditionOfIlluminatiBasicExecution(pjp) == false) {
+        if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
 
-        if (this.checkSamplingRate(pjp) == false) {
+        if (!this.checkSamplingRate(pjp)) {
             this.illuminatiInitLogger.debug("ignore illuminati processor.");
             return pjp.proceed();
         }
@@ -151,11 +164,11 @@ public class IlluminatiClientInit {
      * @throws Throwable
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
-        if (this.checkConditionOfIlluminatiBasicExecution(pjp) == false) {
+        if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
 
-        if (IlluminatiConstant.ILLUMINATI_DEBUG == false) {
+        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             return addToQueue(pjp, request, false);
         }
 
@@ -173,7 +186,7 @@ public class IlluminatiClientInit {
         if (this.checkIgnoreProfile(pjp)) {
             return false;
         }
-        if (this.isActivateIlluminatiSwitch() && this.isOnIlluminatiSwitch() == false) {
+        if (this.isActivateIlluminatiSwitch() && !this.isOnIlluminatiSwitch()) {
             return false;
         }
 
@@ -283,13 +296,13 @@ public class IlluminatiClientInit {
     }
 
     private Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {
-        final Map<String, Object> originMethodExecute = new HashMap<String, Object>();
+        final Map<String, Object> originMethodExecute = new HashMap<>();
 
         try {
             originMethodExecute.put("result", pjp.proceed());
         } catch (Throwable ex) {
             originMethodExecute.put("throwable", ex);
-            this.illuminatiInitLogger.error("error : check your process. ({})", ex.getMessage(), ex);
+            this.illuminatiInitLogger.error("error : check your process. ({})", ex.toString(), ex);
             originMethodExecute.put("result", StringObjectUtils.getExceptionMessageChain(ex));
         }
 

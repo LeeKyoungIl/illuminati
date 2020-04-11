@@ -38,7 +38,7 @@ public class EsGroupByBuilder {
     }
 
     public EsGroupByBuilder setGroupByKey (String groupByKey) {
-        if (StringObjectUtils.isValid(groupByKey) == false) {
+        if (!StringObjectUtils.isValid(groupByKey)) {
             return this;
         }
         this.esGroupBy.setGroupBy(groupByKey);

@@ -80,7 +80,7 @@ public class ConvertUtil {
     }
 
     private static <T> void checkCast(Class<T> clazz, Object obj) {
-        if (obj != null && clazz.isInstance(obj) == false) {
+        if (obj != null && !clazz.isInstance(obj)) {
             StringBuilder exMessage = new StringBuilder()
                                         .append("Expected : " + clazz.getName())
                                         .append("Was : " + obj.getClass().getName())
@@ -98,7 +98,7 @@ public class ConvertUtil {
             try{
                 map.put(fields[i].getName(), fields[i].get(obj));
             } catch(Exception e){
-                throw new Exception(e.getMessage());
+                throw new Exception(e.toString());
             }
         }
         return map;

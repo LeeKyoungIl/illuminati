@@ -61,7 +61,7 @@ public class H2ConnectionFactory {
         try {
             Class.forName(DB_DRIVER);
         } catch (ClassNotFoundException e) {
-            final String errorMessage = "H2 driver class not found. ("+e.getMessage()+")";
+            final String errorMessage = "H2 driver class not found. ("+e.toString()+")";
             h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -71,7 +71,7 @@ public class H2ConnectionFactory {
             dbConnection.setAutoCommit(true);
             return dbConnection;
         } catch (SQLException e) {
-            final String errorMessage = "Failed to create H2 connection. ("+e.getMessage()+")";
+            final String errorMessage = "Failed to create H2 connection. ("+e.toString()+")";
             h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }

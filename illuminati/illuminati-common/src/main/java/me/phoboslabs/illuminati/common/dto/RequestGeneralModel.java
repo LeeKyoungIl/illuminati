@@ -69,11 +69,11 @@ public class RequestGeneralModel {
                     field.set(this, entry.getValue().toString());
                 }
             } catch (NoSuchFieldException ex) {
-                final String errorMessage = "Sorry. check your class field. ("+ex.getMessage()+")";
+                final String errorMessage = "Sorry. check your class field. ("+ex.toString()+")";
                 REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage, ex);
                 throw new Exception(errorMessage);
             } catch (IllegalAccessException ex) {
-                final String errorMessage = "Sorry. check your class field permission. ("+ex.getMessage()+")";
+                final String errorMessage = "Sorry. check your class field permission. ("+ex.toString()+")";
                 REQUEST_GENERAL_MODEL_LOGGER.error(errorMessage, ex);
                 throw new Exception(errorMessage);
             }
@@ -89,13 +89,13 @@ public class RequestGeneralModel {
         }
 
         for (String key : CLIENT_INFO_KEY_LIST) {
-            if (clientInfoMap.containsKey(key) == false) {
+            if (!clientInfoMap.containsKey(key)) {
                 continue;
             }
             try {
                 String value = clientInfoMap.get(key);
 
-                if (CLIENT_IP_KEYWORD.equals(key) && StringObjectUtils.isValid(value) == false) {
+                if (CLIENT_IP_KEYWORD.equals(key) && !StringObjectUtils.isValid(value)) {
                     value = clientInfoMap.get(REMOTE_ADDR_KEYWORD);
                 }
 
@@ -129,7 +129,7 @@ public class RequestGeneralModel {
                 this.methodParams = paramMap;
             }
         } catch (Exception ex) {
-            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class method params. ({})", ex.getMessage(), ex);
+            REQUEST_GENERAL_MODEL_LOGGER.error("Sorry. check your class method params. ({})", ex.toString(), ex);
         }
     }
 

@@ -83,7 +83,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
             try {
                 httpPutRequest.setHeader("Authorization", "Basic " + this.esAuthString);
             } catch (Exception ex) {
-                this.logger.error("Sorry. something is wrong in encoding es user auth info. ({})", ex.getMessage(), ex);
+                this.logger.error("Sorry. something is wrong in encoding es user auth info. ({})", ex.toString(), ex);
             }
         }
 
@@ -94,7 +94,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         try {
             httpResponse = this.httpClient.execute(httpPutRequest);
         } catch (IOException e) {
-            this.logger.error("Sorry. something is wrong in Http Request. ({})", e.getMessage(), e);
+            this.logger.error("Sorry. something is wrong in Http Request. ({})", e.toString(), e);
         } finally {
             try {
                 httpPutRequest.releaseConnection();
@@ -106,7 +106,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     @Override public String getDataByJson(final String jsonRequestString) throws Exception {
-        if (StringObjectUtils.isValid(jsonRequestString) == false) {
+        if (!StringObjectUtils.isValid(jsonRequestString)) {
             throw new Exception("jsonRequestString must not be null.");
         }
         final HttpRequestBase httpPostRequest = new HttpPost(this.getRequestUrl(ES_SEARCH_KEYWORD));
@@ -146,7 +146,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         try {
             httpResponse = this.httpClient.execute(httpRequestBase);
         } catch (IOException e) {
-            this.logger.error("Sorry. something is wrong in Http Request. ({})", e.getMessage(), e);
+            this.logger.error("Sorry. something is wrong in Http Request. ({})", e.toString(), e);
             try {
                 httpRequestBase.releaseConnection();
             } catch (Exception ignored) {}
@@ -155,7 +155,7 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         try {
             return EntityUtils.toString(httpResponse.getEntity(), Charset.forName(IlluminatiConstant.BASE_CHARSET));
         } catch (IOException e) {
-            this.logger.error("Sorry. something is wrong in Parse on Http Response. ({})", e.getMessage(), e);
+            this.logger.error("Sorry. something is wrong in Parse on Http Response. ({})", e.toString(), e);
             return null;
         } finally {
             try {

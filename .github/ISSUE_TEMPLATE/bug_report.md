@@ -1,27 +1,27 @@
 ---
 name: Bug report
-about: 버그 등 오류사항 등록
+about: Registering errors such as bugs
 
 ---
 
-## 테스트 환경
+## Test environment
 
 
 
-## 이슈 발생 환경
+## Environment in which the issue occurred
 
 
 
-## 수행절차
+## Procedure
 
 
 
-## 오류내용
+## Error content
 
 
 
-## 기대결과
+## Expected Results
 
 
 
-## 참고(스크린샷 등)
+Note ## (screen shots, etc.)
