@@ -26,12 +26,12 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 
  - library     
      * [illuminati-annotation:1.2.4](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
-     * [illuminati-common:1.4.10](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
-     * [illuminati-processor:0.9.9.32](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
-     * [illuminati-switch:1.0.16](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
+     * [illuminati-common:1.4.11](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
+     * [illuminati-processor:0.9.9.33](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
+     * [illuminati-switch:1.0.17](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
      * [illuminati-jscollector:0.5.18](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
-     * [illuminati-elasticsearch:0.8.11](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
-     * [illuminati-hdfs:0.1.13](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
+     * [illuminati-elasticsearch:0.8.12](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+     * [illuminati-hdfs:0.1.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
  
  - util
      * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
@@ -91,14 +91,14 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.32</version>
+      <version>0.9.9.33</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
    <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-switch</artifactId>
-       <version>1.0.16</version>
+       <version>1.0.17</version>
    </dependency>
 
    <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
@@ -119,9 +119,9 @@ repositories {
 }
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.32'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.33'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.16'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.17'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
 compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.18'
 ```
