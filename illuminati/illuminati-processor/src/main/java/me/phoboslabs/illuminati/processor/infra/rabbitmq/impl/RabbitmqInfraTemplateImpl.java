@@ -254,7 +254,6 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
         ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor();
         rabbitMQConnectionFactory.setShutdownExecutor(shutdownExecutor);
-
         rabbitMQConnectionFactory.setShutdownTimeout(RabbitmqConstant.VALUE_SHUTDOWN_TIMEOUT_MS);
         rabbitMQConnectionFactory.setRequestedHeartbeat(RabbitmqConstant.VALUE_REQUESTED_HEART_BEAT);
         rabbitMQConnectionFactory.setAutomaticRecoveryEnabled(RabbitmqConstant.VALUE_AUTOMATIC_RECOVERY);
