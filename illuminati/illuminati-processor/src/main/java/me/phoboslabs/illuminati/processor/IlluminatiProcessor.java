@@ -79,7 +79,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                     continue;
                 }
 
-                if (ANNOTATION_ELEMENT_KIND.contains(element.getKind()) == false) {
+                if (!ANNOTATION_ELEMENT_KIND.contains(element.getKind())) {
                     this.messager.printMessage(Kind.ERROR, "The class %s is not class or method."+ element.getSimpleName());
                     break outerloop;
                 }
@@ -91,7 +91,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                     break outerloop;
                 }
 
-                if (this.setGeneratedIlluminatiTemplate(pkg.toString()) == false) {
+                if (!this.setGeneratedIlluminatiTemplate(pkg.toString())) {
                     continue;
                 }
 
@@ -220,7 +220,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 importString.append("import ");
                 importString.append(entry.getKey());
 
-                if ("".equals(entry.getKey()) == false) {
+                if (!"".equals(entry.getKey())) {
                     importString.append(".");
                 }
 

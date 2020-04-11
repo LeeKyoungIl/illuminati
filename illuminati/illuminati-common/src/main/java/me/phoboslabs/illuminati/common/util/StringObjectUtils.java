@@ -44,7 +44,7 @@ public class StringObjectUtils {
     }
 
     public static boolean isNotValid(final String value) {
-        return isValid(value) == false;
+        return !isValid(value);
     }
 
     public static byte[] gzipMessage(final String message) throws Exception {
@@ -64,7 +64,7 @@ public class StringObjectUtils {
 
             return bos.toByteArray();
         } catch (IOException e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e.toString());
         }
     }
 
@@ -145,7 +145,7 @@ public class StringObjectUtils {
     }
 
     public static String removeDotAndUpperCase (final String value) throws Exception {
-        if (isValid(value) == false) {
+        if (!isValid(value)) {
             throw new Exception("value must not be null.");
         }
 
@@ -204,7 +204,7 @@ public class StringObjectUtils {
 
             return ba;
         } catch (CharacterCodingException ex) {
-            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.getMessage()+")";
+            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.toString()+")";
             STRINGUTIL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }

@@ -33,7 +33,7 @@ public class PathInfo {
     }
 
     public boolean isNotExists() {
-        return this.isExists == false;
+        return !this.isExists;
     }
 
     public Path getPath() {

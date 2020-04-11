@@ -36,7 +36,7 @@ public class EsSourceBuilder {
     }
 
     public EsSourceBuilder setSource (String column) {
-        if (StringObjectUtils.isValid(column) == false) {
+        if (!StringObjectUtils.isValid(column)) {
             return this;
         }
         this.esSource.setSource(column);

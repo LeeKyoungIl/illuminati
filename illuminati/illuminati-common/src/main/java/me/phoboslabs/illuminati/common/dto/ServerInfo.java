@@ -56,7 +56,7 @@ public class ServerInfo {
             this.serverIp = ip.getHostAddress();
             this.hostName = ip.getHostName();
         } catch (UnknownHostException ex) {
-            SERVER_INFO_LOGGER.error("Sorry. check your spring network. ({})", ex.getMessage(), ex);
+            SERVER_INFO_LOGGER.error("Sorry. check your spring network. ({})", ex.toString(), ex);
         }
     }
 

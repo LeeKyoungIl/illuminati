@@ -17,7 +17,7 @@
 <dependency>
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-hdfs</artifactId>
-    <version>0.1.13</version>
+    <version>0.1.14</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -27,7 +27,7 @@
     
 ```java
 
-compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.13'
+compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.14'
 ```
 
 ## Example

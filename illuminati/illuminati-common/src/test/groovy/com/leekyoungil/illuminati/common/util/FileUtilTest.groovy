@@ -27,13 +27,13 @@ class FileUtilTest extends Specification {
         when:
         boolean directoryIsExists = FileUtil.isDirectoryExists(directoryName);
         boolean madeDirectory = false;
-        if (directoryIsExists == false) {
+        if (!directoryIsExists) {
             madeDirectory = FileUtil.createDirectory(directoryName);
         }
 
         then:
         directoryIsExists == true;
-        madeDirectory == false;
+        !madeDirectory;
     }
 
     def "file name generate test" () {
@@ -69,7 +69,7 @@ class FileUtilTest extends Specification {
         fileName = FileUtil.generateFileName();
         boolean isFileExists = FileUtil.isFileExists(basePath, fileName);
         File fileObj = null;
-        if (isFileExists == false) {
+        if (!isFileExists) {
             fileObj = FileUtil.generateFile(basePath, fileName);
             isFileExists = FileUtil.isFileExists(basePath, fileName);
         }

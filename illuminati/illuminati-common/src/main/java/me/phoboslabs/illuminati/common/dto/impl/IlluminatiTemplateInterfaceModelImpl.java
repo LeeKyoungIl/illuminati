@@ -169,7 +169,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     }
 
     private IlluminatiTemplateInterfaceModelImpl staticInfo (final Map<String, Object> staticInfo) {
-        if (this.serverInfo != null && this.serverInfo.isAlreadySetServerDomainAndPort() == false) {
+        if (this.serverInfo != null && !this.serverInfo.isAlreadySetServerDomainAndPort()) {
             this.serverInfo.setStaticInfoFromRequest(staticInfo);
         }
         return this;
@@ -186,7 +186,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     }
 
     private IlluminatiTemplateInterfaceModelImpl checkAndSetTransactionIdFromPostBody (final String postBody) {
-        if (StringObjectUtils.isValid(postBody) == false) {
+        if (!StringObjectUtils.isValid(postBody)) {
             return this;
         }
 
@@ -205,15 +205,15 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
             for (final String keyValue : TRANSACTION_IDS) {
                 final String postElementKey = postElementArrayData[0];
                 final String postElementValue = postElementArrayData[1];
-                if (keyValue.equals(postElementKey) == false) {
+                if (!keyValue.equals(postElementKey)) {
                     continue;
                 }
 
-                if (ILLUMINATI_GPROC_ID_KEY.equals(keyValue) && StringObjectUtils.isValid(this.header.getIlluminatiGProcId()) == false) {
+                if (ILLUMINATI_GPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiGProcId())) {
                     this.header.setGlobalTransactionId(postElementValue);
-                } else if (ILLUMINATI_SPROC_ID_KEY.equals(keyValue) && StringObjectUtils.isValid(this.header.getIlluminatiSProcId()) == false) {
+                } else if (ILLUMINATI_SPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiSProcId())) {
                     this.header.setSessionTransactionId(postElementValue);
-                } else if (ILLUMINATI_UNIQUE_USER_ID_KEY.equals(keyValue) && StringObjectUtils.isValid(this.illuminatiUniqueUserId) == false) {
+                } else if (ILLUMINATI_UNIQUE_USER_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.illuminatiUniqueUserId)) {
                     this.illuminatiUniqueUserId = postElementValue;
                 }
             }

@@ -81,8 +81,8 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // ################################################################################################################
 
     @Override public void sendToNextStep(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
-        if (illuminatiDataInterfaceModelImpl.isValid() == false) {
-            illuminatiExecutorLogger.warn("illuminatiDataInterfaceModelImpl is not valid");
+        if (!illuminatiDataInterfaceModelImpl.isValid()) {
+            ILLUMINATI_EXECUTOR_LOGGER.warn("illuminatiDataInterfaceModelImpl is not valid");
             return;
         }
         //## send To Illuminati template queue
@@ -106,7 +106,7 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
             this.addDataOnIlluminatiModel(illuminatiTemplateInterfaceModelImpl);
             this.illuminatiTemplateExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
         } catch (Exception ex) {
-            illuminatiExecutorLogger.debug("error : check your broker. ("+ex.toString()+")");
+            ILLUMINATI_EXECUTOR_LOGGER.debug("error : check your broker. ("+ex.toString()+")");
         }
     }
 
@@ -114,8 +114,8 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
         final long start = System.currentTimeMillis();
         this.sendToNextStep(illuminatiDataInterfaceModelImpl);
         final long elapsedTime = System.currentTimeMillis() - start;
-        illuminatiExecutorLogger.info("data queue current size is "+String.valueOf(this.getQueueSize()));
-        illuminatiExecutorLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
+        ILLUMINATI_EXECUTOR_LOGGER.info("data queue current size is {}", this.getQueueSize());
+        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of template queue sent is {} millisecond", elapsedTime);
     }
 
     @Override protected void preventErrorOfSystemThread(IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) {
