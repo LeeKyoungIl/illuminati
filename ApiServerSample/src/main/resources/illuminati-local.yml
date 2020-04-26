@@ -17,10 +17,10 @@
 #kafka
 broker: kafka
 clusterList: 127.0.0.1:9092
-topic: test
+topic: illuminati-test-topic
 isAsync: true
 isCompression: true
-compressionType: zstd
+compressionType: gzip
 performance: 1
 parentModuleName: apisample
 samplingRate: 100
