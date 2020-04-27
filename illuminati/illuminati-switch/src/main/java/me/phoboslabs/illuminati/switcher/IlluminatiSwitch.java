@@ -62,19 +62,17 @@ public class IlluminatiSwitch {
             return;
         }
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        setIlluminatiSwitchValue(ILLUMINATI_SWITCH_HTTP.getByGetMethod());
-                    } catch (Exception ex) {
-                        ILLUMINATI_SWITCH_LOGGER.error(ex.getMessage(), ex);
-                    }
-
-                    try {
-                        Thread.sleep(Long.parseLong(BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL));
-                    } catch (InterruptedException ignore) {}
+        Runnable runnable = () -> {
+            while (true) {
+                try {
+                    setIlluminatiSwitchValue(ILLUMINATI_SWITCH_HTTP.getByGetMethod());
+                } catch (Exception ex) {
+                    ILLUMINATI_SWITCH_LOGGER.error(ex.getMessage(), ex);
                 }
+
+                try {
+                    Thread.sleep(Long.parseLong(BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL));
+                } catch (InterruptedException ignore) {}
             }
         };
 
