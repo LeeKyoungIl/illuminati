@@ -129,8 +129,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override protected void createSystemThread () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
+        final Runnable runnableFirst = () -> {
             while (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
                 try {
                     if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
@@ -146,7 +145,6 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                     } catch (InterruptedException ignore) {}
                 }
             }
-            }
         };
 
         SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_SAVE_DATA_TO_FILE_THREAD");
@@ -160,13 +158,11 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     public void createStopThread() {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (getQueueSize() > 0) {
-                    try {
-                        deQueue();
-                    } catch (Exception ignore) {}
-                }
+        final Runnable runnableFirst = () -> {
+            while (getQueueSize() > 0) {
+                try {
+                    deQueue();
+                } catch (Exception ignore) {}
             }
         };
 

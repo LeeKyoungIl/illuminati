@@ -191,18 +191,16 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     private void createSystemThreadForIsCanConnectRemoteBroker () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+        final Runnable runnableFirst = () -> {
+            while (true) {
+                try {
+                    IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
 
-                        try {
-                            Thread.sleep(BROKER_HEALTH_CHECK_TIME);
-                        } catch (InterruptedException ignore) {}
-                    } catch (Exception e) {
-                        ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})", e.getMessage());
-                    }
+                    try {
+                        Thread.sleep(BROKER_HEALTH_CHECK_TIME);
+                    } catch (InterruptedException ignore) {}
+                } catch (Exception e) {
+                    ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})", e.getMessage());
                 }
             }
         };
