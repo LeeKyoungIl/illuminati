@@ -114,11 +114,9 @@ public class H2Backup<T> implements Backup<T> {
     }
 
     private void executeDDL (String ddlQuery, String ddlTypeForLog) {
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(ddlQuery);
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(ddlQuery)) {
             preparedStatement.execute();
             this.connection.commit();
-            preparedStatement.close();
         } catch (SQLException e) {
             this.h2BackupLogger.warn("Failed to ", ddlTypeForLog, " syntax the Backup Table. Check your H2 Driver");
         }
@@ -130,13 +128,11 @@ public class H2Backup<T> implements Backup<T> {
                                                 .append(" (EXECUTOR_TYPE, JSON_DATA) ")
                                                 .append("VALUES (?, ?)");
 
-        try {
-            PreparedStatement preparedStatement = this.connection.prepareStatement(insertExecuteCommand.toString());
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(insertExecuteCommand.toString())) {
             preparedStatement.setObject(1, illuminatiInterfaceType.getExecutorId());
             preparedStatement.setObject(2, jsonStringData);
             preparedStatement.execute();
             this.connection.commit();
-            preparedStatement.close();
         } catch (SQLException e) {
             this.h2BackupLogger.warn("Failed to insert data to Table.");
         }
@@ -200,9 +196,7 @@ public class H2Backup<T> implements Backup<T> {
         }
 
         if (isAfterDelete && !dataMap.isEmpty()) {
-            for (Map.Entry<Integer, T> entry : dataMap.entrySet()) {
-                this.deleteById(entry.getKey());
-            }
+            dataMap.forEach((key, value) -> this.deleteById(key));
         }
 
         return dataMap;
@@ -214,7 +208,7 @@ public class H2Backup<T> implements Backup<T> {
                                                 .append(" WHERE ID = ")
                                                 .append(id);
 
-        try(PreparedStatement preparedStatement = this.connection.prepareStatement(deleteExecuteCommand.toString());) {
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(deleteExecuteCommand.toString())) {
             preparedStatement.execute();
             this.connection.commit();
         } catch (SQLException e) {

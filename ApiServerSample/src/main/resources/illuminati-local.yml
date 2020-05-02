@@ -1,27 +1,27 @@
 ##rabbitmq
-#broker: rabbitmq
-#clusterList: localhost:5672
-#virtualHost: illuminatiLocal
-#topic: illuminati-exchange
-#queueName: illuminati-exchange.illuminati-queue
-#userName: leekyoungil
-#password: lki123$
-#isAsync: true
-#isCompression: true
-#parentModuleName: apisample
-#samplingRate: 100
-#debug: false
-#illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
-#illuminatiSwitchValueURLCheckInterval: 5000
-
-#kafka
-broker: kafka
-clusterList: 127.0.0.1:9092
-topic: illuminati-test-topic
+broker: rabbitmq
+clusterList: localhost:5672
+virtualHost: illuminatiLocal
+topic: illuminati-exchange
+queueName: illuminati-exchange.illuminati-queue
+userName: leekyoungil
+password: lki123$
 isAsync: true
 isCompression: true
-compressionType: gzip
-performance: 1
 parentModuleName: apisample
 samplingRate: 100
 debug: false
+illuminatiSwitchValueURL: https://raw.githubusercontent.com/LeeKyoungIl/illuminati/feature/with_spring_cloud_config/illuminati-config-properties/illuminati-switch-local.yml
+illuminatiSwitchValueURLCheckInterval: 5000
+
+#kafka
+#broker: kafka
+#clusterList: 127.0.0.1:9092
+#topic: illuminati-test-topic
+#isAsync: true
+#isCompression: true
+#compressionType: gzip
+#performance: 1
+#parentModuleName: apisample
+#samplingRate: 100
+#debug: false

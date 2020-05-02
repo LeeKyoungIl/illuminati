@@ -17,13 +17,14 @@
 package me.phoboslabs.illuminati.processor.executor;
 
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
  */
 public interface IlluminatiExecutor<T extends IlluminatiInterfaceModel> {
 
-    void init ();
+    IlluminatiExecutor init () throws RequiredValueException;
 
     void addToQueue (final T t);
 

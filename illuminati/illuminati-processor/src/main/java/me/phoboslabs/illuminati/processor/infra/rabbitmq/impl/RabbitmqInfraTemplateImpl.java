@@ -139,6 +139,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## successfully transferred dto to Illuminati broker.");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
                 }
+
+                RABBITMQ_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker(rabbitMq).");
             }
         } catch (Exception ex) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");

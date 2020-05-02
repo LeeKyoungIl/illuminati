@@ -127,7 +127,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, partition : " + sendResult.get().partition());
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, topic: " + sendResult.get().topic());
 
-            KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
+            KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker(kafka).");
         } catch (Exception ex) {
             throw new PublishMessageException("failed to publish message : ("+ex.toString()+")");
         } finally {

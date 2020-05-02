@@ -17,6 +17,7 @@
 package me.phoboslabs.illuminati.processor.executor.impl;
 
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
+import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
@@ -76,9 +77,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         return ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
     }
 
-    @Override public synchronized void init () {
+    @Override public synchronized IlluminatiTemplateExecutorImpl init () {
         if (this.illuminatiTemplate == null) {
-            return;
+            throw new RequiredValueException();
         }
         this.createSystemThread();
         this.createSystemThreadForIsCanConnectRemoteBroker();
@@ -86,6 +87,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
             this.addShutdownHook();
         }
+
+        return this;
     }
 
     // ################################################################################################################
@@ -125,7 +128,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     /**
      * only execute at debug
-     * @param illuminatiTemplateInterfaceModelImpl
+     * @param illuminatiTemplateInterfaceModelImpl - input parameter data model
      */
     @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) throws Exception {
         if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
@@ -173,9 +176,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             throw new Exception(errorMessage);
         }
 
-        IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());
+        IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.set(illuminatiInfraTemplate.canIConnect());
 
-        if (!IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
+        if (!IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.get()) {
             throw new Exception("Check your message broker.");
         }
 
@@ -186,7 +189,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         if (this.illuminatiBackupExecutor == null) {
             return;
         }
-        IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+        IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
         this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
     }
 
@@ -194,7 +197,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         final Runnable runnableFirst = () -> {
             while (true) {
                 try {
-                    IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+                    IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
 
                     try {
                         Thread.sleep(BROKER_HEALTH_CHECK_TIME);
