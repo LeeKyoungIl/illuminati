@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -123,9 +124,7 @@ public class RequestGeneralModel {
         try {
             if (this.isParamValidated(paramNames, paramValues)) {
                 Map<String, Object> paramMap = new HashMap<>();
-                for (int i=0; i<paramNames.length; i++) {
-                    paramMap.put(paramNames[i], paramValues[i]);
-                }
+                IntStream.range(0, paramNames.length).forEach(i -> paramMap.put(paramNames[i], paramValues[i]));
                 this.methodParams = paramMap;
             }
         } catch (Exception ex) {

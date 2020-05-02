@@ -22,6 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class ChangedJsElement {
 
@@ -59,9 +60,8 @@ public class ChangedJsElement {
             this.changedValueMap = new HashMap<>();
         }
 
-        for (int i=0; i<this.changedValues.size(); i++) {
-            this.changedValueMap.put(i, this.changedValues.get(i));
-        }
+        IntStream.range(0, this.changedValues.size())
+                .forEach(i -> this.changedValueMap.put(i, this.changedValues.get(i)));
 
         this.changedValues = null;
     }

@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,11 +113,9 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     private void setChangedJsElement () {
-        for (Class paramType : this.signature.getParameterTypes()) {
-            if (CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName()) && this.argsValidated()) {
-                this.changedJsElement = (ChangedJsElement) this.args[0];
-            }
-        }
+        Arrays.stream(this.signature.getParameterTypes())
+                .filter(paramType -> CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName()) && this.argsValidated())
+                .forEach(paramType -> this.changedJsElement = (ChangedJsElement) this.args[0]);
     }
 
     public boolean isValid () {

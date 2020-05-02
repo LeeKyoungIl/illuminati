@@ -37,10 +37,8 @@ public class PropertiesUtil {
     private static List<String> getPropertiesFileNames(final String configPropertiesFileName) {
         List<String> fileNames = new ArrayList<>();
 
-        for (String extension : CONFIG_FILE_EXTENSTIONS) {
-            final String fullFileName = configPropertiesFileName.concat(getDotBeforeExtension()).concat(extension);
-            fileNames.add(fullFileName);
-        }
+        CONFIG_FILE_EXTENSTIONS
+                .forEach(extension -> fileNames.add(configPropertiesFileName.concat(getDotBeforeExtension()).concat(extension)));
 
         return fileNames;
     }
@@ -48,10 +46,8 @@ public class PropertiesUtil {
     private static List<String> getPropertiesFileNamesWithoutProfiles(final String configPropertiesFileName) {
         List<String> fileNames = new ArrayList<>();
 
-        for (String extension : CONFIG_FILE_EXTENSTIONS) {
-            final String fullFileName = configPropertiesFileName.concat(".").concat(extension);
-            fileNames.add(fullFileName);
-        }
+        CONFIG_FILE_EXTENSTIONS
+                .forEach(extension -> fileNames.add(configPropertiesFileName.concat(".").concat(extension)));
 
         return fileNames;
     }
