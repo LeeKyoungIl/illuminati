@@ -24,7 +24,7 @@ import java.util.List;
 public class EsSource {
 
     @Expose
-    private final List<String> source = new ArrayList<String>();
+    private final List<String> source = new ArrayList<>();
 
     EsSource () {
 

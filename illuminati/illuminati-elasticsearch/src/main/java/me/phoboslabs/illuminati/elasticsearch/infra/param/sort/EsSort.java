@@ -25,7 +25,7 @@ import java.util.Map;
 public class EsSort {
 
     @Expose
-    private Map<String, String> sort = new HashMap<String, String>();
+    private Map<String, String> sort = new HashMap<>();
 
     public EsSort() {}
 
