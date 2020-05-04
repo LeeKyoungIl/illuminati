@@ -21,14 +21,14 @@
     <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.33</version>
+      <version>0.9.9.37</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
     <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-switch</artifactId>
-       <version>1.0.17</version>
+       <version>1.0.18</version>
     </dependency>
 
     <!-- This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. -->
@@ -47,9 +47,9 @@
 ```java
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.33'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.37'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.17'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.18'
 // This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. 
 compile 'com.h2database:h2:1.4.196'
 ```
