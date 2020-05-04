@@ -5,7 +5,7 @@
 
 	<groupId>me.phoboslabs.illuminati</groupId>
 	<artifactId>illuminati-levenshtein</artifactId>
-	<version>1.1.5</version>
+	<version>1.1.6</version>
 
 	<name>illuminati-levenshtein</name>
 	<description>Levenshtein Distance Algorithm</description>
