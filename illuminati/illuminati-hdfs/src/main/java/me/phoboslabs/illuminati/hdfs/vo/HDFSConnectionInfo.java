@@ -39,7 +39,7 @@ public class HDFSConnectionInfo {
     private boolean dfsSupportAppend = false;
 
     private final static String HADOOP_PREFIX = "hdfs://";
-    private final static String HADOOP_CENTERFIX_WITH_PORT = ":";
+    private final static String HADOOP_CENTER_FIX_WITH_PORT = ":";
     private final static String HADOOP_POSTFIX = "/";
 
     private final static String HDFS_CONNECTION_URI = "hdfs.connection.uri";
@@ -128,10 +128,10 @@ public class HDFSConnectionInfo {
         return this.homeDir;
     }
 
-    public String getHdfsUriAddress () {
+    public String getHDFSUriAddress () {
         return new StringBuilder(HADOOP_PREFIX)
                 .append(this.uriAddress)
-                .append(this.HADOOP_CENTERFIX_WITH_PORT)
+                .append(this.HADOOP_CENTER_FIX_WITH_PORT)
                 .append(this.port)
                 .append(this.HADOOP_POSTFIX).toString();
     }
