@@ -30,7 +30,7 @@ illuminatiSwitchValueURLCheckInterval: 5000
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-switch</artifactId>
-  <version>1.0.17</version>
+  <version>1.0.18</version>
 </dependency>
 ```
 
@@ -39,5 +39,5 @@ illuminatiSwitchValueURLCheckInterval: 5000
     
 ```java
 
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.17'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.18'
 ```

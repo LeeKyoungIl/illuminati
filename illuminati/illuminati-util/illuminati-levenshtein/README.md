@@ -56,7 +56,7 @@ System.out.println("result is " + result); // result is 0
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-levenshtein</artifactId>
-  <version>1.1.5</version>
+  <version>1.1.6</version>
 </dependency>
 ```
 
@@ -64,5 +64,5 @@ System.out.println("result is " + result); // result is 0
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.1.5'
+compile 'me.phoboslabs.illuminati:illuminati-levenshtein:1.1.6'
 ```

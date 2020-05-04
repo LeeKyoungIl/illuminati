@@ -29,6 +29,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -96,38 +97,41 @@ public class StringObjectUtils {
     }
 
     public static String getPostBodyString (HttpServletRequest request) throws IOException {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final Writer writer = new OutputStreamWriter(bos, IlluminatiConstant.BASE_CHARSET);
-        final Map<String, String[]> form = request.getParameterMap();
+        try (
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                Writer writer = new OutputStreamWriter(bos, IlluminatiConstant.BASE_CHARSET);
+                ) {
+            final Map<String, String[]> form = request.getParameterMap();
 
-        for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext();) {
-            String name = nameIterator.next();
-            List<String> values = Arrays.asList(form.get(name));
+            for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext();) {
+                String name = nameIterator.next();
+                List<String> values = Arrays.asList(form.get(name));
 
-            for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext();) {
-                final String value = valueIterator.next();
-                writer.write(URLEncoder.encode(name, IlluminatiConstant.BASE_CHARSET));
+                for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext();) {
+                    final String value = valueIterator.next();
+                    writer.write(URLEncoder.encode(name, IlluminatiConstant.BASE_CHARSET));
 
-                if (value != null) {
-                    writer.write('=');
-                    writer.write(URLEncoder.encode(value, IlluminatiConstant.BASE_CHARSET));
+                    if (value != null) {
+                        writer.write('=');
+                        writer.write(URLEncoder.encode(value, IlluminatiConstant.BASE_CHARSET));
 
-                    if (valueIterator.hasNext()) {
-                        writer.write('&');
+                        if (valueIterator.hasNext()) {
+                            writer.write('&');
+                        }
                     }
                 }
+                if (nameIterator.hasNext()) {
+                    writer.append('&');
+                }
             }
-            if (nameIterator.hasNext()) {
-                writer.append('&');
-            }
+            writer.flush();
+
+            byte[] returnByteArray = bos.toByteArray().clone();
+
+            return new String(returnByteArray, IlluminatiConstant.BASE_CHARSET);
+        } catch (IOException ioe) {
+            throw ioe;
         }
-        writer.flush();
-        writer.close();
-
-        byte[] returnByteArray = bos.toByteArray().clone();
-        bos.close();
-
-        return new String(returnByteArray, IlluminatiConstant.BASE_CHARSET);
     }
 
     public static String getExceptionMessageChain (Throwable throwable) {
@@ -151,11 +155,9 @@ public class StringObjectUtils {
 
         final StringBuilder returnValue = new StringBuilder(value);
 
-        for (int i=0; i<value.length(); i++) {
-            if (value.charAt(i) == '.' && i < value.length()) {
-                returnValue.setCharAt(i+1, Character.toUpperCase(value.charAt(i+1)));
-            }
-        }
+        IntStream.range(0, value.length())
+                .filter(i -> value.charAt(i) == '.')
+                .forEach(i -> returnValue.setCharAt(i + 1, Character.toUpperCase(value.charAt(i + 1))));
 
         return returnValue.toString().replace(".", "");
     }
@@ -165,7 +167,7 @@ public class StringObjectUtils {
             throw new Exception("object must not be null.");
         }
 
-        try(StringWriter stringWriter = new StringWriter()) {
+        try (StringWriter stringWriter = new StringWriter()) {
             IlluminatiConstant.BASIC_OBJECT_STRING_MAPPER.writeValue(stringWriter, object);
             final String resultString = stringWriter.toString();
             return resultString.replaceAll(System.getProperty("line.separator"), "");

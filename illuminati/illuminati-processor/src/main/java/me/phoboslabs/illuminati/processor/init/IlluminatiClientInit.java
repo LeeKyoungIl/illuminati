@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,7 +54,7 @@ public class IlluminatiClientInit {
 
     private static final AtomicInteger SAMPLING_RATE_CHECKER = new AtomicInteger(1);
     private static int SAMPLING_RATE = 20;
-    private static final int CHAOSBOMBER_NUMBER = (int) (Math.random() * 100) + 1;
+    private static final int CHAOS_BOMBER_NUMBER = (int) (Math.random() * 100) + 1;
     private static boolean ILLUMINATI_INITIALIZED = false;
 
     private static IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
@@ -67,26 +68,17 @@ public class IlluminatiClientInit {
             IlluminatiCommon.init();
 
             final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
-            SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.valueOf(samplingRate) : SAMPLING_RATE;
+            SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.parseInt(samplingRate) : SAMPLING_RATE;
 
             if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
-                ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance();
-                ILLUMINATI_BACKUP_EXECUTOR.init();
-            } else {
-                ILLUMINATI_BACKUP_EXECUTOR = null;
+                ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance().init();
             }
 
-            ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR);
-            ILLUMINATI_TEMPLATE_EXECUTOR.init();
-
-            ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-            ILLUMINATI_DATA_EXECUTOR.init();
+            ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR).init();
+            ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
 
             if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
-                RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR);
-                RESTORE_TEMPLATE_DATA.init();
-            } else {
-                RESTORE_TEMPLATE_DATA = null;
+                RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
             }
             ILLUMINATI_INITIALIZED = true;
 
@@ -136,7 +128,7 @@ public class IlluminatiClientInit {
     public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
-            return illuminati != null ? illuminati.ignore() : true;
+            return illuminati == null || illuminati.ignore();
         } catch (Exception ignore) {}
         return true;
     }
@@ -158,21 +150,17 @@ public class IlluminatiClientInit {
      * it is only execute on debug mode and activated chaosBomber.
      * can't be use sampling rate.
      *
-     * @param pjp
-     * @param request
-     * @return
-     * @throws Throwable
+     * @param pjp - join point
+     * @param request - request param (client)
+     * @return method execute result
+     * @throws Throwable - error origin object
      */
     public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
 
-        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
-            return addToQueue(pjp, request, false);
-        }
-
-        return addToQueue(pjp, request, true);
+        return addToQueue(pjp, request, IlluminatiConstant.ILLUMINATI_DEBUG);
     }
 
     // ################################################################################################################
@@ -186,11 +174,8 @@ public class IlluminatiClientInit {
         if (this.checkIgnoreProfile(pjp)) {
             return false;
         }
-        if (this.isActivateIlluminatiSwitch() && !this.isOnIlluminatiSwitch()) {
-            return false;
-        }
 
-        return true;
+        return !this.isActivateIlluminatiSwitch() || this.isOnIlluminatiSwitch();
     }
 
     private boolean checkIgnoreProfile(final ProceedingJoinPoint pjp) {
@@ -203,12 +188,7 @@ public class IlluminatiClientInit {
 
             final String activeProfileKeyword = illuminati.profileKeyword();
             final String activatedProfileKeyword = System.getProperty(activeProfileKeyword);
-            for (String checkKeyword : illuminati.ignoreProfile()) {
-                if (activatedProfileKeyword.equalsIgnoreCase(checkKeyword)) {
-                    checkResult = true;
-                    break;
-                }
-            }
+            checkResult = Arrays.stream(illuminati.ignoreProfile()).anyMatch(activatedProfileKeyword::equalsIgnoreCase);
         } catch (Exception ignore) {}
 
         return checkResult;
@@ -253,7 +233,7 @@ public class IlluminatiClientInit {
             throwable = (Throwable) originMethodExecute.get("throwable");
         }
 
-        if (isActiveChaosBomber && throwable == null && CHAOSBOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
+        if (isActiveChaosBomber && throwable == null && CHAOS_BOMBER_NUMBER == ((int) (Math.random() * 100) + 1)) {
             throwable = new Throwable("Illuminati ChaosBomber Exception Activate");
             request.setAttribute("ChaosBomber", "true");
         }

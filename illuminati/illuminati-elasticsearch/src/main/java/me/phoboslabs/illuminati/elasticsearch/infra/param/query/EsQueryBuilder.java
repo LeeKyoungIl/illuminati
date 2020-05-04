@@ -76,7 +76,7 @@ public class EsQueryBuilder {
             return this;
         }
         if (this.match == null) {
-            this.match = new HashMap<String, Object>();
+            this.match = new HashMap<>();
         } else if (this.match.containsKey(EsQueryType.getMatchAllText())) {
             this.match.remove(EsQueryType.getMatchAllText());
         }
@@ -89,7 +89,7 @@ public class EsQueryBuilder {
             return this;
         }
         if (this.match == null) {
-            this.match = new HashMap<String, Object>();
+            this.match = new HashMap<>();
         } else {
             this.match.clear();
         }
@@ -99,7 +99,7 @@ public class EsQueryBuilder {
 
     public EsQueryBuilder setRange (EsRangeType rangeType, Object value) {
         if (this.range == null) {
-            this.range = new HashMap<String, Object>();
+            this.range = new HashMap<>();
         }
         this.range.put(rangeType.getRangeType(), value);
         return this;
@@ -109,39 +109,39 @@ public class EsQueryBuilder {
         if (MapUtils.isEmpty(this.range)) {
             return;
         }
-        Map<String, Object> range = new HashMap<String, Object>();
+        Map<String, Object> range = new HashMap<>();
         range.put(LOG_TIME_KEY_NAME, this.range);
-        this.filter = new HashMap<String, Object>();
+        this.filter = new HashMap<>();
         this.filter.put(FILTER_KEY_NAME, range);
     }
 
     private String getQueryKeyName () {
-        return this.esVersion.indexOf("2") > -1 ? QUERY_KEY_NAME_2_x : QUERY_KEY_NAME_5_x;
+        return this.esVersion.contains("2") ? QUERY_KEY_NAME_2_x : QUERY_KEY_NAME_5_x;
     }
 
     private String getFilteredKeyName () {
-        return this.esVersion.indexOf("2") > -1 ? FILTERED_KEY_NAME_2_x : FILTERED_KEY_NAME_5_x;
+        return this.esVersion.contains("2") ? FILTERED_KEY_NAME_2_x : FILTERED_KEY_NAME_5_x;
     }
 
     public Map<String, Object> build () throws Exception {
         if (this.queryType == EsQueryType.MATCH_ALL) {
-            Map<String, Object> innerQuery = new HashMap<String, Object>();
+            Map<String, Object> innerQuery = new HashMap<>();
             innerQuery.put(this.getFilteredKeyName(), this.match);
             if (this.filter != null && this.filter.size() > 0) {
                 innerQuery.put(FILTER_KEY_NAME, this.filter);
             }
-            Map<String, Object> outerQuery = new HashMap<String, Object>();
+            Map<String, Object> outerQuery = new HashMap<>();
             outerQuery.put(this.getQueryKeyName(), innerQuery);
 
             return outerQuery;
         } else if (this.queryType == EsQueryType.MATCH) {
-            Map<String, Object> matchQuery = new HashMap<String, Object>();
+            Map<String, Object> matchQuery = new HashMap<>();
             matchQuery.put("match", this.match);
             List<Map<String, Object>> matchList = new ArrayList<>();
             matchList.add(matchQuery);
-            Map<String, Object> innerQuery = new HashMap<String, Object>();
+            Map<String, Object> innerQuery = new HashMap<>();
             innerQuery.put("must", matchList);
-            Map<String, Object> outerQuery = new HashMap<String, Object>();
+            Map<String, Object> outerQuery = new HashMap<>();
             outerQuery.put("bool", innerQuery);
 
             return outerQuery;

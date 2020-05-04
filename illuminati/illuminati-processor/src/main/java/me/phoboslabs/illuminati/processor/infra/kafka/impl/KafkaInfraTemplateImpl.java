@@ -127,7 +127,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, partition : " + sendResult.get().partition());
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, topic: " + sendResult.get().topic());
 
-            KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker.");
+            KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker(kafka).");
         } catch (Exception ex) {
             throw new PublishMessageException("failed to publish message : ("+ex.toString()+")");
         } finally {
@@ -140,7 +140,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
             return false;
         }
 
-        boolean canIConnect = true;
+        int canIConnectCount = 0;
         try {
             List<String> clusterList = this.illuminatiProperties.getClusterArrayList();
             if (CollectionUtils.isNotEmpty(clusterList)) {
@@ -148,29 +148,27 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
                     final String[] clusterAddressInfo = clusterAddress.split(":");
                     if (clusterAddressInfo.length != 2) {
                         KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster({}). maybe typo in cluster address string.", clusterAddress);
-                        canIConnect = false;
                     } else {
                         boolean connectResult = NetworkUtil.canIConnect(clusterAddressInfo[0], Integer.parseInt(clusterAddressInfo[1]));
-                        if (!connectResult) {
+                        if (connectResult) {
+                            canIConnectCount++;
+                        } else {
                             KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster. connection error ({})", clusterAddress);
-                            canIConnect = false;
                         }
                     }
                 }
             } else {
                 KAFKA_TEMPLATE_IMPL_LOGGER.error("cluster address string is required value.");
-                canIConnect = false;
             }
         } catch (Exception ex) {
             KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster.", ex);
-            canIConnect = false;
         }
 
-        if (!canIConnect) {
+        if (canIConnectCount == 0) {
             this.kafkaProducer.close();
         }
 
-        return canIConnect;
+        return canIConnectCount > 0;
     }
 
     @Override

@@ -24,6 +24,7 @@ import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -50,7 +51,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     private Date localTime;
     private Object[] paramValues;
 
-    private static final List<String> TRANSACTION_IDS = new ArrayList<String>();
+    private static final List<String> TRANSACTION_IDS = new ArrayList<>();
 
     static {
         TRANSACTION_IDS.add(ILLUMINATI_GPROC_ID_KEY);
@@ -99,12 +100,11 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
 
     public IlluminatiTemplateInterfaceModelImpl addBasicJvmMemoryInfo (final Map<String, Object> jvmMemoryInfo) {
         if (this.jvmInfo == null) {
-            this.jvmInfo = new HashMap<String, Object>();
+            this.jvmInfo = new HashMap<>();
         }
 
-        for (Map.Entry<String, Object> entry : jvmMemoryInfo.entrySet()) {
-            this.jvmInfo.put(entry.getKey(), entry.getValue());
-        }
+        jvmMemoryInfo.forEach((key, value) -> this.jvmInfo.put(key, value));
+
         return this;
     }
 
@@ -196,28 +196,22 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
             return this;
         }
 
-        for (int i=0; i<postArrayData.length; i++) {
-            final String[] postElementArrayData = postArrayData[i].split("=");
-            if (postElementArrayData.length != 2) {
-                continue;
-            }
-
-            for (final String keyValue : TRANSACTION_IDS) {
-                final String postElementKey = postElementArrayData[0];
-                final String postElementValue = postElementArrayData[1];
-                if (!keyValue.equals(postElementKey)) {
-                    continue;
-                }
-
-                if (ILLUMINATI_GPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiGProcId())) {
-                    this.header.setGlobalTransactionId(postElementValue);
-                } else if (ILLUMINATI_SPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiSProcId())) {
-                    this.header.setSessionTransactionId(postElementValue);
-                } else if (ILLUMINATI_UNIQUE_USER_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.illuminatiUniqueUserId)) {
-                    this.illuminatiUniqueUserId = postElementValue;
-                }
-            }
-        }
+        Arrays.stream(postArrayData).map(postArrayDatum -> postArrayDatum.split("="))
+                .filter(postElementArrayData -> postElementArrayData.length == 2)
+                .<Consumer<? super String>>map(postElementArrayData -> keyValue -> {
+                    final String postElementKey = postElementArrayData[0];
+                    final String postElementValue = postElementArrayData[1];
+                    if (!keyValue.equals(postElementKey)) {
+                        return;
+                    }
+                    if (ILLUMINATI_GPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiGProcId())) {
+                        this.header.setGlobalTransactionId(postElementValue);
+                    } else if (ILLUMINATI_SPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiSProcId())) {
+                        this.header.setSessionTransactionId(postElementValue);
+                    } else if (ILLUMINATI_UNIQUE_USER_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.illuminatiUniqueUserId)) {
+                        this.illuminatiUniqueUserId = postElementValue;
+                    }
+        }).forEach(TRANSACTION_IDS::forEach);
 
         return this;
     }

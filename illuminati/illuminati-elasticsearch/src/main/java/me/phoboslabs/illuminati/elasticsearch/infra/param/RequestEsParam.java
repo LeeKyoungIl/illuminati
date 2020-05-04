@@ -34,7 +34,7 @@ public class RequestEsParam {
     @Expose
     private Map<String, Object> query;
     @Expose
-    private Map<String, String> sort = new HashMap<String, String>();
+    private Map<String, String> sort = new HashMap<>();
     @Expose @SerializedName("_source")
     private List<String> source;
     @Expose
@@ -100,20 +100,20 @@ public class RequestEsParam {
         if (this.source != null) {
             this.source.clear();
         } else {
-            this.source = new ArrayList<String>();
+            this.source = new ArrayList<>();
         }
         this.resetSort();
     }
 
     private void resetAggregationField () {
-        this.aggs = new HashMap<String, Object>();
+        this.aggs = new HashMap<>();
     }
 
     private void resetSort () {
         if (this.sort != null) {
             this.sort.clear();
         } else {
-            this.sort = new HashMap<String, String>();
+            this.sort = new HashMap<>();
         }
     }
 

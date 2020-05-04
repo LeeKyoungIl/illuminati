@@ -92,7 +92,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             final String[] dateForIndex = IlluminatiConstant.DATE_FORMAT_EVENT.format(new Date()).split("T");
 
-            return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()+"-"+dateForIndex[0]).toString();
+            return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()).append("-").append(dateForIndex[0]).toString();
         } catch (Exception ex) {
             final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")";
             ES_CONSUMER_LOGGER.error(errorMessage, ex);
@@ -170,7 +170,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             final ReadableUserAgent agent = UA_PARSER.parse(userAgent);
 
-            this.setUserBrower(agent);
+            this.setUserBrowser(agent);
             this.setUserOs(agent);
             this.setUserDevice(agent);
         } catch (Exception ex) {
@@ -178,8 +178,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         }
     }
 
-    private void setUserBrower (final ReadableUserAgent agent) {
-        this.clientBrower = new HashMap<String, String>();
+    private void setUserBrowser (final ReadableUserAgent agent) {
+        this.clientBrower = new HashMap<>();
 
         this.clientBrower.put("browserType", agent.getType().getName());
         this.clientBrower.put("browserName", agent.getName());
@@ -194,7 +194,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
     }
 
     private void setUserOs (final ReadableUserAgent agent) {
-        this.clientOs = new HashMap<String, String>();
+        this.clientOs = new HashMap<>();
 
         final OperatingSystem os = agent.getOperatingSystem();
         this.clientOs.put("osName", os.getName());

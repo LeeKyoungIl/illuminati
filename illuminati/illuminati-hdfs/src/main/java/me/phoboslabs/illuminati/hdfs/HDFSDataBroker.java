@@ -92,7 +92,7 @@ public class HDFSDataBroker implements DataBroker {
 
         this.configuration.set(this.hdfsImplKey, org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
         this.configuration.set(this.fileImplKey, org.apache.hadoop.fs.LocalFileSystem.class.getName());
-        this.configuration.set(this.uriKey, hdfsConnectionInfo.getHdfsUriAddress());
+        this.configuration.set(this.uriKey, hdfsConnectionInfo.getHDFSUriAddress());
         this.configuration.set(this.securityAuthenticationKey, hdfsConnectionInfo.getHDFSSecurityAuthenticationType());
         this.configuration.set(this.securityAuthorizationKey, hdfsConnectionInfo.getHDFSSecurityAuthorizationValue());
         this.configuration.set(this.rpcTimeout, hdfsConnectionInfo.getRpcTimeout());
@@ -133,7 +133,7 @@ public class HDFSDataBroker implements DataBroker {
         return false;
     }
 
-    private int bytePerOnce = 1024;
+    private final int bytePerOnce = 1024;
 
     private boolean writeFileSystem(final FileInputStream fileInputStream, FSDataOutputStream out) {
         try (InputStream inputStream = new BufferedInputStream(fileInputStream)) {

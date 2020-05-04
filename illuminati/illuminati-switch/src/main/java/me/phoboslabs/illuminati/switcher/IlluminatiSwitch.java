@@ -62,19 +62,17 @@ public class IlluminatiSwitch {
             return;
         }
 
-        Runnable runnable = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        setIlluminatiSwitchValue(ILLUMINATI_SWITCH_HTTP.getByGetMethod());
-                    } catch (Exception ex) {
-                        ILLUMINATI_SWITCH_LOGGER.error(ex.getMessage(), ex);
-                    }
-
-                    try {
-                        Thread.sleep(Long.parseLong(BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL));
-                    } catch (InterruptedException ignore) {}
+        Runnable runnable = () -> {
+            while (true) {
+                try {
+                    setIlluminatiSwitchValue(ILLUMINATI_SWITCH_HTTP.getByGetMethod());
+                } catch (Exception ex) {
+                    ILLUMINATI_SWITCH_LOGGER.error(ex.getMessage(), ex);
                 }
+
+                try {
+                    Thread.sleep(Long.parseLong(BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL));
+                } catch (InterruptedException ignore) {}
             }
         };
 
@@ -90,7 +88,7 @@ public class IlluminatiSwitch {
         String[] illuminatiSwitchValueArray = ((String) result).split(":");
 
         if (illuminatiSwitchValueArray.length == 2 && StringUtils.isNotEmpty(illuminatiSwitchValueArray[1])) {
-            boolean switchValue = Boolean.valueOf(illuminatiSwitchValueArray[1].toLowerCase().indexOf("true") > -1 ? "true" : "false");
+            boolean switchValue = illuminatiSwitchValueArray[1].toLowerCase().contains("true");
 
             if (switchValue != IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get()) {
                 ILLUMINATI_SWITCH_LOGGER.debug("ILLUMINATI_SWITCH_VALUE has changed to " + switchValue);

@@ -87,6 +87,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     /**
      * only execute at debug
+     * @param illuminatiInterfaceModel - input method parameter model
      */
     protected void addToQueueByDebug (final T illuminatiInterfaceModel) {
         // debug illuminati buffer queue
@@ -126,8 +127,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     protected void createSystemThread () {
         final String thisClassName = this.getClass().getName();
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
+        final Runnable runnableFirst = () -> {
             while (true) {
                 T illuminatiInterfaceModel = null;
                 try {
@@ -163,7 +163,6 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                     ILLUMINATI_EXECUTOR_LOGGER.debug(errorMessage.toString(), e.getMessage());
                 }
             }
-            }
         };
 
         SystemUtil.createSystemThread(runnableFirst, thisClassName + " : ILLUMINATI_SENDER_THREAD");
@@ -175,8 +174,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     protected void createDebugThread () {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG) {
-            final Runnable queueCheckRunnable = new Runnable() {
-                public void run() {
+            final Runnable queueCheckRunnable = () -> {
                 while (true) {
                     ILLUMINATI_EXECUTOR_LOGGER.info("");
                     ILLUMINATI_EXECUTOR_LOGGER.info("#########################################################################################################");
@@ -188,7 +186,6 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                     try {
                         Thread.sleep(15000);
                     } catch (InterruptedException ignore) {}
-                }
                 }
             };
 

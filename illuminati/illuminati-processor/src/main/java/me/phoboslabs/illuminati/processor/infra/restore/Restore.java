@@ -16,9 +16,12 @@
 
 package me.phoboslabs.illuminati.processor.infra.restore;
 
+import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
+import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
+
 public interface Restore {
 
-    void init ();
+    RestoreTemplateData init () throws RequiredValueException;
 
     void restoreToQueue ();
 

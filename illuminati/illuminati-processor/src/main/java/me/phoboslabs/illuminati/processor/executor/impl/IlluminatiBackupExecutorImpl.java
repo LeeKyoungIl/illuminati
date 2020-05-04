@@ -16,6 +16,7 @@
 
 package me.phoboslabs.illuminati.processor.executor.impl;
 
+import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.backup.Backup;
@@ -70,11 +71,13 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         return ILLUMINATI_BACKUP_EXECUTOR_IMPL;
     }
 
-    @Override public void init() {
+    @Override public IlluminatiBackupExecutorImpl init() throws RequiredValueException {
         if (this.backup == null) {
-            return;
+            throw new RequiredValueException();
         }
         this.createSystemThread();
+
+        return this;
     }
 
     @Override public IlluminatiTemplateInterfaceModelImpl deQueue() throws Exception {
@@ -84,9 +87,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             throw new Exception("backupObjectList is empty.");
         }
 
-        for (IlluminatiTemplateInterfaceModelImpl illuminatiInterfaceModel : backupObjectList) {
-            this.sendToNextStep(illuminatiInterfaceModel);
-        }
+        backupObjectList.forEach(this::sendToNextStep);
 
         throw new Exception("Backup Executor is not returned messages.");
     }
@@ -129,8 +130,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override protected void createSystemThread () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
+        final Runnable runnableFirst = () -> {
             while (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
                 try {
                     if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
@@ -146,7 +146,6 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                     } catch (InterruptedException ignore) {}
                 }
             }
-            }
         };
 
         SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_SAVE_DATA_TO_FILE_THREAD");
@@ -160,13 +159,11 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     public void createStopThread() {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (getQueueSize() > 0) {
-                    try {
-                        deQueue();
-                    } catch (Exception ignore) {}
-                }
+        final Runnable runnableFirst = () -> {
+            while (getQueueSize() > 0) {
+                try {
+                    deQueue();
+                } catch (Exception ignore) {}
             }
         };
 

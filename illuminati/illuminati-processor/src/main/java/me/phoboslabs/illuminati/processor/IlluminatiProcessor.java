@@ -97,19 +97,21 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 try {
                     final JavaFileObject javaFile = this.filer.createSourceFile("IlluminatiPointcutGenerated");
-                    final Writer writer = javaFile.openWriter();
+                    try (final Writer writer = javaFile.openWriter()) {
+                        if (writer != null) {
+                            writer.write(this.generatedIlluminatiTemplate);
+                            writer.close();
+                            this.messager.printMessage(Kind.NOTE, "generate source code!!");
+                        } else {
+                            this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in writer 'IlluminatiPointcutGenerated.java' process.");
+                        }
 
-                    if (writer != null) {
-                        writer.write(this.generatedIlluminatiTemplate);
-                        writer.close();
-                        this.messager.printMessage(Kind.NOTE, "generate source code!!");
-                    } else {
-                        this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in writer 'IlluminatiPointcutGenerated.java' process.");
+                        // IlluminatiPointcutGenerated must exists only one on classloader.
+                        break outerloop;
+                    } catch (IOException ioe) {
+                        throw ioe;
                     }
-
-                    // IlluminatiPointcutGenerated must exists only one on classloader.
-                    break outerloop;
-                } catch (IOException e) {
+                } catch (IOException ioe) {
                     this.messager.printMessage(Kind.ERROR, "Sorry, something is wrong in generated 'IlluminatiPointcutGenerated.java' process.");
                     break outerloop;
                 }
@@ -215,19 +217,19 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
         final StringBuilder importString = new StringBuilder();
 
-        for (Map.Entry<String, String[]> entry : imports.entrySet() ) {
-            for (String importLib : entry.getValue()) {
+        imports.forEach((key, value) ->
+            Arrays.stream(value).forEach(importLib -> {
                 importString.append("import ");
-                importString.append(entry.getKey());
+                importString.append(key);
 
-                if (!"".equals(entry.getKey())) {
+                if (!"".equals(key)) {
                     importString.append(".");
                 }
 
                 importString.append(importLib);
                 importString.append(";\r\n");
-            }
-        }
+            })
+        );
 
         return importString.toString();
     }
@@ -302,14 +304,13 @@ public class IlluminatiProcessor extends AbstractProcessor {
     }
 
     private IlluminatiProcessorPropertiesImpl getIlluminatiPropertiesByFile(final String configPropertiesFileName) {
-        final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
-
-        if (input == null) {
-            return null;
-        }
-
         IlluminatiProcessorPropertiesImpl illuminatiProperties = null;
-        try {
+
+        try (InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName)) {
+            if (input == null) {
+                return null;
+            }
+
             if (configPropertiesFileName.contains(".yml") || configPropertiesFileName.contains(".yaml")) {
                 illuminatiProperties = YAML_MAPPER.readValue(input, IlluminatiProcessorPropertiesImpl.class);
             } else {
@@ -319,12 +320,6 @@ public class IlluminatiProcessor extends AbstractProcessor {
             }
         } catch (IOException ex) {
             this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in read process. (" + ex.toString() + ")");
-        } finally {
-            try {
-                input.close();
-            } catch (IOException ex) {
-                this.messager.printMessage(Diagnostic.Kind.WARNING, "Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
-            }
         }
 
         return illuminatiProperties;

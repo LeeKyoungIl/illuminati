@@ -26,16 +26,16 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 
  - library     
      * [illuminati-annotation:1.2.4](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation)
-     * [illuminati-common:1.4.11](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
-     * [illuminati-processor:0.9.9.33](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
-     * [illuminati-switch:1.0.17](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
-     * [illuminati-jscollector:0.5.18](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
-     * [illuminati-elasticsearch:0.8.12](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
-     * [illuminati-hdfs:0.1.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
+     * [illuminati-common:1.4.2](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common)
+     * [illuminati-processor:0.9.9.38](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
+     * [illuminati-switch:1.0.18](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
+     * [illuminati-jscollector:0.5.19](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
+     * [illuminati-elasticsearch:0.8.13](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+     * [illuminati-hdfs:0.1.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
  
  - util
      * [illuminati-util](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util)
-          * [illuminati-levenshtein:1.1.5](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util/illuminati-levenshtein)
+          * [illuminati-levenshtein:1.1.6](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-util/illuminati-levenshtein)
 
  - sample
      * [ApiSampleApplication](https://github.com/LeeKyoungIl/illuminati/tree/master/ApiServerSample)
@@ -91,21 +91,21 @@ The illuminati is desinged to make collect all data easily and it can be possibl
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.33</version>
+      <version>0.9.9.38</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
    <dependency>
        <groupId>me.phoboslabs.illuminati</groupId>
        <artifactId>illuminati-switch</artifactId>
-       <version>1.0.17</version>
+       <version>1.0.18</version>
    </dependency>
 
    <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-jscollector</artifactId>
-      <version>0.5.18</version>
+      <version>0.5.19</version>
    </dependency>
 </dependencies>
 ```
@@ -119,11 +119,11 @@ repositories {
 }
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.33'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.38'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
-compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.17'
+compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.18'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
-compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.18'
+compile 'me.phoboslabs.illuminati:illuminati-jscollector:0.5.19'
 ```
 
 ## add @Illuminati  to Class

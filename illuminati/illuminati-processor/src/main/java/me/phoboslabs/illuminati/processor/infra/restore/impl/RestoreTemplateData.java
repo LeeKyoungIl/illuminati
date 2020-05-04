@@ -65,8 +65,9 @@ public class RestoreTemplateData implements Restore {
         return RESTORE_TEMPLATE_DATA;
     }
 
-    @Override public void init () {
+    @Override public RestoreTemplateData init () {
         this.createSystemThread();
+        return this;
     }
 
     @Override public void restoreToQueue () {
@@ -77,9 +78,7 @@ public class RestoreTemplateData implements Restore {
         try {
             final List<IlluminatiInterfaceModel> backupObjectList = this.h2Backup.getDataByList(false, true, 0, LIMIT_COUNT);
             if (CollectionUtils.isNotEmpty(backupObjectList)) {
-                for (IlluminatiInterfaceModel illuminatiInterfaceModel : backupObjectList) {
-                    this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel);
-                }
+                backupObjectList.forEach(illuminatiInterfaceModel -> this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel));
             }
         } catch (Exception ex) {
             this.restoreTemplateDataLogger.error("check H2 database configurations.", ex);
@@ -87,7 +86,7 @@ public class RestoreTemplateData implements Restore {
     }
 
     private boolean readyToRestoreQueue() {
-        if (!IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
+        if (!IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.get()) {
             return false;
         }
 
@@ -112,32 +111,26 @@ public class RestoreTemplateData implements Restore {
     }
 
     private void createSystemThread () {
-        final Runnable runnableFirst = new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        if (IlluminatiInfraConstant.IS_CANCONNECT_TO_REMOTE_BROKER.get()) {
-                            if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
-                                restoreToQueue();
-                            } else {
-                                restoreToQueueByDebug();
+        final Runnable runnableFirst = () -> {
+            while (true) {
+                try {
+                    if (IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.get()) {
+                        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
+                            restoreToQueue();
+                        } else {
+                            restoreToQueueByDebug();
 
-                                try {
-                                    Thread.sleep(5000);
-                                } catch (InterruptedException e) {
-                                    // ignore
-                                }
-                            }
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException ignore) {}
                         }
-
-                        try {
-                            Thread.sleep(300000);
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
-                    } catch (Exception e) {
-                        restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ("+e.getMessage()+")");
                     }
+
+                    try {
+                        Thread.sleep(300000);
+                    } catch (InterruptedException ignore) {}
+                } catch (Exception e) {
+                    restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ("+e.getMessage()+")");
                 }
             }
         };
