@@ -16,6 +16,7 @@
 
 package me.phoboslabs.illuminati.processor.executor.impl;
 
+import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.backup.Backup;
@@ -70,11 +71,13 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         return ILLUMINATI_BACKUP_EXECUTOR_IMPL;
     }
 
-    @Override public void init() {
+    @Override public IlluminatiBackupExecutorImpl init() throws RequiredValueException {
         if (this.backup == null) {
-            return;
+            throw new RequiredValueException();
         }
         this.createSystemThread();
+
+        return this;
     }
 
     @Override public IlluminatiTemplateInterfaceModelImpl deQueue() throws Exception {
@@ -84,9 +87,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             throw new Exception("backupObjectList is empty.");
         }
 
-        for (IlluminatiTemplateInterfaceModelImpl illuminatiInterfaceModel : backupObjectList) {
-            this.sendToNextStep(illuminatiInterfaceModel);
-        }
+        backupObjectList.forEach(this::sendToNextStep);
 
         throw new Exception("Backup Executor is not returned messages.");
     }

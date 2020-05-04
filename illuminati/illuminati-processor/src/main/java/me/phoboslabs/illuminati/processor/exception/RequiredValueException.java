@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.elasticsearch.infra.param.sort;
+package me.phoboslabs.illuminati.processor.exception;
 
-import com.google.gson.annotations.Expose;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+/**
+ * Created by leekyoungil (leekyoungil@gmail.com) on 05/02/2020.
+ */
+public class RequiredValueException extends RuntimeException {
 
-import java.util.HashMap;
-import java.util.Map;
+    private Throwable cause;
 
-public class EsSort {
-
-    @Expose
-    private Map<String, String> sort = new HashMap<>();
-
-    public EsSort() {}
-
-    public void setOrderDataToMap(String key, String orderByString) {
-        if (StringObjectUtils.isValid(key) && StringObjectUtils.isValid(orderByString)) {
-            this.sort.put(key, orderByString);
-        }
+    public RequiredValueException() {
+        super();
     }
 
-    public Map<String, String> getSort () {
-        return this.sort;
+    public RequiredValueException(String s) {
+        super(s);
+    }
+
+    public RequiredValueException(String s, Throwable throwable) {
+        super(s);
+        this.cause = throwable;
+    }
+
+    public RequiredValueException(Throwable throwable) {
+        super(throwable);
+    }
+
+    public Throwable getCause () {
+        return this.cause;
     }
 }

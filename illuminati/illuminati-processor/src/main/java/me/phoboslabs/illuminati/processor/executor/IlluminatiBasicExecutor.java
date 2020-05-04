@@ -87,6 +87,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
 
     /**
      * only execute at debug
+     * @param illuminatiInterfaceModel - input method parameter model
      */
     protected void addToQueueByDebug (final T illuminatiInterfaceModel) {
         // debug illuminati buffer queue

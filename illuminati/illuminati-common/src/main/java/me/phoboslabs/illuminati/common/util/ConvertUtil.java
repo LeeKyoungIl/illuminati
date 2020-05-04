@@ -69,10 +69,10 @@ public class ConvertUtil {
     }
 
     public static <K, V> Map<K, V> castToMapOf(Class<K> clazzK, Class<V> clazzV, Map<?, ?> map) {
-        for (Map.Entry<?, ?> e: map.entrySet()) {
-            checkCast(clazzK, e.getKey());
-            checkCast(clazzV, e.getValue());
-        }
+        map.forEach((key, value) -> {
+            checkCast(clazzK, key);
+            checkCast(clazzV, value);
+        });
 
         @SuppressWarnings("unchecked")
         Map<K, V> result = (Map<K, V>) map;
@@ -82,9 +82,9 @@ public class ConvertUtil {
     private static <T> void checkCast(Class<T> clazz, Object obj) {
         if (obj != null && !clazz.isInstance(obj)) {
             StringBuilder exMessage = new StringBuilder()
-                                        .append("Expected : " + clazz.getName())
-                                        .append("Was : " + obj.getClass().getName())
-                                        .append("Value : " + obj);
+                                        .append("Expected : ").append(clazz.getName())
+                                        .append("Was : ").append(obj.getClass().getName())
+                                        .append("Value : ").append(obj);
 
             throw new ClassCastException(exMessage.toString());
         }

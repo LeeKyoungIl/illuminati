@@ -20,7 +20,7 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-processor</artifactId>
-  <version>0.9.9.33</version>
+  <version>0.9.9.38</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@
     
 ```java
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.33'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.38'
 ```
 
 ## add @Illuminati to Class

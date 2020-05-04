@@ -88,7 +88,7 @@ public class IlluminatiSwitch {
         String[] illuminatiSwitchValueArray = ((String) result).split(":");
 
         if (illuminatiSwitchValueArray.length == 2 && StringUtils.isNotEmpty(illuminatiSwitchValueArray[1])) {
-            boolean switchValue = Boolean.valueOf(illuminatiSwitchValueArray[1].toLowerCase().indexOf("true") > -1 ? "true" : "false");
+            boolean switchValue = illuminatiSwitchValueArray[1].toLowerCase().contains("true");
 
             if (switchValue != IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get()) {
                 ILLUMINATI_SWITCH_LOGGER.debug("ILLUMINATI_SWITCH_VALUE has changed to " + switchValue);

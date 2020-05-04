@@ -55,7 +55,7 @@ public class EsGroupByBuilder {
                 for (String key : lastResultMap.keySet()) {
                     Map<String, Object> keyMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(lastResultMap.get(key)));
                     keyMap.put(AGGREGATION_KEY_NAME, groupBy);
-                    Map<String, Object> aggsMap = new HashMap<String, Object>();
+                    Map<String, Object> aggsMap = new HashMap<>();
                     aggsMap.put(key, keyMap);
                     groupBy = aggsMap;
                 }

@@ -71,9 +71,11 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
         return ILLUMINATI_DATA_EXECUTOR_IMPL;
     }
 
-    @Override public synchronized void init () {
+    @Override public synchronized IlluminatiDataExecutorImpl init () {
         // create illuminati template queue thread for send to the IlluminatiDataInterfaceModelImpl.
         this.createSystemThread();
+
+        return this;
     }
 
     // ################################################################################################################

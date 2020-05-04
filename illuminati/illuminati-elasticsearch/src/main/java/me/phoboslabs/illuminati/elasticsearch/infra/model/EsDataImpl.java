@@ -100,7 +100,7 @@ public class EsDataImpl implements EsData {
         if (CollectionUtils.isEmpty(mapList)) {
             return;
         }
-        this.sourceList = new ArrayList<Map<String, Object>>();
+        this.sourceList = new ArrayList<>();
         for (Map<String, Object> map : mapList) {
             Map<String, Object> source = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(map.get(SOURCE_KEYWORD)));
             if (map.containsKey(SOURCE_KEYWORD) && source.size() > 0) {
@@ -112,11 +112,9 @@ public class EsDataImpl implements EsData {
     }
 
     private void renameKeys (Map<String, Object> targetMap) {
-        for (String key : RENAME_KEYS_FROM_ES.keySet()) {
-            if (targetMap.containsKey(key)) {
-                targetMap.put(RENAME_KEYS_FROM_ES.get(key), targetMap.get(key));
-                targetMap.remove(key);
-            }
-        }
+        RENAME_KEYS_FROM_ES.keySet().stream().filter(targetMap::containsKey).forEach(key -> {
+            targetMap.put(RENAME_KEYS_FROM_ES.get(key), targetMap.get(key));
+            targetMap.remove(key);
+        });
     }
 }

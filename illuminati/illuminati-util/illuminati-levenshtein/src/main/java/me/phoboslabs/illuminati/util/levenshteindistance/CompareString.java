@@ -17,6 +17,7 @@
 package me.phoboslabs.illuminati.util.levenshteindistance;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class CompareString implements CharSequence {
 
@@ -54,9 +55,7 @@ public class CompareString implements CharSequence {
 
     public char[] toCharArrayByIgnoreCase() {
         char[] ignoreCaseArray = new char[this.length()];
-        for (int i=0; i<this.length(); i++) {
-            ignoreCaseArray[i] = Character.toLowerCase(this.stringCharArray[i]);
-        }
+        IntStream.range(0, this.length()).forEach(i -> ignoreCaseArray[i] = Character.toLowerCase(this.stringCharArray[i]));
         return ignoreCaseArray;
     }
 }
