@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup;
+package me.phoboslabs.illuminati.backup.infra.backup;
 
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 

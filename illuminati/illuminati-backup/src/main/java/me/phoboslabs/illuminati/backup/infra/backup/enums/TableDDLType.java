@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup.enums;
+package me.phoboslabs.illuminati.backup.infra.backup.enums;
 
 public enum TableDDLType {
 

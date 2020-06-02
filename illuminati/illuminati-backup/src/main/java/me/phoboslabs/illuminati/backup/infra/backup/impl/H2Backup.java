@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup.impl;
-
-import com.google.gson.JsonSyntaxException;
-import me.phoboslabs.illuminati.processor.infra.backup.Backup;
-import me.phoboslabs.illuminati.processor.infra.backup.configuration.H2ConnectionFactory;
-import me.phoboslabs.illuminati.processor.infra.backup.enums.TableDDLType;
-import me.phoboslabs.illuminati.processor.properties.IlluminatiH2Properties;
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package me.phoboslabs.illuminati.backup.infra.backup.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

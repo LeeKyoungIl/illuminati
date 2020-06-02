@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup.shutdown.handler.impl;
+package me.phoboslabs.illuminati.backup.infra.backup.shutdown.handler.impl;
 
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
 import me.phoboslabs.illuminati.processor.infra.backup.shutdown.handler.ContainerShutdownHandler;

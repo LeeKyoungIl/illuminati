@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup.configuration;
+package me.phoboslabs.illuminati.backup.infra.backup.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
