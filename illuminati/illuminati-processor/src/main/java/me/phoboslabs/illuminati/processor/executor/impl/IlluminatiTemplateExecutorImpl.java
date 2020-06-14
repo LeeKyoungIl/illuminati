@@ -21,9 +21,6 @@ import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.ContainerSignalHandler;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.handler.impl.IlluminatiShutdownHandler;
 import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
 import me.phoboslabs.illuminati.processor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import me.phoboslabs.illuminati.processor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
@@ -32,6 +29,9 @@ import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.shutdown.ContainerSignalHandler;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
+import me.phoboslabs.illuminati.processor.shutdown.handler.impl.IlluminatiShutdownHandler;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
@@ -47,11 +47,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private static final long ILLUMINATI_ENQUEUING_TIMEOUT_MS = 0L;
 
     // ################################################################################################################
-    // ### init illuminati backup executor                                                                        ###
-    // ################################################################################################################
-    private IlluminatiBackupExecutorImpl illuminatiBackupExecutor;
-
-    // ################################################################################################################
     // ### init illuminati broker                                                                                   ###
     // ################################################################################################################
     private final IlluminatiInfraTemplate illuminatiTemplate;
@@ -59,17 +54,16 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     private IlluminatiShutdownHandler illuminatiShutdownHandler;
 
-    private IlluminatiTemplateExecutorImpl (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) throws Exception {
+    private IlluminatiTemplateExecutorImpl () throws Exception {
         super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
-        this.illuminatiBackupExecutor = illuminatiBackupExecutor;
         this.illuminatiTemplate = this.initIlluminatiTemplate();
     }
 
-    public static IlluminatiTemplateExecutorImpl getInstance (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) throws Exception {
+    public static IlluminatiTemplateExecutorImpl getInstance () throws Exception {
         if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
             synchronized (IlluminatiTemplateExecutorImpl.class) {
                 if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
-                    ILLUMINATI_TEMPLATE_EXECUTOR_IMPL = new IlluminatiTemplateExecutorImpl(illuminatiBackupExecutor);
+                    ILLUMINATI_TEMPLATE_EXECUTOR_IMPL = new IlluminatiTemplateExecutorImpl();
                 }
             }
         }
@@ -97,12 +91,6 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     public void connectionClose () {
         this.illuminatiTemplate.connectionClose();
-    }
-    public void executeStopThread () {
-        this.illuminatiBackupExecutor.createStopThread();
-    }
-    public int getBackupQueueSize () {
-        return this.illuminatiBackupExecutor.getQueueSize();
     }
 
     public void sendToIlluminati (final String jsonString) throws Exception, PublishMessageException {

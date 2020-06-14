@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.backup.infra.backup.shutdown.handler;
+package me.phoboslabs.illuminati.processor.shutdown.handler;
 
 /**
  *  - @marcus.moon provided me with an Graceful idea.

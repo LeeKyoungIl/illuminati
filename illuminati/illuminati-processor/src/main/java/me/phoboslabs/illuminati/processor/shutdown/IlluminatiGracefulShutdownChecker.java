@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.backup.infra.backup.shutdown;
+package me.phoboslabs.illuminati.processor.shutdown;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

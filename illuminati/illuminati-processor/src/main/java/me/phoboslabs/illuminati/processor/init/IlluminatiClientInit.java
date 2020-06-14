@@ -22,7 +22,6 @@ import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiBackupExecutorImpl;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
 import me.phoboslabs.illuminati.common.IlluminatiCommon;
@@ -31,6 +30,7 @@ import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -70,11 +70,11 @@ public class IlluminatiClientInit {
             final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
             SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.parseInt(samplingRate) : SAMPLING_RATE;
 
-            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
+            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION ) {
                 ILLUMINATI_BACKUP_EXECUTOR = IlluminatiBackupExecutorImpl.getInstance().init();
             }
 
-            ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance(ILLUMINATI_BACKUP_EXECUTOR).init();
+            ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance().init().setIlluminatiBackupExecutor(ILLUMINATI_BACKUP_EXECUTOR);
             ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
 
             if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {

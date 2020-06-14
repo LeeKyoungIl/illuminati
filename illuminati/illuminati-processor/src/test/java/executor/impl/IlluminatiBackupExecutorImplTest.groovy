@@ -1,7 +1,7 @@
 package executor.impl
 
 import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiBackupExecutorImpl
+import IlluminatiBackupExecutorImpl
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl

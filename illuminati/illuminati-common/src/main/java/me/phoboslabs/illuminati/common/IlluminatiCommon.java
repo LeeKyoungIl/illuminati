@@ -35,6 +35,7 @@ public class IlluminatiCommon {
     private final static Logger COMMON_LOGGER = LoggerFactory.getLogger(IlluminatiCommon.class);
 
     private static final String H2_CLASS_NAME = "org.h2.Driver";
+    private static final String ILLUMINATI_BACKUP_CLASS_NAME = "me.phoboslabs.illuminati.backup.infra.backup.impl.IlluminatiBackupExecutorImpl";
 
     private static final List<IlluminatiStorageType> ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY;
     static {
@@ -62,16 +63,24 @@ public class IlluminatiCommon {
             IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION = true;
         }
 
-        for (IlluminatiStorageType illuminatiStorageType : ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY) {
-            try {
-                Class.forName(illuminatiStorageType.getType());
-                IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE = illuminatiStorageType;
-                IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION = true;
-                break;
-            } catch (ClassNotFoundException e) {
-                //my class isn't there!
-                IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION = false;
+        try {
+            Class.forName(ILLUMINATI_BACKUP_CLASS_NAME);
+
+            for (IlluminatiStorageType illuminatiStorageType : ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY) {
+                try {
+                    Class.forName(illuminatiStorageType.getType());
+
+                    IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE = illuminatiStorageType;
+                    IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION = true;
+                    break;
+                } catch (ClassNotFoundException e) {
+                    //my class isn't there!
+                    IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION = false;
+                }
             }
+        }  catch (ClassNotFoundException e) {
+            //my class isn't there!
+            IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION = false;
         }
     }
 }

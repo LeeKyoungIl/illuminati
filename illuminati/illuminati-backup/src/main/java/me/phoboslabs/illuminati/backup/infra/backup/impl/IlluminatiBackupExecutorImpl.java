@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.executor.impl;
+package me.phoboslabs.illuminati.backup.infra.backup.impl;
 
 import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.backup.Backup;
 import me.phoboslabs.illuminati.processor.infra.backup.BackupFactory;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
@@ -93,7 +93,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override public IlluminatiTemplateInterfaceModelImpl deQueueByDebug () throws Exception {
-        ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
+        IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
             throw new Exception("backupObjectList is empty.");
@@ -102,19 +102,19 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         final long start = System.currentTimeMillis();
         this.deQueue();
         final long elapsedTime = System.currentTimeMillis() - start;
-        ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is {}", this.getQueueSize());
-        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is {}  millisecond", elapsedTime);
+        IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is {}", this.getQueueSize());
+        IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is {}  millisecond", elapsedTime);
 
         throw new Exception("Backup Executor is not returned messages.");
     }
 
     @Override public void sendToNextStep(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
         if (illuminatiTemplateInterfaceModel == null) {
-            ILLUMINATI_EXECUTOR_LOGGER.warn("data is not valid");
+            IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.warn("data is not valid");
             return;
         }
         if (this.backup == null) {
-            ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_BACKUP Object is null");
+            IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_BACKUP Object is null");
             return;
         }
         //## Save file
@@ -126,7 +126,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         //## Save file
         this.sendToNextStep(illuminatiBackupInterfaceModel);
         final long elapsedTime = System.currentTimeMillis() - start;
-        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of template queue sent is {} millisecond", elapsedTime);
+        IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of template queue sent is {} millisecond", elapsedTime);
     }
 
     @Override protected void createSystemThread () {
@@ -139,7 +139,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                         deQueueByDebug();
                     }
                 } catch (Exception e) {
-                    ILLUMINATI_EXECUTOR_LOGGER.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ({})", e.getMessage());
+                    IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ({})", e.getMessage());
                 } finally {
                     try {
                         Thread.sleep(BACKUP_THREAD_SLEEP_TIME);
