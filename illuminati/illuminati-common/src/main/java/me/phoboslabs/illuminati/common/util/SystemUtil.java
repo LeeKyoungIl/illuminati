@@ -178,4 +178,14 @@ public class SystemUtil {
             SystemUtil.createSystemThread(threadCheckRunnable, "ILLUMINATI_DEBUG_THREAD");
         }
     }
+
+    public static boolean classExist(final String className) {
+        try {
+            Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            //my class isn't there!
+            return false;
+        }
+        return true;
+    }
 }

@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.executor;
+package me.phoboslabs.illuminati.backup;
 
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
-import me.phoboslabs.illuminati.common.exception.RequiredValueException;
+import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
-/**
- * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
- */
-public interface IlluminatiExecutor<T extends IlluminatiInterfaceModel> {
+import java.util.List;
+import java.util.Map;
 
-    IlluminatiExecutor init () throws RequiredValueException;
+public interface Backup<T> {
 
-    void addToQueue (final T t);
+    void appendByJsonString (IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData);
 
-    T deQueue () throws Exception;
+    List<T> getDataByList (boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
 
-    void sendToNextStep (final T t) throws Exception;
+    Map<Integer, T> getDataByMap (boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
 
-    int getQueueSize();
+    void deleteById (int id);
+
+    int getCount () throws Exception;
 }

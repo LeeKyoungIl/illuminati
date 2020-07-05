@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.shutdown;
+package me.phoboslabs.illuminati.shutdown;
 
 import me.phoboslabs.illuminati.processor.infra.backup.shutdown.handler.ContainerShutdownHandler;
 

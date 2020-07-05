@@ -16,7 +16,6 @@
 
 package me.phoboslabs.illuminati.processor.executor;
 
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
@@ -136,11 +135,11 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                         continue;
                     }
                     if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
-                        if (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
+//                        if (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
                             sendToNextStep(illuminatiInterfaceModel);
-                        } else {
-                            preventErrorOfSystemThread(illuminatiInterfaceModel);
-                        }
+//                        } else {
+//                            preventErrorOfSystemThread(illuminatiInterfaceModel);
+//                        }
                     } else {
                         try {
                             Thread.sleep(2000);
@@ -148,7 +147,10 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                         sendToNextStepByDebug(illuminatiInterfaceModel);
                     }
                 } catch (Exception e) {
-                    if (illuminatiInterfaceModel != null && !IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
+//                    if (illuminatiInterfaceModel != null && !IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
+//                        preventErrorOfSystemThread(illuminatiInterfaceModel);
+//                    }
+                    if (illuminatiInterfaceModel != null) {
                         preventErrorOfSystemThread(illuminatiInterfaceModel);
                     }
 

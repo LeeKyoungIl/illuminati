@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.backup.infra.backup;
+package me.phoboslabs.illuminati.backup;
 
-import me.phoboslabs.illuminati.backup.infra.backup.enums.IlluminatiStorageType;
-import me.phoboslabs.illuminati.backup.infra.backup.impl.H2Backup;
+import me.phoboslabs.illuminati.backup.enums.IlluminatiStorageType;
+import me.phoboslabs.illuminati.backup.impl.H2Backup;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 
 public class BackupFactory {

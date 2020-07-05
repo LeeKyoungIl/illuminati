@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.restore;
+package me.phoboslabs.illuminati.shutdown.handler;
 
-import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
-import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
+/**
+ *  - @marcus.moon provided me with an Graceful idea.
+ *
+ * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
+ */
+public interface ContainerShutdownHandler {
 
-public interface Restore {
-
-    RestoreTemplateData init () throws RequiredValueException;
-
-    void restoreToQueue ();
-
-    void restoreToQueueByDebug ();
+    boolean isRunning();
+    void stop();
+    void stopSignal();
 }

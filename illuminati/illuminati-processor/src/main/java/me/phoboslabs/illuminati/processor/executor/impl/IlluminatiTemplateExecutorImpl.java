@@ -16,8 +16,8 @@
 
 package me.phoboslabs.illuminati.processor.executor.impl;
 
+import me.phoboslabs.illuminati.common.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
-import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
@@ -29,9 +29,6 @@ import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
-import me.phoboslabs.illuminati.processor.shutdown.ContainerSignalHandler;
-import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
-import me.phoboslabs.illuminati.processor.shutdown.handler.impl.IlluminatiShutdownHandler;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
@@ -52,7 +49,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     private final IlluminatiInfraTemplate illuminatiTemplate;
     private final long BROKER_HEALTH_CHECK_TIME = 300000L;
 
-    private IlluminatiShutdownHandler illuminatiShutdownHandler;
+//    private IlluminatiShutdownHandler illuminatiShutdownHandler;
 
     private IlluminatiTemplateExecutorImpl () throws Exception {
         super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
@@ -79,7 +76,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         this.createSystemThreadForIsCanConnectRemoteBroker();
 
         if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
-            this.addShutdownHook();
+//            this.addShutdownHook();
         }
 
         return this;
@@ -103,15 +100,15 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_TEMPLATE is must not null.");
             return;
         }
-        if (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
+//        if (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
             try {
                 this.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
             } catch (Exception | PublishMessageException ex) {
                 this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
             }
-        } else {
-            this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
-        }
+//        } else {
+//            this.preventErrorOfSystemThread(illuminatiTemplateInterfaceModelImpl);
+//        }
     }
 
     /**
@@ -138,9 +135,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private void addShutdownHook () {
-       Runtime.getRuntime().addShutdownHook(new ContainerSignalHandler(new IlluminatiShutdownHandler(this)));
-    }
+//    private void addShutdownHook () {
+//       Runtime.getRuntime().addShutdownHook(new ContainerSignalHandler(new IlluminatiShutdownHandler(this)));
+//    }
 
     private IlluminatiInfraTemplate initIlluminatiTemplate () throws Exception {
         final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
@@ -174,11 +171,11 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     @Override protected void preventErrorOfSystemThread(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
-        if (this.illuminatiBackupExecutor == null) {
-            return;
-        }
-        IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
-        this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
+//        if (this.illuminatiBackupExecutor == null) {
+//            return;
+//        }
+//        IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+//        this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
     }
 
     private void createSystemThreadForIsCanConnectRemoteBroker () {

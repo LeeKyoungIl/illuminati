@@ -68,7 +68,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-processor</artifactId>
-            <version>0.9.9.38</version>
+            <version>0.9.9.40</version>
             <scope>compile</scope>
         </dependency>
 

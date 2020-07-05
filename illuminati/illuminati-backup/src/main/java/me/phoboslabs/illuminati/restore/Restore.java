@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.backup.infra.backup;
+package me.phoboslabs.illuminati.restore;
 
-import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
+import me.phoboslabs.illuminati.common.exception.RequiredValueException;
+import me.phoboslabs.illuminati.restore.impl.RestoreTemplateData;
 
-import java.util.List;
-import java.util.Map;
+public interface Restore {
 
-public interface Backup<T> {
+    RestoreTemplateData init () throws RequiredValueException;
 
-    void appendByJsonString (IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData);
+    void restoreToQueue ();
 
-    List<T> getDataByList (boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
-
-    Map<Integer, T> getDataByMap (boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
-
-    void deleteById (int id);
-
-    int getCount () throws Exception;
+    void restoreToQueueByDebug ();
 }

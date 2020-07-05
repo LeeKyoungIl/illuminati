@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.backup.infra.backup.properties;
+package me.phoboslabs.illuminati.backup.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;

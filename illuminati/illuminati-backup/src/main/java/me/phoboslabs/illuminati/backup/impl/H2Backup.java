@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.backup.infra.backup.impl;
+package me.phoboslabs.illuminati.backup.impl;
 
 import com.google.gson.JsonSyntaxException;
-import me.phoboslabs.illuminati.backup.infra.backup.Backup;
-import me.phoboslabs.illuminati.backup.infra.backup.configuration.H2ConnectionFactory;
-import me.phoboslabs.illuminati.backup.infra.backup.enums.TableDDLType;
-import me.phoboslabs.illuminati.backup.infra.backup.properties.IlluminatiH2Properties;
+import me.phoboslabs.illuminati.backup.Backup;
+import me.phoboslabs.illuminati.backup.configuration.H2ConnectionFactory;
+import me.phoboslabs.illuminati.backup.enums.TableDDLType;
+import me.phoboslabs.illuminati.backup.properties.IlluminatiH2Properties;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;

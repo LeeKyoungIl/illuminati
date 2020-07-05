@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.exception;
+package me.phoboslabs.illuminati.common.exception;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 05/02/2020.

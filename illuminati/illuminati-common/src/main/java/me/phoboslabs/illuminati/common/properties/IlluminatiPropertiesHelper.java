@@ -18,6 +18,7 @@ package me.phoboslabs.illuminati.common.properties;
 
 import me.phoboslabs.illuminati.common.util.PropertiesUtil;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import me.phoboslabs.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,16 +36,7 @@ public class IlluminatiPropertiesHelper {
      * @return boolean
      */
     public static boolean isIlluminatiSwitcherActive() {
-        boolean isIlluminatiSwitcherActive = true;
-
-        try {
-            Class.forName(ILLUMINATI_SWITCH_CONFIGURATION_CLASS_NAME);
-        } catch (ClassNotFoundException e) {
-            //my class isn't there!
-            isIlluminatiSwitcherActive = false;
-        }
-
-        return isIlluminatiSwitcherActive;
+        return SystemUtil.classExist(ILLUMINATI_SWITCH_CONFIGURATION_CLASS_NAME);
     }
 
     public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, final String configPropertiesFileName, final String key, final String defaultValue) {
