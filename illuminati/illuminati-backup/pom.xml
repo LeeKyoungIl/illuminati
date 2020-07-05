@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.phoboslabs.illuminati</groupId>
-    <artifactId>illuminati-backup</artifactId>
+    <artifactId>illuminati-infra.backup</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
 
-    <name>illuminati-backup</name>
-    <description>Project illuminati backup.</description>
-    <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-backup</url>
+    <name>illuminati-infra.backup</name>
+    <description>Project illuminati infra.backup.</description>
+    <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-infra.backup</url>
 
     <licenses>
         <license>
@@ -51,6 +51,13 @@
             <artifactId>slf4j-api</artifactId>
             <version>[1.7.29, )</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>1.1-groovy-2.4</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -120,9 +127,9 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-leekyoungil-backup</id>
-            <name>leekyoungil-backup</name>
-            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-backup/;publish=1</url>
+            <id>bintray-leekyoungil-infra.backup</id>
+            <name>leekyoungil-infra.backup</name>
+            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-infra.backup/;publish=1</url>
         </repository>
     </distributionManagement>
 

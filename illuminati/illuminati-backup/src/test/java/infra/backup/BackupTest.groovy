@@ -1,9 +1,9 @@
 package infra.backup
 
-import me.phoboslabs.illuminati.processor.infra.backup.Backup
-import me.phoboslabs.illuminati.processor.infra.backup.impl.H2Backup
+import me.phoboslabs.illuminati.backup.Backup
+import me.phoboslabs.illuminati.backup.configuration.H2ConnectionFactory
+import me.phoboslabs.illuminati.backup.impl.H2Backup
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType
-import me.phoboslabs.illuminati.processor.infra.backup.configuration.H2ConnectionFactory
 import spock.lang.Specification
 
 class BackupTest extends Specification {

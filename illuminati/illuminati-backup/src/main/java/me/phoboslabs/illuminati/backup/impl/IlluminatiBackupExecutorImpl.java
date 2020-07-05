@@ -40,14 +40,14 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     private static IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR_IMPL;
 
     // ################################################################################################################
-    // ### init illuminati file backup queue                                                                        ###
+    // ### init illuminati file infra.backup queue                                                                        ###
     // ################################################################################################################
     private static final int ILLUMINATI_BAK_LOG = 100000;
     private static final long ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS = 3000L;
     private static final long ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS = 3000L;
 
     // ################################################################################################################
-    // ### init illuminati file backup queue                                                                        ###
+    // ### init illuminati file infra.backup queue                                                                        ###
     // ################################################################################################################
     private static final int POLL_PER_COUNT = 1000;
     private static final long BACKUP_THREAD_SLEEP_TIME = 300000L;

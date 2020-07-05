@@ -35,7 +35,7 @@ public class IlluminatiCommon {
     private final static Logger COMMON_LOGGER = LoggerFactory.getLogger(IlluminatiCommon.class);
 
     private static final String H2_CLASS_NAME = "org.h2.Driver";
-    private static final String ILLUMINATI_BACKUP_CLASS_NAME = "me.phoboslabs.illuminati.backup.infra.backup.impl.IlluminatiBackupExecutorImpl";
+    private static final String ILLUMINATI_BACKUP_CLASS_NAME = "me.phoboslabs.illuminati.infra.backup.infra.infra.backup.impl.IlluminatiBackupExecutorImpl";
 
     private static final List<IlluminatiStorageType> ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY;
     static {
@@ -44,7 +44,7 @@ public class IlluminatiCommon {
             classNameArray = Arrays.asList(IlluminatiStorageType.getEnumType(H2_CLASS_NAME));
         } catch (Exception ex) {
             classNameArray = new ArrayList<>();
-            COMMON_LOGGER.error("check backup stage type.");
+            COMMON_LOGGER.error("check infra.backup stage type.");
         }
         ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY = Collections.unmodifiableList(classNameArray);
     }

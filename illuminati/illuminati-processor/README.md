@@ -153,9 +153,9 @@ chaosBomber: true
 ```
 
 ## Backup function
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/backup.png)
+![image](https://github.com/LeeKyoungIl/illuminati/blob/master/infra.backup.png)
 
- * IF Your system has problems on sending to data to external broker. (network or broker shutdown or etc..) After backup the data, if the system is restored. resend the data.
+ * IF Your system has problems on sending to data to external broker. (network or broker shutdown or etc..) After infra.backup the data, if the system is restored. resend the data.
  * Backup storage use H2database to prevent data loss. (Mysql, File, Embedded broker will be added)
  * IF YOU add an H2Database dependency to a project with the illuminati, Backup data by automatically, If When a back event occurs. after restore the data will deleted.
 
