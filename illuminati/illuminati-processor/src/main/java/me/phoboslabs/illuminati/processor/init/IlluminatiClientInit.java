@@ -54,10 +54,7 @@ public class IlluminatiClientInit {
     private static final int CHAOS_BOMBER_NUMBER = (int) (Math.random() * 100) + 1;
     private static boolean ILLUMINATI_INITIALIZED = false;
 
-    private static IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
-    private static IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
-
-//    private static RestoreTemplateData RESTORE_TEMPLATE_DATA;
+    private static IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
 
     static {
         try {
@@ -66,16 +63,8 @@ public class IlluminatiClientInit {
             final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
             SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.parseInt(samplingRate) : SAMPLING_RATE;
 
-            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION ) {
+            ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance().init();
 
-            }
-
-            ILLUMINATI_TEMPLATE_EXECUTOR = IlluminatiTemplateExecutorImpl.getInstance().init();
-            ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
-
-            if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
-//                RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
-            }
             ILLUMINATI_INITIALIZED = true;
 
             final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "broker", "unknown");
@@ -121,7 +110,7 @@ public class IlluminatiClientInit {
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
+    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati == null || illuminati.ignore();
@@ -235,12 +224,7 @@ public class IlluminatiClientInit {
         }
 
         final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
-        final PackageType packageType;
-        if (illuminati != null) {
-            packageType = illuminati.packageType();
-        } else {
-            packageType = PackageType.DEFAULT;
-        }
+        final PackageType packageType = (illuminati != null) ? illuminati.packageType() : PackageType.DEFAULT;
 
         ILLUMINATI_DATA_EXECUTOR.addToQueue(IlluminatiDataInterfaceModelImpl
                 .Builder(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, originMethodExecute)

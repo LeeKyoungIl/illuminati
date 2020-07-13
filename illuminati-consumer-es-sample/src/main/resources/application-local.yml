@@ -21,7 +21,7 @@ spring:
               dlqTtl: 5000
       bindings:
         input:
-          destination: local-illuminati-exchange
+          destination: illuminati-exchange
           binder: illuminatiConsumer
           group: illuminati
           consumer:
@@ -33,14 +33,14 @@ spring:
             spring:
               rabbitmq:
                 host: localhost
-                port: 32769
+                port: 5672
                 virtual-host: illuminatiLocal
-                username: illuminati-local
-                password: illuminati-local
+                username: leekyoungil
+                password: lki123$
 
 elasticsearchInfo:
   master:
-    user:
-    pass:
-    host: 192.168.99.100
-    port: 32799
+    user: leekyoungil
+    pass: lki123$
+    host: localhost
+    port: 5672

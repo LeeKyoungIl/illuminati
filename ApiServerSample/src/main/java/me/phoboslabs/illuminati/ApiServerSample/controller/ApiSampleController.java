@@ -51,7 +51,7 @@ public class ApiSampleController {
         testModel.setName("test1");
         testModel.setUserId("test");
 
-        apiSampleService.sampleTestByObject(testModel);
+        apiSampleService.sampleTestByObject1(testModel);
 
         return testJson;
     }
