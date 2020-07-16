@@ -9,7 +9,7 @@
 **There is no garbage data in your Application.**
 It is necessary to identify what data is the most important among the collecting data from your Applcation.
 Also collect and analysis must be performed in different processes. 
-The illuminati is desinged to make collect all data easily and it can be possible scalability working by separated analysis process.
+The illuminati is designed to make collect all data easily and it can be possible scalability working by separated analysis process.
 
 ## required
  * Java8 or higher.
