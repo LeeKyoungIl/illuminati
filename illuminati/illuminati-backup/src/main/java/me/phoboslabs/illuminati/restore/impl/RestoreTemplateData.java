@@ -17,8 +17,8 @@
 package me.phoboslabs.illuminati.restore.impl;
 
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiBasicModel;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
@@ -41,15 +41,15 @@ public class RestoreTemplateData implements Restore {
     private static final int RESTORE_CHECK_QUEUE_SIZE = 1500;
     private static final int LIMIT_COUNT = 1000;
 
-    private final Backup<IlluminatiInterfaceModel> h2Backup;
+    private final Backup<IlluminatiModel> h2Backup;
 
     // ################################################################################################################
     // ### init illuminati template executor                                                                        ###
     // ################################################################################################################
-    private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor;
+    private IlluminatiExecutor<IlluminatiBasicModel> illuminatiTemplateExecutor;
 
     private RestoreTemplateData (final IlluminatiExecutor illuminatiExecutor) throws Exception {
-        h2Backup = H2Backup.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
+        h2Backup = H2Backup.getInstance(IlluminatiBasicModel.class);
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
@@ -76,9 +76,9 @@ public class RestoreTemplateData implements Restore {
         }
 
         try {
-            final List<IlluminatiInterfaceModel> backupObjectList = this.h2Backup.getDataByList(false, true, 0, LIMIT_COUNT);
+            final List<IlluminatiModel> backupObjectList = this.h2Backup.getDataByList(false, true, 0, LIMIT_COUNT);
             if (CollectionUtils.isNotEmpty(backupObjectList)) {
-                backupObjectList.forEach(illuminatiInterfaceModel -> this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel));
+                backupObjectList.forEach(illuminatiInterfaceModel -> this.illuminatiTemplateExecutor.addToQueue((IlluminatiBasicModel) illuminatiInterfaceModel));
             }
         } catch (Exception ex) {
             this.restoreTemplateDataLogger.error("check H2 database configurations.", ex);

@@ -16,23 +16,21 @@
 
 package me.phoboslabs.illuminati.processor.executor;
 
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.exception.RequiredValueException;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataSendModel;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
  */
-public interface IlluminatiExecutor<T extends IlluminatiInterfaceModel> {
+public interface IlluminatiExecutor<T extends IlluminatiModel> {
 
     IlluminatiExecutor init () throws Exception;
 
-    void addToQueue (final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel);
+    void addToQueue (final IlluminatiDataSendModel illuminatiDataInterfaceModel);
 
-    IlluminatiDataInterfaceModelImpl deQueue () throws Exception;
+    IlluminatiDataSendModel deQueue () throws Exception;
 
-    void sendToNextStep (final IlluminatiDataInterfaceModelImpl t) throws Exception;
+    void sendToNextStep (final IlluminatiDataSendModel t) throws Exception;
 
     int getQueueSize();
 }

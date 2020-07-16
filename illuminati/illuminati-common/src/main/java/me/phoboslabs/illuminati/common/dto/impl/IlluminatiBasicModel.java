@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel {
+public class IlluminatiBasicModel implements IlluminatiModel {
 
     @Expose private String parentModuleName;
     @Expose private ServerInfo serverInfo;
@@ -59,46 +59,46 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         TRANSACTION_IDS.add(ILLUMINATI_UNIQUE_USER_ID_KEY);
     }
 
-    public IlluminatiTemplateInterfaceModelImpl() {}
+    public IlluminatiBasicModel() {}
 
-    public IlluminatiTemplateInterfaceModelImpl(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
+    public IlluminatiBasicModel(final IlluminatiDataSendModel illuminatiDataSendModel) {
         this.localTime = new Date();
         this.generateAggregateId();
 
-        this.elapsedTime = illuminatiDataInterfaceModelImpl.getElapsedTime();
-        this.output = illuminatiDataInterfaceModelImpl.getOutput();
+        this.elapsedTime = illuminatiDataSendModel.getElapsedTime();
+        this.output = illuminatiDataSendModel.getOutput();
 
         this.timestamp = localTime.getTime();
         this.logTime = IlluminatiConstant.DATE_FORMAT_EVENT.format(localTime);
-        this.paramValues = illuminatiDataInterfaceModelImpl.getParamValues();
-        this.changedJsElement = illuminatiDataInterfaceModelImpl.getChangedJsElement();
+        this.paramValues = illuminatiDataSendModel.getParamValues();
+        this.changedJsElement = illuminatiDataSendModel.getChangedJsElement();
 
-        this.setMethod(illuminatiDataInterfaceModelImpl.getSignature())
-            .initReqHeaderInfo(illuminatiDataInterfaceModelImpl.getRequestHeaderModel())
+        this.setMethod(illuminatiDataSendModel.getSignature())
+            .initReqHeaderInfo(illuminatiDataSendModel.getRequestHeaderModel())
             .checkAndSetTransactionIdFromPostBody(this.header.getPostContentBody())
-            .initUniqueUserId(illuminatiDataInterfaceModelImpl.getIlluminatiUniqueUserId())
-            .loadClientInfo(illuminatiDataInterfaceModelImpl.getClientInfoMap())
-            .staticInfo(illuminatiDataInterfaceModelImpl.getStaticInfo())
-            .isActiveChaosBomber(illuminatiDataInterfaceModelImpl.isActiveChaosBomber())
-            .setPackageType(illuminatiDataInterfaceModelImpl.getPackageType());
+            .initUniqueUserId(illuminatiDataSendModel.getIlluminatiUniqueUserId())
+            .loadClientInfo(illuminatiDataSendModel.getClientInfoMap())
+            .staticInfo(illuminatiDataSendModel.getStaticInfo())
+            .isActiveChaosBomber(illuminatiDataSendModel.isActiveChaosBomber())
+            .setPackageType(illuminatiDataSendModel.getPackageType());
     }
 
     // ################################################################################################################
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public IlluminatiTemplateInterfaceModelImpl initBasicJvmInfo (final Map<String, Object> jvmInfo) {
+    public IlluminatiBasicModel initBasicJvmInfo (final Map<String, Object> jvmInfo) {
         this.jvmInfo = jvmInfo;
         return this;
     }
 
-    public IlluminatiTemplateInterfaceModelImpl initStaticInfo (final String parentModuleName, final ServerInfo serverInfo) {
+    public IlluminatiBasicModel initStaticInfo (final String parentModuleName, final ServerInfo serverInfo) {
         this.parentModuleName= parentModuleName;
         this.serverInfo = serverInfo;
         return this;
     }
 
-    public IlluminatiTemplateInterfaceModelImpl addBasicJvmMemoryInfo (final Map<String, Object> jvmMemoryInfo) {
+    public IlluminatiBasicModel addBasicJvmMemoryInfo (final Map<String, Object> jvmMemoryInfo) {
         if (this.jvmInfo == null) {
             this.jvmInfo = new HashMap<>();
         }
@@ -120,7 +120,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         return StringObjectUtils.isValid(illuminatiSProcId) && (illuminatiSProcId.equals(this.changedJsElement.getIlluminatiSProcId()));
     }
 
-    public IlluminatiTemplateInterfaceModelImpl setJavascriptUserAction () {
+    public IlluminatiBasicModel setJavascriptUserAction () {
         if (this.changedJsElement != null
                 && this.isEqualsGProcId(this.header.getIlluminatiGProcId()) && this.isEqualsSProcId(this.header.getIlluminatiSProcId())) {
             this.changedJsElement.convertListToMap();
@@ -145,17 +145,17 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private IlluminatiTemplateInterfaceModelImpl initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
+    private IlluminatiBasicModel initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
         this.header = requestHeaderModel;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl setPackageType (final String packageType) {
+    private IlluminatiBasicModel setPackageType (final String packageType) {
         this.packageType = packageType;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl loadClientInfo (final Map<String, String> clientInfoMap) {
+    private IlluminatiBasicModel loadClientInfo (final Map<String, String> clientInfoMap) {
         if (clientInfoMap == null) {
             return this;
         }
@@ -168,24 +168,24 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl staticInfo (final Map<String, Object> staticInfo) {
+    private IlluminatiBasicModel staticInfo (final Map<String, Object> staticInfo) {
         if (this.serverInfo != null && !this.serverInfo.isAlreadySetServerDomainAndPort()) {
             this.serverInfo.setStaticInfoFromRequest(staticInfo);
         }
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl isActiveChaosBomber (final boolean isActiveChaosBomber) {
+    private IlluminatiBasicModel isActiveChaosBomber (final boolean isActiveChaosBomber) {
         this.isActiveChaosBomber = isActiveChaosBomber;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl initUniqueUserId (final String illuminatiUniqueUserId) {
+    private IlluminatiBasicModel initUniqueUserId (final String illuminatiUniqueUserId) {
         this.illuminatiUniqueUserId = illuminatiUniqueUserId;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl checkAndSetTransactionIdFromPostBody (final String postBody) {
+    private IlluminatiBasicModel checkAndSetTransactionIdFromPostBody (final String postBody) {
         if (!StringObjectUtils.isValid(postBody)) {
             return this;
         }
@@ -220,7 +220,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         this.id = StringObjectUtils.generateId(this.localTime.getTime(), null);
     }
 
-    private IlluminatiTemplateInterfaceModelImpl setMethod (final MethodSignature methodSignature) {
+    private IlluminatiBasicModel setMethod (final MethodSignature methodSignature) {
         if (this.general == null) {
             this.general = new RequestGeneralModel();
         }

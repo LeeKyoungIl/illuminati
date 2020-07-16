@@ -19,13 +19,12 @@ package me.phoboslabs.illuminati.processor.init;
 import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl;
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
+import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataSendExecutorImpl;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
 import me.phoboslabs.illuminati.common.IlluminatiCommon;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataSendModel;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiBasicModel;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -54,7 +53,7 @@ public class IlluminatiClientInit {
     private static final int CHAOS_BOMBER_NUMBER = (int) (Math.random() * 100) + 1;
     private static boolean ILLUMINATI_INITIALIZED = false;
 
-    private static IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
+    private static IlluminatiExecutor<IlluminatiBasicModel> ILLUMINATI_DATA_EXECUTOR;
 
     static {
         try {
@@ -63,7 +62,7 @@ public class IlluminatiClientInit {
             final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
             SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.parseInt(samplingRate) : SAMPLING_RATE;
 
-            ILLUMINATI_DATA_EXECUTOR = IlluminatiDataExecutorImpl.getInstance().init();
+            ILLUMINATI_DATA_EXECUTOR = IlluminatiDataSendExecutorImpl.getInstance().init();
 
             ILLUMINATI_INITIALIZED = true;
 
@@ -226,7 +225,7 @@ public class IlluminatiClientInit {
         final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
         final PackageType packageType = (illuminati != null) ? illuminati.packageType() : PackageType.DEFAULT;
 
-        ILLUMINATI_DATA_EXECUTOR.addToQueue(IlluminatiDataInterfaceModelImpl
+        ILLUMINATI_DATA_EXECUTOR.addToQueue(IlluminatiDataSendModel
                 .Builder(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, originMethodExecute)
                 .setPackageType(packageType.getPackageType()));
 

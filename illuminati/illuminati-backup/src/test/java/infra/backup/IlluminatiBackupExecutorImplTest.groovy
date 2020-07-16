@@ -1,8 +1,6 @@
 package infra.backup
 
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl
+
 import spock.lang.Specification
 
 class IlluminatiBackupExecutorImplTest extends Specification {

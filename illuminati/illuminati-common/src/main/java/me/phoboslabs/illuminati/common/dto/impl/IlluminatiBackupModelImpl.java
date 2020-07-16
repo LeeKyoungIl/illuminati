@@ -16,10 +16,10 @@
 
 package me.phoboslabs.illuminati.common.dto.impl;
 
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
-public class IlluminatiBackupInterfaceModelImpl implements IlluminatiInterfaceModel {
+public class IlluminatiBackupModelImpl implements IlluminatiModel {
 
     private IlluminatiInterfaceType illuminatiInterfaceType;
 

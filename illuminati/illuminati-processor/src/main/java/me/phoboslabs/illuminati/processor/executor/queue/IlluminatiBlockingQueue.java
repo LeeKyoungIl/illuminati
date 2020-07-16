@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.executor;
+package me.phoboslabs.illuminati.processor.executor.queue;
 
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
-public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends LinkedBlockingQueue<E> {
+public class IlluminatiBlockingQueue<E extends IlluminatiModel> extends LinkedBlockingQueue<E> {
 
     private int listCount = 1;
 

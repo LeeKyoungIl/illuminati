@@ -17,11 +17,10 @@
 package me.phoboslabs.illuminati.processor.executor;
 
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataSendModel;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
-import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
+import me.phoboslabs.illuminati.processor.executor.queue.IlluminatiBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,21 +29,21 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
-public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel> implements IlluminatiExecutor<T> {
+public abstract class IlluminatiBasicExecutor<T extends IlluminatiModel> implements IlluminatiExecutor<T> {
 
     protected final static Logger ILLUMINATI_EXECUTOR_LOGGER = LoggerFactory.getLogger(IlluminatiBasicExecutor.class);
 
     public static final int ILLUMINATI_BAK_LOG = 10000;
 
-    protected final IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl> illuminatiBlockingQueue;
+    protected final IlluminatiBlockingQueue<IlluminatiDataSendModel> illuminatiBlockingQueue;
 
     private final long enQueuingTimeout;
 
-    public abstract void sendToNextStep(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) throws Exception;
-    protected abstract void sendToNextStepByDebug(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) throws Exception;
-    protected abstract void preventErrorOfSystemThread(final IlluminatiDataInterfaceModelImpl t);
+    public abstract void sendToNextStep(final IlluminatiDataSendModel illuminatiDataInterfaceModel) throws Exception;
+    protected abstract void sendToNextStepByDebug(final IlluminatiDataSendModel illuminatiDataInterfaceModel) throws Exception;
+    protected abstract void preventErrorOfSystemThread(final IlluminatiDataSendModel t);
 
-    protected IlluminatiBasicExecutor (long enQueuingTimeout, IlluminatiBlockingQueue<IlluminatiDataInterfaceModelImpl> blockingQueue) {
+    protected IlluminatiBasicExecutor (long enQueuingTimeout, IlluminatiBlockingQueue<IlluminatiDataSendModel> blockingQueue) {
         this.enQueuingTimeout = enQueuingTimeout;
         this.illuminatiBlockingQueue = blockingQueue;
     }
@@ -57,7 +56,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         return illuminatiBlockingQueue.size();
     }
 
-    public void addToQueue(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) {
+    public void addToQueue(final IlluminatiDataSendModel illuminatiDataInterfaceModel) {
         if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             try {
                 illuminatiBlockingQueue.offer(illuminatiDataInterfaceModel, this.enQueuingTimeout, TimeUnit.MILLISECONDS);
@@ -69,7 +68,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         }
     }
 
-    public IlluminatiDataInterfaceModelImpl deQueue() throws Exception {
+    public IlluminatiDataSendModel deQueue() throws Exception {
 //        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             try {
                 return illuminatiBlockingQueue.take();
@@ -131,7 +130,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         final String thisClassName = this.getClass().getName();
         final Runnable runnableFirst = () -> {
             while (true) {
-                IlluminatiDataInterfaceModelImpl illuminatiInterfaceModel = null;
+                IlluminatiDataSendModel illuminatiInterfaceModel = null;
                 try {
                     illuminatiInterfaceModel = deQueue();
                     if (illuminatiInterfaceModel == null) {

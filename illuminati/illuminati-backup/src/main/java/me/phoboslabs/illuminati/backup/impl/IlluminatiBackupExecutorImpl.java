@@ -22,9 +22,9 @@ import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.backup.Backup;
 import me.phoboslabs.illuminati.processor.infra.backup.BackupFactory;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiBasicModel;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
 import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
-public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
+public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<IlluminatiBasicModel> {
 
     private static IlluminatiBackupExecutorImpl ILLUMINATI_BACKUP_EXECUTOR_IMPL;
 
@@ -52,7 +52,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     private static final int POLL_PER_COUNT = 1000;
     private static final long BACKUP_THREAD_SLEEP_TIME = 300000L;
 
-    private final Backup<IlluminatiInterfaceModel> backup;
+    private final Backup<IlluminatiModel> backup;
 
     private IlluminatiBackupExecutorImpl() throws Exception {
         super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
@@ -80,8 +80,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         return this;
     }
 
-    @Override public IlluminatiTemplateInterfaceModelImpl deQueue() throws Exception {
-        List<IlluminatiTemplateInterfaceModelImpl> backupObjectList = illuminatiBlockingQueue.pollToList(ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+    @Override public IlluminatiBasicModel deQueue() throws Exception {
+        List<IlluminatiBasicModel> backupObjectList = illuminatiBlockingQueue.pollToList(ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         if (CollectionUtils.isEmpty(backupObjectList)) {
             throw new Exception("backupObjectList is empty.");
@@ -92,7 +92,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         throw new Exception("Backup Executor is not returned messages.");
     }
 
-    @Override public IlluminatiTemplateInterfaceModelImpl deQueueByDebug () throws Exception {
+    @Override public IlluminatiBasicModel deQueueByDebug () throws Exception {
         IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
@@ -108,7 +108,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         throw new Exception("Backup Executor is not returned messages.");
     }
 
-    @Override public void sendToNextStep(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
+    @Override public void sendToNextStep(IlluminatiBasicModel illuminatiTemplateInterfaceModel) {
         if (illuminatiTemplateInterfaceModel == null) {
             IlluminatiBasicExecutor.ILLUMINATI_EXECUTOR_LOGGER.warn("data is not valid");
             return;
@@ -121,7 +121,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         this.backup.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
     }
 
-    @Override protected void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiBackupInterfaceModel) {
+    @Override protected void sendToNextStepByDebug(IlluminatiBasicModel illuminatiBackupInterfaceModel) {
         final long start = System.currentTimeMillis();
         //## Save file
         this.sendToNextStep(illuminatiBackupInterfaceModel);
@@ -154,7 +154,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         this.createDebugThread();
     }
 
-    @Override protected void preventErrorOfSystemThread(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
+    @Override protected void preventErrorOfSystemThread(IlluminatiBasicModel illuminatiTemplateInterfaceModel) {
 
     }
 

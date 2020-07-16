@@ -16,29 +16,31 @@
 
 package me.phoboslabs.illuminati.processor.executor.impl;
 
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.dto.ServerInfo;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataSendModel;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiBasicModel;
+import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
+import me.phoboslabs.illuminati.common.util.SystemUtil;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
-import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
-import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
+import me.phoboslabs.illuminati.processor.executor.queue.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
 import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
 import me.phoboslabs.illuminati.processor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import me.phoboslabs.illuminati.processor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.dto.ServerInfo;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import me.phoboslabs.illuminati.common.util.SystemUtil;
 
 import java.util.Map;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
  */
-public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<IlluminatiTemplateInterfaceModelImpl> {
+public class IlluminatiDataSendExecutorImpl extends IlluminatiBasicExecutor<IlluminatiBasicModel> {
 
-    private static IlluminatiDataExecutorImpl ILLUMINATI_DATA_EXECUTOR_IMPL;
+    private static final class IlluminatiDataSendExecutorImplHolder {
+        private static final IlluminatiDataSendExecutorImpl INSTANCE_HOLDER = new IlluminatiDataSendExecutorImpl();
+    }
 
     // ################################################################################################################
     // ### init illuminati data queue                                                                               ###
@@ -60,48 +62,39 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
     // get basic JVM setting info only once.
     private final static Map<String, Object> JVM_INFO = SystemUtil.getJvmInfo();
 
-    private IlluminatiDataExecutorImpl () {
+    private IlluminatiDataSendExecutorImpl() {
         super(ILLUMINATI_DATA_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
-    }
-
-    public static IlluminatiDataExecutorImpl getInstance () {
-        if (ILLUMINATI_DATA_EXECUTOR_IMPL == null) {
-            synchronized (IlluminatiDataExecutorImpl.class) {
-                if (ILLUMINATI_DATA_EXECUTOR_IMPL == null) {
-                    ILLUMINATI_DATA_EXECUTOR_IMPL = new IlluminatiDataExecutorImpl();
-                }
-            }
-        }
-
-        return ILLUMINATI_DATA_EXECUTOR_IMPL;
-    }
-
-    @Override public synchronized IlluminatiDataExecutorImpl init () throws Exception {
-        // create illuminati template queue thread for send to the IlluminatiDataInterfaceModelImpl.
-        this.initIlluminatiInfraTemplate();
-
-        this.createSystemThread();
-        this.createSystemThreadForIsCanConnectRemoteBroker();
-
-        return this;
     }
 
     // ################################################################################################################
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-//    @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
-//        if (!illuminatiDataInterfaceModelImpl.isValid()) {
-//            ILLUMINATI_EXECUTOR_LOGGER.warn("illuminatiDataInterfaceModelImpl is not valid");
-//            return;
-//        }
-//        //## send To Illuminati template queue
-//        this.sendToIlluminatiTemplateQueue(illuminatiDataInterfaceModelImpl);
-//    }
+    public static IlluminatiDataSendExecutorImpl getInstance () {
+        return IlluminatiDataSendExecutorImplHolder.INSTANCE_HOLDER;
+    }
+
+    @Override public synchronized IlluminatiDataSendExecutorImpl init () throws Exception {
+        // create illuminati template queue thread for send to the IlluminatiDataInterfaceModelImpl.
+        this.initIlluminatiInfraTemplate();
+
+        this.createSystemThread();
+        this.createSystemThreadForIsCanConnectRemoteBroker();
+
+        if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
+//            this.addShutdownHook();
+        }
+
+        return this;
+    }
 
     // ################################################################################################################
     // ### private methods                                                                                          ###
     // ################################################################################################################
+
+    private void addShutdownHook () {
+//        Runtime.getRuntime().addShutdownHook(new ContainerSignalHandler(new IlluminatiShutdownHandler(this)));
+    }
 
     private void initIlluminatiInfraTemplate () throws Exception {
         final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
@@ -131,32 +124,36 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
         }
     }
 
-    private void addDataOnIlluminatiModel (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
+    private void addDataOnIlluminatiModel (final IlluminatiBasicModel illuminatiTemplateInterfaceModelImpl) {
         illuminatiTemplateInterfaceModelImpl.initStaticInfo(PARENT_MODULE_NAME, SERVER_INFO)
                 .initBasicJvmInfo(JVM_INFO)
                 .addBasicJvmMemoryInfo(SystemUtil.getJvmMemoryInfo())
                 .setJavascriptUserAction();
     }
 
-    @Override public void sendToNextStep(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
-        final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl = new IlluminatiTemplateInterfaceModelImpl(illuminatiDataInterfaceModelImpl);
+    @Override public void sendToNextStep(final IlluminatiDataSendModel illuminatiDataSendModel) {
+        final IlluminatiBasicModel illuminatiTemplateInterfaceModelImpl = new IlluminatiBasicModel(illuminatiDataSendModel);
 
         try {
             this.addDataOnIlluminatiModel(illuminatiTemplateInterfaceModelImpl);
 
-            if (IlluminatiInfraConstant.isCanConnectToRemoteBroker()) {
-                this.illuminatiInfraTemplate.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
-            } else {
-                ILLUMINATI_EXECUTOR_LOGGER.error("Check your message broker status. ");
-                ILLUMINATI_EXECUTOR_LOGGER.error("Your data sent to the Backup store.");
-            }
+            //if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown() == false) {
+                if (IlluminatiInfraConstant.isCanConnectToRemoteBroker()) {
+                    this.illuminatiInfraTemplate.sendToIlluminati(illuminatiTemplateInterfaceModelImpl.getJsonString());
+                } else {
+                    ILLUMINATI_EXECUTOR_LOGGER.error("Check your message broker status. ");
+                    ILLUMINATI_EXECUTOR_LOGGER.error("Your data sent to the Backup store.");
+                }
+            //} else {
+
+            //}
         } catch (Exception | PublishMessageException ex) {
             ILLUMINATI_EXECUTOR_LOGGER.debug("error : check your broker. ("+ex.toString()+")");
-            this.preventErrorOfSystemThread(illuminatiDataInterfaceModelImpl);
+            this.preventErrorOfSystemThread(illuminatiDataSendModel);
         }
     }
 
-    @Override public void sendToNextStepByDebug (final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) {
+    @Override public void sendToNextStepByDebug (final IlluminatiDataSendModel illuminatiDataInterfaceModel) {
 //        final long start = System.currentTimeMillis();
 //        this.sendToNextStep(illuminatiDataInterfaceModelImpl);
 //        final long elapsedTime = System.currentTimeMillis() - start;
@@ -164,8 +161,12 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
 //        ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of template queue sent is {} millisecond", elapsedTime);
     }
 
-    @Override protected void preventErrorOfSystemThread(IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel) {
-
+    @Override protected void preventErrorOfSystemThread(IlluminatiDataSendModel illuminatiDataInterfaceModel) {
+////        if (this.illuminatiBackupExecutor == null) {
+////            return;
+////        }
+////        IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
+////        this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
     }
 
     private void createSystemThreadForIsCanConnectRemoteBroker () {

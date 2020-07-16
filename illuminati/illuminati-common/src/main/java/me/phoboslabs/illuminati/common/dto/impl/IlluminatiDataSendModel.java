@@ -18,24 +18,20 @@ package me.phoboslabs.illuminati.common.dto.impl;
 
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.ChangedJsElement;
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.common.dto.IlluminatiModel;
 import me.phoboslabs.illuminati.common.dto.RequestHeaderModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiTransactionIdType;
 import me.phoboslabs.illuminati.common.util.ConvertUtil;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceModel {
-
-    private final Logger logger = LoggerFactory.getLogger(IlluminatiDataInterfaceModelImpl.class);
+public class IlluminatiDataSendModel implements IlluminatiModel {
 
     private final MethodSignature signature;
     private final Object[] args;
@@ -56,7 +52,7 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     private final static String OUTPUT_RESULT_STRING_KEY_NAME = "resultString";
     private final static String OUTPUT_RESULT_OBJECT_KEY_NAME = "resultObject";
 
-    private IlluminatiDataInterfaceModelImpl (HttpServletRequest request, MethodSignature signature, Object[] args, long elapsedTime, Map<String, Object> resultMap) {
+    private IlluminatiDataSendModel(HttpServletRequest request, MethodSignature signature, Object[] args, long elapsedTime, Map<String, Object> resultMap) {
         this.signature = signature;
         this.args = args;
         this.elapsedTime = elapsedTime;
@@ -65,8 +61,8 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
         this.initDataFromHttpRequest(request);
     }
 
-    public static IlluminatiDataInterfaceModelImpl Builder (final HttpServletRequest request, final MethodSignature signature, final Object[] args, final long elapsedTime, final Map<String, Object> resultMap) {
-        return new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, resultMap);
+    public static IlluminatiDataSendModel Builder (final HttpServletRequest request, final MethodSignature signature, final Object[] args, final long elapsedTime, final Map<String, Object> resultMap) {
+        return new IlluminatiDataSendModel(request, signature, args, elapsedTime, resultMap);
     }
 
     private void initDataFromHttpRequest (final HttpServletRequest request) {
@@ -122,7 +118,7 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
         return this.requestHeaderModel != null && this.signature != null;
     }
 
-    public IlluminatiDataInterfaceModelImpl setPackageType (String packageType) {
+    public IlluminatiDataSendModel setPackageType (String packageType) {
         this.packageType = packageType;
         return this;
     }

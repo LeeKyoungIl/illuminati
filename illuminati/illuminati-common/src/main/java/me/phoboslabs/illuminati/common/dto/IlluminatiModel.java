@@ -18,7 +18,7 @@ package me.phoboslabs.illuminati.common.dto;
 
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
-public interface IlluminatiInterfaceModel {
+public interface IlluminatiModel {
 
     String ILLUMINATI_GPROC_ID_KEY = "illuminatiGProcId";
     String ILLUMINATI_SPROC_ID_KEY = "illuminatiSProcId";

@@ -1,14 +1,14 @@
 package executor.impl
 
 import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl
+import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataSendExecutorImpl
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataSendModel
 import org.aspectj.lang.reflect.MethodSignature
 import spock.lang.Specification
 
 import javax.servlet.http.HttpServletRequest
 
-class IlluminatiDataExecutorImplTest extends Specification {
+class IlluminatiDataSendExecutorImplTest extends Specification {
 
     def "separate make illuminati model from main logic" () {
         setup:
@@ -18,10 +18,10 @@ class IlluminatiDataExecutorImplTest extends Specification {
         long elapsedTime = 3l;
         final Object output = "test";
 
-        IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
+        IlluminatiDataSendModel illuminatiDataInterfaceModel = new IlluminatiDataSendModel(request, signature, args, elapsedTime, output);
 
         when:
-        IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> illuminatiExecutor = new IlluminatiDataExecutorImpl()
+        IlluminatiExecutor<IlluminatiDataSendModel> illuminatiExecutor = new IlluminatiDataSendExecutorImpl()
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
@@ -36,10 +36,10 @@ class IlluminatiDataExecutorImplTest extends Specification {
         long elapsedTime = 3l;
         final Object output = "test";
 
-        IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
+        IlluminatiDataSendModel illuminatiDataInterfaceModel = new IlluminatiDataSendModel(request, signature, args, elapsedTime, output);
 
         when:
-        IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> illuminatiExecutor = new IlluminatiDataExecutorImpl()
+        IlluminatiExecutor<IlluminatiDataSendModel> illuminatiExecutor = new IlluminatiDataSendExecutorImpl()
         illuminatiExecutor.addToQueue(illuminatiDataInterfaceModel);
 
         then:
@@ -56,8 +56,8 @@ class IlluminatiDataExecutorImplTest extends Specification {
         long elapsedTime = 3l;
         final Object output = "test";
 
-        IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
-        IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> illuminatiExecutor = new IlluminatiDataExecutorImpl();
+        IlluminatiDataSendModel illuminatiDataInterfaceModel = new IlluminatiDataSendModel(request, signature, args, elapsedTime, output);
+        IlluminatiExecutor<IlluminatiDataSendModel> illuminatiExecutor = new IlluminatiDataSendExecutorImpl();
         illuminatiExecutor.createSystemThread();
 
         when:

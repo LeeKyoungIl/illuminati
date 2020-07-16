@@ -18,14 +18,14 @@ package me.phoboslabs.illuminati.backup;
 
 import me.phoboslabs.illuminati.backup.enums.IlluminatiStorageType;
 import me.phoboslabs.illuminati.backup.impl.H2Backup;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiBasicModel;
 
 public class BackupFactory {
 
     public static Backup getBackupInstance (IlluminatiStorageType illuminatiStorageType) throws Exception {
         switch (illuminatiStorageType) {
             case H2 :
-                return H2Backup.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
+                return H2Backup.getInstance(IlluminatiBasicModel.class);
 
             default :
                 throw new Exception("Backup function is only supported by the H2 Database yet.");
