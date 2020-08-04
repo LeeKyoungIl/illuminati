@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup.shutdown;
+package me.phoboslabs.illuminati.processor.shutdown;
 
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.handler.ContainerShutdownHandler;
+import me.phoboslabs.illuminati.processor.shutdown.handler.ContainerShutdownHandler;
 
 import java.util.concurrent.atomic.AtomicLong;
 

@@ -1,12 +1,12 @@
 package infra.backup
 
-import me.phoboslabs.illuminati.processor.infra.backup.Backup
-import me.phoboslabs.illuminati.processor.infra.backup.impl.H2Backup
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor
+import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType
 import me.phoboslabs.illuminati.processor.infra.backup.configuration.H2ConnectionFactory
 import spock.lang.Specification
 
-class BackupTest extends Specification {
+class DBExecutorTest extends Specification {
 
     def "H2 configuration" () {
         setup:
@@ -21,7 +21,7 @@ class BackupTest extends Specification {
 
     def "add data" () {
         setup:
-        H2Backup<String> h2Backup = new H2Backup<>();
+        H2Executor<String> h2Backup = new H2Executor<>();
         String stringData = "test data";
 
         when:
@@ -34,7 +34,7 @@ class BackupTest extends Specification {
 
     def "get data by length" () {
         setup:
-        H2Backup<String> h2Backup = new H2Backup<>();
+        H2Executor<String> h2Backup = new H2Executor<>();
         String stringData = "test data";
 
         when:
@@ -57,7 +57,7 @@ class BackupTest extends Specification {
 
     def "delete check with map" () {
         setup:
-        H2Backup<String> h2Backup = new H2Backup<>();
+        H2Executor<String> h2Backup = new H2Executor<>();
         String stringData = "test data";
 
         when:
@@ -82,7 +82,7 @@ class BackupTest extends Specification {
 
     def "delete with list" () {
         setup:
-        H2Backup<String> h2Backup = new H2Backup<>();
+        H2Executor<String> h2Backup = new H2Executor<>();
         String stringData = "test data";
 
         when:
@@ -107,7 +107,7 @@ class BackupTest extends Specification {
 
     def "save" () {
         setup:
-        Backup backup = new H2Backup<String>();
+        DBExecutor backup = new H2Executor<String>();
         String testData = "test1";
         List<String> dataList = null;
 

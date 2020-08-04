@@ -22,7 +22,7 @@ import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiBackupExecutorImpl;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
 import me.phoboslabs.illuminati.common.IlluminatiCommon;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup.impl;
+package me.phoboslabs.illuminati.processor.infra.h2.executor;
 
 import com.google.gson.JsonSyntaxException;
-import me.phoboslabs.illuminati.processor.infra.backup.Backup;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
 import me.phoboslabs.illuminati.processor.infra.h2.configuration.H2ConnectionFactory;
 import me.phoboslabs.illuminati.processor.infra.backup.enums.TableDDLType;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiH2Properties;
@@ -41,20 +41,24 @@ import java.util.Map;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
-public class H2Backup<T> implements Backup<T> {
+public class H2Executor<T> implements DBExecutor<T> {
 
     private final Logger h2BackupLogger = LoggerFactory.getLogger(this.getClass());
 
     final Class<T> type;
 
-    private static H2Backup H2_BACKUP;
+    private static H2Executor H2_BACKUP;
 
     private final H2ConnectionFactory h2Conn;
     private Connection connection;
-    private static final String DB_NAME = "illuminati-backup";
-    private static final String TABLE_NAME = "illuminati_backup";
 
-    private H2Backup (Class<T> type) throws Exception {
+    private static String DB_NAME;
+    private static String TABLE_NAME;
+
+    private H2Executor(Class<T> type, final String dbName, final String tableName) throws Exception {
+        DB_NAME = dbName;
+        TABLE_NAME = tableName;
+
         this.h2Conn = new H2ConnectionFactory();
         this.type = type;
         this.connection = this.h2Conn.makeDBConnection(DB_NAME);
@@ -69,11 +73,11 @@ public class H2Backup<T> implements Backup<T> {
         }
     }
 
-    public static H2Backup getInstance (Class type) throws Exception {
+    public static H2Executor getInstance (Class type, final String dbName, final String tableName) throws Exception {
         if (H2_BACKUP == null) {
-            synchronized (H2Backup.class) {
+            synchronized (H2Executor.class) {
                 if (H2_BACKUP == null) {
-                    H2_BACKUP = new H2Backup(type);
+                    H2_BACKUP = new H2Executor(type, dbName, tableName);
                 }
             }
         }
