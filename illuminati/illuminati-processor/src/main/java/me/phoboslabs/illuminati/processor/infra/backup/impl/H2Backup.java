@@ -18,7 +18,7 @@ package me.phoboslabs.illuminati.processor.infra.backup.impl;
 
 import com.google.gson.JsonSyntaxException;
 import me.phoboslabs.illuminati.processor.infra.backup.Backup;
-import me.phoboslabs.illuminati.processor.infra.backup.configuration.H2ConnectionFactory;
+import me.phoboslabs.illuminati.processor.infra.h2.configuration.H2ConnectionFactory;
 import me.phoboslabs.illuminati.processor.infra.backup.enums.TableDDLType;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiH2Properties;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
@@ -51,14 +51,14 @@ public class H2Backup<T> implements Backup<T> {
 
     private final H2ConnectionFactory h2Conn;
     private Connection connection;
+    private static final String DB_NAME = "illuminati-backup";
     private static final String TABLE_NAME = "illuminati_backup";
 
     private H2Backup (Class<T> type) throws Exception {
-        this.h2Conn = H2ConnectionFactory.getInstance();
+        this.h2Conn = new H2ConnectionFactory();
         this.type = type;
-        if (this.h2Conn.isConnected()) {
-            this.connection = this.h2Conn.getDbConnection();
-
+        this.connection = this.h2Conn.makeDBConnection(DB_NAME);
+        if (this.h2Conn.isConnected(this.connection)) {
             final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class, "illuminati", "backTableReset", "false");
             if ("true".equalsIgnoreCase(backTableReset)) {
                 this.tableDDL(TableDDLType.DROP);
