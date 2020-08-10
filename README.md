@@ -7,7 +7,7 @@
 # illuminati's intention to develop
 
 **There is no garbage data in your Application.**
-It is necessary to identify what data is the most important among the collecting data from your Applcation.
+It is necessary to identify what data is the most important among the collecting data from your Application.
 Also collect and analysis must be performed in different processes. 
 The illuminati is desinged to make collect all data easily and it can be possible scalability working by separated analysis process.
 
@@ -63,15 +63,15 @@ The illuminati is desinged to make collect all data easily and it can be possibl
 ## illuminati operator method
  1. Add dependency of MAVEN or Gradle (illuminati)
  2. Add configuration in illuminati-{**phase**}.yml, properties에 (address of queue... etc)
- 3. When execute application with add -Dspring.profiles.active={**phase**}
- 4. Add "@Illuminat" Annotation to where you want to collect
+ 3. When execute an application with add -Dspring.profiles.active={**phase**}
+ 4. Add "@Illuminati" Annotation to where you want to collect
  5. Add to Html in **<script></script>** in **illuminatiJsAgent.min.js** script file.
 
 ## illuminati does not affect the origin application logic
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
  2. Drop in performance can occur, but there is no big difference in physical server. (It can happen a little more on virtual machines.)
  3. Even if an exception occurs in the original application logic, illuminati can also collect the corresponding exception information.
- 4. When the Illuminati collects the Data. If a problems aries. Save that data to separate  storage. and If the problem is fixed. data will automaticaly restored. (Backup function)
+ 4. When the Illuminati collects the Data. If a problem arises. Save that data to separate  storage. and If the problem is fixed. data will be automatically restored. (Backup function)
  5. Grace Shutdown mode is supported. (When Backup function is activated.) 
  
 ## struct of illuminati
