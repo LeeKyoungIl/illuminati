@@ -49,7 +49,7 @@ public class RestoreTemplateData implements Restore {
     private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor;
 
     private RestoreTemplateData (final IlluminatiExecutor illuminatiExecutor) throws Exception {
-        h2DBExecutor = H2Executor.getInstance(IlluminatiTemplateInterfaceModelImpl.class);
+        h2DBExecutor = H2Executor.getInstance(IlluminatiTemplateInterfaceModelImpl.class, "simple", "trace");
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 

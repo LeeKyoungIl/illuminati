@@ -1,9 +1,9 @@
 package infra.backup
 
 import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor
+import me.phoboslabs.illuminati.processor.infra.h2.configuration.H2ConnectionFactory
 import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType
-import me.phoboslabs.illuminati.processor.infra.backup.configuration.H2ConnectionFactory
 import spock.lang.Specification
 
 class DBExecutorTest extends Specification {
