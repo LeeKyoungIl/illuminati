@@ -83,7 +83,10 @@ public class IlluminatiClientInit {
             ILLUMINATI_INITIALIZED = true;
 
             final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "broker", "unknown");
-            final String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "clusterList", "unknown");
+            String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "clusterList", "unknown");
+            if (brokerType.equalsIgnoreCase("simple")) {
+                clusterList = "simple mode is don't need a cluster";
+            }
 
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             System.out.println("@ The illuminati is now activated.                             ");

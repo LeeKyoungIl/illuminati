@@ -129,6 +129,22 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         return this;
     }
 
+    public RequestGeneralModel getGeneralRequestMethodInfo() {
+        return this.general;
+    }
+
+    public long getElapsedTime() {
+        return this.elapsedTime;
+    }
+
+    public String getLogTime() {
+        return this.logTime;
+    }
+
+    public Map<String, Object> getOutput() {
+        return this.output;
+    }
+
     // ################################################################################################################
     // ### protected methods                                                                                        ###
     // ################################################################################################################

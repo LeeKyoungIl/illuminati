@@ -155,4 +155,8 @@ public class RequestGeneralModel {
     public String getMethodName () {
         return this.methodName;
     }
+
+    public Map<String, Object> getMethodParams() {
+        return this.methodParams;
+    }
 }
