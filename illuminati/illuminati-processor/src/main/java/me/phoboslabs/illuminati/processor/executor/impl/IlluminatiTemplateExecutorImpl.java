@@ -155,7 +155,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     private IlluminatiInfraTemplate initIlluminatiTemplate () throws Exception {
-        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "simple");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
         try {
@@ -165,6 +165,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                     break;
                 case "rabbitmq" :
                     illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
+                    break;
+                case "simple" :
                     break;
                 default :
                     final String errorMessage = "Sorry. check your properties of Illuminati";
