@@ -11,13 +11,23 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class SimpleInfraTemplateImpl extends BasicTemplate implements IlluminatiInfraTemplate<String> {
 
     private static final Logger SIMPLE_TEMPLATE_IMPL_LOGGER = LoggerFactory.getLogger(SimpleInfraTemplateImpl.class);
+
+    public static final String TEXT_RESET = "\u001B[0m";
+    public static final String TEXT_BLACK = "\u001B[30m";
+    public static final String TEXT_RED = "\u001B[31m";
+    public static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_YELLOW = "\u001B[33m";
+    public static final String TEXT_BLUE = "\u001B[34m";
+    public static final String TEXT_PURPLE = "\u001B[35m";
+    public static final String TEXT_CYAN = "\u001B[36m";
+    public static final String TEXT_WHITE = "\u001B[37m";
+
 
     public SimpleInfraTemplateImpl(final String propertiesName) throws Exception {
         super(propertiesName);
@@ -37,8 +47,9 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
         final String logTime = illuminatiTemplateInterfaceModel.getLogTime();
         final Map<String, Object> resultOutput = illuminatiTemplateInterfaceModel.getOutput();
 
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ClassName: {}", methodInfo.get("className"));
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ClassName: {} {} {}", TEXT_RED, methodInfo.get("className"), TEXT_RESET);
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ MethodName: {}", methodInfo.get("methodName"));
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ ReturnType: {}", methodInfo.get("returnType"));
 
@@ -48,6 +59,7 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
             SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}, name: {}, value: {}", paramsType.get(index), key, fullMethodParam.get(key));
             index += 1;
         }
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
 
     }
 

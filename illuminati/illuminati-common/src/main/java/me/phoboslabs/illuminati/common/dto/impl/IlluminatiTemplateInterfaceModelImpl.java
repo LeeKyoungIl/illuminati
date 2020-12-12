@@ -16,6 +16,8 @@
 
 package me.phoboslabs.illuminati.common.dto.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.*;
@@ -109,7 +111,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     }
 
     public String getJsonString () {
-        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
+        return IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.toJson(this, IlluminatiTemplateInterfaceModelImpl.class);
     }
 
     private boolean isEqualsGProcId(final String illuminatiGProcId) {
