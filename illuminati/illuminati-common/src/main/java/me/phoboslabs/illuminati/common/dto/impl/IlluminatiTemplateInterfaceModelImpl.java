@@ -16,8 +16,6 @@
 
 package me.phoboslabs.illuminati.common.dto.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.*;

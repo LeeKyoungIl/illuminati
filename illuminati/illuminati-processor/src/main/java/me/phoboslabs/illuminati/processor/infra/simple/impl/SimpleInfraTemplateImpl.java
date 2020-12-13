@@ -22,12 +22,20 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
     public static final String TEXT_BLACK = "\u001B[30m";
     public static final String TEXT_RED = "\u001B[31m";
     public static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_BR_GREEN = "\033[42;1m";
     public static final String TEXT_YELLOW = "\u001B[33m";
     public static final String TEXT_BLUE = "\u001B[34m";
+    public static final String TEXT_BR_BLUE = "\033[44;1m";
     public static final String TEXT_PURPLE = "\u001B[35m";
+    public static final String TEXT_BR_PURPLE = "\033[45;1m";
     public static final String TEXT_CYAN = "\u001B[36m";
+    public static final String TEXT_BR_CYAN = "\033[46;1m";
+    public static final String TEXT_BR_RED = "\033[41m";
     public static final String TEXT_WHITE = "\u001B[37m";
+    public static final String TEXT_BR_WHITE = "\033[47;1m";
 
+    private final static String OUTPUT_RESULT_STRING_KEY_NAME = "resultString";
+    private final static String OUTPUT_RESULT_OBJECT_KEY_NAME = "resultObject";
 
     public SimpleInfraTemplateImpl(final String propertiesName) throws Exception {
         super(propertiesName);
@@ -43,22 +51,39 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
         final String fullMethodInfo = requestGeneralModel.getMethodName();
         final Map<String, Object> methodInfo = this.getRequestMethod(fullMethodInfo);
         final Map<String, Object> fullMethodParam = requestGeneralModel.getMethodParams();
-        final long elapsedTime = illuminatiTemplateInterfaceModel.getElapsedTime();
+        final long methodExecutionTime = illuminatiTemplateInterfaceModel.getElapsedTime();
         final String logTime = illuminatiTemplateInterfaceModel.getLogTime();
         final Map<String, Object> resultOutput = illuminatiTemplateInterfaceModel.getOutput();
 
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ClassName: {} {} {}", TEXT_RED, methodInfo.get("className"), TEXT_RESET);
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ MethodName: {}", methodInfo.get("methodName"));
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ ReturnType: {}", methodInfo.get("returnType"));
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Logging time: {} {} {}", TEXT_BR_WHITE, logTime, TEXT_RESET);
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Class name: {} {} {}", TEXT_RED, methodInfo.get("className"), TEXT_RESET);
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Method name: {} {} {}, method execution time: {} {}ms {}", TEXT_GREEN, methodInfo.get("methodName"), TEXT_RESET, TEXT_BR_GREEN, methodExecutionTime, TEXT_RESET);
 
         List<String> paramsType = (List) methodInfo.get("paramsType");
         int index = 0;
         for (String key :  fullMethodParam.keySet()) {
-            SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}, name: {}, value: {}", paramsType.get(index), key, fullMethodParam.get(key));
+            SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}{} {},  name: {}{}, {} value: {}{} {}", TEXT_YELLOW, paramsType.get(index), TEXT_RESET
+                    ,  TEXT_BLUE, key, TEXT_RESET, TEXT_BR_RED, fullMethodParam.get(key), TEXT_RESET);
             index += 1;
         }
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Return type: {} {} {}", TEXT_CYAN, methodInfo.get("returnType"), TEXT_RESET);
+
+        for (String key :  resultOutput.keySet()) {
+            if (OUTPUT_RESULT_OBJECT_KEY_NAME.equalsIgnoreCase(key)) {
+                Map<String, Object> resultValueMap = ((Map<String, Object>)resultOutput.get(OUTPUT_RESULT_OBJECT_KEY_NAME));
+                for (String objectKey : resultValueMap.keySet()) {
+                    SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ name: {}{}, {} value: {}{} {}", TEXT_BLUE, objectKey, TEXT_RESET, TEXT_BR_RED, resultValueMap.get(objectKey), TEXT_RESET);
+                }
+            } else if (OUTPUT_RESULT_STRING_KEY_NAME.equalsIgnoreCase(key)) {
+                Map<String, Object> resultValueMap = ((Map<String, Object>)resultOutput.get(OUTPUT_RESULT_STRING_KEY_NAME));
+                for (String objectKey : resultValueMap.keySet()) {
+                    SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ value: {}{} {}", TEXT_BR_RED, resultValueMap.get(objectKey), TEXT_RESET);
+                }
+            }
+        }
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
 
     }
