@@ -12,7 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class SimpleInfraTemplateImpl extends BasicTemplate implements IlluminatiInfraTemplate<String> {
 
@@ -55,6 +57,14 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
         final String logTime = illuminatiTemplateInterfaceModel.getLogTime();
         final Map<String, Object> resultOutput = illuminatiTemplateInterfaceModel.getOutput();
 
+        try {
+            this.printSimpleLogMessages(logTime, methodInfo, methodExecutionTime, fullMethodParam, resultOutput);
+        } catch (Exception ex) {
+            SIMPLE_TEMPLATE_IMPL_LOGGER.error("simple trace model parsing exception", ex);
+        }
+    }
+
+    private void printSimpleLogMessages(final String logTime, final Map<String, Object> methodInfo, final long methodExecutionTime, final Map<String, Object> fullMethodParam, final Map<String, Object> resultOutput) {
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Logging time: {} {} {}", TEXT_BR_WHITE, logTime, TEXT_RESET);
@@ -62,30 +72,25 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Method name: {} {} {}, method execution time: {} {}ms {}", TEXT_GREEN, methodInfo.get("methodName"), TEXT_RESET, TEXT_BR_GREEN, methodExecutionTime, TEXT_RESET);
 
         List<String> paramsType = (List) methodInfo.get("paramsType");
-        int index = 0;
-        for (String key :  fullMethodParam.keySet()) {
-            SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}{} {},  name: {}{}, {} value: {}{} {}", TEXT_YELLOW, paramsType.get(index), TEXT_RESET
-                    ,  TEXT_BLUE, key, TEXT_RESET, TEXT_BR_RED, fullMethodParam.get(key), TEXT_RESET);
-            index += 1;
-        }
+
+        final AtomicInteger index = new AtomicInteger();
+        fullMethodParam.entrySet().stream().forEach(entry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}{} {},  name: {}{}, {} value: {}{} {}", TEXT_YELLOW, paramsType.get(index.getAndIncrement()), TEXT_RESET
+                ,  TEXT_BLUE, entry.getKey(), TEXT_RESET, TEXT_BR_RED, fullMethodParam.get(entry.getKey()), TEXT_RESET));
+
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Return type: {} {} {}", TEXT_CYAN, methodInfo.get("returnType"), TEXT_RESET);
 
-        for (String key :  resultOutput.keySet()) {
-            if (OUTPUT_RESULT_OBJECT_KEY_NAME.equalsIgnoreCase(key)) {
+        resultOutput.entrySet().stream().forEach(entry -> {
+            if (OUTPUT_RESULT_OBJECT_KEY_NAME.equalsIgnoreCase(entry.getKey())) {
                 Map<String, Object> resultValueMap = ((Map<String, Object>)resultOutput.get(OUTPUT_RESULT_OBJECT_KEY_NAME));
-                for (String objectKey : resultValueMap.keySet()) {
-                    SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ name: {}{}, {} value: {}{} {}", TEXT_BLUE, objectKey, TEXT_RESET, TEXT_BR_RED, resultValueMap.get(objectKey), TEXT_RESET);
-                }
-            } else if (OUTPUT_RESULT_STRING_KEY_NAME.equalsIgnoreCase(key)) {
+                resultValueMap.entrySet().stream()
+                        .forEach(resultEntry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ name: {}{}, {} value: {}{} {}", TEXT_BLUE, resultEntry.getKey(), TEXT_RESET, TEXT_BR_RED, resultValueMap.get(resultEntry.getKey()), TEXT_RESET));
+            } else if (OUTPUT_RESULT_STRING_KEY_NAME.equalsIgnoreCase(entry.getKey())) {
                 Map<String, Object> resultValueMap = ((Map<String, Object>)resultOutput.get(OUTPUT_RESULT_STRING_KEY_NAME));
-                for (String objectKey : resultValueMap.keySet()) {
-                    SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ value: {}{} {}", TEXT_BR_RED, resultValueMap.get(objectKey), TEXT_RESET);
-                }
+                resultValueMap.entrySet().stream().forEach(resultEntry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ value: {}{} {}", TEXT_BR_RED, resultValueMap.get(resultEntry.getKey()), TEXT_RESET));
             }
-        }
+        });
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
-
     }
 
     private Map<String, Object> getRequestMethod(final String fullMethodInfo) {
