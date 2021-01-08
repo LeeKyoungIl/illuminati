@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.ApiServerSample.service;
 
+import me.phoboslabs.illuminati.ApiServerSample.model.SampleModel;
 import me.phoboslabs.illuminati.ApiServerSample.model.TestModel;
 import me.phoboslabs.illuminati.ApiServerSample.service1.ApiSampleService1;
 import me.phoboslabs.illuminati.annotation.Illuminati;
@@ -26,7 +27,7 @@ public class ApiSampleService {
     }
 
     @Illuminati(packageType = PackageType.SERVICE, ignoreProfile = {"local"})
-    public TestModel sampleTestByObjectTestReturn (TestModel testModel) {
+    public TestModel sampleTestByObjectTestReturn (TestModel testModel, SampleModel sampleModel) {
         testModel.setName("model");
         return testModel;
     }

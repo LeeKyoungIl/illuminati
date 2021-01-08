@@ -46,7 +46,7 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
 
     @Override
     public void sendToIlluminati(String entity) throws PublishMessageException, Exception {
-        IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(entity, IlluminatiTemplateInterfaceModelImpl.class);
+        final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(entity, IlluminatiTemplateInterfaceModelImpl.class);
         final RequestGeneralModel requestGeneralModel = illuminatiTemplateInterfaceModel.getGeneralRequestMethodInfo();
         final String fullMethodInfo = requestGeneralModel.getMethodName();
         final Map<String, Object> methodInfo = this.getRequestMethod(fullMethodInfo);
@@ -61,9 +61,9 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Class name: {} {} {}", TEXT_RED, methodInfo.get("className"), TEXT_RESET);
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Method name: {} {} {}, method execution time: {} {}ms {}", TEXT_GREEN, methodInfo.get("methodName"), TEXT_RESET, TEXT_BR_GREEN, methodExecutionTime, TEXT_RESET);
 
-        List<String> paramsType = (List) methodInfo.get("paramsType");
+        final List<String> paramsType = (List) methodInfo.get("paramsType");
         int index = 0;
-        for (String key :  fullMethodParam.keySet()) {
+        for (String key : fullMethodParam.keySet()) {
             SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}{} {},  name: {}{}, {} value: {}{} {}", TEXT_YELLOW, paramsType.get(index), TEXT_RESET
                     ,  TEXT_BLUE, key, TEXT_RESET, TEXT_BR_RED, fullMethodParam.get(key), TEXT_RESET);
             index += 1;

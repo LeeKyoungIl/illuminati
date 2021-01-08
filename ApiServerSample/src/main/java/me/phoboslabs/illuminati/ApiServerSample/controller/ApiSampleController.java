@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.ApiServerSample.controller;
 
+import me.phoboslabs.illuminati.ApiServerSample.model.SampleModel;
 import me.phoboslabs.illuminati.ApiServerSample.model.TestModel;
 import me.phoboslabs.illuminati.ApiServerSample.param.PostTest;
 import me.phoboslabs.illuminati.ApiServerSample.service.ApiSampleService;
@@ -65,7 +66,11 @@ public class ApiSampleController {
         testModel.setName("test1");
         testModel.setUserId("test");
 
-        return apiSampleService.sampleTestByObjectTestReturn(testModel);
+        SampleModel sampleModel = new SampleModel();
+        sampleModel.setNameSample("sample1");
+        sampleModel.setUserIdSample("sample");
+
+        return apiSampleService.sampleTestByObjectTestReturn(testModel, sampleModel);
     }
 
     @RequestMapping(value = "test4")
