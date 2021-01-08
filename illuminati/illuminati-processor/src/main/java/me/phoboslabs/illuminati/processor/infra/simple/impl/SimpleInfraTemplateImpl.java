@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class SimpleInfraTemplateImpl extends BasicTemplate implements IlluminatiInfraTemplate<String> {
 
@@ -95,26 +94,23 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
 
     private Map<String, Object> getRequestMethod(final String fullMethodInfo) {
         try {
-            Map<String, Object> requestInfoMap = new HashMap<>();
-
             final String targetRequestInfo = fullMethodInfo.replace("public ", "");
             final String[] returnType = targetRequestInfo.split("\\s");
-
-            requestInfoMap.put("returnType", returnType[0]);
-
             final String[] classMethodInfo = returnType[1].split("\\(");
             final String[] classMethod = classMethodInfo[0].split("\\.");
             final String className = classMethod[classMethod.length-2];
             final String methodName = classMethod[classMethod.length-1];
 
+            final Map<String, Object> requestInfoMap = new HashMap<>();
+            requestInfoMap.put("returnType", returnType[0]);
             requestInfoMap.put("className", className);
             requestInfoMap.put("methodName", methodName);
 
             final String[] paramInfo = classMethodInfo[1].replace(")", "").split(",");
-            List<String> params = Arrays.stream(paramInfo)
-                                    .map(param -> param.split("\\."))
-                                    .map(paramClass -> paramClass[paramClass.length - 1])
-                                    .collect(Collectors.toCollection(() -> new ArrayList<>(paramInfo.length)));
+            final List<String> params = Arrays.stream(paramInfo)
+                                        .map(param -> param.split("\\."))
+                                        .map(paramClass -> paramClass[paramClass.length - 1])
+                                        .collect(Collectors.toCollection(() -> new ArrayList<>(paramInfo.length)));
 
             if (CollectionUtils.isNotEmpty(params)) {
                 requestInfoMap.put("paramsType", params);
