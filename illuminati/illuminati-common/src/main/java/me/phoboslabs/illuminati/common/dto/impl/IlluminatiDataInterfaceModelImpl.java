@@ -101,7 +101,8 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     private Map<String, Object> getOutputData (Map<String, Object> resultMap) {
         Map<String, Object> resultObjectMap = new HashMap<>();
         try {
-            resultObjectMap.put(OUTPUT_RESULT_OBJECT_KEY_NAME, IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson((String) resultMap.get(OUTPUT_RESULT_KEY_NAME), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN));
+            final String jsonString = IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.toJson(resultMap.get(OUTPUT_RESULT_KEY_NAME));
+            resultObjectMap.put(OUTPUT_RESULT_OBJECT_KEY_NAME, IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.fromJson(jsonString, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN));
         } catch (Exception ignore) {
             resultObjectMap.put(OUTPUT_RESULT_STRING_KEY_NAME, resultMap);
         }

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.infra.backup;
+package me.phoboslabs.illuminati.processor.infra.h2;
 
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
 import java.util.List;
 import java.util.Map;
 
-public interface Backup<T> {
+public interface DBExecutor<T> {
 
     void appendByJsonString (IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData);
 

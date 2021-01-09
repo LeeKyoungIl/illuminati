@@ -69,6 +69,7 @@ abstract public class IlluminatiConstant {
     }
 
     public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+    public static final Gson ILLUMINATI_GSON_EXCLUDE_NULL_OBJ = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
 
     public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 

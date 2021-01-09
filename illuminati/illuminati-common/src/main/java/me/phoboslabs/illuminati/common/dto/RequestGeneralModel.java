@@ -22,6 +22,7 @@ import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -30,7 +31,7 @@ import java.util.stream.IntStream;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class RequestGeneralModel {
+public class RequestGeneralModel implements Serializable {
 
     private static final Logger REQUEST_GENERAL_MODEL_LOGGER = LoggerFactory.getLogger(RequestGeneralModel.class);
 
@@ -143,7 +144,7 @@ public class RequestGeneralModel {
         }
     }
 
-    private void setPathForGrails () {
+    private void setPathForGrails() {
         // It should not affect anything other than grails. Fuxx grails
         if (this.path.indexOf("/grails") == 0 && this.path.indexOf(".dispatch") > -1
                 && (this.path.indexOf(".dispatch") + 9) == this.path.length()) {
@@ -152,7 +153,11 @@ public class RequestGeneralModel {
         }
     }
 
-    public String getMethodName () {
+    public String getMethodName() {
         return this.methodName;
+    }
+
+    public Map<String, Object> getMethodParams() {
+        return this.methodParams;
     }
 }
