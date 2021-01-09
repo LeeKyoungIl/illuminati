@@ -106,6 +106,8 @@ public class ApiSampleController {
 Simple Mode does not require a broker. <br>
 The Illuminati data is output as a console log to a log solution such as Log4j.
 
+![image](https://user-images.githubusercontent.com/4101636/104086618-d3663a00-529c-11eb-9c00-7f9ba52608cb.png)
+
 ```yml
 #simple mode
 broker: simple
