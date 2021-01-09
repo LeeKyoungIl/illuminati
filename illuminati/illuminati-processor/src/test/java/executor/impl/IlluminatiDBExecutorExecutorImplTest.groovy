@@ -7,7 +7,7 @@ import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl
 import spock.lang.Specification
 
-class IlluminatiBackupExecutorImplTest extends Specification {
+class IlluminatiDBExecutorExecutorImplTest extends Specification {
 
     def "data add to file backup queue" () {
         setup:

@@ -21,9 +21,10 @@ import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.ContainerSignalHandler;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.handler.impl.IlluminatiShutdownHandler;
+import me.phoboslabs.illuminati.processor.infra.simple.impl.SimpleInfraTemplateImpl;
+import me.phoboslabs.illuminati.processor.shutdown.ContainerSignalHandler;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
+import me.phoboslabs.illuminati.processor.shutdown.handler.impl.IlluminatiShutdownHandler;
 import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
 import me.phoboslabs.illuminati.processor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import me.phoboslabs.illuminati.processor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
@@ -155,7 +156,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     }
 
     private IlluminatiInfraTemplate initIlluminatiTemplate () throws Exception {
-        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "no broker");
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "simple");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
         try {
@@ -165,6 +166,9 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                     break;
                 case "rabbitmq" :
                     illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
+                    break;
+                case "simple" :
+                    illuminatiInfraTemplate = new SimpleInfraTemplateImpl("illuminati");
                     break;
                 default :
                     final String errorMessage = "Sorry. check your properties of Illuminati";

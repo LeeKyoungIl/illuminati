@@ -2,7 +2,7 @@ package me.phoboslabs.illuminati.ApiServerSample.model;
 
 import java.io.Serializable;
 
-public class TestModel implements Serializable {
+public class TestModel {
 
     private String name;
     private String userId;

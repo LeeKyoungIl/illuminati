@@ -49,6 +49,8 @@ public abstract class BasicTemplate {
 
     protected final AtomicInteger sendCount = new AtomicInteger(0);
 
+    private static final String CHECK_SIMPLE_BROKER = "simple";
+
     protected BasicTemplate (final String propertiesName) {
         this.illuminatiProperties = PropertiesUtil.getIlluminatiProperties(IlluminatiPropertiesImpl.class, propertiesName);
 
@@ -57,7 +59,7 @@ public abstract class BasicTemplate {
             throw new ValidationException("error : Sorry, something is wrong in read Properties file.");
         }
 
-        if (!StringObjectUtils.isValid(this.illuminatiProperties.getClusterList())) {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getClusterList()) == false && CHECK_SIMPLE_BROKER.equalsIgnoreCase(this.illuminatiProperties.getBroker()) == false) {
             BASIC_TEMPLATE_LOGGER.error("error : cluster list variable is empty.");
             throw new ValidationException("error : cluster list variable is empty.");
         }

@@ -109,7 +109,7 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     }
 
     public String getJsonString () {
-        return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
+        return IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.toJson(this, IlluminatiTemplateInterfaceModelImpl.class);
     }
 
     private boolean isEqualsGProcId(final String illuminatiGProcId) {
@@ -127,6 +127,22 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         }
 
         return this;
+    }
+
+    public RequestGeneralModel getGeneralRequestMethodInfo() {
+        return this.general;
+    }
+
+    public long getElapsedTime() {
+        return this.elapsedTime;
+    }
+
+    public String getLogTime() {
+        return this.logTime;
+    }
+
+    public Map<String, Object> getOutput() {
+        return this.output;
     }
 
     // ################################################################################################################

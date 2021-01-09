@@ -19,9 +19,9 @@ package me.phoboslabs.illuminati.processor.executor.impl;
 import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
-import me.phoboslabs.illuminati.processor.infra.backup.Backup;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
 import me.phoboslabs.illuminati.processor.infra.backup.BackupFactory;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
@@ -52,11 +52,11 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     private static final int POLL_PER_COUNT = 1000;
     private static final long BACKUP_THREAD_SLEEP_TIME = 300000L;
 
-    private final Backup<IlluminatiInterfaceModel> backup;
+    private final DBExecutor<IlluminatiInterfaceModel> DBExecutor;
 
     private IlluminatiBackupExecutorImpl() throws Exception {
         super(ILLUMINATI_FILE_BACKUP_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
-        this.backup = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
+        this.DBExecutor = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
     }
 
     public static IlluminatiBackupExecutorImpl getInstance () throws Exception {
@@ -72,7 +72,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override public IlluminatiBackupExecutorImpl init() throws RequiredValueException {
-        if (this.backup == null) {
+        if (this.DBExecutor == null) {
             throw new RequiredValueException();
         }
         this.createSystemThread();
@@ -113,12 +113,12 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             ILLUMINATI_EXECUTOR_LOGGER.warn("data is not valid");
             return;
         }
-        if (this.backup == null) {
+        if (this.DBExecutor == null) {
             ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_BACKUP Object is null");
             return;
         }
         //## Save file
-        this.backup.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
+        this.DBExecutor.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
     }
 
     @Override protected void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiBackupInterfaceModel) {

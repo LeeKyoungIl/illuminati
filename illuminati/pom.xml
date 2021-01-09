@@ -15,6 +15,7 @@
         <module>illuminati-switch</module>
         <module>illuminati-jscollector</module>
         <module>illuminati-hdfs</module>
+        <module>illuminati-simple-trace</module>
     </modules>
     <packaging>pom</packaging>
 

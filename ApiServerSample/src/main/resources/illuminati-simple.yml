@@ -1,0 +1,14 @@
+##rabbitmq
+broker: simple
+
+#kafka
+#broker: kafka
+#clusterList: 127.0.0.1:9092
+#topic: illuminati-test-topic
+#isAsync: true
+#isCompression: true
+#compressionType: gzip
+#performance: 1
+#parentModuleName: apisample
+#samplingRate: 100
+#debug: false

@@ -22,7 +22,7 @@ import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiBackupExecutorImpl;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl;
 import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
-import me.phoboslabs.illuminati.processor.infra.backup.shutdown.IlluminatiGracefulShutdownChecker;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
 import me.phoboslabs.illuminati.common.IlluminatiCommon;
@@ -83,7 +83,10 @@ public class IlluminatiClientInit {
             ILLUMINATI_INITIALIZED = true;
 
             final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "broker", "unknown");
-            final String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "clusterList", "unknown");
+            String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "clusterList", "unknown");
+            if (brokerType.equalsIgnoreCase("simple")) {
+                clusterList = "simple mode is don't need a cluster";
+            }
 
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             System.out.println("@ The illuminati is now activated.                             ");

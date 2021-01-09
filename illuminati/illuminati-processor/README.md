@@ -21,7 +21,7 @@
     <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.38</version>
+      <version>0.9.9.39</version>
     </dependency>
     
     <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
@@ -47,7 +47,7 @@
 ```java
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.38'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.39'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
 compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.18'
 // This is an option. If you add the module, you can back up to H2DB automatically when you have a problem with your broker. 
@@ -101,9 +101,22 @@ public class ApiSampleController {
 ```
 
 ## how to set to yml - illuminati-{phase}.yml or illuminati-{phase}.properties
- * rabbitmq
 
-```java
+#### Simple Mode
+Simple Mode does not require a broker. <br>
+The Illuminati data is output as a console log to a log solution such as Log4j.
+
+![image](https://user-images.githubusercontent.com/4101636/104086618-d3663a00-529c-11eb-9c00-7f9ba52608cb.png)
+
+```yml
+#simple mode
+broker: simple
+```
+
+
+#### rabbitmq
+
+```yml
 #rabbitmq
 broker: rabbitmq
 clusterList: 192.168.99.100:32789
@@ -119,8 +132,8 @@ samplingRate: 100
 debug: false
 ```
 
- * kafka
-```java
+#### kafka
+```yml
 #kafka
 broker: kafka
 clusterList: 192.168.99.100:32789, 192.168.99.101:32789, 192.168.99.102:32789
