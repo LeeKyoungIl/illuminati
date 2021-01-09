@@ -7,14 +7,18 @@
 # illuminati's intention to develop
 
 **There is no garbage data in your Application.**
-It is necessary to identify what data is the most important among the collecting data from your Applcation.
+It is necessary to identify what data is the most important among the collecting data from your Applications.
 Also collect and analysis must be performed in different processes. 
-The illuminati is designed to make collect all data easily and it can be possible scalability working by separated analysis process.
+The illuminati is designed to make collect all data easily, and it can be possible scalability working by separated analysis process.
 
 ## required
  * Java8 or higher.
- * Message queue (RabbitMQ or Kafka)
  * Java Application that can use AspectJ
+ * Simple Mode is No infrastructure required
+
+## optional
+ * Message queue (RabbitMQ or Kafka)
+ * H2 Database (for backup)
 
 ## recommendations
  * ElasticSearch (5.x or higher) 
@@ -62,20 +66,25 @@ The illuminati is designed to make collect all data easily and it can be possibl
  
 ## illuminati operator method
  1. Add dependency of MAVEN or Gradle (illuminati)
- 2. Add configuration in illuminati-{**phase**}.yml, properties에 (address of queue... etc)
+ 2. Add configuration in illuminati-{**phase**}.yml, properties (address of queue... etc)
  3. When execute application with add -Dspring.profiles.active={**phase**}
- 4. Add "@Illuminat" Annotation to where you want to collect
+ 4. Add "@Illuminati" Annotation to where you want to collect
  5. Add to Html in **<script></script>** in **illuminatiJsAgent.min.js** script file.
 
 ## illuminati does not affect the origin application logic
  1. It was developed to have no influence on this logic by using a separate thread and Buffer.
  2. Drop in performance can occur, but there is no big difference in physical server. (It can happen a little more on virtual machines.)
  3. Even if an exception occurs in the original application logic, illuminati can also collect the corresponding exception information.
- 4. When the Illuminati collects the Data. If a problems aries. Save that data to separate  storage. and If the problem is fixed. data will automaticaly restored. (Backup function)
+ 4. When the Illuminati collect the Data. If a problems aries. Save that data to separate  storage. and If the problem is fixed. data will automatically restore. (Backup function)
  5. Grace Shutdown mode is supported. (When Backup function is activated.) 
  
 ## struct of illuminati
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/architecture.png)
+#### Basic state
+![image](https://user-images.githubusercontent.com/4101636/104036836-40cf8780-5217-11eb-99ea-63b36a81ffe6.png)
+#### Backup function when there is a problem with the broker
+![image](https://user-images.githubusercontent.com/4101636/104036839-4200b480-5217-11eb-84f2-28727eda81e2.png)
+#### Simple Mode (No infrastructure required. Can be used with Java Console log solutions.)
+![image](https://user-images.githubusercontent.com/4101636/104036842-42994b00-5217-11eb-88b0-d475708c3772.png)
 
 ## add to Maven Dependency 
     * Maven
@@ -91,7 +100,7 @@ The illuminati is designed to make collect all data easily and it can be possibl
    <dependency>
       <groupId>me.phoboslabs.illuminati</groupId>
       <artifactId>illuminati-processor</artifactId>
-      <version>0.9.9.38</version>
+      <version>0.9.9.39</version>
    </dependency>
    
    <!-- This is an option. If you add the module, you can turn it on and off without deploying it. -->
@@ -119,7 +128,7 @@ repositories {
 }
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
-compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.38'
+compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.39'
 // This is an option. If you add the module, you can turn it on and off without deploying it.
 compile 'me.phoboslabs.illuminati:illuminati-switch:1.0.18'
 <!-- This is an option. If you add the module, you can collect Event data from Browser to server to response by one transaction id. -->
