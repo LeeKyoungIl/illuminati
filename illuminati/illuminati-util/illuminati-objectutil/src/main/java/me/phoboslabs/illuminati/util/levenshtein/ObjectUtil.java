@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.util.objectutil;
+package me.phoboslabs.illuminati.util.levenshtein;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

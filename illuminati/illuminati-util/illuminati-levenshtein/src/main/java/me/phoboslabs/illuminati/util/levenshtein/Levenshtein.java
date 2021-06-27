@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.util.objectutil;
+package me.phoboslabs.illuminati.util.levenshtein;
 
 public class Levenshtein {
     private static final Levenshtein INSTANCE = new Levenshtein();
