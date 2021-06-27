@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.util.levenshtein;
+package me.phoboslabs.illuminati.util.levenshteindistance;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;

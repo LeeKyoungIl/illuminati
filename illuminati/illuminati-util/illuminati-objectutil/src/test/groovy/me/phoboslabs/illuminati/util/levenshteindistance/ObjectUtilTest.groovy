@@ -1,4 +1,4 @@
-package me.phoboslabs.illuminati.util.levenshtein
+package me.phoboslabs.illuminati.util.levenshteindistance
 
 import me.phoboslabs.illuminati.util.objectutil.nullsafeequals.NullSafeEqualsParent
 import spock.lang.Shared

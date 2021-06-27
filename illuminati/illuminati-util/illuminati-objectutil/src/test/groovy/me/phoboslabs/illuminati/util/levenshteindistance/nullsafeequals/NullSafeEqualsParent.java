@@ -1,4 +1,4 @@
-package me.phoboslabs.illuminati.util.levenshtein.nullsafeequals;
+package me.phoboslabs.illuminati.util.levenshteindistance.nullsafeequals;
 
 public class NullSafeEqualsParent {
 
