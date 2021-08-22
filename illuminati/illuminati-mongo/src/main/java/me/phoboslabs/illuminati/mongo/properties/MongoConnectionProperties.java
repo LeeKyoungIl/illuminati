@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.mongo.vo;
+package me.phoboslabs.illuminati.mongo.properties;
 
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +43,11 @@ public class MongoConnectionProperties {
     }
 
     public static class MongoInfo {
+
         private String hostAddress;
         private int port;
+        private String username;
+        private String password;
 
         public void setHostAddress(String hostAddress) {
             this.hostAddress = hostAddress;
@@ -59,6 +63,32 @@ public class MongoConnectionProperties {
 
         public int getPort() {
             return this.port;
+        }
+
+        public String getUsername() {
+            return this.username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public char[] getPassword() {
+            if (StringObjectUtils.isValid(this.password)) {
+                return this.password.toCharArray();
+            } else {
+                return null;
+            }
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public void validateUserAuthInfo() {
+            if (StringObjectUtils.isValid(this.username) == false || StringObjectUtils.isValid(this.password) == false) {
+                throw new IllegalArgumentException();
+            }
         }
     }
 }

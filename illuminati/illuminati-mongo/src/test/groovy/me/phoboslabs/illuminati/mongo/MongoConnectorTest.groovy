@@ -1,6 +1,8 @@
 package me.phoboslabs.illuminati.mongo
 
-import me.phoboslabs.illuminati.mongo.vo.MongoConnectionProperties
+import com.mongodb.client.MongoClient
+import me.phoboslabs.illuminati.common.util.exception.ServerIsNotAvailableException
+import org.bson.Document
 import spock.lang.Specification
 
 class MongoConnectorTest extends Specification {
@@ -13,14 +15,62 @@ class MongoConnectorTest extends Specification {
 
     }
 
+    def "TEST : mongodb server is not available, An Exception is thrown."() {
+        given:
+        System.setProperty("spring.profiles.active", "error")
+        IlluminatiMongoConnector illuminatiMongoConnectorError = new IlluminatiMongoConnector()
+
+        when:
+        illuminatiMongoConnectorError.mongoClient()
+
+        then:
+        System.setProperty("spring.profiles.active", "test")
+        thrown ServerIsNotAvailableException
+    }
+
+    def "TEST : mongodb user info does not exist."() {
+        given:
+        System.setProperty("spring.profiles.active", "notuserinfo")
+
+        when:
+        IlluminatiMongoConnector illuminatiMongoConnectorNotUserInfo = new IlluminatiMongoConnector()
+
+        then:
+        illuminatiMongoConnectorNotUserInfo.isExistUserAuthInfo() == false
+    }
+
+    def "TEST : mongodb user info exist."() {
+        given:
+        System.setProperty("spring.profiles.active", "test")
+
+        when:
+        IlluminatiMongoConnector illuminatiMongoConnectorNotUserInfo = new IlluminatiMongoConnector()
+
+        then:
+        illuminatiMongoConnectorNotUserInfo.isExistUserAuthInfo() == true
+    }
+
     def "TEST : data write to mongo"() {
         given:
         def databaseMName = "illuminati"
 
         when:
-        com.mongodb.client.MongoDatabase mongoDatabase = this.illuminatiMongoConnector.getMongoClient().getDatabase(databaseMName)
+        MongoClient mongoClient = this.illuminatiMongoConnector.mongoClient()
 
         then:
-        mongoDatabase != null
+        List<Document> databases = mongoClient.listDatabases().into(new ArrayList<>());
+        databases.forEach({ db -> System.out.println(db.toJson()) });
+    }
+}
+
+class User {
+    private String name
+
+    User(String name) {
+        this.name = name
+    }
+
+    public String getName() {
+        return this.name;
     }
 }
