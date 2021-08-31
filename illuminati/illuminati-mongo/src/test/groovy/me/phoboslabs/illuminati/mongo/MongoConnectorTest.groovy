@@ -28,7 +28,7 @@ class MongoConnectorTest extends Specification {
         thrown ServerIsNotAvailableException
     }
 
-    def "TEST : mongodb user info does not exist."() {
+    def "TEST : mongodb setting user info does not exist."() {
         given:
         System.setProperty("spring.profiles.active", "notuserinfo")
 
@@ -39,7 +39,7 @@ class MongoConnectorTest extends Specification {
         illuminatiMongoConnectorNotUserInfo.isExistUserAuthInfo() == false
     }
 
-    def "TEST : mongodb user info exist."() {
+    def "TEST : mongodb setting user info exist."() {
         given:
         System.setProperty("spring.profiles.active", "test")
 
