@@ -5,7 +5,7 @@ services:
     ports:
       - "${MONGO_PORT}:27017"
     volumes:
-      - /Users/wool/Dev/mongodb:/data/db
+      - ./mongodb:/data/db
     container_name: "docker-mongodb"
     env_file:
       - .env
