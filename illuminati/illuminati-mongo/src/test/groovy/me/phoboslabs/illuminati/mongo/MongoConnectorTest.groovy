@@ -58,9 +58,11 @@ class MongoConnectorTest extends Specification {
         MongoClient mongoClient = this.illuminatiMongoConnector.mongoClient()
 
         then:
-        List<Document> databases = mongoClient.listDatabases().into(new ArrayList<>());
-        databases.forEach({ db -> System.out.println(db.toJson()) });
+        List<Document> databases = mongoClient.listDatabases().into(new ArrayList<>())
+        databases.forEach({ db -> System.out.println(db.toJson()) })
     }
+
+    //IlluminatiTemplateInterfaceModelImpl
 }
 
 class User {

@@ -7,12 +7,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by kellin.me on 23/06/2017.
  */
-@RequiredArgsConstructor(onConstructor = @__(@Inject))
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class IlluminatiManager implements HandlerInterceptor {
 
     @Override

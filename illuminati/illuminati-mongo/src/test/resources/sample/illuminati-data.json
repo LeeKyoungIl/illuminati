@@ -1,0 +1,98 @@
+{
+  "parentModuleName": "apisample",
+  "serverInfo": {
+    "SERVER_INFO_LOGGER": {
+      "serialVersionUID": 5454405123156820674,
+      "FQCN": "ch.qos.logback.classic.Logger",
+      "name": "me.phoboslabs.illuminati.common.dto.ServerInfo"
+    },
+    "serverPort": 0,
+    "hostName": "leekyoungils-MacBook-Air.local",
+    "serverIp": "127.0.0.1",
+    "DOMAIN_KEYWORD": "domain",
+    "SERVER_PORT_KEYWORD": "serverPort"
+  },
+  "jvmInfo": {
+    "javaVmSpecificationName": "Java Virtual Machine Specification",
+    "javaVmSpecificationVersion": "11",
+    "fileEncoding": "UTF-8",
+    "javaVmInfo": "mixed mode",
+    "javaVmVersion": "11.0.12+7-LTS",
+    "javaVmName": "OpenJDK 64-Bit Server VM",
+    "PID": "11078",
+    "jvmFreeMemory": 161,
+    "javaVmVendor": "Azul Systems, Inc.",
+    "userLanguage": "en",
+    "javaHome": "/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home",
+    "jvmUsedMemory": 146,
+    "catalinaHome": "/private/var/folders/cz/9dndkjmn6p97bt7_3x821khm0000gn/T/tomcat.14210335492068053244.8081",
+    "userCountry": "KR",
+    "jvmActiveThreadCount": 26,
+    "jvmCpuUsage": "0",
+    "jvmTotalMemory": 308,
+    "javaVmSpecificationVendor": "Oracle Corporation",
+    "jvmMaxMemory": 4096,
+    "userTimezone": "Asia/Seoul",
+    "javaVmCompressedOopsMode": "Zero based"
+  },
+  "id": "78241dbecebd4a7b994883d9412d32791631458149602",
+  "packageType": "controller",
+  "general": {
+    "REQUEST_GENERAL_MODEL_LOGGER": {
+      "serialVersionUID": 5454405123156820674,
+      "FQCN": "ch.qos.logback.classic.Logger",
+      "name": "me.phoboslabs.illuminati.common.dto.RequestGeneralModel"
+    },
+    "clientIp": "0:0:0:0:0:0:0:1",
+    "methodName": "public java.lang.String me.phoboslabs.illuminati.ApiServerSample.controller.ApiSampleController.test3(java.lang.String,java.lang.Integer) throws java.lang.Exception",
+    "methodParams": {},
+    "path": "/api/v1/test3",
+    "CLIENT_INFO_KEY_LIST": [
+      "path",
+      "queryString",
+      "clientIp",
+      "anotherPath"
+    ],
+    "CLIENT_IP_KEYWORD": "clientIp",
+    "REMOTE_ADDR_KEYWORD": "remoteAddr"
+  },
+  "header": {
+    "REQUEST_HEADER_MODEL_LOGGER": {
+      "serialVersionUID": 5454405123156820674,
+      "FQCN": "ch.qos.logback.classic.Logger",
+      "name": "me.phoboslabs.illuminati.common.dto.RequestHeaderModel"
+    },
+    "accept": "text/html,application/xhtml+xml,application/xml;q\u003d0.9,image/avif,image/webp,image/apng,*/*;q\u003d0.8,application/signed-exchange;v\u003db3;q\u003d0.9",
+    "acceptEncoding": "gzip, deflate, br",
+    "acceptLanguage": "en-US,en;q\u003d0.9,ko;q\u003d0.8",
+    "cookie": "m\u003d2258:aWxsdW1pbmF0aTp0ZXN0MTIzNA%253D%253D",
+    "host": "localhost:8081",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+    "connection": "keep-alive",
+    "anotherHeader": {
+      "sec-fetch-mode": "navigate",
+      "sec-ch-ua-mobile": "?0",
+      "upgrade-insecure-requests": "1",
+      "sec-fetch-dest": "document"
+    }
+  },
+  "elapsedTime": 4,
+  "timestamp": 1631458149602,
+  "logTime": "2021-09-12T23:49:09",
+  "output": {
+    "resultString": {
+      "result": "{\"status\":0,\"message\":\"SUCCESS\",\"result\":{\"id\":401544,\"channel_id\":1,\"channel_item_id\":401544,\"seller_id\":1846,\"seller_name\":\"안나테스트교환권\",\"type\":\"Voucher\",\"sale_status\":\"SaleNow\",\"standard_price\":26000,\"seller_price\":26000,\"channel_fee_rate\":4.0,\"channel_discount_rate\":0.00000,\"channel_discount_amount\":0,\"price\":26000,\"brand_id\":68993,\"exchange_brand_id\":10525,\"released_at\":\"2017-03-24T02:29:00Z\",\"expired_at\":\"9999-12-31T14:59:59Z\",\"has_option\":false,\"is_adult_product\":false,\"island_shipping\":false,\"representative_description\":\"남녀노소 관계없이 누구나 좋아하는 맛이 한 케이크에!\",\"representative_image_kage_key\":\"lJNSk/SubSH1ZW5h/7uqm49BtEZ0pLubkPUJf81\",\"representative_image_file_name\":\"lkage783dn1.jpeg\",\"representative_image_url\":\"http://alpha-api1-kage.kakaka.com/dn//lJNSk/SubSH1ZW5h/7uqm49BtEZ0pLubkPUJf81/img.jpg\",\"description_image_url\":\"\",\"image_url\":\"http://alpha-api1-kage.kakaka.com/dn//lJNSk/SubSH1ZW5h/7uqm49BtEZ0pLubkPUJf81/img.jpg\",\"image_thumb_url\":\"http://alpha-api1-kage.kakaka.com/dn//lJNSk/SubSH1ZW5h/7uqm49BtEZ0pLubkPUJf81/145x145.jpg\",\"image_kagekey\":\"lJNSk/SubSH1ZW5h/7uqm49BtEZ0pLubkPUJf81\",\"image_file_name\":\"lkage783dn1.jpeg\",\"media_file_url\":\"\",\"sold_count\":0,\"saled_count\":0,\"total_sold_count\":0,\"standard_category_id\":8181,\"standard_category_code\":\"23010100\",\"is_risk\":false,\"is_pg_risk\":false,\"created_at\":\"2017-03-24T02:29:06Z\",\"created_by\":\"kelly.eo\",\"modified_at\":\"2017-03-30T11:08:47Z\",\"modified_by\":\"kellin.me\",\"voucher_type\":\"Exchange\",\"is_direct_buying\":false,\"is_limit_sale_count\":false,\"limit_sale_count_per_user\":2,\"limit_sale_count_per_order\":0,\"is_not_in_list\":false,\"admin_discount_amount_type\":0,\"admin_discount_amount\":0,\"is_limited\":false,\"expiry_days\":93,\"enable_drop\":true,\"additional1_image_url\":\"\",\"additional2_image_url\":\"\",\"additional3_image_url\":\"\",\"additional4_image_url\":\"\",\"additional5_image_url\":\"\",\"certification_infos\":[],\"is_soldout\":false,\"is_display\":true,\"sale_status_label\":\"판매중\",\"sale_status_id\":\"201\",\"fee_rate\":4.0,\"channel_name\":\"선물하기\",\"brand_name\":\"주문개선\",\"category_name\":\"커피\",\"exchange_brand_name\":\"선물하기센터\",\"total_discount_rate\":0,\"voucher_type_label\":\"교환권\"}}"
+    }
+  },
+  "isActiveChaosBomber": false,
+  "localTime": "Sep 12, 2021, 11:49:09 PM",
+  "paramValues": [
+    null,
+    null
+  ],
+  "TRANSACTION_IDS": [
+    "illuminatiGProcId",
+    "illuminatiSProcId",
+    "illuminatiUniqueUserId"
+  ]
+}
