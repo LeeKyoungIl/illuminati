@@ -5,7 +5,7 @@ services:
     ports:
       - "${MONGO_PORT}:27017"
     volumes:
-      - ./mongodb:/data/db
+      - ./mongodb-container-data:/data/db
     container_name: "docker-mongodb"
     env_file:
       - .env
