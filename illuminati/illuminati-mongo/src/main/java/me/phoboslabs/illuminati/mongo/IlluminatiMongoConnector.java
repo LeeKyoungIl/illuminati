@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.util.NetworkUtil;
 import me.phoboslabs.illuminati.common.util.exception.ServerIsNotAvailableException;
 import me.phoboslabs.illuminati.mongo.properties.MongoConnectionProperties;
