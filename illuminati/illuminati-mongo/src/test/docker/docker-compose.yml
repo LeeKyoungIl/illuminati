@@ -1,0 +1,11 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - ./mongodb-container-data:/data/db
+    container_name: "docker-mongodb"
+    env_file:
+      - .env

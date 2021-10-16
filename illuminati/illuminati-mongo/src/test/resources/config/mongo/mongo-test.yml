@@ -1,0 +1,5 @@
+mongoInfo:
+  hostAddress: localhost
+  port: 27017
+  username: illuminati
+  password: test123$

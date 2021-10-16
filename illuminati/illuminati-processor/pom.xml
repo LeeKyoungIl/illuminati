@@ -60,7 +60,7 @@
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
-            <version>1.4.13</version>
+            <version>1.4.14</version>
             <scope>compile</scope>
         </dependency>
 
@@ -175,6 +175,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.5</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
