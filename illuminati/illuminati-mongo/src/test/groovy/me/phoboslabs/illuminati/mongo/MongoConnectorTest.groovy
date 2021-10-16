@@ -1,12 +1,11 @@
 package me.phoboslabs.illuminati.mongo
 
-import com.fasterxml.jackson.databind.ObjectMapper
+
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.mongodb.client.MongoClient
-import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl
 import me.phoboslabs.illuminati.common.util.exception.ServerIsNotAvailableException
 import org.bson.Document
@@ -91,7 +90,7 @@ class MongoConnectorTest extends Specification {
         IlluminatiTemplateInterfaceModelImpl illuminatiInterfaceModel = this.getSampleIlluminatiModel(sampleJsonPath)
         MongoClient mongoClient = this.illuminatiMongoConnector.mongoClient()
 
-        IlluminatiMongoInterface illuminatiMongoInterface = new IlluminatiMongoInterface(mongoClient)
+        IlluminatiMongoInterface illuminatiMongoInterface = new IlluminatiMongoProcess(mongoClient)
 
         when:
         boolean result = illuminatiMongoInterface.save(illuminatiInterfaceModel)
