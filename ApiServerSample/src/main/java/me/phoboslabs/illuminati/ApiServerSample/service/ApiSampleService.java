@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.ApiServerSample.service;
 
+import lombok.extern.slf4j.Slf4j;
 import me.phoboslabs.illuminati.ApiServerSample.model.SampleModel;
 import me.phoboslabs.illuminati.ApiServerSample.model.TestModel;
 import me.phoboslabs.illuminati.ApiServerSample.service1.ApiSampleService1;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+@Slf4j
 @Service
 public class ApiSampleService {
 

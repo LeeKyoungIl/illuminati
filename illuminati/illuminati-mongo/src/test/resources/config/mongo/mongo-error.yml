@@ -1,0 +1,3 @@
+mongoInfo:
+  hostAddress: localhost
+  port: 27019

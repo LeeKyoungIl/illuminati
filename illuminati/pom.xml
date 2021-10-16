@@ -15,8 +15,13 @@
         <module>illuminati-switch</module>
         <module>illuminati-jscollector</module>
         <module>illuminati-hdfs</module>
+        <module>illuminati-mongo</module>
         <module>illuminati-simple-trace</module>
     </modules>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
     <packaging>pom</packaging>
 
     <distributionManagement>

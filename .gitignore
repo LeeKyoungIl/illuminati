@@ -57,3 +57,7 @@ tmp
 
 ._*
 logging\.path_IS_UNDEFINED/
+
+### Mongodb container data ###
+mongodb-container-data
+rabbitmq-container-data

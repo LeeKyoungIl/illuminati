@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    volumes:
+      - "./rabbitmq-container-data:/var/lib/rabbitmq"
+    ports:
+      - "8080:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=illuminati
+      - RABBITMQ_DEFAULT_PASS=test1234
