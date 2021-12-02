@@ -1,11 +1,13 @@
 package elasticsearch
 
+import com.google.gson.stream.JsonReader
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant
 import me.phoboslabs.illuminati.common.dto.enums.MappingType
 import me.phoboslabs.illuminati.common.http.IlluminatiHttpClient
 import me.phoboslabs.illuminati.elasticsearch.infra.ESclientImpl
 import me.phoboslabs.illuminati.elasticsearch.infra.EsClient
 import me.phoboslabs.illuminati.elasticsearch.infra.EsDocument
+import me.phoboslabs.illuminati.elasticsearch.infra.IlluminatiEsConnector
 import me.phoboslabs.illuminati.elasticsearch.infra.enums.*
 import me.phoboslabs.illuminati.elasticsearch.infra.model.EsData
 import me.phoboslabs.illuminati.elasticsearch.infra.model.EsDataImpl
@@ -16,13 +18,29 @@ import me.phoboslabs.illuminati.elasticsearch.infra.param.query.EsQuery
 import me.phoboslabs.illuminati.elasticsearch.infra.param.query.EsQueryBuilder
 import me.phoboslabs.illuminati.elasticsearch.infra.param.sort.EsSortBuilder
 import me.phoboslabs.illuminati.elasticsearch.infra.param.source.EsSourceBuilder
+import me.phoboslabs.illuminati.elasticsearch.infra.properties.EsConnectionProperties
 import me.phoboslabs.illuminati.elasticsearch.model.IlluminatiEsTemplateInterfaceModelImpl
 import spock.lang.Specification
 
 class EsClientTest extends Specification {
 
-    private final String elasticSearchHost = "pi.leekyoungil.com";
-    private final int elasticSearchPort = 9200;
+    def setup() {
+        System.setProperty("spring.profiles.active", "test")
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector()
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort())
+        esClient.setOptionalIndex("sample-illuminati-2021.11.28")
+
+        JsonReader reader = new JsonReader(new FileReader("src/test/java/resources/sample/sample.json"));
+        TestEsTemplateInterfaceModelImpl sampleEsTemplateInterfaceModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(reader, TestEsTemplateInterfaceModelImpl.class);
+
+        esClient.save(sampleEsTemplateInterfaceModel)
+
+
+    }
+
+    def cleanup() {
+    }
 
     def "get all value in a field from elasticsearch" () {
         setup:
@@ -39,7 +57,10 @@ class EsClientTest extends Specification {
         String queryString = RequestEsParam.Builder(esQuery, esSource)
                                 .build()
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
 
         when:
@@ -65,7 +86,10 @@ class EsClientTest extends Specification {
                             .setSort(EsSortBuilder.Builder().build())
                             .build()
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
         String data = esClient.getDataByJson(queryString);
 
@@ -105,7 +129,10 @@ class EsClientTest extends Specification {
                                 .setFrom(10)
                                 .build()
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
         String data = esClient.getDataByJson(queryString);
 
@@ -137,7 +164,10 @@ class EsClientTest extends Specification {
                                 .setGroupBy(esGroupBy)
                                 .build();
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
         String data = esClient.getDataByJson(queryString);
 
@@ -167,7 +197,10 @@ class EsClientTest extends Specification {
                 .setGroupBy(esGroupBy)
                 .build();
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
         String data = esClient.getDataByJson(queryString);
 
@@ -221,7 +254,10 @@ class EsClientTest extends Specification {
                             .setSort(esSort)
                             .build();
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
         String data = esClient.getDataByJson(jsonString);
 
@@ -267,7 +303,10 @@ class EsClientTest extends Specification {
                 .setSort(esSort)
                 .build();
 
-        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), this.elasticSearchHost, this.elasticSearchPort);
+        System.setProperty("spring.profiles.active", "test");
+        IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
+
+        EsClient esClient = new ESclientImpl(new IlluminatiHttpClient(), illuminatiEsConnector.getHost(), illuminatiEsConnector.getPort());
         esClient.setOptionalIndex("sample-illuminati*");
         String data = esClient.getDataByJson(queryString);
 
