@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.gatekeeper.api.service;
 
+import lombok.SneakyThrows;
 import me.phoboslabs.illuminati.common.util.ConvertUtil;
 import me.phoboslabs.illuminati.elasticsearch.infra.EsClient;
 import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsOrderType;
@@ -42,9 +43,9 @@ public class JvmInfoApiService extends BasicElasticsearchService {
         return this.generateQueryForEs(this.getRequestEsParam(), param);
     }
 
+    @SneakyThrows
     private RequestEsParam getRequestEsParam () {
-        Map<String, Object> query = EsQueryBuilder.Builder(EsQueryType.MATCH_ALL)
-                .build();
+        Map<String, Object> query = EsQueryBuilder.Builder(EsQueryType.MATCH_ALL).build();
         List<String> source = EsSourceBuilder.Builder()
                 .setSource(JVM_FIELD_LIST)
                 .build();
@@ -52,6 +53,7 @@ public class JvmInfoApiService extends BasicElasticsearchService {
         return RequestEsParam.Builder(query, source);
     }
 
+    @SneakyThrows
     private String generateQueryForEs (RequestEsParam requestEsParam, Map<String, Object> param) {
         if (param != null && param.size() > 0) {
             final String sizeKey = "size", fromKey = "from", sortKey = "sort", matchKey = "match";

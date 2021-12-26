@@ -28,7 +28,7 @@ public class ApiSampleService {
         return "illuminatu param test";
     }
 
-    @Illuminati(packageType = PackageType.SERVICE, ignoreProfile = {"local"})
+    @Illuminati(packageType = PackageType.SERVICE, ignoreProfile = {"dev"})
     public TestModel sampleTestByObjectTestReturn (TestModel testModel, SampleModel sampleModel) {
         testModel.setName("model");
         return testModel;
