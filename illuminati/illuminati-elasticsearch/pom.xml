@@ -6,7 +6,7 @@
 
     <groupId>me.phoboslabs.illuminati</groupId>
     <artifactId>illuminati-elasticsearch</artifactId>
-    <version>0.8.13</version>
+    <version>0.8.14</version>
     <packaging>jar</packaging>
 
     <name>illuminati-elasticsearch</name>
