@@ -1,0 +1,114 @@
+{
+  "parentModuleName": "apisample",
+  "serverInfo": {
+    "SERVER_INFO_LOGGER": {
+      "serialVersionUID": 5454405123156820674,
+      "FQCN": "ch.qos.logback.classic.Logger",
+      "name": "me.phoboslabs.illuminati.common.dto.ServerInfo"
+    },
+    "serverPort": 0,
+    "hostName": "leekyoungil-p1",
+    "serverIp": "192.168.0.8",
+    "DOMAIN_KEYWORD": "domain",
+    "SERVER_PORT_KEYWORD": "serverPort"
+  },
+  "jvmInfo": {
+    "javaVmSpecificationName": "Java Virtual Machine Specification",
+    "javaVmSpecificationVersion": "11",
+    "fileEncoding": "UTF-8",
+    "javaVmInfo": "mixed mode",
+    "javaVmVersion": "11+28",
+    "javaVmName": "OpenJDK 64-Bit Server VM",
+    "PID": "17440",
+    "jvmFreeMemory": 983,
+    "javaVmVendor": "Oracle Corporation",
+    "userLanguage": "en",
+    "javaHome": "C:\\Users\\leeky\\Documents\\Projects\\Library\\jdk-11",
+    "jvmUsedMemory": 36,
+    "catalinaHome": "C:\\Users\\leeky\\AppData\\Local\\Temp\\tomcat.8081.17405403834346013048",
+    "userCountry": "US",
+    "jvmActiveThreadCount": 25,
+    "jvmCpuUsage": "0.083",
+    "jvmTotalMemory": 1020,
+    "javaVmSpecificationVendor": "Oracle Corporation",
+    "jvmMaxMemory": 16316,
+    "userTimezone": "Asia/Seoul",
+    "javaVmCompressedOopsMode": "Zero based"
+  },
+  "id": "bb6c8038e1c5438eb67587a0f30acc591638686532802",
+  "packageType": "service",
+  "general": {
+    "REQUEST_GENERAL_MODEL_LOGGER": {
+      "serialVersionUID": 5454405123156820674,
+      "FQCN": "ch.qos.logback.classic.Logger",
+      "name": "me.phoboslabs.illuminati.common.dto.RequestGeneralModel"
+    },
+    "clientIp": "0:0:0:0:0:0:0:1",
+    "methodName": "public me.phoboslabs.illuminati.ApiServerSample.model.TestModel me.phoboslabs.illuminati.ApiServerSample.service.ApiSampleService.sampleTestByObjectTestReturn(me.phoboslabs.illuminati.ApiServerSample.model.TestModel,me.phoboslabs.illuminati.ApiServerSample.model.SampleModel)",
+    "methodParams": {
+      "sampleModel": {
+        "nameSample": "sample1",
+        "userIdSample": "sample"
+      },
+      "testModel": {
+        "name": "model",
+        "userId": "test"
+      }
+    },
+    "path": "/api/v1/test31",
+    "CLIENT_INFO_KEY_LIST": [
+      "path",
+      "queryString",
+      "clientIp",
+      "anotherPath"
+    ],
+    "CLIENT_IP_KEYWORD": "clientIp",
+    "REMOTE_ADDR_KEYWORD": "remoteAddr"
+  },
+  "header": {
+    "REQUEST_HEADER_MODEL_LOGGER": {
+      "serialVersionUID": 5454405123156820674,
+      "FQCN": "ch.qos.logback.classic.Logger",
+      "name": "me.phoboslabs.illuminati.common.dto.RequestHeaderModel"
+    },
+    "accept": "text/html,application/xhtml+xml,application/xml;q\u003d0.9,image/avif,image/webp,image/apng,*/*;q\u003d0.8,application/signed-exchange;v\u003db3;q\u003d0.9",
+    "acceptEncoding": "gzip, deflate, br",
+    "acceptLanguage": "en-US,en;q\u003d0.9,ko;q\u003d0.8",
+    "host": "localhost:8081",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+    "connection": "keep-alive",
+    "cacheControl": "max-age\u003d0",
+    "anotherHeader": {
+      "sec-fetch-mode": "navigate",
+      "sec-ch-ua-mobile": "?0",
+      "upgrade-insecure-requests": "1",
+      "sec-fetch-dest": "document"
+    }
+  },
+  "elapsedTime": 0,
+  "timestamp": 1638686532802,
+  "logTime": "2021-12-05T15:42:12",
+  "output": {
+    "resultObject": {
+      "name": "model",
+      "userId": "test"
+    }
+  },
+  "isActiveChaosBomber": false,
+  "localTime": "Dec 5, 2021, 3:42:12 PM",
+  "paramValues": [
+    {
+      "name": "model",
+      "userId": "test"
+    },
+    {
+      "nameSample": "sample1",
+      "userIdSample": "sample"
+    }
+  ],
+  "TRANSACTION_IDS": [
+    "illuminatiGProcId",
+    "illuminatiSProcId",
+    "illuminatiUniqueUserId"
+  ]
+}

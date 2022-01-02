@@ -27,6 +27,7 @@ public class EsIndexMapping {
     private final Map<String, Object> mappingIndex = new HashMap<>();
 
     private final static String TYPE_KEY = "type";
+    private final static String FIELD_DATE_KEY = "fielddata";
     private final static String PROPERTIES_KEY = "properties";
 
     public EsIndexMapping () {
@@ -34,8 +35,11 @@ public class EsIndexMapping {
 
     public void setMappingIndexByField (String rootField, final String field, final String type) {
         rootField = StringObjectUtils.convertFirstLetterToLowerlize(rootField);
-        Map<String, String> fieldTypeMap = new HashMap<>();
+        Map<String, Object> fieldTypeMap = new HashMap<>();
         fieldTypeMap.put(TYPE_KEY, type);
+        if ("text".equalsIgnoreCase(type)) {
+            fieldTypeMap.put(FIELD_DATE_KEY, true);
+        }
 
         Map<String, Object> targetMap = null;
         if (this.rootMappingIndex.containsKey(rootField)) {

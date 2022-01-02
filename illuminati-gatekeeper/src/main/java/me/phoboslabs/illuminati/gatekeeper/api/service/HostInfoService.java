@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.gatekeeper.api.service;
 
+import lombok.SneakyThrows;
 import me.phoboslabs.illuminati.elasticsearch.infra.EsClient;
 import me.phoboslabs.illuminati.elasticsearch.infra.param.RequestEsParam;
 import me.phoboslabs.illuminati.elasticsearch.infra.param.groupby.EsGroupByBuilder;
@@ -21,6 +22,7 @@ public class HostInfoService extends BasicElasticsearchService {
         super(eSclient);
     }
 
+    @SneakyThrows
     public List<Map<String,Object>> getHostInfoFromElasticsearch() {
         Map<String, Object> query = EsQueryBuilder.Builder()
                                         .setMatchAll()

@@ -14,7 +14,7 @@
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
   <artifactId>illuminati-elasticsearch</artifactId>
-  <version>0.8.13</version>
+  <version>0.8.14</version>
 </dependency>
 ```
 
@@ -22,5 +22,17 @@
     * Gradle
     
 ```java
-compile 'me.phoboslabs.illuminati:illuminati-elasticsearch:0.8.13'
+compile 'me.phoboslabs.illuminati:illuminati-elasticsearch:0.8.14'
+```
+
+## add config file - over version 0.8.14
+Add config file to the Resources folder.<br>
+However, you need to create an elasticsearch folder in the config folder in the the Resources folder.
+
+```yml
+elasticsearchInfo:
+ user: // If you haven't set up authentication, 
+ pass: // you can leave this field blank.
+ host: localhost // host address
+ port: 9200 // host port
 ```

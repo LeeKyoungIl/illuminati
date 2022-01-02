@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -128,9 +129,9 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     }
 
     private String getBaseEsHttpUrl () {
-        StringBuilder baseEsHttpUrl = new StringBuilder(this.esUrl);
+        StringJoiner baseEsHttpUrl = new StringJoiner("/").add(this.esUrl);
         if (StringObjectUtils.isValid(this.optionalIndex)) {
-            baseEsHttpUrl.append(this.optionalIndex);
+            baseEsHttpUrl.add(this.optionalIndex);
         }
 
         return baseEsHttpUrl.toString();
