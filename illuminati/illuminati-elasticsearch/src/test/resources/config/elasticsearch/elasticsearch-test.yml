@@ -1,0 +1,5 @@
+elasticsearchInfo:
+ user:
+ pass:
+ host: localhost
+ port: 9200

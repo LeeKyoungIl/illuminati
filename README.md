@@ -34,7 +34,7 @@ The illuminati is designed to make collect all data easily, and it can be possib
      * [illuminati-processor:0.9.9.38](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-processor)
      * [illuminati-switch:1.0.18](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch)
      * [illuminati-jscollector:0.5.19](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector)
-     * [illuminati-elasticsearch:0.8.13](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
+     * [illuminati-elasticsearch:0.8.14](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-elasticsearch)
      * [illuminati-hdfs:0.1.15](https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs)
  
  - util

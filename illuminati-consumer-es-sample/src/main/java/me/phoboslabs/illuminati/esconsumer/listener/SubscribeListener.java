@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 @EnableBinding(Sink.class)
-@RequiredArgsConstructor(onConstructor = @__(@Inject))
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class SubscribeListener {
 
     private static final Logger SUB_LOGGER = LoggerFactory.getLogger(SubscribeListener.class);
