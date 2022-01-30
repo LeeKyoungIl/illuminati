@@ -152,7 +152,7 @@ debug: false
  * If you can set below 100. A little more performance than 100. But difference is not big. So I recommend set 100.   
 
 # Chaos Bomber function
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/chaos_bomber.png)
+![image](https://user-images.githubusercontent.com/4101636/151666919-3e6e650f-b008-44c9-b0c6-001c8992c68f.png)
  * The Chaos Bomber is generate exception during work application by random. 
  * We must prepare for exception. And there should be no problem in application working.
  * This function is dangerous. so the Chaos Bomber is activate on debug mode.
@@ -166,7 +166,7 @@ chaosBomber: true
 ```
 
 ## Backup function
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/backup.png)
+![image](https://user-images.githubusercontent.com/4101636/151666905-bb628926-b756-4961-9764-42db054b2ed2.png)
 
  * IF Your system has problems on sending to data to external broker. (network or broker shutdown or etc..) After backup the data, if the system is restored. resend the data.
  * Backup storage use H2database to prevent data loss. (Mysql, File, Embedded broker will be added)
