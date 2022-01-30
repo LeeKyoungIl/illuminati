@@ -3,7 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.phoboslabs.illuminati</groupId>
+    <parent>
+        <groupId>me.phoboslabs.illuminati</groupId>
+        <artifactId>illuminati</artifactId>
+        <version>0.9</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <artifactId>illuminati-hdfs</artifactId>
     <version>0.1.15</version>
     <packaging>jar</packaging>
@@ -12,35 +18,7 @@
     <description>Project illuminati hadoop HDFS client library.</description>
     <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-hdfs</url>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://opensource.org/licenses/Apache-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>leekyoungil</name>
-            <email>leekyoungil@gmail.com</email>
-        </developer>
-    </developers>
-
-    <scm>
-        <url>https://github.com/LeeKyoungIl/illuminati</url>
-    </scm>
-
-    <properties>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-
-    </properties>
-
     <dependencies>
-
         <dependency>
             <groupId>me.phoboslabs.illuminati</groupId>
             <artifactId>illuminati-common</artifactId>
@@ -66,94 +44,12 @@
             <version>3.2.1</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
             <version>1.1-groovy-2.4</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
-    <build>
-
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-
-        <!--<resources>-->
-            <!--<resource>-->
-                <!--<directory>.</directory>-->
-                <!--<includes>-->
-                    <!--<include>javascript/*</include>-->
-                <!--</includes>-->
-            <!--</resource>-->
-        <!--</resources>-->
-
-    </build>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray-leekyoungil-illuminati</id>
-            <name>leekyoungil-illuminati</name>
-            <url>https://api.bintray.com/maven/leekyoungil/illuminati/illuminati-hdfs/;publish=1</url>
-        </repository>
-    </distributionManagement>
-    
 </project>

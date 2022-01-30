@@ -1,6 +1,6 @@
 # Project illuminati
 
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/illuminati-logo.png)
+![image](https://user-images.githubusercontent.com/4101636/151666970-73483a5a-0d77-445f-b2c0-e4aaf5ef0ef1.png)
 
 # This is a Platform that collects all the data accruing in your Application and shows the data in real time by using Kibana or other tools.
 
@@ -200,7 +200,7 @@ public class ApiSampleController {
 ## Illuminati data can be used in Kibana
  * Sample of Commerce Data.
 
-![image](https://github.com/LeeKyoungIl/illuminati/blob/master/kibana-sample.png)
+![image](https://user-images.githubusercontent.com/4101636/151666947-aa854511-0036-40b0-87a6-2abd843df3e1.png)
 
 ## License
 Project illuminati is licensed under the Apache License, Version 2.0.
