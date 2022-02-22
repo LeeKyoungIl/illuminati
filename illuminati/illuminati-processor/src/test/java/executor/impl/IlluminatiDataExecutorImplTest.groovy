@@ -16,7 +16,7 @@ class IlluminatiDataExecutorImplTest extends Specification {
         final MethodSignature signature = Mock(MethodSignature.class);
         final Object[] args = null;
         long elapsedTime = 3l;
-        final Object output = "test";
+        final Map<String, Object> output = [result: [test: "testdata"]]
 
         IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModel = new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, output);
 
