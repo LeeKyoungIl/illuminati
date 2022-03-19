@@ -69,6 +69,14 @@
         </repository>
     </distributionManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <testResources>
             <testResource>
@@ -179,8 +187,26 @@
                         <skipTests>true</skipTests>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.7</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
