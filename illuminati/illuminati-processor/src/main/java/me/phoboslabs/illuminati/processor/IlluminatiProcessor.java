@@ -143,7 +143,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
         // step 2.  base package name
         this.generatedIlluminatiTemplate = this.generatedIlluminatiTemplate.replace("{basePackageName}", basePackageName);
 
-        final String staticConfigurationTemplate = "     private final IlluminatiClientInit illuminatiClientInit;\r\n \r\n";
+        final String staticConfigurationTemplate = "     private final IlluminatiAdaptor illuminatiAdaptor;\r\n \r\n";
         final String illuminatiAnnotationName = "me.phoboslabs.illuminati.annotation.Illuminati";
         // step 3.  check chaosBomber is activated.
         PropertiesHelper propertiesHelper = new PropertiesHelper(this.messager);
@@ -162,24 +162,24 @@ public class IlluminatiProcessor extends AbstractProcessor {
                 + "public class IlluminatiPointcutGenerated {\r\n\r\n"
                 + staticConfigurationTemplate
                 + "     public IlluminatiPointcutGenerated() {\r\n"
-                + "         this.illuminatiClientInit = IlluminatiClientInit.getInstance();\r\n"
+                + "         this.illuminatiAdaptor = IlluminatiAdaptor.getInstance();\r\n"
                 + "     }\r\n\r\n"
                 + "     @Pointcut(\"@within("+illuminatiAnnotationName+") || @annotation("+illuminatiAnnotationName+")\")\r\n"
                 + "     public void illuminatiPointcutMethod () { }\r\n\r\n"
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
-                + "         if (this.illuminatiClientInit.illuminatiIsInitialized() == false) {\n"
+                + "         if (this.illuminatiAdaptor.illuminatiIsInitialized() == false) {\n"
                 + "           return pjp.proceed();\n"
                 + "         }\n"
-                + "         if (illuminatiClientInit.checkIlluminatiIsIgnore(pjp)) {\r\n"
+                + "         if (illuminatiAdaptor.checkIlluminatiIsIgnore(pjp)) {\r\n"
                 + "             return pjp.proceed();\r\n"
                 + "         }\r\n"
                 + "         HttpServletRequest request = null;\r\n"
                 + "         try {\r\n"
                 + "             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();\r\n"
                 + "         } catch (Exception ignore) {}\r\n"
-                + "         return illuminatiClientInit.executeIlluminati"+illuminatiExecuteMethod+"(pjp, request);\r\n"
+                + "         return illuminatiAdaptor.executeIlluminati"+illuminatiExecuteMethod+"(pjp, request);\r\n"
                 + "     }\r\n"
                 + "}\r\n"
                 ;
@@ -189,7 +189,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
     private String getImport () {
         final String[] illuminatis = {
-                "init.IlluminatiClientInit"
+                "init.IlluminatiAdaptor"
         };
 
         final String[] aspectjs = {

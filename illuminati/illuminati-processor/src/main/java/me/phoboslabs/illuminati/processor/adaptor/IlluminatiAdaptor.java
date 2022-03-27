@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.processor.init;
+package me.phoboslabs.illuminati.processor.adaptor;
 
 import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
@@ -46,11 +46,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
-public class IlluminatiClientInit {
+public class IlluminatiAdaptor {
 
-    private final Logger illuminatiInitLogger = LoggerFactory.getLogger(IlluminatiClientInit.class);
+    private final Logger illuminatiInitLogger = LoggerFactory.getLogger(IlluminatiAdaptor.class);
 
-    private static IlluminatiClientInit ILLUMINATI_CLIENT_INIT_INSTANCE;
+    private static IlluminatiAdaptor ILLUMINATI_CLIENT_INIT_INSTANCE;
 
     private static final AtomicInteger SAMPLING_RATE_CHECKER = new AtomicInteger(1);
     private static int SAMPLING_RATE = 20;
@@ -110,13 +110,13 @@ public class IlluminatiClientInit {
         return ILLUMINATI_INITIALIZED;
     }
 
-    private IlluminatiClientInit () {}
+    private IlluminatiAdaptor() {}
 
-    public static IlluminatiClientInit getInstance () {
+    public static IlluminatiAdaptor getInstance () {
         if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
-            synchronized (IlluminatiClientInit.class) {
+            synchronized (IlluminatiAdaptor.class) {
                 if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
-                    ILLUMINATI_CLIENT_INIT_INSTANCE = new  IlluminatiClientInit();
+                    ILLUMINATI_CLIENT_INIT_INSTANCE = new IlluminatiAdaptor();
                 }
             }
         }
