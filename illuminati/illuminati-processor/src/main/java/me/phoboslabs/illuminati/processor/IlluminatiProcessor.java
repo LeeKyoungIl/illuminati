@@ -16,12 +16,30 @@
 
 package me.phoboslabs.illuminati.processor;
 
-import com.google.auto.service.AutoService;
-import me.phoboslabs.illuminati.annotation.Illuminati;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.BASIC_CONFIG_FILES;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.CONFIG_FILE_EXTENSTIONS;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.PROFILES_PHASE;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.YAML_MAPPER;
 
-import javax.annotation.processing.*;
+import com.google.auto.service.AutoService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -30,13 +48,9 @@ import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.util.*;
-
-import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.*;
+import me.phoboslabs.illuminati.annotation.Illuminati;
+import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -75,7 +89,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
             for (Element element : env.getElementsAnnotatedWith(typeElement)) {
                 Illuminati illuminati = element.getAnnotation(Illuminati.class);
 
-                if (illuminati == null) {
+                if (illuminati == null || illuminati.isTest()) {
                     continue;
                 }
 

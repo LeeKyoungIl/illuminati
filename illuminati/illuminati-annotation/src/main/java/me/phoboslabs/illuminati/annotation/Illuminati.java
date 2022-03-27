@@ -39,4 +39,6 @@ public @interface Illuminati {
     String[] ignoreProfile() default {};
 
     String profileKeyword() default "spring.profiles.active";
+
+    boolean isTest() default false;
 }

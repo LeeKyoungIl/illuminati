@@ -50,7 +50,7 @@ public class IlluminatiAdaptor {
 
     private final Logger illuminatiInitLogger = LoggerFactory.getLogger(IlluminatiAdaptor.class);
 
-    private static IlluminatiAdaptor ILLUMINATI_CLIENT_INIT_INSTANCE;
+    private static IlluminatiAdaptor ILLUMINATI_ADAPTOR_INSTANCE = new IlluminatiAdaptor();
 
     private static final AtomicInteger SAMPLING_RATE_CHECKER = new AtomicInteger(1);
     private static int SAMPLING_RATE = 20;
@@ -113,22 +113,14 @@ public class IlluminatiAdaptor {
     private IlluminatiAdaptor() {}
 
     public static IlluminatiAdaptor getInstance () {
-        if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
-            synchronized (IlluminatiAdaptor.class) {
-                if (ILLUMINATI_CLIENT_INIT_INSTANCE == null) {
-                    ILLUMINATI_CLIENT_INIT_INSTANCE = new IlluminatiAdaptor();
-                }
-            }
-        }
-
-        return ILLUMINATI_CLIENT_INIT_INSTANCE;
+        return ILLUMINATI_ADAPTOR_INSTANCE;
     }
 
     // ################################################################################################################
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) throws Throwable {
+    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati == null || illuminati.ignore();
