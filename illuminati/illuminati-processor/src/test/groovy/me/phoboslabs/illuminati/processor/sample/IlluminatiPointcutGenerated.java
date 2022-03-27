@@ -23,9 +23,6 @@ public class IlluminatiPointcutGenerated {
 
      @Around("illuminatiPointcutMethod()")
      public Object profile (ProceedingJoinPoint pjp) throws Throwable {
-         if (this.illuminatiAdaptor.illuminatiIsInitialized() == false) {
-           return pjp.proceed();
-         }
          if (illuminatiAdaptor.checkIlluminatiIsIgnore(pjp)) {
              return pjp.proceed();
          }

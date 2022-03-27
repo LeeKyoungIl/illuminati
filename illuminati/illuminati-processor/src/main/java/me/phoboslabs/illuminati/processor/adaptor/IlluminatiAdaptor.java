@@ -16,32 +16,31 @@
 
 package me.phoboslabs.illuminati.processor.adaptor;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.servlet.http.HttpServletRequest;
 import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
-import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiBackupExecutorImpl;
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl;
-import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
-import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
-import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
-import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
 import me.phoboslabs.illuminati.common.IlluminatiCommon;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiDataInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
+import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiBackupExecutorImpl;
+import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiDataExecutorImpl;
+import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecutorImpl;
+import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData;
+import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -55,7 +54,6 @@ public class IlluminatiAdaptor {
     private static final AtomicInteger SAMPLING_RATE_CHECKER = new AtomicInteger(1);
     private static int SAMPLING_RATE = 20;
     private static final int CHAOS_BOMBER_NUMBER = (int) (Math.random() * 100) + 1;
-    private static boolean ILLUMINATI_INITIALIZED = false;
 
     private static IlluminatiExecutor<IlluminatiDataInterfaceModelImpl> ILLUMINATI_DATA_EXECUTOR;
     private static IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> ILLUMINATI_TEMPLATE_EXECUTOR;
@@ -67,7 +65,7 @@ public class IlluminatiAdaptor {
         try {
             IlluminatiCommon.init();
 
-            final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "samplingRate", "20");
+            final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "samplingRate", "20");
             SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.parseInt(samplingRate) : SAMPLING_RATE;
 
             if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
@@ -80,25 +78,24 @@ public class IlluminatiAdaptor {
             if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
                 RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
             }
-            ILLUMINATI_INITIALIZED = true;
 
-            final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "broker", "unknown");
-            String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,"illuminati", "clusterList", "unknown");
+            final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "broker", "unknown");
+            String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "clusterList", "unknown");
             if (brokerType.equalsIgnoreCase("simple")) {
                 clusterList = "simple mode is don't need a cluster";
             }
 
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             System.out.println("@ The illuminati is now activated.                             ");
-            System.out.println("@ Broker Type : "+brokerType+"                                 ");
-            System.out.println("@ Cluster List : "+clusterList+"                               ");
+            System.out.println("@ Broker Type : " + brokerType + "                                 ");
+            System.out.println("@ Cluster List : " + clusterList + "                               ");
             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         } catch (Exception ex) {
             System.out.println("################################################################");
             System.out.println("# The illuminati is not activated.                             #");
             System.out.println("################################################################");
             System.out.println("");
-            System.out.println("The illuminati failed to initialize. check "+System.getProperty("spring.profiles.active")+" configuration files.");
+            System.out.println("The illuminati failed to initialize. check " + System.getProperty("spring.profiles.active") + " configuration files.");
             System.out.println("");
             System.out.println("Check the following message. ↓↓");
             System.out.println(ex.toString());
@@ -106,13 +103,10 @@ public class IlluminatiAdaptor {
         }
     }
 
-    public static boolean illuminatiIsInitialized() {
-        return ILLUMINATI_INITIALIZED;
+    private IlluminatiAdaptor() {
     }
 
-    private IlluminatiAdaptor() {}
-
-    public static IlluminatiAdaptor getInstance () {
+    public static IlluminatiAdaptor getInstance() {
         return ILLUMINATI_ADAPTOR_INSTANCE;
     }
 
@@ -120,15 +114,16 @@ public class IlluminatiAdaptor {
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public boolean checkIlluminatiIsIgnore (final ProceedingJoinPoint pjp) {
+    public boolean checkIlluminatiIsIgnore(final ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati == null || illuminati.ignore();
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         return true;
     }
 
-    public Object executeIlluminati (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+    public Object executeIlluminati(final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
@@ -142,15 +137,14 @@ public class IlluminatiAdaptor {
     }
 
     /**
-     * it is only execute on debug mode and activated chaosBomber.
-     * can't be use sampling rate.
+     * it is only execute on debug mode and activated chaosBomber. can't be use sampling rate.
      *
-     * @param pjp - join point
+     * @param pjp     - join point
      * @param request - request param (client)
      * @return method execute result
      * @throws Throwable - error origin object
      */
-    public Object executeIlluminatiByChaosBomber (final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+    public Object executeIlluminatiByChaosBomber(final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
         if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
@@ -184,12 +178,13 @@ public class IlluminatiAdaptor {
             final String activeProfileKeyword = illuminati.profileKeyword();
             final String activatedProfileKeyword = System.getProperty(activeProfileKeyword);
             checkResult = Arrays.stream(illuminati.ignoreProfile()).anyMatch(activatedProfileKeyword::equalsIgnoreCase);
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         return checkResult;
     }
 
-    private Illuminati getIlluminatiAnnotation (final ProceedingJoinPoint pjp) {
+    private Illuminati getIlluminatiAnnotation(final ProceedingJoinPoint pjp) {
         final MethodSignature signature = (MethodSignature) pjp.getSignature();
         final Method method = signature.getMethod();
 
@@ -202,15 +197,16 @@ public class IlluminatiAdaptor {
         return illuminati;
     }
 
-    private int getCustomSamplingRate (final ProceedingJoinPoint pjp) {
+    private int getCustomSamplingRate(final ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati != null ? illuminati.samplingRate() : 0;
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         return 0;
     }
 
-    private boolean isActivateIlluminatiSwitch () {
+    private boolean isActivateIlluminatiSwitch() {
         return IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION;
     }
 
@@ -218,7 +214,7 @@ public class IlluminatiAdaptor {
         return IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get();
     }
 
-    private Object addToQueue (final ProceedingJoinPoint pjp, final HttpServletRequest request, final boolean isActiveChaosBomber) throws Throwable {
+    private Object addToQueue(final ProceedingJoinPoint pjp, final HttpServletRequest request, final boolean isActiveChaosBomber) throws Throwable {
         final long start = System.currentTimeMillis();
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
         final long elapsedTime = System.currentTimeMillis() - start;
@@ -242,8 +238,8 @@ public class IlluminatiAdaptor {
         }
 
         ILLUMINATI_DATA_EXECUTOR.addToQueue(IlluminatiDataInterfaceModelImpl
-                .Builder(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, originMethodExecute)
-                .setPackageType(packageType.getPackageType()));
+            .Builder(request, (MethodSignature) pjp.getSignature(), pjp.getArgs(), elapsedTime, originMethodExecute)
+            .setPackageType(packageType.getPackageType()));
 
         if (throwable != null) {
             throw throwable;
@@ -252,7 +248,7 @@ public class IlluminatiAdaptor {
         return originMethodExecute.get("result");
     }
 
-    private boolean checkSamplingRate (final ProceedingJoinPoint pjp) {
+    private boolean checkSamplingRate(final ProceedingJoinPoint pjp) {
         int customSamplingRate = this.getCustomSamplingRate(pjp);
         if (customSamplingRate == 0) {
             customSamplingRate = SAMPLING_RATE;
@@ -270,7 +266,7 @@ public class IlluminatiAdaptor {
         return SAMPLING_RATE_CHECKER.getAndIncrement() <= customSamplingRate;
     }
 
-    private Map<String, Object> getMethodExecuteResult (final ProceedingJoinPoint pjp) {
+    private Map<String, Object> getMethodExecuteResult(final ProceedingJoinPoint pjp) {
         final Map<String, Object> originMethodExecute = new HashMap<>();
 
         try {

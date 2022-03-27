@@ -183,9 +183,6 @@ public class IlluminatiProcessor extends AbstractProcessor {
 
                 + "     @Around(\"illuminatiPointcutMethod()\")\r\n"
                 + "     public Object profile (ProceedingJoinPoint pjp) throws Throwable {\r\n"
-                + "         if (this.illuminatiAdaptor.illuminatiIsInitialized() == false) {\n"
-                + "           return pjp.proceed();\n"
-                + "         }\n"
                 + "         if (illuminatiAdaptor.checkIlluminatiIsIgnore(pjp)) {\r\n"
                 + "             return pjp.proceed();\r\n"
                 + "         }\r\n"
