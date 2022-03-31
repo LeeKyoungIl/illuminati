@@ -1,5 +1,6 @@
 package me.phoboslabs.illuminati.processor.test
 
+import me.phoboslabs.illuminati.annotation.Illuminati
 import me.phoboslabs.illuminati.processor.adaptor.IlluminatiAdaptor
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
@@ -35,7 +36,12 @@ class IlluminatiAdaptorTest extends Specification {
     }
 
     private Method testMethod() {
-        return getClass().getDeclaredMethod("testMethod");
+        return this.class.getDeclaredMethod("getTest", String.class, int.class)
+    }
+
+    @Illuminati(isTest = true)
+    TestService.Test getTest(String inputString, int inputInteger) {
+        return new TestService.Test()
     }
 
 }

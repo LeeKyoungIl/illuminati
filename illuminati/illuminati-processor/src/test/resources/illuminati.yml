@@ -1,0 +1,6 @@
+# it is very dangerous function. it is activate when debug is true.
+# after using this function. you must have to re compile.(clean first)
+chaosBomber: false
+#
+#illuminati:
+#  switchValue: false

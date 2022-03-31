@@ -114,9 +114,11 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     }
 
     private void setChangedJsElement () {
-        Arrays.stream(this.signature.getParameterTypes())
+        if (this.signature.getParameterTypes() != null) {
+            Arrays.stream(this.signature.getParameterTypes())
                 .filter(paramType -> CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName()) && this.argsValidated())
                 .forEach(paramType -> this.changedJsElement = (ChangedJsElement) this.args[0]);
+        }
     }
 
     public boolean isValid () {

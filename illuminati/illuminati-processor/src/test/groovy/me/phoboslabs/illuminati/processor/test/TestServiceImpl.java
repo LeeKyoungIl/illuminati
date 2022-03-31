@@ -9,4 +9,10 @@ public class TestServiceImpl implements TestService {
     public Test getTest(String inputString, int inputInteger) {
         return new Test();
     }
+
+    @Illuminati(isTest = true)
+    @Override
+    public Test getTestSample() {
+        return new Test();
+    }
 }
