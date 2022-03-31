@@ -1,17 +1,13 @@
 package me.phoboslabs.illuminati.processor.test;
 
-public interface TestService {
+import me.phoboslabs.illuminati.annotation.Illuminati;
 
-    Test getTest(String inputString, int inputInteger);
+public class TestService {
 
-    Test getTestSample();
-
-    class Test {
-
-        private String testValue = "testValue";
-
-        public String getTestValue() {
-            return this.testValue;
-        }
+    @Illuminati(isTest = true, samplingRate = 90)
+    public TestDto getTest(String inputString, int inputInteger) {
+        TestDto testDto = new TestDto();
+        testDto.setValue(inputString, inputInteger);
+        return testDto;
     }
 }

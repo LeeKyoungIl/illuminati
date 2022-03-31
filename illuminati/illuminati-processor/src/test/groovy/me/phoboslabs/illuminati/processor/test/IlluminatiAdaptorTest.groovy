@@ -1,6 +1,6 @@
 package me.phoboslabs.illuminati.processor.test
 
-import me.phoboslabs.illuminati.annotation.Illuminati
+
 import me.phoboslabs.illuminati.processor.adaptor.IlluminatiAdaptor
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
@@ -20,11 +20,12 @@ class IlluminatiAdaptorTest extends Specification {
         def illuminatiAdaptor = IlluminatiAdaptor.getInstance()
         def joinPoint = Mock(ProceedingJoinPoint)
         def signature = Mock(MethodSignature)
-        def testService = new TestServiceImpl()
+        def testService = new TestService()
 
         signature.getMethod() >> this.testMethod()
         joinPoint.getSignature() >> signature
         joinPoint.getTarget() >> testService
+        joinPoint.proceed() >> new TestDto()
 
         def request = Mock(HttpServletRequest)
 
@@ -36,12 +37,6 @@ class IlluminatiAdaptorTest extends Specification {
     }
 
     private Method testMethod() {
-        return this.class.getDeclaredMethod("getTest", String.class, int.class)
+        return TestService.class.getDeclaredMethod("getTest", String.class, int.class)
     }
-
-    @Illuminati(isTest = true)
-    TestService.Test getTest(String inputString, int inputInteger) {
-        return new TestService.Test()
-    }
-
 }
