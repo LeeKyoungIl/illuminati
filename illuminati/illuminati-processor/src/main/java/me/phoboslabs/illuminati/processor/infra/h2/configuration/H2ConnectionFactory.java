@@ -32,8 +32,6 @@ public class H2ConnectionFactory {
 
     private static final String DB_DRIVER = "org.h2.Driver";
     private static final String DB_CONNECTION = "jdbc:h2:file:./%s;FILE_LOCK=NO;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
-    private static final String DB_USER = "";
-    private static final String DB_PASSWORD = "";
 
     private final int connectionValidCheckTimeout = 1000;
 
@@ -43,17 +41,17 @@ public class H2ConnectionFactory {
         try {
             Class.forName(DB_DRIVER);
         } catch (ClassNotFoundException e) {
-            final String errorMessage = "H2 driver class not found. ("+e.toString()+")";
+            final String errorMessage = "H2 driver class not found. ("+ e +")";
             this.h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
 
         try {
-            Connection dbConnection = DriverManager.getConnection(String.format(DB_CONNECTION, dbName), DB_USER, DB_PASSWORD);
+            Connection dbConnection = DriverManager.getConnection(String.format(DB_CONNECTION, dbName));
             dbConnection.setAutoCommit(true);
             return dbConnection;
         } catch (SQLException e) {
-            final String errorMessage = "Failed to create H2 connection. ("+e.toString()+")";
+            final String errorMessage = "Failed to create H2 connection. ("+ e +")";
             this.h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
