@@ -46,14 +46,19 @@ public class H2ConnectionFactory {
             throw new Exception(errorMessage);
         }
 
+        Connection dbConnection = null;
         try {
-            Connection dbConnection = DriverManager.getConnection(String.format(DB_CONNECTION, dbName));
+            dbConnection = DriverManager.getConnection(String.format(DB_CONNECTION, dbName));
             dbConnection.setAutoCommit(true);
             return dbConnection;
         } catch (SQLException e) {
             final String errorMessage = "Failed to create H2 connection. ("+ e +")";
             this.h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
+        } finally {
+            if (dbConnection != null) {
+                dbConnection.close();
+            }
         }
     }
 
