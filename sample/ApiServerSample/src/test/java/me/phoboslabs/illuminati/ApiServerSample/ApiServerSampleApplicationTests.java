@@ -14,7 +14,7 @@ public class ApiServerSampleApplicationTests {
 //        IlluminatiProperties illuminatiProperties = null;
 //
 //        try {
-//            InputStream input = this.getClass().getClassLoader().getResourceAsStream("illuminati-local.yml");
+//            InputStream input = this.getClass().getClassLoader().getResourceAsStream("illuminati-test.yml");
 //            illuminatiProperties = mapper.readValue(input, IlluminatiProperties.class);
 //            System.out.println("test");
 //        } catch (Exception e) {
