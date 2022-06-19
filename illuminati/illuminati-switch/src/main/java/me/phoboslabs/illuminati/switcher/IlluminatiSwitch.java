@@ -75,6 +75,8 @@ public class IlluminatiSwitch {
                 try {
                     Thread.sleep(Long.parseLong(BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL));
                 } catch (InterruptedException ignore) {
+                    ILLUMINATI_SWITCH_LOGGER.warn("Interrupted!!", ignore);
+                    Thread.currentThread().interrupt();
                 }
             }
         };

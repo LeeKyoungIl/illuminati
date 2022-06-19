@@ -153,6 +153,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         try {
             Thread.sleep(5000);
         } catch (InterruptedException ignore) {
+            ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -217,6 +219,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
                     try {
                         Thread.sleep(BROKER_HEALTH_CHECK_TIME);
                     } catch (InterruptedException ignore) {
+                        ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
+                        Thread.currentThread().interrupt();
                     }
                 } catch (Exception e) {
                     ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})",

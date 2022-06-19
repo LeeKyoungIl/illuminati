@@ -151,6 +151,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                     try {
                         Thread.sleep(BACKUP_THREAD_SLEEP_TIME);
                     } catch (InterruptedException ignore) {
+                        ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
+                        Thread.currentThread().interrupt();
                     }
                 }
             }

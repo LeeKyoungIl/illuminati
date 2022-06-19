@@ -126,6 +126,8 @@ public class RestoreTemplateData implements Restore {
                             try {
                                 Thread.sleep(5000);
                             } catch (InterruptedException ignore) {
+                                this.restoreTemplateDataLogger.warn("Interrupted!!", ignore);
+                                Thread.currentThread().interrupt();
                             }
                         }
                     }
@@ -133,6 +135,8 @@ public class RestoreTemplateData implements Restore {
                     try {
                         Thread.sleep(300000);
                     } catch (InterruptedException ignore) {
+                        this.restoreTemplateDataLogger.warn("Interrupted!!", ignore);
+                        Thread.currentThread().interrupt();
                     }
                 } catch (Exception e) {
                     restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... (" + e.getMessage() + ")");

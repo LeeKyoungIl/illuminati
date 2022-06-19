@@ -45,6 +45,8 @@ public class ContainerSignalHandler extends Thread {
         try {
             Thread.sleep(endTermSleepTime);
         } catch (InterruptedException ignore) {
+            System.out.println("Interrupted!!");
+            Thread.currentThread().interrupt();
         }
 
         // broker connection close
@@ -57,6 +59,8 @@ public class ContainerSignalHandler extends Thread {
                 Thread.sleep(threadSleepTime);
                 shutdownTimer.addAndGet(threadSleepTime);
             } catch (InterruptedException ignore) {
+                System.out.println("Interrupted!!");
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -64,6 +68,8 @@ public class ContainerSignalHandler extends Thread {
         try {
             Thread.sleep(endTermSleepTime);
         } catch (InterruptedException ignore) {
+            System.out.println("Interrupted!!");
+            Thread.currentThread().interrupt();
         }
 
         System.out.println("Illuminati BYE BYE...!");

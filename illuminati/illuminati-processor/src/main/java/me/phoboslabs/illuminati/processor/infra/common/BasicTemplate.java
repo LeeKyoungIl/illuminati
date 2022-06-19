@@ -138,10 +138,13 @@ public abstract class BasicTemplate {
         int timeoutTryCount = 0;
         while (this.sending && timeoutTryCount < 30) {
             try {
-                System.out.println("Waiting for transaction with the Illuminati to end.... (" + timeoutTryCount + " up to 30)");
+                BASIC_TEMPLATE_LOGGER.info(
+                    "Waiting for transaction with the Illuminati to end.... (" + timeoutTryCount + " up to 30)");
                 timeoutTryCount++;
                 Thread.sleep(2000);
-            } catch (Exception ignore) {
+            } catch (InterruptedException ignore) {
+                BASIC_TEMPLATE_LOGGER.warn("Interrupted!!", ignore);
+                Thread.currentThread().interrupt();
             }
         }
     }

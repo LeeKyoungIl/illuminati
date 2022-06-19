@@ -150,6 +150,8 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException ignore) {
+                            ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
+                            Thread.currentThread().interrupt();
                         }
                         sendToNextStepByDebug(illuminatiInterfaceModel);
                     }
@@ -195,6 +197,8 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                     try {
                         Thread.sleep(15000);
                     } catch (InterruptedException ignore) {
+                        ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
+                        Thread.currentThread().interrupt();
                     }
                 }
             };

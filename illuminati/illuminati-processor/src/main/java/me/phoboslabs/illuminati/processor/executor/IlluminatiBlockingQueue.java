@@ -55,6 +55,7 @@ public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends
                 }
                 dataList.add(data);
             } catch (InterruptedException ignore) {
+                Thread.currentThread().interrupt();
             }
         }
 
