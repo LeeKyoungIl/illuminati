@@ -186,6 +186,8 @@ public class SystemUtil {
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException ignore) {
+                        SYSTEM_UTIL_LOGGER.warn("Interrupted!!", ignore);
+                        Thread.currentThread().interrupt();
                     }
                 }
             };
