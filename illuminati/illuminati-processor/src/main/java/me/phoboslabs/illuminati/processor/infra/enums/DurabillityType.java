@@ -26,11 +26,11 @@ public enum DurabillityType {
 
     private final int type;
 
-    DurabillityType (int type) {
+    DurabillityType(int type) {
         this.type = type;
     }
 
-    public int getType () {
+    public int getType() {
         return this.type;
     }
 }

@@ -17,13 +17,15 @@
 package me.phoboslabs.illuminati.processor.shutdown.handler;
 
 /**
- *  - @marcus.moon provided me with an Graceful idea.
- *
+ * - @marcus.moon provided me with an Graceful idea.
+ * <p>
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
 public interface ContainerShutdownHandler {
 
     boolean isRunning();
+
     void stop();
+
     void stopSignal();
 }

@@ -17,7 +17,6 @@
 package me.phoboslabs.illuminati.common.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,15 +25,15 @@ public class IlluminatiJsonCodeProperties extends IlluminatiBaseProperties {
 
     private Map<Integer, String> jsonStatusCode;
 
-    public IlluminatiJsonCodeProperties () {
+    public IlluminatiJsonCodeProperties() {
         super();
     }
 
-    public IlluminatiJsonCodeProperties (final Properties prop) {
+    public IlluminatiJsonCodeProperties(Properties prop) {
         super(prop);
     }
 
-    public String getMessage (int code) {
+    public String getMessage(int code) {
         return this.jsonStatusCode.get(code);
     }
 }

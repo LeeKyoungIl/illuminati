@@ -16,10 +16,6 @@
 
 package me.phoboslabs.illuminati.common.util;
 
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,6 +23,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtil {
 
@@ -40,7 +39,7 @@ public class FileUtil {
 
     public static String generateFileName() {
         return new StringBuilder().append(FileUtil.DATE_FORMAT.format(new Date()))
-                .append(ILLUMINATI_DATA_FILE_NAME_POSTFIX).toString();
+            .append(ILLUMINATI_DATA_FILE_NAME_POSTFIX).toString();
     }
 
     public static File generateFile(String basePath, String fileName) throws Exception {
@@ -92,14 +91,16 @@ public class FileUtil {
             return;
         }
 
-        try(FileWriter writer = new FileWriter(file, true)) {
+        try (FileWriter writer = new FileWriter(file, true)) {
             final long start = System.currentTimeMillis();
-            for (String data: dataList) {
+            for (String data : dataList) {
                 writer.append(data.concat(LINE_SEPARATOR));
             }
             writer.flush();
 
-            FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds (" + dataList.size() + " line)");
+            FILE_UTIL_LOGGER.info(
+                "Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds (" + dataList.size()
+                    + " line)");
         } catch (IOException e) {
             FILE_UTIL_LOGGER.error("File write error : {}", e.toString(), e);
         }
@@ -124,7 +125,7 @@ public class FileUtil {
         }
     }
 
-    public static List<String> getDataFromFile (File fileOb) throws Exception {
+    public static List<String> getDataFromFile(File fileOb) throws Exception {
         try {
             return FileUtils.readLines(fileOb, ENCODING);
         } catch (IOException e) {

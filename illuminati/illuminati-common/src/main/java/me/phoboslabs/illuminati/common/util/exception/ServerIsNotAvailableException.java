@@ -19,7 +19,7 @@ package me.phoboslabs.illuminati.common.util.exception;
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 08/22/2021.
  */
-public class ServerIsNotAvailableException  extends RuntimeException {
+public class ServerIsNotAvailableException extends RuntimeException {
 
     private Throwable cause;
 
@@ -41,7 +41,7 @@ public class ServerIsNotAvailableException  extends RuntimeException {
         this.cause = throwable;
     }
 
-    public Throwable getCause () {
+    public Throwable getCause() {
         return this.cause;
     }
 }

@@ -16,13 +16,12 @@
 
 package me.phoboslabs.illuminati.hdfs.vo;
 
+import java.util.Properties;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.hdfs.enums.HDFSSecurityAuthentication;
 import me.phoboslabs.illuminati.hdfs.enums.HDFSSecurityAuthorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Properties;
 
 public class HDFSConnectionInfo {
 
@@ -56,7 +55,8 @@ public class HDFSConnectionInfo {
 
         try {
             this.port = Integer.parseInt(prop.getProperty(HDFS_CONNECTION_PORT));
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         this.hdfsUser = prop.getProperty(HDFS_CONNECTION_USER);
         this.hdfsSecurityAuthentication = HDFSSecurityAuthentication.valueOf(prop.getProperty(HDFS_CONNECTION_AUTHENTICATION));
@@ -65,20 +65,22 @@ public class HDFSConnectionInfo {
 
         try {
             this.rpcTimeout = Integer.parseInt(prop.getProperty(HDFS_CONNECTION_TIMEOUT));
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         try {
             this.dfsSupportAppend = Boolean.parseBoolean(prop.getProperty(HDFS_CONNECTION_DFS_SUPPORT_APPEND));
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
     }
 
-    public HDFSConnectionInfo(final String uriAddress, final int port, final String hdfsUser) {
+    public HDFSConnectionInfo(String uriAddress, int port, String hdfsUser) {
         this.uriAddress = uriAddress;
         this.port = port;
         this.hdfsUser = hdfsUser;
     }
 
-    public boolean isValid () throws Exception {
+    public boolean isValid() throws Exception {
         if (StringObjectUtils.isNotValid(this.uriAddress)) {
             final String errorMessage = "uriAddress is required value.";
             HDFS_LOGGER.error(errorMessage);
@@ -112,11 +114,11 @@ public class HDFSConnectionInfo {
         return true;
     }
 
-    public void setHomeDir(final String homeDir) {
+    public void setHomeDir(String homeDir) {
         this.homeDir = homeDir;
     }
 
-    public void setRpcTimeout(final int rpcTimeout) {
+    public void setRpcTimeout(int rpcTimeout) {
         this.rpcTimeout = rpcTimeout;
     }
 
@@ -128,17 +130,18 @@ public class HDFSConnectionInfo {
         return this.homeDir;
     }
 
-    public String getHDFSUriAddress () {
+    public String getHDFSUriAddress() {
         return new StringBuilder(HADOOP_PREFIX)
-                .append(this.uriAddress)
-                .append(this.HADOOP_CENTER_FIX_WITH_PORT)
-                .append(this.port)
-                .append(this.HADOOP_POSTFIX).toString();
+            .append(this.uriAddress)
+            .append(this.HADOOP_CENTER_FIX_WITH_PORT)
+            .append(this.port)
+            .append(this.HADOOP_POSTFIX).toString();
     }
 
     public void setHDFSSecurityAuthentication(String hdfsSecurityAuthentication) {
         this.hdfsSecurityAuthentication = HDFSSecurityAuthentication.valueOf(hdfsSecurityAuthentication);
     }
+
     public String getHDFSSecurityAuthenticationType() {
         return this.hdfsSecurityAuthentication.getAuthType();
     }
@@ -146,6 +149,7 @@ public class HDFSConnectionInfo {
     public void setHDFSSecurityAuthorization(String hdfsSecurityAuthorization) {
         this.hdfsSecurityAuthorization = HDFSSecurityAuthorization.valueOf(hdfsSecurityAuthorization);
     }
+
     public String getHDFSSecurityAuthorizationValue() {
         return this.hdfsSecurityAuthorization.getIsAuthorization();
     }

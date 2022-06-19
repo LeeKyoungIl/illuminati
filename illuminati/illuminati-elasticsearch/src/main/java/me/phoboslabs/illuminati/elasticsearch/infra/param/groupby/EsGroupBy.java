@@ -28,11 +28,11 @@ public class EsGroupBy {
     private final static String FIELD_KEY_NAME = "field";
     private final static String TERMS_KEY_NAME = "terms";
 
-    public EsGroupBy () {
+    public EsGroupBy() {
 
     }
 
-    public void setGroupBy (String groupByKey) {
+    public void setGroupBy(String groupByKey) {
         Map<String, Object> field = new HashMap<>();
         field.put(FIELD_KEY_NAME, groupByKey);
         Map<String, Object> terms = new HashMap<>();
@@ -42,7 +42,7 @@ public class EsGroupBy {
         this.aggList.add(agg);
     }
 
-    public List<Map<String, Object>> getGroupByList () {
+    public List<Map<String, Object>> getGroupByList() {
         return this.aggList;
     }
 }

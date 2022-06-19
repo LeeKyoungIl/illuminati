@@ -20,7 +20,11 @@ import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
 import me.phoboslabs.illuminati.common.dto.ChangedJsElement;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/illuminati/js/collector", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,13 +32,13 @@ public class JsCollectorController {
 
     @Illuminati(packageType = PackageType.JAVASCRIPT)
     @PostMapping
-    public void getByPost (@RequestBody ChangedJsElement changedJsElement) {
+    public void getByPost(@RequestBody ChangedJsElement changedJsElement) {
 
     }
 
     @Illuminati(packageType = PackageType.JAVASCRIPT)
     @GetMapping
-    public void getByGet (@RequestBody ChangedJsElement changedJsElement) {
+    public void getByGet(@RequestBody ChangedJsElement changedJsElement) {
 
     }
 }

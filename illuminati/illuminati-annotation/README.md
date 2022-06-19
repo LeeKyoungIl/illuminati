@@ -1,15 +1,17 @@
 # Project illuminati : illuminati-annotation
 
-
 ## illuminato-annotation is needed to use illuminati.
 
 ## Illuminati is easily applied to the application code.
- * It is not necessary to collect all the data in every class or method.
- * Illuminati can be selectively applied to important and necessary areas using @Illuminati annotation.
+
+* It is not necessary to collect all the data in every class or method.
+* Illuminati can be selectively applied to important and necessary areas using @Illuminati
+  annotation.
 
 ## add to Maven Dependency
+
     * Maven
-    
+
 ```java
 <dependency>
   <groupId>me.phoboslabs.illuminati</groupId>
@@ -25,16 +27,18 @@
 ```
 
 ## add to Gradle Dependency
+
     * Gradle
-    
+
 ```java
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
 compile 'me.phoboslabs.illuminati:illuminati-processor:0.9.9.38'
 ```
 
 ## add @Illuminati to Class
+
     * apply to all sub methods
-    
+
 ```java
 @Illuminati
 @RestController
@@ -54,6 +58,7 @@ public class ApiSampleController {
         }
 }
 ```
+
     * apply to all sub methods, but if you want to exclude some method.
     * you can select exclude by the Profiles. Basic Value is the value of the "spring.profiles.active". You can change the key by profileKeyword option. 
 
@@ -92,7 +97,8 @@ public class ApiSampleController {
 }
 ``` 
 
-   * apply to all sub methods, but If you want to collect at a certain rate.
+* apply to all sub methods, but If you want to collect at a certain rate.
+
 ```java
 @Illuminati
 @RestController
@@ -110,8 +116,9 @@ public class ApiSampleController {
 ``` 
 
 ## add @Illuminati to Method
+
     * apply to all target method
-    
+
 ```java
 @RestController
 @RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)

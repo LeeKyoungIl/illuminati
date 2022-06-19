@@ -17,25 +17,24 @@
 package me.phoboslabs.illuminati.elasticsearch.infra.param.source;
 
 import com.google.gson.annotations.Expose;
+import java.util.List;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
-
-import java.util.List;
 
 public class EsSourceBuilder {
 
     @Expose
     private final EsSource esSource = new EsSource();
 
-    public static EsSourceBuilder Builder () {
+    public static EsSourceBuilder Builder() {
         return new EsSourceBuilder();
     }
 
-    private EsSourceBuilder () {
+    private EsSourceBuilder() {
 
     }
 
-    public EsSourceBuilder setSource (String column) {
+    public EsSourceBuilder setSource(String column) {
         if (!StringObjectUtils.isValid(column)) {
             return this;
         }
@@ -43,7 +42,7 @@ public class EsSourceBuilder {
         return this;
     }
 
-    public EsSourceBuilder setSource (List<String> sources) {
+    public EsSourceBuilder setSource(List<String> sources) {
         if (CollectionUtils.isNotEmpty(sources)) {
             for (String source : sources) {
                 this.setSource(source);
@@ -52,7 +51,7 @@ public class EsSourceBuilder {
         return this;
     }
 
-    public List<String> build () {
+    public List<String> build() {
         return this.esSource.getSource();
     }
 }

@@ -16,6 +16,9 @@
 
 package me.phoboslabs.illuminati.common.http;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Properties;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
@@ -37,10 +40,6 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Properties;
-
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
@@ -55,29 +54,32 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
 
     private final Properties properties = new Properties();
 
-    public IlluminatiHttpClient () {
+    public IlluminatiHttpClient() {
         this.initPoolingHttpClientManager();
     }
 
-    @Override protected CloseableHttpResponse doExecute(HttpHost httpHost, HttpRequest httpRequest, HttpContext httpContext) throws IOException, ClientProtocolException {
+    @Override
+    protected CloseableHttpResponse doExecute(HttpHost httpHost, HttpRequest httpRequest, HttpContext httpContext)
+        throws IOException, ClientProtocolException {
         return this.httpClient.execute(httpHost, httpRequest, httpContext);
     }
 
-    public void setProperties (final String key, final String value) {
+    public void setProperties(String key, String value) {
         this.properties.put(key, value);
     }
 
-    private void initPoolingHttpClientManager () {
+    private void initPoolingHttpClientManager() {
         final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                .register("http", PlainConnectionSocketFactory.getSocketFactory()).build();
+            .register("https", SSLConnectionSocketFactory.getSocketFactory())
+            .register("http", PlainConnectionSocketFactory.getSocketFactory()).build();
 
-        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
+            socketFactoryRegistry);
         connectionManager.setMaxTotal(MAX_CONNECTION);
         connectionManager.setDefaultMaxPerRoute(MAX_CONNECTION_PER_ROUTE);
 
         final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom().setConnectTimeout(CONNECTION_TIMEOUT)
-                .setConnectionRequestTimeout(CONNECTION_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT);
+            .setConnectionRequestTimeout(CONNECTION_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT);
 
         final RequestConfig requestConfig = requestConfigBuilder.build();
 
@@ -85,21 +87,28 @@ public class IlluminatiHttpClient extends CloseableHttpClient {
         defaultHeaders.add(new BasicHeader(HttpHeaders.PRAGMA, "no-cache"));
         defaultHeaders.add(new BasicHeader(HttpHeaders.CACHE_CONTROL, "no-cache"));
 
-        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).disableAuthCaching().disableContentCompression();
-        this.httpClient = httpClientBuilder.setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
+        final HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultHeaders(defaultHeaders).disableAuthCaching()
+            .disableContentCompression();
+        this.httpClient = httpClientBuilder.setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig)
+            .build();
     }
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
         if (this.httpClient != null) {
             this.httpClient.close();
         }
     }
 
-    @Override @Deprecated public HttpParams getParams() {
+    @Override
+    @Deprecated
+    public HttpParams getParams() {
         return null;
     }
 
-    @Override @Deprecated public ClientConnectionManager getConnectionManager() {
+    @Override
+    @Deprecated
+    public ClientConnectionManager getConnectionManager() {
         return null;
     }
 }

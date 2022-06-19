@@ -9,7 +9,7 @@ class FileUtilTest extends Specification {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TODAY = DATE_FORMAT.format(new Date());
 
-    def "directory exists check" () {
+    def "directory exists check"() {
         setup:
         String directoryName = "./log";
 
@@ -20,7 +20,7 @@ class FileUtilTest extends Specification {
         directoryIsExists == true;
     }
 
-    def "make directory" () {
+    def "make directory"() {
         setup:
         String directoryName = "./log";
 
@@ -36,7 +36,7 @@ class FileUtilTest extends Specification {
         !madeDirectory;
     }
 
-    def "file name generate test" () {
+    def "file name generate test"() {
         setup:
         String fileName;
 
@@ -47,7 +47,7 @@ class FileUtilTest extends Specification {
         fileName == TODAY + "_illuminati_data.log";
     }
 
-    def "file exists check" () {
+    def "file exists check"() {
         setup:
         String basePath = "./";
         String fileName;
@@ -60,7 +60,7 @@ class FileUtilTest extends Specification {
         isFileExists == true;
     }
 
-    def "file generate test" () {
+    def "file generate test"() {
         setup:
         String basePath = "./";
         String fileName;
@@ -83,7 +83,7 @@ class FileUtilTest extends Specification {
         }
     }
 
-    def "append date to file" () {
+    def "append date to file"() {
         setup:
         String basePath = "./";
         String fileName;
@@ -110,7 +110,7 @@ class FileUtilTest extends Specification {
         }
     }
 
-    def "get data from file" () {
+    def "get data from file"() {
         setup:
         String basePath = "./";
         String fileName;

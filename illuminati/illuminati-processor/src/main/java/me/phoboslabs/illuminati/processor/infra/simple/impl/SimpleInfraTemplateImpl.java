@@ -16,6 +16,13 @@
 
 package me.phoboslabs.illuminati.processor.infra.simple.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.RequestGeneralModel;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
@@ -26,10 +33,6 @@ import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class SimpleInfraTemplateImpl extends BasicTemplate implements IlluminatiInfraTemplate<String> {
 
@@ -54,7 +57,7 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
     private final static String OUTPUT_RESULT_STRING_KEY_NAME = "resultString";
     private final static String OUTPUT_RESULT_OBJECT_KEY_NAME = "resultObject";
 
-    public SimpleInfraTemplateImpl(final String propertiesName) throws Exception {
+    public SimpleInfraTemplateImpl(String propertiesName) throws Exception {
         super(propertiesName);
 
         this.checkRequiredValuesForInit();
@@ -63,7 +66,8 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
 
     @Override
     public void sendToIlluminati(String entity) throws PublishMessageException, Exception {
-        final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(entity, IlluminatiTemplateInterfaceModelImpl.class);
+        final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(
+            entity, IlluminatiTemplateInterfaceModelImpl.class);
         final RequestGeneralModel requestGeneralModel = illuminatiTemplateInterfaceModel.getGeneralRequestMethodInfo();
         final String fullMethodInfo = requestGeneralModel.getMethodName();
         final Map<String, Object> methodInfo = this.getRequestMethod(fullMethodInfo);
@@ -79,43 +83,53 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
         }
     }
 
-    private void printSimpleLogMessages(final String logTime, final Map<String, Object> methodInfo, final long methodExecutionTime, final Map<String, Object> fullMethodParam, final Map<String, Object> resultOutput) {
+    private void printSimpleLogMessages(String logTime, Map<String, Object> methodInfo, long methodExecutionTime,
+        Map<String, Object> fullMethodParam, Map<String, Object> resultOutput) {
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info(
+            "@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Logging time: {} {} {}", TEXT_BR_WHITE, logTime, TEXT_RESET);
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Class name: {} {} {}", TEXT_RED, methodInfo.get("className"), TEXT_RESET);
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Method name: {} {} {}, method execution time: {} {}ms {}", TEXT_GREEN, methodInfo.get("methodName"), TEXT_RESET, TEXT_BR_GREEN, methodExecutionTime, TEXT_RESET);
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Method name: {} {} {}, method execution time: {} {}ms {}", TEXT_GREEN,
+            methodInfo.get("methodName"), TEXT_RESET, TEXT_BR_GREEN, methodExecutionTime, TEXT_RESET);
 
         List<String> paramsType = (List) methodInfo.get("paramsType");
 
         final AtomicInteger index = new AtomicInteger();
-        fullMethodParam.entrySet().stream().forEach(entry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}{} {},  name: {}{}, {} value: {}{} {}", TEXT_YELLOW, paramsType.get(index.getAndIncrement()), TEXT_RESET
-                ,  TEXT_BLUE, entry.getKey(), TEXT_RESET, TEXT_BR_RED, fullMethodParam.get(entry.getKey()), TEXT_RESET));
+        fullMethodParam.entrySet().stream().forEach(
+            entry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ params -> type: {}{} {},  name: {}{}, {} value: {}{} {}",
+                TEXT_YELLOW, paramsType.get(index.getAndIncrement()), TEXT_RESET
+                , TEXT_BLUE, entry.getKey(), TEXT_RESET, TEXT_BR_RED, fullMethodParam.get(entry.getKey()), TEXT_RESET));
 
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ Return type: {} {} {}", TEXT_CYAN, methodInfo.get("returnType"), TEXT_RESET);
 
         resultOutput.entrySet().stream().forEach(entry -> {
             if (OUTPUT_RESULT_OBJECT_KEY_NAME.equalsIgnoreCase(entry.getKey())) {
-                Map<String, Object> resultValueMap = ((Map<String, Object>)resultOutput.get(OUTPUT_RESULT_OBJECT_KEY_NAME));
+                Map<String, Object> resultValueMap = ((Map<String, Object>) resultOutput.get(OUTPUT_RESULT_OBJECT_KEY_NAME));
                 resultValueMap.entrySet().stream()
-                        .forEach(resultEntry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ name: {}{}, {} value: {}{} {}", TEXT_BLUE, resultEntry.getKey(), TEXT_RESET, TEXT_BR_RED, resultValueMap.get(resultEntry.getKey()), TEXT_RESET));
+                    .forEach(
+                        resultEntry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ name: {}{}, {} value: {}{} {}", TEXT_BLUE,
+                            resultEntry.getKey(), TEXT_RESET, TEXT_BR_RED, resultValueMap.get(resultEntry.getKey()), TEXT_RESET));
             } else if (OUTPUT_RESULT_STRING_KEY_NAME.equalsIgnoreCase(entry.getKey())) {
-                Map<String, Object> resultValueMap = ((Map<String, Object>)resultOutput.get(OUTPUT_RESULT_STRING_KEY_NAME));
-                resultValueMap.entrySet().stream().forEach(resultEntry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ value: {}{} {}", TEXT_BR_RED, resultValueMap.get(resultEntry.getKey()), TEXT_RESET));
+                Map<String, Object> resultValueMap = ((Map<String, Object>) resultOutput.get(OUTPUT_RESULT_STRING_KEY_NAME));
+                resultValueMap.entrySet().stream().forEach(
+                    resultEntry -> SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @ ┗ value: {}{} {}", TEXT_BR_RED,
+                        resultValueMap.get(resultEntry.getKey()), TEXT_RESET));
             }
         });
-        SIMPLE_TEMPLATE_IMPL_LOGGER.info("@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        SIMPLE_TEMPLATE_IMPL_LOGGER.info(
+            "@ i-sm @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         SIMPLE_TEMPLATE_IMPL_LOGGER.info("");
     }
 
-    private Map<String, Object> getRequestMethod(final String fullMethodInfo) {
+    private Map<String, Object> getRequestMethod(String fullMethodInfo) {
         try {
             final String targetRequestInfo = fullMethodInfo.replace("public ", "");
             final String[] returnType = targetRequestInfo.split("\\s");
             final String[] classMethodInfo = returnType[1].split("\\(");
             final String[] classMethod = classMethodInfo[0].split("\\.");
-            final String className = classMethod[classMethod.length-2];
-            final String methodName = classMethod[classMethod.length-1];
+            final String className = classMethod[classMethod.length - 2];
+            final String methodName = classMethod[classMethod.length - 1];
 
             final Map<String, Object> requestInfoMap = new HashMap<>();
             requestInfoMap.put("returnType", returnType[0]);
@@ -124,9 +138,9 @@ public class SimpleInfraTemplateImpl extends BasicTemplate implements Illuminati
 
             final String[] paramInfo = classMethodInfo[1].replace(")", "").split(",");
             final List<String> params = Arrays.stream(paramInfo)
-                                        .map(param -> param.split("\\."))
-                                        .map(paramClass -> paramClass[paramClass.length - 1])
-                                        .collect(Collectors.toCollection(() -> new ArrayList<>(paramInfo.length)));
+                .map(param -> param.split("\\."))
+                .map(paramClass -> paramClass[paramClass.length - 1])
+                .collect(Collectors.toCollection(() -> new ArrayList<>(paramInfo.length)));
 
             if (CollectionUtils.isNotEmpty(params)) {
                 requestInfoMap.put("paramsType", params);

@@ -18,7 +18,6 @@ import me.phoboslabs.illuminati.elasticsearch.infra.param.query.EsQuery
 import me.phoboslabs.illuminati.elasticsearch.infra.param.query.EsQueryBuilder
 import me.phoboslabs.illuminati.elasticsearch.infra.param.sort.EsSortBuilder
 import me.phoboslabs.illuminati.elasticsearch.infra.param.source.EsSourceBuilder
-import me.phoboslabs.illuminati.elasticsearch.infra.properties.EsConnectionProperties
 import me.phoboslabs.illuminati.elasticsearch.model.IlluminatiEsTemplateInterfaceModelImpl
 import spock.lang.Specification
 
@@ -43,20 +42,20 @@ class EsClientTest extends Specification {
     def cleanup() {
     }
 
-    def "get all value in a field from elasticsearch" () {
+    def "get all value in a field from elasticsearch"() {
         setup:
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
-                                        .setMatchAll()
-                                        .build();
+                .setMatchAll()
+                .build();
 
 
         List<String> esSource = EsSourceBuilder.Builder()
-                            .setSource("jvmInfo")
-                            .setSource("timestamp")
-                            .build();
+                .setSource("jvmInfo")
+                .setSource("timestamp")
+                .build();
 
         String queryString = RequestEsParam.Builder(esQuery, esSource)
-                                .build()
+                .build()
 
         System.setProperty("spring.profiles.active", "test");
         IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
@@ -72,20 +71,20 @@ class EsClientTest extends Specification {
         data.indexOf("error") == -1
     }
 
-    def "make jvm data from source data" () {
+    def "make jvm data from source data"() {
         setup:
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
-                                        .setMatchAll()
-                                        .build();
+                .setMatchAll()
+                .build();
 
         List<String> esSource = EsSourceBuilder.Builder()
-                                .setSource("jvmInfo")
-                                .setSource("timestamp")
-                                .build();
+                .setSource("jvmInfo")
+                .setSource("timestamp")
+                .build();
 
         String queryString = RequestEsParam.Builder(esQuery, esSource)
-                            .setSort(EsSortBuilder.Builder().build())
-                            .build()
+                .setSort(EsSortBuilder.Builder().build())
+                .build()
 
         System.setProperty("spring.profiles.active", "test");
         IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
@@ -107,28 +106,28 @@ class EsClientTest extends Specification {
         }
     }
 
-    def "jvm data by range" () {
+    def "jvm data by range"() {
         setup:
         List<String> esSource = EsSourceBuilder.Builder()
-                                .setSource("jvmInfo")
-                                .setSource("timestamp")
-                                .build();
+                .setSource("jvmInfo")
+                .setSource("timestamp")
+                .build();
 
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
-                                        .setMatchAll()
-                                        .setRange(EsRangeType.GTE, "2021-12-05T00:00:00")
-                                        .setRange(EsRangeType.LTE, "2021-12-05T23:59:59")
-                                        .build();
+                .setMatchAll()
+                .setRange(EsRangeType.GTE, "2021-12-05T00:00:00")
+                .setRange(EsRangeType.LTE, "2021-12-05T23:59:59")
+                .build();
 
         Map<String, String> sort = EsSortBuilder.Builder()
-                                    .setSort(EsOrderType.DESC, "logTime")
-                                    .build();
+                .setSort(EsOrderType.DESC, "logTime")
+                .build();
 
         String queryString = RequestEsParam.Builder(esQuery, esSource)
-                                .setSort(sort)
-                                .setSize(20)
-                                .setFrom(0)
-                                .build()
+                .setSort(sort)
+                .setSize(20)
+                .setFrom(0)
+                .build()
 
         System.setProperty("spring.profiles.active", "test");
         IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
@@ -150,20 +149,20 @@ class EsClientTest extends Specification {
         }
     }
 
-    def "get host bt group by" () {
+    def "get host bt group by"() {
         setup:
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
-                                        .setMatchAll()
-                                        .build();
+                .setMatchAll()
+                .build();
 
         Map<String, Object> esGroupBy = EsGroupByBuilder.Builder()
-                                        .setGroupByKey("serverInfo.hostName")
-                                        .setGroupByKey("serverInfo.serverIp")
-                                        .build();
+                .setGroupByKey("serverInfo.hostName")
+                .setGroupByKey("serverInfo.serverIp")
+                .build();
 
         String queryString = new RequestEsParam(esQuery)
-                                .setGroupBy(esGroupBy)
-                                .build();
+                .setGroupBy(esGroupBy)
+                .build();
 
         System.setProperty("spring.profiles.active", "test");
         IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
@@ -184,7 +183,7 @@ class EsClientTest extends Specification {
         }
     }
 
-    def "get host bt group by single" () {
+    def "get host bt group by single"() {
         setup:
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
                 .setMatchAll()
@@ -217,20 +216,20 @@ class EsClientTest extends Specification {
         }
     }
 
-    def "query builder test" () {
+    def "query builder test"() {
         setup:
         EsQuery esQuery;
 
         when:
         esQuery = EsQueryBuilder.Builder()
-                        .setQueryType(EsQueryType.MATCH_ALL)
-                        .build();
+                .setQueryType(EsQueryType.MATCH_ALL)
+                .build();
 
         then:
         esQuery != null;
     }
 
-    def "es request builder" () {
+    def "es request builder"() {
         setup:
         RequestEsParam requestEsParam;
         List<String> requestEsSourceParam;
@@ -238,22 +237,22 @@ class EsClientTest extends Specification {
 
         when:
         requestEsSourceParam = EsSourceBuilder.Builder()
-                                .setSource("timestamp")
-                                .setSource("jvmInfo")
-                                .build();
+                .setSource("timestamp")
+                .setSource("jvmInfo")
+                .build();
 
         Map<String, String> esSort = new EsSortBuilder()
-                                .setSort(EsOrderType.DESC, "logTime")
-                                .build();
+                .setSort(EsOrderType.DESC, "logTime")
+                .build();
 
         Map<String, Object> esQuery = EsQueryBuilder.Builder()
-                            .setQueryType(EsQueryType.MATCH_ALL)
-                            .build();
+                .setQueryType(EsQueryType.MATCH_ALL)
+                .build();
 
         requestEsParam = RequestEsParam.Builder(esQuery, requestEsSourceParam);
         String jsonString = requestEsParam
-                            .setSort(esSort)
-                            .build();
+                .setSort(esSort)
+                .build();
 
         System.setProperty("spring.profiles.active", "test");
         IlluminatiEsConnector illuminatiEsConnector = new IlluminatiEsConnector();
@@ -280,7 +279,7 @@ class EsClientTest extends Specification {
         result == true
     }
 
-    def "get data by search" () {
+    def "get data by search"() {
         setup:
         boolean checkResult = true;
 
@@ -330,7 +329,7 @@ class EsClientTest extends Specification {
         checkResult == true;
     }
 
-    def "get mapping with builder" () {
+    def "get mapping with builder"() {
         setup:
         EsIndexMappingBuilder esIndexMappingBuilder = EsIndexMappingBuilder.Builder();
 
@@ -343,7 +342,7 @@ class EsClientTest extends Specification {
         indexMappingJson != null;
     }
 
-    def "get mapping struct from model" () {
+    def "get mapping struct from model"() {
         setup:
         String jsonString = Files.readString(Paths.get("src/test/resources/sample/sample1.json"));
         TestEsTemplateInterfaceModelImpl sampleEsTemplateInterfaceModel = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(jsonString, TestEsTemplateInterfaceModelImpl.class);
@@ -361,7 +360,7 @@ class EsClientTest extends Specification {
 @EsDocument(indexName = "sample-illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
 public class TestEsTemplateInterfaceModelImpl extends IlluminatiEsTemplateInterfaceModelImpl {
 
-    public TestEsTemplateInterfaceModelImpl () {
+    public TestEsTemplateInterfaceModelImpl() {
         super();
     }
 }

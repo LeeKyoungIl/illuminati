@@ -20,13 +20,13 @@ import org.apache.hadoop.conf.Configuration;
 
 public interface DataBroker {
 
-    boolean addFile(final String source, final String dest, final boolean overwrite, final boolean withNewLine);
+    boolean addFile(String source, String dest, boolean overwrite, boolean withNewLine);
 
-    String readFile(final String source) throws Exception;
+    String readFile(String source) throws Exception;
 
-    boolean deleteFile(final String source, boolean forceDelete);
+    boolean deleteFile(String source, boolean forceDelete);
 
-    boolean mkdir(final String source);
+    boolean mkdir(String source);
 
     Configuration getConfiguration();
 }

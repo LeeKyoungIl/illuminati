@@ -16,14 +16,13 @@
 
 package me.phoboslabs.illuminati.elasticsearch.infra.param.query;
 
-import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsQueryType;
-import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsRangeType;
-import org.apache.commons.collections.MapUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsQueryType;
+import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsRangeType;
+import org.apache.commons.collections.MapUtils;
 
 public class EsQueryBuilder {
 
@@ -43,35 +42,36 @@ public class EsQueryBuilder {
     private final static String QUERY_KEY_NAME_5_x = "bool";
     private final static String FILTERED_KEY_NAME_5_x = "must";
 
-    private EsQueryBuilder () {
+    private EsQueryBuilder() {
 
     }
-    private EsQueryBuilder (EsQueryType esQueryType) {
+
+    private EsQueryBuilder(EsQueryType esQueryType) {
         this.setQueryType(esQueryType);
         if (esQueryType == EsQueryType.MATCH_ALL) {
             this.setMatchAll();
         }
     }
 
-    public static EsQueryBuilder Builder(){
+    public static EsQueryBuilder Builder() {
         return new EsQueryBuilder();
     }
 
-    public static EsQueryBuilder Builder(EsQueryType esQueryType){
+    public static EsQueryBuilder Builder(EsQueryType esQueryType) {
         return new EsQueryBuilder(esQueryType);
     }
 
-    public EsQueryBuilder setEsVersion (String esVersion) {
+    public EsQueryBuilder setEsVersion(String esVersion) {
         this.esVersion = esVersion;
         return this;
     }
 
-    public EsQueryBuilder setQueryType (EsQueryType esQueryType) {
+    public EsQueryBuilder setQueryType(EsQueryType esQueryType) {
         this.queryType = esQueryType;
         return this;
     }
 
-    public EsQueryBuilder setMatch (String key, Object value) {
+    public EsQueryBuilder setMatch(String key, Object value) {
         if (this.queryType != EsQueryType.MATCH) {
             return this;
         }
@@ -84,7 +84,7 @@ public class EsQueryBuilder {
         return this;
     }
 
-    public EsQueryBuilder setMatchAll () {
+    public EsQueryBuilder setMatchAll() {
         if (this.queryType != EsQueryType.MATCH_ALL) {
             return this;
         }
@@ -97,7 +97,7 @@ public class EsQueryBuilder {
         return this;
     }
 
-    public EsQueryBuilder setRange (EsRangeType rangeType, Object value) {
+    public EsQueryBuilder setRange(EsRangeType rangeType, Object value) {
         if (this.range == null) {
             this.range = new HashMap<>();
         }
@@ -105,7 +105,7 @@ public class EsQueryBuilder {
         return this;
     }
 
-    private void makeRangeQuery () {
+    private void makeRangeQuery() {
         if (MapUtils.isEmpty(this.range)) {
             return;
         }
@@ -115,15 +115,15 @@ public class EsQueryBuilder {
         this.filter.put(FILTER_KEY_NAME, range);
     }
 
-    private String getQueryKeyName () {
+    private String getQueryKeyName() {
         return this.esVersion.contains("2") ? QUERY_KEY_NAME_2_x : QUERY_KEY_NAME_5_x;
     }
 
-    private String getFilteredKeyName () {
+    private String getFilteredKeyName() {
         return this.esVersion.contains("2") ? FILTERED_KEY_NAME_2_x : FILTERED_KEY_NAME_5_x;
     }
 
-    public Map<String, Object> build () throws Exception {
+    public Map<String, Object> build() throws Exception {
         if (this.queryType == EsQueryType.MATCH_ALL) {
             Map<String, Object> innerQuery = new HashMap<>();
             innerQuery.put(this.getFilteredKeyName(), this.match);

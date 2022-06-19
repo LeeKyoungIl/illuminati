@@ -38,9 +38,7 @@ public class RabbitmqConstant {
     public final static int VALUE_SET_WRITE_BUFFER_SIZE = 65536;
     public final static int VALUE_SET_SEND_BUFFER_SIZE = 65536;
     /**
-     *  TCP_NODELAY
-     * - 1 : (TRUE) DONT USE NAGEL
-     * - 2 : (FALSE) USE NAGEL
+     * TCP_NODELAY - 1 : (TRUE) DONT USE NAGEL - 2 : (FALSE) USE NAGEL
      */
     public final static boolean VALUE_DONT_USE_NAGLE = true;
     public final static boolean VALUE_TCP_KEELALIVE = false;

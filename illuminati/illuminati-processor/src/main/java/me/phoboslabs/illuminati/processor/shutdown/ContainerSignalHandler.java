@@ -16,13 +16,12 @@
 
 package me.phoboslabs.illuminati.processor.shutdown;
 
-import me.phoboslabs.illuminati.processor.shutdown.handler.ContainerShutdownHandler;
-
 import java.util.concurrent.atomic.AtomicLong;
+import me.phoboslabs.illuminati.processor.shutdown.handler.ContainerShutdownHandler;
 
 /**
  * - @marcus.moon provided me with an Graceful idea.
- *
+ * <p>
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
 public class ContainerSignalHandler extends Thread {
@@ -45,7 +44,8 @@ public class ContainerSignalHandler extends Thread {
         // set the 3 second term.
         try {
             Thread.sleep(endTermSleepTime);
-        } catch (InterruptedException ignore) {}
+        } catch (InterruptedException ignore) {
+        }
 
         // broker connection close
         containerShutdownHandler.stop();
@@ -56,13 +56,15 @@ public class ContainerSignalHandler extends Thread {
             try {
                 Thread.sleep(threadSleepTime);
                 shutdownTimer.addAndGet(threadSleepTime);
-            } catch (InterruptedException ignore) {}
+            } catch (InterruptedException ignore) {
+            }
         }
 
         // set the 3 second term.
         try {
             Thread.sleep(endTermSleepTime);
-        } catch (InterruptedException ignore) {}
+        } catch (InterruptedException ignore) {
+        }
 
         System.out.println("Illuminati BYE BYE...!");
     }

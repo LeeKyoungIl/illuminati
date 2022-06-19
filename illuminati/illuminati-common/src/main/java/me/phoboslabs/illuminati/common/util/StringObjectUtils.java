@@ -16,22 +16,33 @@
 
 package me.phoboslabs.illuminati.common.util;
 
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -40,24 +51,24 @@ public class StringObjectUtils {
 
     private final static Logger STRINGUTIL_LOGGER = LoggerFactory.getLogger(StringObjectUtils.class);
 
-    public static boolean isValid (final String value) {
+    public static boolean isValid(String value) {
         return value != null && value.trim().length() > 0;
     }
 
-    public static boolean isNotValid(final String value) {
+    public static boolean isNotValid(String value) {
         return !isValid(value);
     }
 
-    public static byte[] gzipMessage(final String message) throws Exception {
+    public static byte[] gzipMessage(String message) throws Exception {
         try (
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                GZIPOutputStream stream = new GZIPOutputStream(bos);
-                ) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            GZIPOutputStream stream = new GZIPOutputStream(bos);
+        ) {
             byte[] bytes;
             try {
                 bytes = message.getBytes(IlluminatiConstant.BASE_CHARSET);
             } catch (UnsupportedEncodingException e) {
-                STRINGUTIL_LOGGER.error("No UTF-8 support available. ("+e.toString()+")");
+                STRINGUTIL_LOGGER.error("No UTF-8 support available. (" + e.toString() + ")");
                 throw new RuntimeException("No UTF-8 support available.", e);
             }
             stream.write(bytes);
@@ -69,7 +80,7 @@ public class StringObjectUtils {
         }
     }
 
-    public static String decompressGzip (final byte[] compressed) throws Exception {
+    public static String decompressGzip(byte[] compressed) throws Exception {
         if (compressed == null || compressed.length == 0) {
             throw new Exception("compressed byte array must not be null.");
         }
@@ -92,22 +103,23 @@ public class StringObjectUtils {
         return outStr.toString();
     }
 
-    public static boolean isCompressed (final byte[] compressed) {
-        return (compressed[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressed[1] == (byte) (GZIPInputStream.GZIP_MAGIC >> 8));
+    public static boolean isCompressed(byte[] compressed) {
+        return (compressed[0] == (byte) (GZIPInputStream.GZIP_MAGIC)) && (compressed[1] == (byte) (GZIPInputStream.GZIP_MAGIC
+            >> 8));
     }
 
-    public static String getPostBodyString (HttpServletRequest request) throws IOException {
+    public static String getPostBodyString(HttpServletRequest request) throws IOException {
         try (
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                Writer writer = new OutputStreamWriter(bos, IlluminatiConstant.BASE_CHARSET);
-                ) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            Writer writer = new OutputStreamWriter(bos, IlluminatiConstant.BASE_CHARSET);
+        ) {
             final Map<String, String[]> form = request.getParameterMap();
 
-            for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext();) {
+            for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext(); ) {
                 String name = nameIterator.next();
                 List<String> values = Arrays.asList(form.get(name));
 
-                for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext();) {
+                for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext(); ) {
                     final String value = valueIterator.next();
                     writer.write(URLEncoder.encode(name, IlluminatiConstant.BASE_CHARSET));
 
@@ -134,10 +146,10 @@ public class StringObjectUtils {
         }
     }
 
-    public static String getExceptionMessageChain (Throwable throwable) {
+    public static String getExceptionMessageChain(Throwable throwable) {
         final StringBuilder result = new StringBuilder()
-                                        .append("[IlluminatiException] : An exception occurred while running")
-                                        .append("\r\n\r\n");
+            .append("[IlluminatiException] : An exception occurred while running")
+            .append("\r\n\r\n");
 
         ///["THIRD EXCEPTION", "SECOND EXCEPTION", "FIRST EXCEPTION"]
         while (throwable != null) {
@@ -148,7 +160,7 @@ public class StringObjectUtils {
         return result.toString();
     }
 
-    public static String removeDotAndUpperCase (final String value) throws Exception {
+    public static String removeDotAndUpperCase(String value) throws Exception {
         if (!isValid(value)) {
             throw new Exception("value must not be null.");
         }
@@ -156,13 +168,13 @@ public class StringObjectUtils {
         final StringBuilder returnValue = new StringBuilder(value);
 
         IntStream.range(0, value.length())
-                .filter(i -> value.charAt(i) == '.')
-                .forEach(i -> returnValue.setCharAt(i + 1, Character.toUpperCase(value.charAt(i + 1))));
+            .filter(i -> value.charAt(i) == '.')
+            .forEach(i -> returnValue.setCharAt(i + 1, Character.toUpperCase(value.charAt(i + 1))));
 
         return returnValue.toString().replace(".", "");
     }
 
-    public static String objectToString (final Object object) throws Exception {
+    public static String objectToString(Object object) throws Exception {
         if (object == null) {
             throw new Exception("object must not be null.");
         }
@@ -172,19 +184,20 @@ public class StringObjectUtils {
             final String resultString = stringWriter.toString();
             return resultString.replaceAll(System.getProperty("line.separator"), "");
         } catch (IOException ex) {
-            final String errorMessage = "Sorry. had a error on during Object to String. ("+ex.toString()+")";
+            final String errorMessage = "Sorry. had a error on during Object to String. (" + ex.toString() + ")";
             STRINGUTIL_LOGGER.info(errorMessage);
             throw new Exception(errorMessage);
         }
     }
 
-    private static boolean isDeleteKeywordArrayValidated(final String[] deleteKeyword, final int deleteKeywordLocationIndexLength) {
+    private static boolean isDeleteKeywordArrayValidated(String[] deleteKeyword, int deleteKeywordLocationIndexLength) {
         return deleteKeyword != null && deleteKeyword.length > 0 && deleteKeyword.length == deleteKeywordLocationIndexLength;
     }
 
-    public static String deleteKeywordInString (String origin, final String[] deleteKeyword, final int[] deleteKeywordLocationIndex) {
-        if (StringObjectUtils.isValid(origin) && isDeleteKeywordArrayValidated(deleteKeyword, deleteKeywordLocationIndex.length)) {
-            for (int i=0; i<deleteKeyword.length; i++) {
+    public static String deleteKeywordInString(String origin, String[] deleteKeyword, int[] deleteKeywordLocationIndex) {
+        if (StringObjectUtils.isValid(origin) && isDeleteKeywordArrayValidated(deleteKeyword,
+            deleteKeywordLocationIndex.length)) {
+            for (int i = 0; i < deleteKeyword.length; i++) {
                 if (origin.indexOf(deleteKeyword[i]) != deleteKeywordLocationIndex[i]) {
                     continue;
                 }
@@ -196,23 +209,23 @@ public class StringObjectUtils {
         return origin;
     }
 
-    public static byte[] encode (final char[] charArray) throws Exception {
+    public static byte[] encode(char[] charArray) throws Exception {
         try {
             final CharsetEncoder encoder = Charset.forName(IlluminatiConstant.BASE_CHARSET).newEncoder();
             final ByteBuffer bb = encoder.encode(CharBuffer.wrap(charArray));
 
-            final byte[] ba=new byte[bb.limit()];
+            final byte[] ba = new byte[bb.limit()];
             bb.get(ba);
 
             return ba;
         } catch (CharacterCodingException ex) {
-            final String errorMessage = "Sorry. had a error on during string encode. ("+ex.toString()+")";
+            final String errorMessage = "Sorry. had a error on during string encode. (" + ex.toString() + ")";
             STRINGUTIL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }
 
-    public static String generateId (final long idTimestamp, final String postfix) {
+    public static String generateId(long idTimestamp, String postfix) {
         final StringBuilder id = new StringBuilder();
         id.append(UUID.randomUUID().toString().replace("-", ""));
         id.append(idTimestamp);
@@ -225,10 +238,10 @@ public class StringObjectUtils {
         return id.toString();
     }
 
-    public static String convertFirstLetterToLowerlize (final String str) {
+    public static String convertFirstLetterToLowerlize(String str) {
         StringBuilder convertString = new StringBuilder()
-                                        .append(str.substring(0, 1).toLowerCase())
-                                        .append(str.substring(1));
+            .append(str.substring(0, 1).toLowerCase())
+            .append(str.substring(1));
         return convertString.toString();
     }
 }

@@ -30,27 +30,27 @@ public enum CompressionCodecType {
 
     private final String type;
 
-    CompressionCodecType (String type) {
+    CompressionCodecType(String type) {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 
     public static CompressionCodecType getCompressionCodecType(String type) {
         switch (type.toLowerCase()) {
-            case "gzip" :
+            case "gzip":
                 return GZIP;
-            case "text/plain" :
+            case "text/plain":
                 return TEXT_PLAIN;
-            case "snappy" :
+            case "snappy":
                 return SNAPPY;
-            case "lz4" :
+            case "lz4":
                 return LZ4;
-            case "zstd" :
+            case "zstd":
                 return ZSTD;
-            default :
+            default:
                 return NONE;
         }
     }

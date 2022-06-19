@@ -16,17 +16,16 @@
 
 package me.phoboslabs.illuminati.processor.infra.common;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import me.phoboslabs.illuminati.common.util.PropertiesUtil;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.processor.exception.ValidationException;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.CompressionCodecType;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.PerformanceType;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
-import me.phoboslabs.illuminati.common.util.PropertiesUtil;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 13/07/2017.
@@ -44,14 +43,15 @@ public abstract class BasicTemplate {
 
     protected boolean sending = false;
 
-    abstract protected void checkRequiredValuesForInit ();
-    abstract protected void initProperties () throws Exception;
+    abstract protected void checkRequiredValuesForInit();
+
+    abstract protected void initProperties() throws Exception;
 
     protected final AtomicInteger sendCount = new AtomicInteger(0);
 
     private static final String CHECK_SIMPLE_BROKER = "simple";
 
-    protected BasicTemplate (final String propertiesName) {
+    protected BasicTemplate(String propertiesName) {
         this.illuminatiProperties = PropertiesUtil.getIlluminatiProperties(IlluminatiPropertiesImpl.class, propertiesName);
 
         if (this.illuminatiProperties == null) {
@@ -59,16 +59,18 @@ public abstract class BasicTemplate {
             throw new ValidationException("error : Sorry, something is wrong in read Properties file.");
         }
 
-        if (StringObjectUtils.isValid(this.illuminatiProperties.getClusterList()) == false && CHECK_SIMPLE_BROKER.equalsIgnoreCase(this.illuminatiProperties.getBroker()) == false) {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getClusterList()) == false
+            && CHECK_SIMPLE_BROKER.equalsIgnoreCase(this.illuminatiProperties.getBroker()) == false) {
             BASIC_TEMPLATE_LOGGER.error("error : cluster list variable is empty.");
             throw new ValidationException("error : cluster list variable is empty.");
         }
     }
 
-    protected void isAsync () {
+    protected void isAsync() {
         boolean isAsync = false;
 
-        if (StringObjectUtils.isValid(this.illuminatiProperties.getIsAsync()) && "true".equals(this.illuminatiProperties.getIsAsync().toLowerCase())) {
+        if (StringObjectUtils.isValid(this.illuminatiProperties.getIsAsync()) && "true".equals(
+            this.illuminatiProperties.getIsAsync().toLowerCase())) {
             isAsync = true;
         }
 
@@ -79,39 +81,36 @@ public abstract class BasicTemplate {
         }
     }
 
-    protected void isCompression () {
+    protected void isCompression() {
         boolean isComperession = false;
 
         if (StringObjectUtils.isValid(this.illuminatiProperties.getIsCompression())
-                && "true".equalsIgnoreCase(this.illuminatiProperties.getIsCompression())) {
+            && "true".equalsIgnoreCase(this.illuminatiProperties.getIsCompression())) {
             isComperession = true;
         }
 
         if (isComperession) {
-            this.compressionCodecType = CompressionCodecType.getCompressionCodecType(this.illuminatiProperties.getCompressionType());
+            this.compressionCodecType = CompressionCodecType.getCompressionCodecType(
+                this.illuminatiProperties.getCompressionType());
         } else {
             this.compressionCodecType = CompressionCodecType.NONE;
         }
     }
 
     /**
-     * This value controls when a produce request is considered completed. Specifically, how many other brokers must
-     * have committed the dto to their log and acknowledged this to the leader? Typical values are
-     *
-     *  0 : which means that the producer never waits for an acknowledgement from the broker.
-     *      this option procides the lowest latency but the weakest durabilility guarantees.
-     *      some dto will be lost when a spring fails.
-     *  1 : which means that the producer gets an acknowledgement after the leader replica has received the dto.
-     *      this option provides better durability as the processor waits until the spring acknowledges the request as
-     *      successful.
-     *  -1 : which means thar the producer gets an acknowledgement after all in-sync replicas have received the dto.
-     *       this option provides the best durability, we guarantee that no messages will be lost as long as at least
-     *       one in sync replica remains.
-     *
-     *  default value is 0
-     *  it's only using when you choose kafka.
+     * This value controls when a produce request is considered completed. Specifically, how many other brokers must have
+     * committed the dto to their log and acknowledged this to the leader? Typical values are
+     * <p>
+     * 0 : which means that the producer never waits for an acknowledgement from the broker. this option procides the lowest
+     * latency but the weakest durabilility guarantees. some dto will be lost when a spring fails. 1 : which means that the
+     * producer gets an acknowledgement after the leader replica has received the dto. this option provides better durability as
+     * the processor waits until the spring acknowledges the request as successful. -1 : which means thar the producer gets an
+     * acknowledgement after all in-sync replicas have received the dto. this option provides the best durability, we guarantee
+     * that no messages will be lost as long as at least one in sync replica remains.
+     * <p>
+     * default value is 0 it's only using when you choose kafka.
      */
-    protected void performanceType () {
+    protected void performanceType() {
         int performance = 0;
         if (StringObjectUtils.isValid(this.illuminatiProperties.getPerformance())) {
             try {
@@ -122,10 +121,10 @@ public abstract class BasicTemplate {
         }
 
         switch (performance) {
-            case 0 :
+            case 0:
                 this.performanceType = PerformanceType.FASTEST_BUT_NO_GUARANTEE_DATA;
                 break;
-            case -1 :
+            case -1:
                 this.performanceType = PerformanceType.SLOW_BUT_GUARANTEE_DATA;
                 break;
 
@@ -139,10 +138,11 @@ public abstract class BasicTemplate {
         int timeoutTryCount = 0;
         while (this.sending && timeoutTryCount < 30) {
             try {
-                System.out.println("Waiting for transaction with the Illuminati to end.... ("+timeoutTryCount+" up to 30)");
+                System.out.println("Waiting for transaction with the Illuminati to end.... (" + timeoutTryCount + " up to 30)");
                 timeoutTryCount++;
                 Thread.sleep(2000);
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) {
+            }
         }
     }
 }

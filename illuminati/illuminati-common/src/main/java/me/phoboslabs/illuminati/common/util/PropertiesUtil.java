@@ -16,38 +16,39 @@
 
 package me.phoboslabs.illuminati.common.util;
 
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.properties.IlluminatiProperties;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.BASIC_CONFIG_FILES;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.CONFIG_FILE_EXTENSTIONS;
+import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.PROFILES_PHASE;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import static me.phoboslabs.illuminati.common.constant.IlluminatiConstant.*;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.properties.IlluminatiProperties;
+import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertiesUtil {
 
     private final static Logger PROPERTIES_UTIL_LOGGER = LoggerFactory.getLogger(PropertiesUtil.class);
 
-    private static List<String> getPropertiesFileNames(final String configPropertiesFileName) {
+    private static List<String> getPropertiesFileNames(String configPropertiesFileName) {
         List<String> fileNames = new ArrayList<>();
 
         CONFIG_FILE_EXTENSTIONS
-                .forEach(extension -> fileNames.add(configPropertiesFileName.concat(getDotBeforeExtension()).concat(extension)));
+            .forEach(extension -> fileNames.add(configPropertiesFileName.concat(getDotBeforeExtension()).concat(extension)));
 
         return fileNames;
     }
 
-    private static List<String> getPropertiesFileNamesWithoutProfiles(final String configPropertiesFileName) {
+    private static List<String> getPropertiesFileNamesWithoutProfiles(String configPropertiesFileName) {
         List<String> fileNames = new ArrayList<>();
 
         CONFIG_FILE_EXTENSTIONS
-                .forEach(extension -> fileNames.add(configPropertiesFileName.concat(".").concat(extension)));
+            .forEach(extension -> fileNames.add(configPropertiesFileName.concat(".").concat(extension)));
 
         return fileNames;
     }
@@ -58,16 +59,16 @@ public class PropertiesUtil {
         if (StringObjectUtils.isValid(PROFILES_PHASE)) {
             final int indexOfFirstComma = PROFILES_PHASE.indexOf(",");
             dotBeforeExtension = "-".concat(
-                    indexOfFirstComma > 0
-                            ? PROFILES_PHASE.substring(0, PROFILES_PHASE.indexOf(","))
-                            : PROFILES_PHASE
+                indexOfFirstComma > 0
+                    ? PROFILES_PHASE.substring(0, PROFILES_PHASE.indexOf(","))
+                    : PROFILES_PHASE
             ).concat(".");
         }
 
         return dotBeforeExtension;
     }
 
-    public static <T extends IlluminatiProperties> T getIlluminatiProperties(final Class<T> clazz, final String configPropertiesFileName) {
+    public static <T extends IlluminatiProperties> T getIlluminatiProperties(Class<T> clazz, String configPropertiesFileName) {
         T illuminatiProperties = null;
 
         for (String fullFileName : getPropertiesFileNames(configPropertiesFileName)) {
@@ -99,7 +100,7 @@ public class PropertiesUtil {
         return illuminatiProperties;
     }
 
-    private static <T extends IlluminatiProperties> T getIlluminatiPropertiesFromBasicFiles(final Class<T> clazz) {
+    private static <T extends IlluminatiProperties> T getIlluminatiPropertiesFromBasicFiles(Class<T> clazz) {
         T illuminatiProperties = null;
 
         for (String fileName : BASIC_CONFIG_FILES) {
@@ -113,7 +114,8 @@ public class PropertiesUtil {
         return null;
     }
 
-    private static <T extends IlluminatiProperties> T getIlluminatiPropertiesByFile(final Class<T> clazz, final String configPropertiesFileName) {
+    private static <T extends IlluminatiProperties> T getIlluminatiPropertiesByFile(Class<T> clazz,
+        String configPropertiesFileName) {
         final InputStream input = IlluminatiPropertiesHelper.class.getClassLoader().getResourceAsStream(configPropertiesFileName);
         if (input == null) {
             return null;
@@ -128,16 +130,17 @@ public class PropertiesUtil {
                 prop.load(input);
 
                 if (prop == null) {
-                    PROPERTIES_UTIL_LOGGER.debug("Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
+                    PROPERTIES_UTIL_LOGGER.debug(
+                        "Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
                     return null;
                 }
 
                 try {
                     illuminatiProperties = clazz.newInstance();
                     illuminatiProperties.setProperties(prop);
+                } catch (InstantiationException ignore) {
+                } catch (IllegalAccessException ignore) {
                 }
-                catch (InstantiationException ignore) {}
-                catch (IllegalAccessException ignore) {}
             }
         } catch (IOException ex) {
             PROPERTIES_UTIL_LOGGER.debug("Sorry, something is wrong in read process. (" + ex.toString() + ")");
@@ -145,9 +148,9 @@ public class PropertiesUtil {
             if (input != null) {
                 try {
                     input.close();
-                }
-                catch (IOException ex) {
-                    PROPERTIES_UTIL_LOGGER.debug("Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
+                } catch (IOException ex) {
+                    PROPERTIES_UTIL_LOGGER.debug(
+                        "Sorry, something is wrong in close InputStream process. (" + ex.toString() + ")");
                 }
             }
         }
@@ -155,7 +158,7 @@ public class PropertiesUtil {
         return illuminatiProperties;
     }
 
-    public static Properties getPropertiesFromFile(final String filePath) throws IOException {
+    public static Properties getPropertiesFromFile(String filePath) throws IOException {
         try (InputStream input = PropertiesUtil.class.getClassLoader().getResourceAsStream(filePath)) {
             Properties prop = new Properties();
             prop.load(input);

@@ -16,6 +16,10 @@
 
 package me.phoboslabs.illuminati.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiStorageType;
 import me.phoboslabs.illuminati.common.properties.IlluminatiCommonProperties;
@@ -25,11 +29,6 @@ import me.phoboslabs.illuminati.common.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public class IlluminatiCommon {
 
     private final static Logger COMMON_LOGGER = LoggerFactory.getLogger(IlluminatiCommon.class);
@@ -37,6 +36,7 @@ public class IlluminatiCommon {
     private static final String H2_CLASS_NAME = "org.h2.Driver";
 
     private static final List<IlluminatiStorageType> ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY;
+
     static {
         List<IlluminatiStorageType> classNameArray;
         try {
@@ -48,8 +48,9 @@ public class IlluminatiCommon {
         ILLUMINATI_BACKUP_CONFIGURATION_CLASS_NAME_ARRAY = Collections.unmodifiableList(classNameArray);
     }
 
-    public synchronized static void init () {
-        final String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, "illuminati", "debug", null);
+    public synchronized static void init() {
+        final String debug = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiCommonProperties.class, "illuminati",
+            "debug", null);
         if (StringObjectUtils.isValid(debug)) {
             IlluminatiConstant.ILLUMINATI_DEBUG = Boolean.valueOf(debug);
         }

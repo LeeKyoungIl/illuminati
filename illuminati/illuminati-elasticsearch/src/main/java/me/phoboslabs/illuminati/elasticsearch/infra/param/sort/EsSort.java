@@ -17,17 +17,17 @@
 package me.phoboslabs.illuminati.elasticsearch.infra.param.sort;
 
 import com.google.gson.annotations.Expose;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-
 import java.util.HashMap;
 import java.util.Map;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
 public class EsSort {
 
     @Expose
     private Map<String, String> sort = new HashMap<>();
 
-    public EsSort() {}
+    public EsSort() {
+    }
 
     public void setOrderDataToMap(String key, String orderByString) {
         if (StringObjectUtils.isValid(key) && StringObjectUtils.isValid(orderByString)) {
@@ -35,7 +35,7 @@ public class EsSort {
         }
     }
 
-    public Map<String, String> getSort () {
+    public Map<String, String> getSort() {
         return this.sort;
     }
 }

@@ -1,11 +1,10 @@
 package me.phoboslabs.illuminati.elasticsearch.infra;
 
+import java.io.InputStream;
 import me.phoboslabs.illuminati.elasticsearch.infra.properties.EsConnectionProperties;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
-
-import java.io.InputStream;
 
 public class IlluminatiEsConnector {
 
@@ -17,8 +16,8 @@ public class IlluminatiEsConnector {
         final Yaml yaml = new Yaml(new Constructor(EsConnectionProperties.class));
         yaml.setBeanAccess(BeanAccess.FIELD);
         final InputStream inputStream = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("config/elasticsearch/elasticsearch-"+profiles+".yml");
+            .getClassLoader()
+            .getResourceAsStream("config/elasticsearch/elasticsearch-" + profiles + ".yml");
 
         if (inputStream == null) {
             throw new IllegalArgumentException("config/elasticsearch/elasticsearch-{phase}.yml not exists.");

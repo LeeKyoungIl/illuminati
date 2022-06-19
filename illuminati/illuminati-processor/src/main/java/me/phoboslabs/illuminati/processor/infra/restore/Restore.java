@@ -21,9 +21,9 @@ import me.phoboslabs.illuminati.processor.infra.restore.impl.RestoreTemplateData
 
 public interface Restore {
 
-    RestoreTemplateData init () throws RequiredValueException;
+    RestoreTemplateData init() throws RequiredValueException;
 
-    void restoreToQueue ();
+    void restoreToQueue();
 
-    void restoreToQueueByDebug ();
+    void restoreToQueueByDebug();
 }

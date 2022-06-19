@@ -24,9 +24,9 @@ import me.phoboslabs.illuminati.processor.exception.ValidationException;
  */
 public interface IlluminatiInfraTemplate<T> {
 
-    void sendToIlluminati (final T entity) throws PublishMessageException, Exception;
+    void sendToIlluminati(T entity) throws PublishMessageException, Exception;
 
-    boolean canIConnect ();
+    boolean canIConnect();
 
     void connectionClose();
 

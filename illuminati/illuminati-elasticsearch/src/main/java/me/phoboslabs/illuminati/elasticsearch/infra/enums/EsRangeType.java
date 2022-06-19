@@ -25,23 +25,23 @@ public enum EsRangeType {
 
     private String rangeType;
 
-    EsRangeType (String rangeType) {
+    EsRangeType(String rangeType) {
         this.rangeType = rangeType;
     }
 
-    public String getRangeType () {
+    public String getRangeType() {
         return this.rangeType;
     }
 
-    public static EsRangeType getRangeType (final String rangeType) throws Exception {
+    public static EsRangeType getRangeType(String rangeType) throws Exception {
         switch (rangeType) {
-            case "gt" :
+            case "gt":
                 return EsRangeType.GT;
-            case "lt" :
+            case "lt":
                 return EsRangeType.LT;
-            case "gte" :
+            case "gte":
                 return EsRangeType.GTE;
-            case "lte" :
+            case "lte":
                 return EsRangeType.LTE;
             default:
                 throw new Exception("rangeType must not be null.");

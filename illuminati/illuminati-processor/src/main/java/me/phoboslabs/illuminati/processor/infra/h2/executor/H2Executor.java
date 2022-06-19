@@ -17,18 +17,6 @@
 package me.phoboslabs.illuminati.processor.infra.h2.executor;
 
 import com.google.gson.JsonSyntaxException;
-import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
-import me.phoboslabs.illuminati.processor.infra.h2.configuration.H2ConnectionFactory;
-import me.phoboslabs.illuminati.processor.infra.backup.enums.TableDDLType;
-import me.phoboslabs.illuminati.processor.properties.IlluminatiH2Properties;
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +25,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
+import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import me.phoboslabs.illuminati.processor.infra.backup.enums.TableDDLType;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
+import me.phoboslabs.illuminati.processor.infra.h2.configuration.H2ConnectionFactory;
+import me.phoboslabs.illuminati.processor.properties.IlluminatiH2Properties;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
@@ -55,7 +54,7 @@ public class H2Executor<T> implements DBExecutor<T> {
     private static String DB_NAME;
     private static String TABLE_NAME;
 
-    private H2Executor(Class<T> type, final String dbName, final String tableName) throws Exception {
+    private H2Executor(Class<T> type, String dbName, String tableName) throws Exception {
         DB_NAME = dbName;
         TABLE_NAME = tableName;
 
@@ -63,7 +62,8 @@ public class H2Executor<T> implements DBExecutor<T> {
         this.type = type;
         this.connection = this.h2Conn.makeDBConnection(DB_NAME);
         if (this.h2Conn.isConnected(this.connection)) {
-            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class, "illuminati", "backTableReset", "false");
+            final String backTableReset = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiH2Properties.class,
+                "illuminati", "backTableReset", "false");
             if ("true".equalsIgnoreCase(backTableReset)) {
                 this.tableDDL(TableDDLType.DROP);
             }
@@ -73,7 +73,7 @@ public class H2Executor<T> implements DBExecutor<T> {
         }
     }
 
-    public static H2Executor getInstance (Class type, final String dbName, final String tableName) throws Exception {
+    public static H2Executor getInstance(Class type, String dbName, String tableName) throws Exception {
         if (H2_BACKUP == null) {
             synchronized (H2Executor.class) {
                 if (H2_BACKUP == null) {
@@ -85,17 +85,17 @@ public class H2Executor<T> implements DBExecutor<T> {
         return H2_BACKUP;
     }
 
-    private void tableDDL (TableDDLType tableDDLType) {
+    private void tableDDL(TableDDLType tableDDLType) {
         switch (tableDDLType) {
-            case CREATE :
+            case CREATE:
                 this.createTable();
                 break;
 
-            case DROP :
+            case DROP:
                 this.deleteTable();
                 break;
 
-            default :
+            default:
                 this.h2BackupLogger.warn("Failed to DDL syntax. Check your tableDDLType parameter");
                 break;
         }
@@ -106,18 +106,18 @@ public class H2Executor<T> implements DBExecutor<T> {
         this.executeDDL(tableExecuteCommand.toString(), TableDDLType.DROP.name());
     }
 
-    private void createTable () {
+    private void createTable() {
         StringBuilder tableExecuteCommand = new StringBuilder("CREATE TABLE IF NOT EXISTS ")
-                                                .append(TABLE_NAME)
-                                                .append(" ( ")
-                                                .append(" ID INTEGER PRIMARY KEY AUTO_INCREMENT")
-                                                .append(", EXECUTOR_TYPE INTEGER NOT NULL")
-                                                .append(", JSON_DATA TEXT NOT NULL ")
-                                                .append(" ) ");
+            .append(TABLE_NAME)
+            .append(" ( ")
+            .append(" ID INTEGER PRIMARY KEY AUTO_INCREMENT")
+            .append(", EXECUTOR_TYPE INTEGER NOT NULL")
+            .append(", JSON_DATA TEXT NOT NULL ")
+            .append(" ) ");
         this.executeDDL(tableExecuteCommand.toString(), TableDDLType.CREATE.name());
     }
 
-    private void executeDDL (String ddlQuery, String ddlTypeForLog) {
+    private void executeDDL(String ddlQuery, String ddlTypeForLog) {
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(ddlQuery)) {
             preparedStatement.execute();
             this.connection.commit();
@@ -126,11 +126,12 @@ public class H2Executor<T> implements DBExecutor<T> {
         }
     }
 
-    @Override public void appendByJsonString(IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData) {
+    @Override
+    public void appendByJsonString(IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData) {
         StringBuilder insertExecuteCommand = new StringBuilder("INSERT INTO ")
-                                                .append(TABLE_NAME)
-                                                .append(" (EXECUTOR_TYPE, JSON_DATA) ")
-                                                .append("VALUES (?, ?)");
+            .append(TABLE_NAME)
+            .append(" (EXECUTOR_TYPE, JSON_DATA) ")
+            .append("VALUES (?, ?)");
 
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(insertExecuteCommand.toString())) {
             preparedStatement.setObject(1, illuminatiInterfaceType.getExecutorId());
@@ -142,14 +143,15 @@ public class H2Executor<T> implements DBExecutor<T> {
         }
     }
 
-    @Override public List<T> getDataByList(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception {
+    @Override
+    public List<T> getDataByList(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception {
         List<T> dataList = new ArrayList<>();
         List<Integer> idList = new ArrayList<>();
 
-        try(
-                PreparedStatement preparedStatement = this.connection.prepareStatement(this.getSelectQuery(isPaging, from, size));
-                ResultSet rs = preparedStatement.executeQuery();
-                ) {
+        try (
+            PreparedStatement preparedStatement = this.connection.prepareStatement(this.getSelectQuery(isPaging, from, size));
+            ResultSet rs = preparedStatement.executeQuery();
+        ) {
             while (rs.next()) {
                 idList.add(rs.getInt("ID"));
                 try {
@@ -159,7 +161,7 @@ public class H2Executor<T> implements DBExecutor<T> {
                 }
             }
         } catch (SQLException e) {
-            final String errorMessage = "Failed to select data from Table. ("+e.toString()+")";
+            final String errorMessage = "Failed to select data from Table. (" + e.toString() + ")";
             this.h2BackupLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -173,7 +175,8 @@ public class H2Executor<T> implements DBExecutor<T> {
         return dataList;
     }
 
-    @Override public Map<Integer, T> getDataByMap(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception {
+    @Override
+    public Map<Integer, T> getDataByMap(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception {
         final String selectQuery = this.getSelectQuery(isPaging, from, size);
 
         if (!StringObjectUtils.isValid(selectQuery)) {
@@ -182,19 +185,20 @@ public class H2Executor<T> implements DBExecutor<T> {
 
         Map<Integer, T> dataMap = new HashMap<>();
 
-        try(
-                PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
-                ResultSet rs = preparedStatement.executeQuery();
-                ) {
+        try (
+            PreparedStatement preparedStatement = this.connection.prepareStatement(selectQuery);
+            ResultSet rs = preparedStatement.executeQuery();
+        ) {
             while (rs.next()) {
                 try {
-                    dataMap.put(rs.getInt("ID"), IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
+                    dataMap.put(rs.getInt("ID"),
+                        IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(rs.getString("JSON_DATA"), this.type));
                 } catch (JsonSyntaxException ex) {
                     this.h2BackupLogger.warn("Failed to json parse - JsonSyntaxException ()", ex.toString());
                 }
             }
         } catch (SQLException e) {
-            final String errorMessage = "Failed to select data from Table. ("+e.toString()+")";
+            final String errorMessage = "Failed to select data from Table. (" + e.toString() + ")";
             this.h2BackupLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -206,11 +210,12 @@ public class H2Executor<T> implements DBExecutor<T> {
         return dataMap;
     }
 
-    @Override public void deleteById(int id) {
+    @Override
+    public void deleteById(int id) {
         StringBuilder deleteExecuteCommand = new StringBuilder("DELETE FROM ")
-                                                .append(TABLE_NAME)
-                                                .append(" WHERE ID = ")
-                                                .append(id);
+            .append(TABLE_NAME)
+            .append(" WHERE ID = ")
+            .append(id);
 
         try (PreparedStatement preparedStatement = this.connection.prepareStatement(deleteExecuteCommand.toString())) {
             preparedStatement.execute();
@@ -220,30 +225,31 @@ public class H2Executor<T> implements DBExecutor<T> {
         }
     }
 
-    @Override public int getCount() throws Exception {
+    @Override
+    public int getCount() throws Exception {
         StringBuilder countExecuteCommand = new StringBuilder("SELECT count(1) FROM ").append(TABLE_NAME);
 
-        try(
-                PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
-                ResultSet rs = preparedStatement.executeQuery();
-                ) {
+        try (
+            PreparedStatement preparedStatement = this.connection.prepareStatement(countExecuteCommand.toString());
+            ResultSet rs = preparedStatement.executeQuery();
+        ) {
             int count = 0;
             if (rs.next()) {
                 count = rs.getInt(1);
             }
             return count;
         } catch (SQLException e) {
-            final String errorMessage = "Failed to select data from Table. ("+e.toString()+")";
+            final String errorMessage = "Failed to select data from Table. (" + e.toString() + ")";
             this.h2BackupLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
     }
 
-    private String getSelectQuery (boolean isPaging, int from, int size) {
+    private String getSelectQuery(boolean isPaging, int from, int size) {
         StringBuilder selectExecuteCommand = new StringBuilder("SELECT ID, JSON_DATA FROM ").append(TABLE_NAME);
 
         if (isPaging) {
-            selectExecuteCommand.append(" LIMIT "+from+", "+size);
+            selectExecuteCommand.append(" LIMIT " + from + ", " + size);
         }
 
         return selectExecuteCommand.toString();

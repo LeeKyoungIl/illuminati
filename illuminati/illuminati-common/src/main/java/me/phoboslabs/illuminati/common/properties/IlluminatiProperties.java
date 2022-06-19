@@ -20,5 +20,5 @@ import java.util.Properties;
 
 public interface IlluminatiProperties {
 
-    void setProperties(final Properties prop);
+    void setProperties(Properties prop);
 }

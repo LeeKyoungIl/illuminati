@@ -16,14 +16,14 @@
 
 package me.phoboslabs.illuminati.common.util;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 public class ConvertUtil {
 
-    public static Map<String, String> getClientInfoFromHttpRequest (final HttpServletRequest request) throws Exception {
+    public static Map<String, String> getClientInfoFromHttpRequest(HttpServletRequest request) throws Exception {
         if (request == null) {
             throw new Exception("The Request must not be null.");
         }
@@ -46,12 +46,13 @@ public class ConvertUtil {
 
     private static final String CHAOS_BOMBER_KEYWORD = "ChaosBomber";
 
-    public static Map<String, Object> getStaticInfoFromHttpRequest (final HttpServletRequest request) {
+    public static Map<String, Object> getStaticInfoFromHttpRequest(HttpServletRequest request) {
         final Map<String, Object> staticInfoMap = new HashMap<>();
         staticInfoMap.put("domain", request.getServerName());
         staticInfoMap.put("serverPort", request.getLocalPort());
 
-        if (request.getAttribute(CHAOS_BOMBER_KEYWORD) != null && "true".equals(request.getAttribute(CHAOS_BOMBER_KEYWORD).toString())) {
+        if (request.getAttribute(CHAOS_BOMBER_KEYWORD) != null && "true".equals(
+            request.getAttribute(CHAOS_BOMBER_KEYWORD).toString())) {
             request.setAttribute(CHAOS_BOMBER_KEYWORD, null);
             staticInfoMap.put(CHAOS_BOMBER_KEYWORD, true);
         }
@@ -59,9 +60,10 @@ public class ConvertUtil {
         return staticInfoMap;
     }
 
-    public static boolean getChaosBomberFromHttpRequest (final HttpServletRequest request) {
-        if (request.getAttribute(CHAOS_BOMBER_KEYWORD) != null && "true".equals(request.getAttribute(CHAOS_BOMBER_KEYWORD).toString())) {
-            request.setAttribute(CHAOS_BOMBER_KEYWORD,null);
+    public static boolean getChaosBomberFromHttpRequest(HttpServletRequest request) {
+        if (request.getAttribute(CHAOS_BOMBER_KEYWORD) != null && "true".equals(
+            request.getAttribute(CHAOS_BOMBER_KEYWORD).toString())) {
+            request.setAttribute(CHAOS_BOMBER_KEYWORD, null);
             return true;
         }
 
@@ -82,22 +84,22 @@ public class ConvertUtil {
     private static <T> void checkCast(Class<T> clazz, Object obj) {
         if (obj != null && !clazz.isInstance(obj)) {
             StringBuilder exMessage = new StringBuilder()
-                                        .append("Expected : ").append(clazz.getName())
-                                        .append("Was : ").append(obj.getClass().getName())
-                                        .append("Value : ").append(obj);
+                .append("Expected : ").append(clazz.getName())
+                .append("Was : ").append(obj.getClass().getName())
+                .append("Value : ").append(obj);
 
             throw new ClassCastException(exMessage.toString());
         }
     }
 
-    public static Map<String, Object> convertObjectToMap (Object obj) throws Exception {
+    public static Map<String, Object> convertObjectToMap(Object obj) throws Exception {
         Map<String, Object> map = new HashMap<>();
         final Field[] fields = obj.getClass().getDeclaredFields();
-        for(int i=0; i <fields.length; i++){
+        for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
-            try{
+            try {
                 map.put(fields[i].getName(), fields[i].get(obj));
-            } catch(Exception e){
+            } catch (Exception e) {
                 throw new Exception(e.toString());
             }
         }

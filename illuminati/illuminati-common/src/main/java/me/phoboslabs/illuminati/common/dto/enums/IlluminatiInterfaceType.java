@@ -27,7 +27,7 @@ public enum IlluminatiInterfaceType {
         this.executorTypeId = executorTypeId;
     }
 
-    public int getExecutorId () {
+    public int getExecutorId() {
         return this.executorTypeId;
     }
 }

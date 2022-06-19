@@ -25,7 +25,7 @@ public enum HDFSSecurityAuthentication {
 
     private final String authType;
 
-    HDFSSecurityAuthentication(final String authType) {
+    HDFSSecurityAuthentication(String authType) {
         this.authType = authType;
     }
 

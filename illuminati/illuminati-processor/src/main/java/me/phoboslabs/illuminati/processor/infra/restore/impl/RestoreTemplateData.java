@@ -16,21 +16,20 @@
 
 package me.phoboslabs.illuminati.processor.infra.restore.impl;
 
-import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
-import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
-import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor;
-import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
-import me.phoboslabs.illuminati.processor.infra.restore.Restore;
+import java.util.List;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
+import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
+import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
+import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor;
+import me.phoboslabs.illuminati.processor.infra.restore.Restore;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class RestoreTemplateData implements Restore {
 
@@ -48,12 +47,12 @@ public class RestoreTemplateData implements Restore {
     // ################################################################################################################
     private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor;
 
-    private RestoreTemplateData (final IlluminatiExecutor illuminatiExecutor) throws Exception {
+    private RestoreTemplateData(IlluminatiExecutor illuminatiExecutor) throws Exception {
         h2DBExecutor = H2Executor.getInstance(IlluminatiTemplateInterfaceModelImpl.class, "simple", "trace");
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
-    public static RestoreTemplateData getInstance (final IlluminatiExecutor illuminatiExecutor) throws Exception {
+    public static RestoreTemplateData getInstance(IlluminatiExecutor illuminatiExecutor) throws Exception {
         if (RESTORE_TEMPLATE_DATA == null) {
             synchronized (RestoreTemplateData.class) {
                 if (RESTORE_TEMPLATE_DATA == null) {
@@ -65,12 +64,14 @@ public class RestoreTemplateData implements Restore {
         return RESTORE_TEMPLATE_DATA;
     }
 
-    @Override public RestoreTemplateData init () {
+    @Override
+    public RestoreTemplateData init() {
         this.createSystemThread();
         return this;
     }
 
-    @Override public void restoreToQueue () {
+    @Override
+    public void restoreToQueue() {
         if (!this.readyToRestoreQueue()) {
             return;
         }
@@ -78,7 +79,8 @@ public class RestoreTemplateData implements Restore {
         try {
             final List<IlluminatiInterfaceModel> backupObjectList = this.h2DBExecutor.getDataByList(false, true, 0, LIMIT_COUNT);
             if (CollectionUtils.isNotEmpty(backupObjectList)) {
-                backupObjectList.forEach(illuminatiInterfaceModel -> this.illuminatiTemplateExecutor.addToQueue((IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel));
+                backupObjectList.forEach(illuminatiInterfaceModel -> this.illuminatiTemplateExecutor.addToQueue(
+                    (IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel));
             }
         } catch (Exception ex) {
             this.restoreTemplateDataLogger.error("check H2 database configurations.", ex);
@@ -102,15 +104,16 @@ public class RestoreTemplateData implements Restore {
         return restoreQueueSize > RESTORE_CHECK_QUEUE_SIZE;
     }
 
-    @Override public void restoreToQueueByDebug () {
+    @Override
+    public void restoreToQueueByDebug() {
         final long start = System.currentTimeMillis();
         //## Restore file
         this.restoreToQueue();
         final long elapsedTime = System.currentTimeMillis() - start;
-        this.restoreTemplateDataLogger.info("elapsed time of template queue sent is "+elapsedTime+" millisecond");
+        this.restoreTemplateDataLogger.info("elapsed time of template queue sent is " + elapsedTime + " millisecond");
     }
 
-    private void createSystemThread () {
+    private void createSystemThread() {
         final Runnable runnableFirst = () -> {
             while (true) {
                 try {
@@ -122,15 +125,17 @@ public class RestoreTemplateData implements Restore {
 
                             try {
                                 Thread.sleep(5000);
-                            } catch (InterruptedException ignore) {}
+                            } catch (InterruptedException ignore) {
+                            }
                         }
                     }
 
                     try {
                         Thread.sleep(300000);
-                    } catch (InterruptedException ignore) {}
+                    } catch (InterruptedException ignore) {
+                    }
                 } catch (Exception e) {
-                    restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... ("+e.getMessage()+")");
+                    restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... (" + e.getMessage() + ")");
                 }
             }
         };

@@ -16,6 +16,7 @@
 
 package me.phoboslabs.illuminati.switcher.http.impl;
 
+import java.io.IOException;
 import me.phoboslabs.illuminati.switcher.http.IlluminatiSwitchHttp;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,8 +27,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 public class IlluminatiSwitchHttpImpl implements IlluminatiSwitchHttp<String> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,12 +36,13 @@ public class IlluminatiSwitchHttpImpl implements IlluminatiSwitchHttp<String> {
 
     private final static int RETRY_COUNT = 3;
 
-    public IlluminatiSwitchHttpImpl(final HttpClient httpClient, final String url) {
+    public IlluminatiSwitchHttpImpl(HttpClient httpClient, String url) {
         this.httpClient = httpClient;
         this.url = url;
     }
 
-    @Override public String getByGetMethod() throws Exception {
+    @Override
+    public String getByGetMethod() throws Exception {
         final HttpRequestBase httpGetRequest = new HttpGet(this.url);
 
         HttpResponse httpResponse = null;
@@ -62,9 +62,10 @@ public class IlluminatiSwitchHttpImpl implements IlluminatiSwitchHttp<String> {
             HttpEntity entity = httpResponse.getEntity();
             try {
                 return EntityUtils.toString(entity);
-            } catch (IOException ignore) {}
+            } catch (IOException ignore) {
+            }
         }
 
-        throw new Exception("check the value in the Http Response body. ("+responseData+")");
+        throw new Exception("check the value in the Http Response body. (" + responseData + ")");
     }
 }

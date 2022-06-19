@@ -16,10 +16,9 @@
 
 package me.phoboslabs.illuminati.elasticsearch.infra.param.mapping;
 
-import me.phoboslabs.illuminati.common.dto.enums.MappingType;
-
 import java.util.HashMap;
 import java.util.Map;
+import me.phoboslabs.illuminati.common.dto.enums.MappingType;
 
 public class EsIndexMappingBuilder {
 
@@ -29,25 +28,25 @@ public class EsIndexMappingBuilder {
     private final static String PROPERTIES_KEY = "properties";
     private final static String MAPPINGS_KEY = "mappings";
 
-    private EsIndexMappingBuilder () {
+    private EsIndexMappingBuilder() {
         this.esIndexMapping = new EsIndexMapping();
     }
 
-    public static EsIndexMappingBuilder Builder () {
+    public static EsIndexMappingBuilder Builder() {
         return new EsIndexMappingBuilder();
     }
 
-    public EsIndexMappingBuilder setEsDataType (String esDataType) {
+    public EsIndexMappingBuilder setEsDataType(String esDataType) {
         this.esDataType = esDataType;
         return this;
     }
 
-    public EsIndexMappingBuilder setMapping (String rootField, String field, MappingType mappingType) {
+    public EsIndexMappingBuilder setMapping(String rootField, String field, MappingType mappingType) {
         this.esIndexMapping.setMappingIndexByField(rootField, field, mappingType.getMappingType());
         return this;
     }
 
-    public Map<String, Object> build () {
+    public Map<String, Object> build() {
         Map<String, Object> propertiesMap = new HashMap<>();
         propertiesMap.put(PROPERTIES_KEY, this.esIndexMapping.getMappingIndex());
 

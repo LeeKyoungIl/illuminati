@@ -16,23 +16,23 @@
 
 package me.phoboslabs.illuminati.processor.executor.impl;
 
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
+import me.phoboslabs.illuminati.common.util.SystemUtil;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
 import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
 import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
-import me.phoboslabs.illuminati.processor.infra.simple.impl.SimpleInfraTemplateImpl;
-import me.phoboslabs.illuminati.processor.shutdown.ContainerSignalHandler;
-import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
-import me.phoboslabs.illuminati.processor.shutdown.handler.impl.IlluminatiShutdownHandler;
 import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
 import me.phoboslabs.illuminati.processor.infra.kafka.impl.KafkaInfraTemplateImpl;
 import me.phoboslabs.illuminati.processor.infra.rabbitmq.impl.RabbitmqInfraTemplateImpl;
+import me.phoboslabs.illuminati.processor.infra.simple.impl.SimpleInfraTemplateImpl;
 import me.phoboslabs.illuminati.processor.properties.IlluminatiPropertiesImpl;
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.shutdown.ContainerSignalHandler;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
+import me.phoboslabs.illuminati.processor.shutdown.handler.impl.IlluminatiShutdownHandler;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/01/2017.
@@ -60,13 +60,14 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     private IlluminatiShutdownHandler illuminatiShutdownHandler;
 
-    private IlluminatiTemplateExecutorImpl (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) throws Exception {
+    private IlluminatiTemplateExecutorImpl(IlluminatiBackupExecutorImpl illuminatiBackupExecutor) throws Exception {
         super(ILLUMINATI_ENQUEUING_TIMEOUT_MS, new IlluminatiBlockingQueue<>(ILLUMINATI_BAK_LOG, POLL_PER_COUNT));
         this.illuminatiBackupExecutor = illuminatiBackupExecutor;
         this.illuminatiTemplate = this.initIlluminatiTemplate();
     }
 
-    public static IlluminatiTemplateExecutorImpl getInstance (final IlluminatiBackupExecutorImpl illuminatiBackupExecutor) throws Exception {
+    public static IlluminatiTemplateExecutorImpl getInstance(IlluminatiBackupExecutorImpl illuminatiBackupExecutor)
+        throws Exception {
         if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
             synchronized (IlluminatiTemplateExecutorImpl.class) {
                 if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
@@ -78,7 +79,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         return ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
     }
 
-    @Override public synchronized IlluminatiTemplateExecutorImpl init () {
+    @Override
+    public synchronized IlluminatiTemplateExecutorImpl init() {
         if (this.illuminatiTemplate == null) {
             throw new RequiredValueException();
         }
@@ -96,21 +98,24 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public void connectionClose () {
+    public void connectionClose() {
         this.illuminatiTemplate.connectionClose();
     }
-    public void executeStopThread () {
+
+    public void executeStopThread() {
         this.illuminatiBackupExecutor.createStopThread();
     }
-    public int getBackupQueueSize () {
+
+    public int getBackupQueueSize() {
         return this.illuminatiBackupExecutor.getQueueSize();
     }
 
-    public void sendToIlluminati (final String jsonString) throws Exception, PublishMessageException {
+    public void sendToIlluminati(String jsonString) throws Exception, PublishMessageException {
         this.illuminatiTemplate.sendToIlluminati(jsonString);
     }
 
-    @Override public void sendToNextStep(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) throws Exception {
+    @Override
+    public void sendToNextStep(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) throws Exception {
         // something to check validation.. but.. now not exists.
         if (this.illuminatiTemplate == null) {
             ILLUMINATI_EXECUTOR_LOGGER.warn("ILLUMINATI_TEMPLATE is must not null.");
@@ -129,9 +134,12 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
     /**
      * only execute at debug
+     *
      * @param illuminatiTemplateInterfaceModelImpl - input parameter data model
      */
-    @Override public void sendToNextStepByDebug (final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) throws Exception {
+    @Override
+    public void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl)
+        throws Exception {
         if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             return;
         }
@@ -144,33 +152,35 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
         try {
             Thread.sleep(5000);
-        } catch (InterruptedException ignore) {}
+        } catch (InterruptedException ignore) {
+        }
     }
 
     // ################################################################################################################
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private void addShutdownHook () {
-       Runtime.getRuntime().addShutdownHook(new ContainerSignalHandler(new IlluminatiShutdownHandler(this)));
+    private void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new ContainerSignalHandler(new IlluminatiShutdownHandler(this)));
     }
 
-    private IlluminatiInfraTemplate initIlluminatiTemplate () throws Exception {
-        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,  "illuminati", "broker", "simple");
+    private IlluminatiInfraTemplate initIlluminatiTemplate() throws Exception {
+        final String illuminatiBroker = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,
+            "illuminati", "broker", "simple");
         IlluminatiInfraTemplate illuminatiInfraTemplate;
 
         try {
             switch (illuminatiBroker) {
-                case "kafka" :
+                case "kafka":
                     illuminatiInfraTemplate = new KafkaInfraTemplateImpl("illuminati");
                     break;
-                case "rabbitmq" :
+                case "rabbitmq":
                     illuminatiInfraTemplate = new RabbitmqInfraTemplateImpl("illuminati");
                     break;
-                case "simple" :
+                case "simple":
                     illuminatiInfraTemplate = new SimpleInfraTemplateImpl("illuminati");
                     break;
-                default :
+                default:
                     final String errorMessage = "Sorry. check your properties of Illuminati";
                     throw new Exception(errorMessage);
             }
@@ -189,7 +199,8 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         return illuminatiInfraTemplate;
     }
 
-    @Override protected void preventErrorOfSystemThread(final IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
+    @Override
+    protected void preventErrorOfSystemThread(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModelImpl) {
         if (this.illuminatiBackupExecutor == null) {
             return;
         }
@@ -197,7 +208,7 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         this.illuminatiBackupExecutor.addToQueue(illuminatiTemplateInterfaceModelImpl);
     }
 
-    private void createSystemThreadForIsCanConnectRemoteBroker () {
+    private void createSystemThreadForIsCanConnectRemoteBroker() {
         final Runnable runnableFirst = () -> {
             while (true) {
                 try {
@@ -205,9 +216,11 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
 
                     try {
                         Thread.sleep(BROKER_HEALTH_CHECK_TIME);
-                    } catch (InterruptedException ignore) {}
+                    } catch (InterruptedException ignore) {
+                    }
                 } catch (Exception e) {
-                    ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})", e.getMessage());
+                    ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})",
+                        e.getMessage());
                 }
             }
         };

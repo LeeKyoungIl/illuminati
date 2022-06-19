@@ -24,22 +24,26 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiStorageType;
 import me.phoboslabs.illuminati.common.properties.IlluminatiJsonCodeProperties;
 import me.phoboslabs.illuminati.common.util.PropertiesUtil;
-
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class IlluminatiConstant {
 
     public static final String PROFILES_PHASE = System.getProperty("spring.profiles.active");
 
-    public static final DateFormat DATE_FORMAT_EVENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+    public static final DateTimeFormatter DATE_FORMAT_EVENT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss",
+        Locale.getDefault());
 
     public static Map<String, Thread> SYSTEM_THREAD_MAP = new HashMap<>();
 
@@ -60,41 +64,47 @@ abstract public class IlluminatiConstant {
 
     static {
         PROPERTIES_KEYS = Collections.unmodifiableList(Arrays.asList("parentModuleName", "samplingRate"
-                , "broker", "clusterList", "virtualHost", "topic", "queueName"
-                , "userName", "password", "isAsync", "isCompression", "compressionType"
-                , "performance", "debug", "chaosBomber"));
+            , "broker", "clusterList", "virtualHost", "topic", "queueName"
+            , "userName", "password", "isAsync", "isCompression", "compressionType"
+            , "performance", "debug", "chaosBomber"));
 
         CONFIG_FILE_EXTENSTIONS = Collections.unmodifiableList(Arrays.asList("properties", "yml", "yaml"));
-        BASIC_CONFIG_FILES = Collections.unmodifiableList(Arrays.asList("application.properties", "application.yml", "application.yaml"));
+        BASIC_CONFIG_FILES = Collections.unmodifiableList(
+            Arrays.asList("application.properties", "application.yml", "application.yaml"));
     }
 
-    public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
-    public static final Gson ILLUMINATI_GSON_EXCLUDE_NULL_OBJ = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+    public static final Gson ILLUMINATI_GSON_OBJ = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation()
+        .excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+    public static final Gson ILLUMINATI_GSON_EXCLUDE_NULL_OBJ = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT)
+        .create();
 
     public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
     static {
         YAML_MAPPER.setVisibility(
-                YAML_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
-                        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-                        .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                        .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
+            YAML_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
         );
     }
 
     public final static ObjectMapper BASIC_OBJECT_MAPPER = new ObjectMapper();
 
     public final static ObjectMapper BASIC_OBJECT_STRING_MAPPER;
+
     static {
         BASIC_OBJECT_STRING_MAPPER = new ObjectMapper();
         BASIC_OBJECT_STRING_MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
         BASIC_OBJECT_STRING_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
-    public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(IlluminatiJsonCodeProperties.class, "jsonStatusCode");
+    public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(
+        IlluminatiJsonCodeProperties.class, "jsonStatusCode");
 
-    public final static Type TYPE_FOR_TYPE_TOKEN = new TypeToken<Map<String, Object>>(){}.getType();
+    public final static Type TYPE_FOR_TYPE_TOKEN = new TypeToken<Map<String, Object>>() {
+    }.getType();
 
     public final static String BASE_CHARSET = "UTF-8";
 

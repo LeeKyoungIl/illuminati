@@ -25,11 +25,11 @@ public enum CommunicationType {
 
     private final String type;
 
-    CommunicationType (String type) {
+    CommunicationType(String type) {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 }

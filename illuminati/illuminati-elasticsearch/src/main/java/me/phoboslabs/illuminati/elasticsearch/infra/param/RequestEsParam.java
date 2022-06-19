@@ -18,12 +18,11 @@ package me.phoboslabs.illuminati.elasticsearch.infra.param;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 
 public class RequestEsParam {
 
@@ -35,65 +34,68 @@ public class RequestEsParam {
     private Map<String, Object> query;
     @Expose
     private Map<String, String> sort = new HashMap<>();
-    @Expose @SerializedName("_source")
+    @Expose
+    @SerializedName("_source")
     private List<String> source;
     @Expose
     private Map<String, Object> aggs;
 
-    public static RequestEsParam Builder () {
+    public static RequestEsParam Builder() {
         return new RequestEsParam();
     }
-    public static RequestEsParam Builder (Map<String, Object> query) {
+
+    public static RequestEsParam Builder(Map<String, Object> query) {
         return new RequestEsParam(query);
     }
-    public static RequestEsParam Builder (Map<String, Object> query, List<String> source) {
+
+    public static RequestEsParam Builder(Map<String, Object> query, List<String> source) {
         return new RequestEsParam(query, source);
     }
 
-    private RequestEsParam () {
+    private RequestEsParam() {
 
     }
 
-    private RequestEsParam (Map<String, Object> query) {
+    private RequestEsParam(Map<String, Object> query) {
         this.query = query;
     }
 
-    private RequestEsParam (Map<String, Object> query, List<String> source) {
+    private RequestEsParam(Map<String, Object> query, List<String> source) {
         this.query = query;
         this.source = source;
     }
 
-    public RequestEsParam setSize (int size) {
+    public RequestEsParam setSize(int size) {
         this.size = size;
         return this;
     }
 
-    public RequestEsParam setFrom (int from) {
+    public RequestEsParam setFrom(int from) {
         this.from = from;
         return this;
     }
 
-    public RequestEsParam setSource (List<String> source) {
+    public RequestEsParam setSource(List<String> source) {
         this.source = source;
         return this;
     }
 
-    public RequestEsParam setSort (Map<String, String> sort) {
+    public RequestEsParam setSort(Map<String, String> sort) {
         this.sort = sort;
         return this;
     }
 
-    public RequestEsParam setGroupBy (Map<String, Object> groupBy) {
+    public RequestEsParam setGroupBy(Map<String, Object> groupBy) {
         this.aggs = groupBy;
         return this;
     }
 
-    public RequestEsParam setQuery (Map<String, Object> query) {
+    public RequestEsParam setQuery(Map<String, Object> query) {
         this.query = query;
         return this;
     }
 
-    private void resetFieldsWithoutAggregation () {
+    private void resetFieldsWithoutAggregation() {
         this.size = 0;
         this.from = 0;
 
@@ -105,11 +107,11 @@ public class RequestEsParam {
         this.resetSort();
     }
 
-    private void resetAggregationField () {
+    private void resetAggregationField() {
         this.aggs = new HashMap<>();
     }
 
-    private void resetSort () {
+    private void resetSort() {
         if (this.sort != null) {
             this.sort.clear();
         } else {
@@ -117,7 +119,7 @@ public class RequestEsParam {
         }
     }
 
-    public String build () {
+    public String build() {
         if (this.aggs != null) {
             this.resetFieldsWithoutAggregation();
         } else {

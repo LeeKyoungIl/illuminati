@@ -23,24 +23,24 @@ public class ValidationException extends RuntimeException {
 
     private Throwable cause;
 
-    public ValidationException () {
+    public ValidationException() {
         super();
     }
 
-    public ValidationException (String s) {
+    public ValidationException(String s) {
         super(s);
     }
 
-    public ValidationException (String s, Throwable throwable) {
+    public ValidationException(String s, Throwable throwable) {
         super(s);
         this.cause = throwable;
     }
 
-    public ValidationException (Throwable throwable) {
+    public ValidationException(Throwable throwable) {
         super(throwable);
     }
 
-    public Throwable getCause () {
+    public Throwable getCause() {
         return this.cause;
     }
 }

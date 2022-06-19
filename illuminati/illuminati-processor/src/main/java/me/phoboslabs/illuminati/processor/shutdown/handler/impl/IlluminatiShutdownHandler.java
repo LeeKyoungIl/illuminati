@@ -20,8 +20,8 @@ import me.phoboslabs.illuminati.processor.executor.impl.IlluminatiTemplateExecut
 import me.phoboslabs.illuminati.processor.shutdown.handler.ContainerShutdownHandler;
 
 /**
- *  - @marcus.moon provided me with an Graceful idea.
- *
+ * - @marcus.moon provided me with an Graceful idea.
+ * <p>
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
  */
 public class IlluminatiShutdownHandler implements ContainerShutdownHandler {
@@ -31,22 +31,25 @@ public class IlluminatiShutdownHandler implements ContainerShutdownHandler {
     // ################################################################################################################
     private IlluminatiTemplateExecutorImpl illuminatiTemplateExecutor;
 
-    public IlluminatiShutdownHandler (IlluminatiTemplateExecutorImpl illuminatiExecutor) {
+    public IlluminatiShutdownHandler(IlluminatiTemplateExecutorImpl illuminatiExecutor) {
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
-    @Override public boolean isRunning() {
+    @Override
+    public boolean isRunning() {
         int templateQueueSize = this.illuminatiTemplateExecutor.getQueueSize();
         int backupQueueSize = this.illuminatiTemplateExecutor.getBackupQueueSize();
 
         return templateQueueSize > 0 && backupQueueSize > 0;
     }
 
-    @Override public void stop() {
+    @Override
+    public void stop() {
         this.illuminatiTemplateExecutor.connectionClose();
     }
 
-    @Override public void stopSignal() {
+    @Override
+    public void stopSignal() {
         this.illuminatiTemplateExecutor.executeStopThread();
     }
 }

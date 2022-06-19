@@ -39,7 +39,7 @@ public class MongoConnectionProperties {
             throw new IllegalArgumentException("mongo info config file must not be null.");
         }
         return new StringBuilder().append("mongodb://").append(this.mongoInfo.hostAddress)
-                .append(":").append(this.mongoInfo.port).toString();
+            .append(":").append(this.mongoInfo.port).toString();
     }
 
     public static class MongoInfo {

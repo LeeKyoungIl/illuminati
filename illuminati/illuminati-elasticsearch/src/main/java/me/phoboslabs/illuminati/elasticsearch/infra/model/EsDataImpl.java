@@ -17,18 +17,17 @@
 package me.phoboslabs.illuminati.elasticsearch.infra.model;
 
 import com.google.gson.JsonSyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.xml.bind.ValidationException;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.util.ConvertUtil;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.ValidationException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class EsDataImpl implements EsData {
 
@@ -53,7 +52,7 @@ public class EsDataImpl implements EsData {
         RENAME_KEYS_FROM_ES.put("_source", "source");
     }
 
-    public EsDataImpl (final String sourceData) throws ValidationException {
+    public EsDataImpl(String sourceData) throws ValidationException {
         if (!StringObjectUtils.isValid(sourceData)) {
             throw new ValidationException("source data is a required value.");
         }
@@ -64,9 +63,11 @@ public class EsDataImpl implements EsData {
 
     private void initEsData() {
         try {
-            Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
+            Map<String, Object> resultMap = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.sourceData,
+                IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
             if (resultMap.containsKey(AGGREGATIONS_KEYWORD)) {
-                this.initAggregationData(ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(AGGREGATIONS_KEYWORD))));
+                this.initAggregationData(
+                    ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(AGGREGATIONS_KEYWORD))));
             } else {
                 this.initBasicSearchData(resultMap);
             }
@@ -75,21 +76,24 @@ public class EsDataImpl implements EsData {
         }
     }
 
-    @Override public List<Map<String, Object>> getEsDataList() {
+    @Override
+    public List<Map<String, Object>> getEsDataList() {
         return this.sourceList;
     }
 
-    private void initAggregationData (Map<String, Object> resultMap) {
-        for(String key : resultMap.keySet()) {
-            this.sourceList = (List<Map<String, Object>>) (ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(key)))).get(BUCKETS_KEYWORD);
+    private void initAggregationData(Map<String, Object> resultMap) {
+        for (String key : resultMap.keySet()) {
+            this.sourceList = (List<Map<String, Object>>) (ConvertUtil.castToMapOf(String.class, Object.class,
+                Map.class.cast(resultMap.get(key)))).get(BUCKETS_KEYWORD);
         }
     }
 
-    private void initBasicSearchData (Map<String, Object> resultMap) {
+    private void initBasicSearchData(Map<String, Object> resultMap) {
         if (!resultMap.containsKey(HITS_KEYWORD)) {
             return;
         }
-        Map<String, Object> bufEsDataMap = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(resultMap.get(HITS_KEYWORD)));
+        Map<String, Object> bufEsDataMap = ConvertUtil.castToMapOf(String.class, Object.class,
+            Map.class.cast(resultMap.get(HITS_KEYWORD)));
         if (!bufEsDataMap.containsKey(HITS_KEYWORD)) {
             return;
         }
@@ -102,7 +106,8 @@ public class EsDataImpl implements EsData {
         }
         this.sourceList = new ArrayList<>();
         for (Map<String, Object> map : mapList) {
-            Map<String, Object> source = ConvertUtil.castToMapOf(String.class, Object.class, Map.class.cast(map.get(SOURCE_KEYWORD)));
+            Map<String, Object> source = ConvertUtil.castToMapOf(String.class, Object.class,
+                Map.class.cast(map.get(SOURCE_KEYWORD)));
             if (map.containsKey(SOURCE_KEYWORD) && source.size() > 0) {
                 map.remove(SCORE_KEYWORD);
                 this.renameKeys(map);
@@ -111,7 +116,7 @@ public class EsDataImpl implements EsData {
         }
     }
 
-    private void renameKeys (Map<String, Object> targetMap) {
+    private void renameKeys(Map<String, Object> targetMap) {
         RENAME_KEYS_FROM_ES.keySet().stream().filter(targetMap::containsKey).forEach(key -> {
             targetMap.put(RENAME_KEYS_FROM_ES.get(key), targetMap.get(key));
             targetMap.remove(key);

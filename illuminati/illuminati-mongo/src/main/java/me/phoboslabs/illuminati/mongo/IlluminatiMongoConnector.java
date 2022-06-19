@@ -5,17 +5,15 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Collections;
 import me.phoboslabs.illuminati.common.util.NetworkUtil;
 import me.phoboslabs.illuminati.common.util.exception.ServerIsNotAvailableException;
 import me.phoboslabs.illuminati.mongo.properties.MongoConnectionProperties;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
-
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Collections;
 
 public class IlluminatiMongoConnector {
 
@@ -28,8 +26,8 @@ public class IlluminatiMongoConnector {
         final Yaml yaml = new Yaml(new Constructor(MongoConnectionProperties.class));
         yaml.setBeanAccess(BeanAccess.FIELD);
         final InputStream inputStream = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("config/mongo/mongo-"+profiles+".yml");
+            .getClassLoader()
+            .getResourceAsStream("config/mongo/mongo-" + profiles + ".yml");
 
         if (inputStream == null) {
             throw new IllegalArgumentException("config/mongo/mongo-{phase}.yml not exists.");
@@ -40,7 +38,8 @@ public class IlluminatiMongoConnector {
         try {
             this.mongoConnectionProperties.getMongoInfo().validateUserAuthInfo();
             this.existUserAuthInfo = true;
-        } catch (IllegalArgumentException ignore) {}
+        } catch (IllegalArgumentException ignore) {
+        }
     }
 
     public boolean isExistUserAuthInfo() {
@@ -67,9 +66,9 @@ public class IlluminatiMongoConnector {
 
         ConnectionString connectionString = new ConnectionString(this.mongoConnectionProperties.getMongoConnectionURI());
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .credential(credential)
-                .build();
+            .applyConnectionString(connectionString)
+            .credential(credential)
+            .build();
 
         return MongoClients.create(mongoClientSettings);
     }

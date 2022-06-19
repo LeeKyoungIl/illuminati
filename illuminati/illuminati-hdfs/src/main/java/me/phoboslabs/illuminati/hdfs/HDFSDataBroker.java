@@ -16,6 +16,14 @@
 
 package me.phoboslabs.illuminati.hdfs;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import me.phoboslabs.illuminati.hdfs.vo.HDFSConnectionInfo;
 import me.phoboslabs.illuminati.hdfs.vo.PathInfo;
 import org.apache.commons.io.IOUtils;
@@ -27,27 +35,19 @@ import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 12/19/2019.
- *
- *  - It should be made of the Spring Bean or Singleton.
- *    example)
- *        * Singleton : HDFSDataBroker.getInstance({HDFSConnectionInfo.class});
- *        * Spring Bean :
- *          #@Bean
- *          public HDFSDataBroker hdfsDataBroker(HDFSConnectionInfo hdfsConnectionInfo) {
- *              return new HDFSDataBroker(hdfsConnectionInfo);
- *          }
+ * <p>
+ * - It should be made of the Spring Bean or Singleton. example) * Singleton :
+ * HDFSDataBroker.getInstance({HDFSConnectionInfo.class}); * Spring Bean : #@Bean public HDFSDataBroker
+ * hdfsDataBroker(HDFSConnectionInfo hdfsConnectionInfo) { return new HDFSDataBroker(hdfsConnectionInfo); }
  */
 public class HDFSDataBroker implements DataBroker {
 
     private final static Logger HDFS_PROCESSOR_LOGGER = LoggerFactory.getLogger(HDFSDataBroker.class);
 
     private static final class HDFSDataProcessorHolder {
+
         private static HDFSDataBroker INSTANCE_HOLDER;
 
         private static HDFSDataBroker getInstance(HDFSConnectionInfo hdfsConnectionInfo) {
@@ -100,7 +100,7 @@ public class HDFSDataBroker implements DataBroker {
     }
 
     @Override
-    public boolean addFile(final String source, final String dest, final boolean overwrite, final boolean withNewLine) {
+    public boolean addFile(String source, String dest, boolean overwrite, boolean withNewLine) {
         try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(dest, fileSystem);
             Path path = pathInfo.getPath();
@@ -135,7 +135,7 @@ public class HDFSDataBroker implements DataBroker {
 
     private final int bytePerOnce = 1024;
 
-    private boolean writeFileSystem(final FileInputStream fileInputStream, FSDataOutputStream out) {
+    private boolean writeFileSystem(FileInputStream fileInputStream, FSDataOutputStream out) {
         try (InputStream inputStream = new BufferedInputStream(fileInputStream)) {
             byte[] byteData = new byte[this.bytePerOnce];
             int numBytes = 0;
@@ -151,25 +151,25 @@ public class HDFSDataBroker implements DataBroker {
     }
 
     @Override
-    public String readFile(final String source) throws Exception {
+    public String readFile(String source) throws Exception {
         try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isNotExists()) {
-                throw new Exception("File is not exists. check this("+source+") location.");
+                throw new Exception("File is not exists. check this(" + source + ") location.");
             }
             return this.readFileSystem(fileSystem, pathInfo.getPath());
         } catch (Exception ex) {
-            final String errorMessage = "An error occurred reading of file system. ("+ex.toString()+")";
+            final String errorMessage = "An error occurred reading of file system. (" + ex.toString() + ")";
             HDFS_PROCESSOR_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }
     }
 
-    private String readFileSystem(final FileSystem fileSystem, final Path path) throws Exception {
+    private String readFileSystem(FileSystem fileSystem, Path path) throws Exception {
         try (FSDataInputStream in = fileSystem.open(path)) {
             return this.getStringFromFSDataInputStream(in);
         } catch (Exception ex) {
-            final String errorMessage = "An error occurred reading from file system. ("+ex.toString()+")";
+            final String errorMessage = "An error occurred reading from file system. (" + ex.toString() + ")";
             HDFS_PROCESSOR_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }
@@ -182,14 +182,14 @@ public class HDFSDataBroker implements DataBroker {
             IOUtils.copy(in, stringWriter, this.utf8CharsetString);
             return stringWriter.toString();
         } catch (Exception ex) {
-            final String errorMessage = "An error occurred processing of StringWriter. ("+ex.toString()+")";
+            final String errorMessage = "An error occurred processing of StringWriter. (" + ex.toString() + ")";
             HDFS_PROCESSOR_LOGGER.error(errorMessage);
             throw new Exception(errorMessage);
         }
     }
 
     @Override
-    public boolean deleteFile(final String source, boolean forceDelete) {
+    public boolean deleteFile(String source, boolean forceDelete) {
         try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isNotExists()) {
@@ -203,7 +203,7 @@ public class HDFSDataBroker implements DataBroker {
     }
 
     @Override
-    public boolean mkdir(final String source) {
+    public boolean mkdir(String source) {
         try (FileSystem fileSystem = FileSystem.get(URI.create(this.configuration.get(this.uriKey)), this.configuration)) {
             PathInfo pathInfo = this.checkPathAndGet(source, fileSystem);
             if (pathInfo.isExists()) {
@@ -221,7 +221,7 @@ public class HDFSDataBroker implements DataBroker {
         return this.configuration;
     }
 
-    private PathInfo checkPathAndGet(final String source, final FileSystem fileSystem) throws IOException {
+    private PathInfo checkPathAndGet(String source, FileSystem fileSystem) throws IOException {
         final Path path = new Path(source);
         final boolean fileExists = fileSystem.exists(path);
         if (!fileExists) {

@@ -16,12 +16,11 @@
 
 package me.phoboslabs.illuminati.processor.infra.h2.configuration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
@@ -35,13 +34,14 @@ public class H2ConnectionFactory {
 
     private final int connectionValidCheckTimeout = 1000;
 
-    public H2ConnectionFactory() {}
+    public H2ConnectionFactory() {
+    }
 
-    public Connection makeDBConnection(final String dbName) throws Exception {
+    public Connection makeDBConnection(String dbName) throws Exception {
         try {
             Class.forName(DB_DRIVER);
         } catch (ClassNotFoundException e) {
-            final String errorMessage = "H2 driver class not found. ("+ e +")";
+            final String errorMessage = "H2 driver class not found. (" + e + ")";
             this.h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         }
@@ -52,7 +52,7 @@ public class H2ConnectionFactory {
             dbConnection.setAutoCommit(true);
             return dbConnection;
         } catch (SQLException e) {
-            final String errorMessage = "Failed to create H2 connection. ("+ e +")";
+            final String errorMessage = "Failed to create H2 connection. (" + e + ")";
             this.h2ConnectionFactoryLogger.warn(errorMessage, e);
             throw new Exception(errorMessage);
         } finally {

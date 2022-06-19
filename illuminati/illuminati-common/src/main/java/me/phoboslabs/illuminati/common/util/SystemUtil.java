@@ -16,17 +16,22 @@
 
 package me.phoboslabs.illuminati.common.util;
 
+import com.sun.management.OperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import javax.servlet.http.HttpServletRequest;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiTransactionIdType;
-import com.sun.management.OperatingSystemMXBean;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.management.ManagementFactory;
-import java.text.DecimalFormat;
-import java.util.*;
 
 public class SystemUtil {
 
@@ -34,26 +39,26 @@ public class SystemUtil {
 
     private final static DecimalFormat DECIMAL_POINT = new DecimalFormat("#.###");
     private final static Runtime RUNTIME = Runtime.getRuntime();
-    private final static OperatingSystemMXBean M_BEAN = (com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean();
+    private final static OperatingSystemMXBean M_BEAN = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     private static final List<String> INCLUDE_JAVA_SYSTEM_PROPERTIES = Collections.unmodifiableList(Arrays.asList(
-            "user.timezone",
-            "user.country.format",
-            "user.country",
-            "java.home",
-            "user.language",
-            "file.encoding",
-            "catalina.home",
-            "PID"));
+        "user.timezone",
+        "user.country.format",
+        "user.country",
+        "java.home",
+        "user.language",
+        "file.encoding",
+        "catalina.home",
+        "PID"));
 
 
-    private static final int MEGA_BYTE = 1024*1024;
+    private static final int MEGA_BYTE = 1024 * 1024;
     private static final String JAVA_VM_PREFIX = "java.vm.";
 
-    public static Map<String, Object> getJvmInfo () {
+    public static Map<String, Object> getJvmInfo() {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
         final Properties javaSystemProperties = System.getProperties();
-        for (final String name : javaSystemProperties.stringPropertyNames()) {
+        for (String name : javaSystemProperties.stringPropertyNames()) {
             if (name.indexOf(JAVA_VM_PREFIX) > -1 || INCLUDE_JAVA_SYSTEM_PROPERTIES.contains(name)) {
                 try {
                     jvmInfo.put(StringObjectUtils.removeDotAndUpperCase(name), javaSystemProperties.getProperty(name));
@@ -66,7 +71,7 @@ public class SystemUtil {
         return jvmInfo;
     }
 
-    public static Map<String, Object> getJvmMemoryInfo () {
+    public static Map<String, Object> getJvmMemoryInfo() {
         final Map<String, Object> jvmInfo = new HashMap<String, Object>();
         jvmInfo.put("jvmUsedMemory", (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / MEGA_BYTE);
         jvmInfo.put("jvmFreeMemory", RUNTIME.freeMemory() / MEGA_BYTE);
@@ -78,19 +83,20 @@ public class SystemUtil {
         return jvmInfo;
     }
 
-    public static String generateTransactionIdByRequest (final HttpServletRequest request, final IlluminatiTransactionIdType illuminatiTransactionIdType) throws Exception {
+    public static String generateTransactionIdByRequest(HttpServletRequest request,
+        IlluminatiTransactionIdType illuminatiTransactionIdType) throws Exception {
         final String keyName = illuminatiTransactionIdType.getValue();
 
         String trxId = SystemUtil.getValueFromHeaderByKey(request, keyName);
         if (!StringObjectUtils.isValid(trxId) && request != null) {
             switch (illuminatiTransactionIdType) {
-                case ILLUMINATI_PROC_ID :
-                case ILLUMINATI_G_PROC_ID :
+                case ILLUMINATI_PROC_ID:
+                case ILLUMINATI_G_PROC_ID:
                     trxId = StringObjectUtils.generateId(new Date().getTime(), keyName);
                     request.setAttribute(keyName, trxId);
                     break;
 
-                default :
+                default:
                     break;
             }
         }
@@ -102,7 +108,7 @@ public class SystemUtil {
         return trxId;
     }
 
-    public static String getValueFromHeaderByKey (final HttpServletRequest request, final String keyName) throws Exception {
+    public static String getValueFromHeaderByKey(HttpServletRequest request, String keyName) throws Exception {
         Object value = null;
 
         if (request != null && keyName != null) {
@@ -120,12 +126,12 @@ public class SystemUtil {
         return value.toString();
     }
 
-    private static boolean isThreadNameValidated(final String threadName) {
+    private static boolean isThreadNameValidated(String threadName) {
         return !StringUtils.isEmpty(threadName)
-                && !IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName);
+            && !IlluminatiConstant.SYSTEM_THREAD_MAP.containsKey(threadName);
     }
 
-    public static void createSystemThread (final Runnable runnable, final String threadName) {
+    public static void createSystemThread(Runnable runnable, String threadName) {
         if (runnable != null && isThreadNameValidated(threadName)) {
             final Thread newThread = new Thread(runnable);
 
@@ -151,27 +157,36 @@ public class SystemUtil {
         }
     }
 
-    public static void createThreadStatusDebugThread () {
+    public static void createThreadStatusDebugThread() {
         // debug illuminati buffer queue
         if (IlluminatiConstant.ILLUMINATI_DEBUG && SYSTEM_UTIL_LOGGER.isInfoEnabled()) {
             final Runnable threadCheckRunnable = () -> {
                 while (true) {
-                    for(Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()){
+                    for (Map.Entry<String, Thread> elem : IlluminatiConstant.SYSTEM_THREAD_MAP.entrySet()) {
                         SYSTEM_UTIL_LOGGER.info("");
-                        SYSTEM_UTIL_LOGGER.info("#########################################################################################################");
+                        SYSTEM_UTIL_LOGGER.info(
+                            "#########################################################################################################");
                         SYSTEM_UTIL_LOGGER.info("# debug info");
-                        SYSTEM_UTIL_LOGGER.info("# -------------------------------------------------------------------------------------------------------");
-                        SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_ACTIVATION : " + IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION);
-                        SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_VALUE : " + IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get());
-                        SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL : " + IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL + "ms");
-                        SYSTEM_UTIL_LOGGER.info("# threadName : "+elem.getKey()+", ThreadIsAlive : "+elem.getValue().isAlive()+", ThreadNowStatus : "+elem.getValue().getState().name());
-                        SYSTEM_UTIL_LOGGER.info("#########################################################################################################");
+                        SYSTEM_UTIL_LOGGER.info(
+                            "# -------------------------------------------------------------------------------------------------------");
+                        SYSTEM_UTIL_LOGGER.info(
+                            "# ILLUMINATI_SWITCH_ACTIVATION : " + IlluminatiConstant.ILLUMINATI_SWITCH_ACTIVATION);
+                        SYSTEM_UTIL_LOGGER.info(
+                            "# ILLUMINATI_SWITCH_VALUE : " + IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get());
+                        SYSTEM_UTIL_LOGGER.info("# ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL : "
+                            + IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL + "ms");
+                        SYSTEM_UTIL_LOGGER.info(
+                            "# threadName : " + elem.getKey() + ", ThreadIsAlive : " + elem.getValue().isAlive()
+                                + ", ThreadNowStatus : " + elem.getValue().getState().name());
+                        SYSTEM_UTIL_LOGGER.info(
+                            "#########################################################################################################");
                         SYSTEM_UTIL_LOGGER.info("");
                     }
 
                     try {
                         Thread.sleep(10000);
-                    } catch (InterruptedException ignore) {}
+                    } catch (InterruptedException ignore) {
+                    }
                 }
             };
 

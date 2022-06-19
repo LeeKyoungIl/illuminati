@@ -16,6 +16,9 @@
 
 package me.phoboslabs.illuminati.processor.infra.kafka.impl;
 
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Future;
 import me.phoboslabs.illuminati.common.util.NetworkUtil;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
@@ -25,13 +28,13 @@ import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
 import me.phoboslabs.illuminati.processor.infra.kafka.constants.KafkaConstant;
 import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Future;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 06/07/2017.
@@ -44,9 +47,9 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
     private final Properties kafkaProperties = new Properties();
 
-    private Producer<String,  byte[]> kafkaProducer;
+    private Producer<String, byte[]> kafkaProducer;
 
-    public KafkaInfraTemplateImpl(final String propertiesName) {
+    public KafkaInfraTemplateImpl(String propertiesName) {
         super(propertiesName);
 
         this.validateBasicTemplateClass();
@@ -59,7 +62,8 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.initPublisher();
     }
 
-    @Override protected void checkRequiredValuesForInit () {
+    @Override
+    protected void checkRequiredValuesForInit() {
         if (!StringObjectUtils.isValid(this.illuminatiProperties.getTopic())) {
             KAFKA_TEMPLATE_IMPL_LOGGER.error("error : topic variable is empty.");
             throw new ValidationException("error : topic variable is empty.");
@@ -71,14 +75,13 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     }
 
     /**
-     * ClusterList is for bootstrapping and the producer will only use it for getting metadata.
-     * the socket connections for sending the actual dto will be established based on the broker informaion returned
-     * is the metadata.
-     *
-     * The format is host1:port1,host2:port2,host3:port3 and the list can be a subset of brokers or a VIP pointing to
-     * a subset of brokers.
+     * ClusterList is for bootstrapping and the producer will only use it for getting metadata. the socket connections for sending
+     * the actual dto will be established based on the broker informaion returned is the metadata.
+     * <p>
+     * The format is host1:port1,host2:port2,host3:port3 and the list can be a subset of brokers or a VIP pointing to a subset of
+     * brokers.
      */
-    private void setBasicProperties () {
+    private void setBasicProperties() {
         this.setKafkaProperties(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.illuminatiProperties.getClusterList());
         this.setKafkaProperties(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KafkaConstant.VALUE_SERIALIZER_TYPE_BYTE);
         this.setKafkaProperties(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaConstant.VALUE_SERIALIZER_TYPE_BYTE);
@@ -87,7 +90,8 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.setKafkaProperties(ProducerConfig.METADATA_MAX_AGE_CONFIG, KafkaConstant.VALUE_METADATA_MAX_AGE_CONFIG);
         this.setKafkaProperties(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, KafkaConstant.VALUE_MAX_REQUEST_SIZE_CONFIG);
         this.setKafkaProperties(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, KafkaConstant.VALUE_RECONNECT_BACKOFF_MS_CONFIG);
-        this.setKafkaProperties(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, KafkaConstant.VALUE_MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION);
+        this.setKafkaProperties(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION,
+            KafkaConstant.VALUE_MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION);
         this.setKafkaProperties(ProducerConfig.BUFFER_MEMORY_CONFIG, KafkaConstant.VALUE_BUFFER_MEMORY_CONFIG);
         this.setKafkaProperties(ProducerConfig.SEND_BUFFER_CONFIG, KafkaConstant.VALUE_SEND_BUFFER_CONFIG);
         this.setKafkaProperties(ProducerConfig.RECEIVE_BUFFER_CONFIG, KafkaConstant.VALUE_RECEIVE_BUFFER_CONFIG);
@@ -95,17 +99,18 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         this.setKafkaProperties(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, KafkaConstant.VALUE_REQUEST_TIMEOUT_MS_CONFIG);
     }
 
-    private synchronized void initPublisher () {
+    private synchronized void initPublisher() {
         if (this.kafkaProducer == null) {
             this.kafkaProducer = new KafkaProducer<>(this.kafkaProperties);
         }
     }
 
-    private void setKafkaProperties (String key, Object value) {
+    private void setKafkaProperties(String key, Object value) {
         this.kafkaProperties.put(key, value);
     }
 
-    @Override protected void initProperties () {
+    @Override
+    protected void initProperties() {
         this.setBasicProperties();
         this.setPerformance();
         this.setIsAsync();
@@ -113,7 +118,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     }
 
     @Override
-    public void sendToIlluminati (String entity) throws Exception, PublishMessageException {
+    public void sendToIlluminati(String entity) throws Exception, PublishMessageException {
         if (this.kafkaProducer == null) {
             KAFKA_TEMPLATE_IMPL_LOGGER.error("kafka publisher not initialized.");
             throw new PublishMessageException("kafka publisher not initialized.");
@@ -121,7 +126,8 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
         try {
             this.sending = true;
-            final Future<RecordMetadata> sendResult = this.kafkaProducer.send(new ProducerRecord<>(this.topic, entity.getBytes()));
+            final Future<RecordMetadata> sendResult = this.kafkaProducer.send(
+                new ProducerRecord<>(this.topic, entity.getBytes()));
 
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, offset: " + sendResult.get().offset());
             KAFKA_TEMPLATE_IMPL_LOGGER.debug("Message produced, partition : " + sendResult.get().partition());
@@ -129,14 +135,15 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
 
             KAFKA_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker(kafka).");
         } catch (Exception ex) {
-            throw new PublishMessageException("failed to publish message : ("+ex.toString()+")");
+            throw new PublishMessageException("failed to publish message : (" + ex.toString() + ")");
         } finally {
             this.sending = false;
         }
     }
 
-    @Override public boolean canIConnect() {
-        if (this.kafkaProducer == null ) {
+    @Override
+    public boolean canIConnect() {
+        if (this.kafkaProducer == null) {
             return false;
         }
 
@@ -147,9 +154,11 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
                 for (String clusterAddress : clusterList) {
                     final String[] clusterAddressInfo = clusterAddress.split(":");
                     if (clusterAddressInfo.length != 2) {
-                        KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster({}). maybe typo in cluster address string.", clusterAddress);
+                        KAFKA_TEMPLATE_IMPL_LOGGER.error("check kafka cluster({}). maybe typo in cluster address string.",
+                            clusterAddress);
                     } else {
-                        boolean connectResult = NetworkUtil.canIConnect(clusterAddressInfo[0], Integer.parseInt(clusterAddressInfo[1]));
+                        boolean connectResult = NetworkUtil.canIConnect(clusterAddressInfo[0],
+                            Integer.parseInt(clusterAddressInfo[1]));
                         if (connectResult) {
                             canIConnectCount++;
                         } else {
@@ -188,7 +197,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         }
     }
 
-    private void setPerformance () {
+    private void setPerformance() {
         super.performanceType();
         this.setKafkaProperties(ProducerConfig.ACKS_CONFIG, this.performanceType.getType());
     }
@@ -196,7 +205,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
     /**
      * Kafka Always send to stream by Async.
      */
-    private void setIsAsync () {
+    private void setIsAsync() {
         super.isAsync();
 
         if (CommunicationType.ASYNC == this.communicationType) {
@@ -205,7 +214,7 @@ public class KafkaInfraTemplateImpl extends BasicTemplate implements IlluminatiI
         }
     }
 
-    private void setIsCompression () {
+    private void setIsCompression() {
         super.isCompression();
         this.setKafkaProperties(ProducerConfig.COMPRESSION_TYPE_CONFIG, this.compressionCodecType.getType());
     }
