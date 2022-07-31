@@ -4,10 +4,12 @@ import spock.lang.Specification
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class FileUtilTest extends Specification {
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private static final String TODAY = DATE_FORMAT.format(new Date());
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private static final String TODAY = LocalDateTime.now().format(DATE_FORMAT)
 
     def "directory exists check"() {
         setup:

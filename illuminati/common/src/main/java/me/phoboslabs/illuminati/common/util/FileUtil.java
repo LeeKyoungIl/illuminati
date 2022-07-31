@@ -21,6 +21,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -31,14 +33,14 @@ public class FileUtil {
 
     private final static Logger FILE_UTIL_LOGGER = LoggerFactory.getLogger(FileUtil.class);
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String ILLUMINATI_DATA_FILE_NAME_POSTFIX = "_illuminati_data.log";
 
     private static final String ENCODING = "utf-8";
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public static String generateFileName() {
-        return new StringBuilder().append(FileUtil.DATE_FORMAT.format(new Date()))
+        return new StringBuilder().append(LocalDateTime.now().format(DATE_FORMAT))
             .append(ILLUMINATI_DATA_FILE_NAME_POSTFIX).toString();
     }
 
