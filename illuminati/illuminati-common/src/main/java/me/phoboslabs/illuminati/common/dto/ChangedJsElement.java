@@ -17,19 +17,19 @@
 package me.phoboslabs.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
-import org.apache.commons.collections.CollectionUtils;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ChangedJsElement {
 
     private String illuminatiSProcId;
     private String illuminatiGProcId;
     private List<ChangedValue> changedValues;
-    @Expose private Map<Integer, ChangedValue> changedValueMap;
+    @Expose
+    private Map<Integer, ChangedValue> changedValueMap;
 
     public void setIlluminatiGProcId(String illuminatiGProcId) {
         this.illuminatiGProcId = illuminatiGProcId;
@@ -51,7 +51,7 @@ public class ChangedJsElement {
         return this.illuminatiSProcId;
     }
 
-    public void convertListToMap () {
+    public void convertListToMap() {
         if (CollectionUtils.isEmpty(this.changedValues)) {
             return;
         }
@@ -61,7 +61,7 @@ public class ChangedJsElement {
         }
 
         IntStream.range(0, this.changedValues.size())
-                .forEach(i -> this.changedValueMap.put(i, this.changedValues.get(i)));
+            .forEach(i -> this.changedValueMap.put(i, this.changedValues.get(i)));
 
         this.changedValues = null;
     }

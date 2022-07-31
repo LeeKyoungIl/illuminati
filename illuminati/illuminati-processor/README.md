@@ -3,12 +3,14 @@
 # illuminati-processor is core module of illuminati
 
 # supported message queues
- * RabbitMQ
- * Kafka
+
+* RabbitMQ
+* Kafka
 
 ## add to Maven Dependency
+
     * Maven
-    
+
 ```java
 
 <dependencies>
@@ -42,8 +44,9 @@
 ```
 
 ## add to Gradle Dependency
+
     * Gradle
-    
+
 ```java
 
 compile 'me.phoboslabs.illuminati:illuminati-annotation:1.2.4'
@@ -55,8 +58,9 @@ compile 'com.h2database:h2:1.4.196'
 ```
 
 ## add @Illuminati to Class
+
     * apply to all sub methods
-    
+
 ```java
 @Illuminati
 @RestController
@@ -78,8 +82,9 @@ public class ApiSampleController {
 ```
 
 ## add @Illuminati to Method
+
     * apply to all target method
-    
+
 ```java
 @RestController
 @RequestMapping(value = "/api/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -103,6 +108,7 @@ public class ApiSampleController {
 ## how to set to yml - illuminati-{phase}.yml or illuminati-{phase}.properties
 
 #### Simple Mode
+
 Simple Mode does not require a broker. <br>
 The Illuminati data is output as a console log to a log solution such as Log4j.
 
@@ -112,7 +118,6 @@ The Illuminati data is output as a console log to a log solution such as Log4j.
 #simple mode
 broker: simple
 ```
-
 
 #### rabbitmq
 
@@ -133,6 +138,7 @@ debug: false
 ```
 
 #### kafka
+
 ```yml
 #kafka
 broker: kafka
@@ -146,19 +152,28 @@ parentModuleName: apisample
 samplingRate: 50
 debug: false
 ```
+
 # Sampling rate function
- * you can find 'samplingRate' in configuration. it's   how much data should be collected during application working by the illuminati.
- * For example if you set '100'. it's collect all of data during application working. Or '30' it's collect 30 percent of all request data.
- * If you can set below 100. A little more performance than 100. But difference is not big. So I recommend set 100.   
+
+* you can find 'samplingRate' in configuration. it's how much data should be collected during
+  application working by the illuminati.
+* For example if you set '100'. it's collect all of data during application working. Or '30' it's
+  collect 30 percent of all request data.
+* If you can set below 100. A little more performance than 100. But difference is not big. So I
+  recommend set 100.
 
 # Chaos Bomber function
+
 ![image](https://user-images.githubusercontent.com/4101636/151666919-3e6e650f-b008-44c9-b0c6-001c8992c68f.png)
- * The Chaos Bomber is generate exception during work application by random. 
- * We must prepare for exception. And there should be no problem in application working.
- * This function is dangerous. so the Chaos Bomber is activate on debug mode.
- 
+
+* The Chaos Bomber is generate exception during work application by random.
+* We must prepare for exception. And there should be no problem in application working.
+* This function is dangerous. so the Chaos Bomber is activate on debug mode.
+
 ## Chaos Bomber must set separately for application.yml or illuminati.yml
- * illuminati.yml
+
+* illuminati.yml
+
 ```java
 # it is very dangerous function. it is activate when debug is true.
 # after using this function. you must have to re compile.(clean first)
@@ -166,13 +181,18 @@ chaosBomber: true
 ```
 
 ## Backup function
+
 ![image](https://user-images.githubusercontent.com/4101636/151666905-bb628926-b756-4961-9764-42db054b2ed2.png)
 
- * IF Your system has problems on sending to data to external broker. (network or broker shutdown or etc..) After backup the data, if the system is restored. resend the data.
- * Backup storage use H2database to prevent data loss. (Mysql, File, Embedded broker will be added)
- * IF YOU add an H2Database dependency to a project with the illuminati, Backup data by automatically, If When a back event occurs. after restore the data will deleted.
+* IF Your system has problems on sending to data to external broker. (network or broker shutdown or
+  etc..) After backup the data, if the system is restored. resend the data.
+* Backup storage use H2database to prevent data loss. (Mysql, File, Embedded broker will be added)
+* IF YOU add an H2Database dependency to a project with the illuminati, Backup data by
+  automatically, If When a back event occurs. after restore the data will deleted.
 
 # illuminati is easy to disable in your application.
- * if you already apply  illuminati in your application. if you want exclude it. it's hard to remove all illuminati in your code. 
- * so you do exclude the illuminati-processor in pom.xml or build.gradle. it will be solved easily.
- * must clean and compile re deploy.
+
+* if you already apply illuminati in your application. if you want exclude it. it's hard to remove
+  all illuminati in your code.
+* so you do exclude the illuminati-processor in pom.xml or build.gradle. it will be solved easily.
+* must clean and compile re deploy.

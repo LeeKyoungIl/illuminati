@@ -17,10 +17,18 @@
 package me.phoboslabs.illuminati.elasticsearch.infra;
 
 import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.StringJoiner;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.elasticsearch.model.IlluminatiEsModel;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseFactory;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpGet;
@@ -33,11 +41,6 @@ import org.apache.http.message.BasicStatusLine;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.StringJoiner;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
@@ -59,25 +62,27 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
     private final static String ES_SEARCH_KEYWORD = "search";
     private final static String ES_MAPPING_KEYWORD = "mapping";
 
-    public ESclientImpl (final HttpClient httpClient, final String esUrl, final int esPort) {
+    public ESclientImpl(HttpClient httpClient, String esUrl, int esPort) {
         this.httpClient = httpClient;
         this.esUrl = "http://".concat(esUrl).concat(":").concat(String.valueOf(esPort));
     }
 
-    public void setOptionalIndex (String optionalIndex) {
+    public void setOptionalIndex(String optionalIndex) {
         this.optionalIndex = optionalIndex;
     }
 
-    @Override public HttpResponse save (final IlluminatiEsModel entity) throws Exception {
+    @Override
+    public HttpResponse save(IlluminatiEsModel entity) throws Exception {
         try {
             this.esAuthString = entity.getEsAuthString();
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         this.checkIndexAndGenerate(entity);
         return this.saveToEs(entity.getEsUrl(this.esUrl + this.optionalIndex), entity.getJsonString());
     }
 
-    private HttpResponse saveToEs (String esRequestUrl, String jsonString) {
+    private HttpResponse saveToEs(String esRequestUrl, String jsonString) {
         final HttpRequestBase httpPutRequest = new HttpPut(esRequestUrl);
 
         if (StringObjectUtils.isValid(this.esAuthString)) {
@@ -99,14 +104,16 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         } finally {
             try {
                 httpPutRequest.releaseConnection();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         return httpResponse != null ? httpResponse
-                                    : this.getHttpResponseByData(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Sorry. something is wrong in Http Request.");
+            : this.getHttpResponseByData(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Sorry. something is wrong in Http Request.");
     }
 
-    @Override public String getDataByJson(final String jsonRequestString) throws Exception {
+    @Override
+    public String getDataByJson(String jsonRequestString) throws Exception {
         if (!StringObjectUtils.isValid(jsonRequestString)) {
             throw new Exception("jsonRequestString must not be null.");
         }
@@ -116,19 +123,20 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return this.requestToEsByHttp(httpPostRequest);
     }
 
-    @Override public String getMappingByIndex(final IlluminatiEsModel entity) throws Exception {
+    @Override
+    public String getMappingByIndex(IlluminatiEsModel entity) throws Exception {
         return this.requestToEsByHttp(new HttpGet(this.getRequestUrl(entity, ES_MAPPING_KEYWORD)));
     }
 
-    private String getRequestUrl (String command) {
+    private String getRequestUrl(String command) {
         return this.generateRequestUrl(this.getBaseEsHttpUrl(), command);
     }
 
-    private String getRequestUrl (final IlluminatiEsModel entity, String command) throws Exception {
+    private String getRequestUrl(IlluminatiEsModel entity, String command) throws Exception {
         return this.generateRequestUrl(entity.getBaseEsUrl(this.getBaseEsHttpUrl()), command);
     }
 
-    private String getBaseEsHttpUrl () {
+    private String getBaseEsHttpUrl() {
         StringJoiner baseEsHttpUrl = new StringJoiner("/").add(this.esUrl);
         if (StringObjectUtils.isValid(this.optionalIndex)) {
             baseEsHttpUrl.add(this.optionalIndex);
@@ -137,12 +145,12 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         return baseEsHttpUrl.toString();
     }
 
-    private String generateRequestUrl (String baseEsUrl, String command) {
+    private String generateRequestUrl(String baseEsUrl, String command) {
         return new StringBuilder(baseEsUrl).append("/_").append(command)
-                    .append("?").append(IS_RESPONSE_JSON).toString();
+            .append("?").append(IS_RESPONSE_JSON).toString();
     }
 
-    private String requestToEsByHttp (HttpRequestBase httpRequestBase) {
+    private String requestToEsByHttp(HttpRequestBase httpRequestBase) {
         HttpResponse httpResponse = null;
         try {
             httpResponse = this.httpClient.execute(httpRequestBase);
@@ -150,7 +158,8 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
             this.logger.error("Sorry. something is wrong in Http Request. ({})", e.toString(), e);
             try {
                 httpRequestBase.releaseConnection();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         try {
@@ -161,26 +170,29 @@ public class ESclientImpl implements EsClient<IlluminatiEsModel, HttpResponse> {
         } finally {
             try {
                 httpRequestBase.releaseConnection();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
     }
 
-    private HttpEntity getHttpEntity(final String entityString) {
+    private HttpEntity getHttpEntity(String entityString) {
         return EntityBuilder.create().setText(entityString).setContentType(ContentType.APPLICATION_JSON).build();
     }
 
-    private HttpResponse getHttpResponseByData (final int httpStatus, final String message) {
+    private HttpResponse getHttpResponseByData(int httpStatus, String message) {
         HttpResponseFactory factory = new DefaultHttpResponseFactory();
         return factory.newHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, httpStatus, message), null);
     }
 
-    private void checkIndexAndGenerate (final IlluminatiEsModel entity) throws Exception {
+    private void checkIndexAndGenerate(IlluminatiEsModel entity) throws Exception {
         try {
-            Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(this.getMappingByIndex(entity), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
+            Map<String, Object> indexMappingResult = IlluminatiConstant.ILLUMINATI_GSON_OBJ.fromJson(
+                this.getMappingByIndex(entity), IlluminatiConstant.TYPE_FOR_TYPE_TOKEN);
             if (indexMappingResult.containsKey(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY)
-                    && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE)) {
+                && indexMappingResult.get(INDEX_IS_NOT_EXISTS_STATUS_OF_KEY).equals(INDEX_IS_NOT_EXISTS_KEY_IS_STATUS_VALUE)) {
                 this.saveToEs(entity.getBaseEsUrl(this.esUrl), entity.getIndexMapping());
             }
-        } catch (JsonSyntaxException ignore) {}
+        } catch (JsonSyntaxException ignore) {
+        }
     }
 }

@@ -17,17 +17,14 @@
 package me.phoboslabs.illuminati.processor;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Properties;
 import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
-import java.util.Properties;
-
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/15/2018.
- *
- * Sample
- *  - chaosBomber: false (or true)
- *
+ * <p>
+ * Sample - chaosBomber: false (or true)
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiProcessorPropertiesImpl extends IlluminatiBaseProperties {
@@ -36,11 +33,11 @@ public class IlluminatiProcessorPropertiesImpl extends IlluminatiBaseProperties 
     // * after using this function. you must have to re compile.(clean first)
     private String chaosBomber;
 
-    public IlluminatiProcessorPropertiesImpl () {
+    public IlluminatiProcessorPropertiesImpl() {
         super();
     }
 
-    public IlluminatiProcessorPropertiesImpl (final Properties prop) {
+    public IlluminatiProcessorPropertiesImpl(Properties prop) {
         super(prop);
     }
 

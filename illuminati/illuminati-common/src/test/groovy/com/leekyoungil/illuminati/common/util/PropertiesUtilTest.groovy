@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class PropertiesUtilTest extends Specification {
 
-    def "read properties file in classpath" () {
+    def "read properties file in classpath"() {
         setup:
         String fileName = "test";
 

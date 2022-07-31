@@ -65,7 +65,8 @@ public class IlluminatiAdaptor {
         try {
             IlluminatiCommon.init();
 
-            final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "samplingRate", "20");
+            final String samplingRate = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,
+                "illuminati", "samplingRate", "20");
             SAMPLING_RATE = StringObjectUtils.isValid(samplingRate) ? Integer.parseInt(samplingRate) : SAMPLING_RATE;
 
             if (IlluminatiConstant.ILLUMINATI_BACKUP_ACTIVATION) {
@@ -79,8 +80,10 @@ public class IlluminatiAdaptor {
                 RESTORE_TEMPLATE_DATA = RestoreTemplateData.getInstance(ILLUMINATI_TEMPLATE_EXECUTOR).init();
             }
 
-            final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "broker", "unknown");
-            String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati", "clusterList", "unknown");
+            final String brokerType = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class,
+                "illuminati", "broker", "unknown");
+            String clusterList = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiPropertiesImpl.class, "illuminati",
+                "clusterList", "unknown");
             if (brokerType.equalsIgnoreCase("simple")) {
                 clusterList = "simple mode is don't need a cluster";
             }
@@ -95,7 +98,8 @@ public class IlluminatiAdaptor {
             System.out.println("# The illuminati is not activated.                             #");
             System.out.println("################################################################");
             System.out.println("");
-            System.out.println("The illuminati failed to initialize. check " + System.getProperty("spring.profiles.active") + " configuration files.");
+            System.out.println("The illuminati failed to initialize. check " + System.getProperty("spring.profiles.active")
+                + " configuration files.");
             System.out.println("");
             System.out.println("Check the following message. ↓↓");
             System.out.println(ex.toString());
@@ -114,7 +118,7 @@ public class IlluminatiAdaptor {
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public boolean checkIlluminatiIsIgnore(final ProceedingJoinPoint pjp) {
+    public boolean checkIlluminatiIsIgnore(ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati == null || illuminati.ignore();
@@ -123,7 +127,7 @@ public class IlluminatiAdaptor {
         return true;
     }
 
-    public Object executeIlluminati(final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+    public Object executeIlluminati(ProceedingJoinPoint pjp, HttpServletRequest request) throws Throwable {
         if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
@@ -144,7 +148,7 @@ public class IlluminatiAdaptor {
      * @return method execute result
      * @throws Throwable - error origin object
      */
-    public Object executeIlluminatiByChaosBomber(final ProceedingJoinPoint pjp, final HttpServletRequest request) throws Throwable {
+    public Object executeIlluminatiByChaosBomber(ProceedingJoinPoint pjp, HttpServletRequest request) throws Throwable {
         if (!this.checkConditionOfIlluminatiBasicExecution(pjp)) {
             return pjp.proceed();
         }
@@ -156,7 +160,7 @@ public class IlluminatiAdaptor {
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private boolean checkConditionOfIlluminatiBasicExecution(final ProceedingJoinPoint pjp) {
+    private boolean checkConditionOfIlluminatiBasicExecution(ProceedingJoinPoint pjp) {
         if (IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
             return false;
         }
@@ -167,7 +171,7 @@ public class IlluminatiAdaptor {
         return !this.isActivateIlluminatiSwitch() || this.isOnIlluminatiSwitch();
     }
 
-    private boolean checkIgnoreProfile(final ProceedingJoinPoint pjp) {
+    private boolean checkIgnoreProfile(ProceedingJoinPoint pjp) {
         boolean checkResult = false;
         try {
             Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
@@ -184,7 +188,7 @@ public class IlluminatiAdaptor {
         return checkResult;
     }
 
-    private Illuminati getIlluminatiAnnotation(final ProceedingJoinPoint pjp) {
+    private Illuminati getIlluminatiAnnotation(ProceedingJoinPoint pjp) {
         final MethodSignature signature = (MethodSignature) pjp.getSignature();
         final Method method = signature.getMethod();
 
@@ -197,7 +201,7 @@ public class IlluminatiAdaptor {
         return illuminati;
     }
 
-    private int getCustomSamplingRate(final ProceedingJoinPoint pjp) {
+    private int getCustomSamplingRate(ProceedingJoinPoint pjp) {
         try {
             final Illuminati illuminati = this.getIlluminatiAnnotation(pjp);
             return illuminati != null ? illuminati.samplingRate() : 0;
@@ -214,7 +218,7 @@ public class IlluminatiAdaptor {
         return IlluminatiConstant.ILLUMINATI_SWITCH_VALUE.get();
     }
 
-    private Object addToQueue(final ProceedingJoinPoint pjp, final HttpServletRequest request, final boolean isActiveChaosBomber) throws Throwable {
+    private Object addToQueue(ProceedingJoinPoint pjp, HttpServletRequest request, boolean isActiveChaosBomber) throws Throwable {
         final long start = System.currentTimeMillis();
         final Map<String, Object> originMethodExecute = getMethodExecuteResult(pjp);
         final long elapsedTime = System.currentTimeMillis() - start;
@@ -248,7 +252,7 @@ public class IlluminatiAdaptor {
         return originMethodExecute.get("result");
     }
 
-    private boolean checkSamplingRate(final ProceedingJoinPoint pjp) {
+    private boolean checkSamplingRate(ProceedingJoinPoint pjp) {
         int customSamplingRate = this.getCustomSamplingRate(pjp);
         if (customSamplingRate == 0) {
             customSamplingRate = SAMPLING_RATE;
@@ -266,7 +270,7 @@ public class IlluminatiAdaptor {
         return SAMPLING_RATE_CHECKER.getAndIncrement() <= customSamplingRate;
     }
 
-    private Map<String, Object> getMethodExecuteResult(final ProceedingJoinPoint pjp) {
+    private Map<String, Object> getMethodExecuteResult(ProceedingJoinPoint pjp) {
         final Map<String, Object> originMethodExecute = new HashMap<>();
 
         try {

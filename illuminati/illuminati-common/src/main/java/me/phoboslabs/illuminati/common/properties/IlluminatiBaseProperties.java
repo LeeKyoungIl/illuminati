@@ -16,22 +16,23 @@
 
 package me.phoboslabs.illuminati.common.properties;
 
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Properties;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
 public abstract class IlluminatiBaseProperties implements IlluminatiProperties, Serializable {
 
-    protected IlluminatiBaseProperties () {}
+    protected IlluminatiBaseProperties() {
+    }
 
-    protected IlluminatiBaseProperties (final Properties prop) {
+    protected IlluminatiBaseProperties(Properties prop) {
         this.setProperties(prop);
     }
 
-    @Override public void setProperties(final Properties prop) {
+    @Override
+    public void setProperties(Properties prop) {
         if (prop == null) {
             return;
         }
@@ -42,7 +43,8 @@ public abstract class IlluminatiBaseProperties implements IlluminatiProperties, 
                     final Field field = this.getClass().getDeclaredField(keys);
                     field.setAccessible(true);
                     field.set(this, value);
-                } catch (Exception ignored) { }
+                } catch (Exception ignored) {
+                }
             }
         }
     }

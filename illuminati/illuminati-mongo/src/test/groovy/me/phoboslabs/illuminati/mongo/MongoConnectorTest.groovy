@@ -99,7 +99,8 @@ class MongoConnectorTest extends Specification {
         result == true
     }
 
-    private static final Type ILLUMINATI_INTERFACE_MODEL_TYPE = new TypeToken<IlluminatiTemplateInterfaceModelImpl>() {}.getType();
+    private static final Type ILLUMINATI_INTERFACE_MODEL_TYPE = new TypeToken<IlluminatiTemplateInterfaceModelImpl>() {
+    }.getType();
 
     private IlluminatiTemplateInterfaceModelImpl getSampleIlluminatiModel(def fileName) {
         File file = new File(this.getClass().getClassLoader().getResource("sample/".concat(fileName)).getFile())

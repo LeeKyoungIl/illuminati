@@ -1,17 +1,20 @@
 # Project illuminati : illuminati-hdfs
 
 ## illuminati-hdfs is helping in saving data to HDFS.
+
 * This module provides a must-have function of data saving to HDFS.
 
 ## functions.
- * addFile
- * readFile
- * deleteFile
- * mkdir
-     
-## add to Maven Dependency 
+
+* addFile
+* readFile
+* deleteFile
+* mkdir
+
+## add to Maven Dependency
+
     * Maven
-    
+
 ```java
 
 <dependency>
@@ -23,8 +26,9 @@
 ```
 
 ## add to Gradle Dependency
+
     * Gradle
-    
+
 ```java
 
 compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.15'
@@ -33,7 +37,7 @@ compile 'me.phoboslabs.illuminati:illuminati-hdfs:0.1.15'
 ## Example
 
 Add properties to '/resources/hdfs/connection-local.properties'
- 
+
 ```properties
 hdfs.connection.uri: your HDFS namenode address
 hdfs.connection.port: your HDFS namenode port

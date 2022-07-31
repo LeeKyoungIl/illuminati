@@ -23,11 +23,13 @@ public class IlluminatiBackupInterfaceModelImpl implements IlluminatiInterfaceMo
 
     private IlluminatiInterfaceType illuminatiInterfaceType;
 
-    @Override public IlluminatiInterfaceType getInterfaceType() {
+    @Override
+    public IlluminatiInterfaceType getInterfaceType() {
         return this.illuminatiInterfaceType;
     }
 
-    @Override public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) {
+    @Override
+    public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) {
         this.illuminatiInterfaceType = illuminatiInterfaceType;
     }
 }

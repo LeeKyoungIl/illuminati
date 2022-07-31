@@ -40,7 +40,7 @@ public class RequiredValueException extends RuntimeException {
         super(throwable);
     }
 
-    public Throwable getCause () {
+    public Throwable getCause() {
         return this.cause;
     }
 }

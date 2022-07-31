@@ -16,10 +16,9 @@
 
 package me.phoboslabs.illuminati.elasticsearch.infra.param.mapping;
 
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-
 import java.util.HashMap;
 import java.util.Map;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
 public class EsIndexMapping {
 
@@ -30,10 +29,10 @@ public class EsIndexMapping {
     private final static String FIELD_DATE_KEY = "fielddata";
     private final static String PROPERTIES_KEY = "properties";
 
-    public EsIndexMapping () {
+    public EsIndexMapping() {
     }
 
-    public void setMappingIndexByField (String rootField, final String field, final String type) {
+    public void setMappingIndexByField(String rootField, String field, String type) {
         rootField = StringObjectUtils.convertFirstLetterToLowerlize(rootField);
         Map<String, Object> fieldTypeMap = new HashMap<>();
         fieldTypeMap.put(TYPE_KEY, type);
@@ -58,7 +57,7 @@ public class EsIndexMapping {
         this.rootMappingIndex.put(rootField, targetMap);
     }
 
-    public Map<String, Map<String, Object>> getMappingIndex () {
+    public Map<String, Map<String, Object>> getMappingIndex() {
         return this.rootMappingIndex;
     }
 }

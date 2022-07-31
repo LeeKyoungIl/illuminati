@@ -24,13 +24,13 @@ import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
  */
 public interface IlluminatiExecutor<T extends IlluminatiInterfaceModel> {
 
-    IlluminatiExecutor init () throws RequiredValueException;
+    IlluminatiExecutor init() throws RequiredValueException;
 
-    void addToQueue (final T t);
+    void addToQueue(T t);
 
-    T deQueue () throws Exception;
+    T deQueue() throws Exception;
 
-    void sendToNextStep (final T t) throws Exception;
+    void sendToNextStep(T t) throws Exception;
 
     int getQueueSize();
 }

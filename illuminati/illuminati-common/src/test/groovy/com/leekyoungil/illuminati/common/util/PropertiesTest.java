@@ -9,7 +9,7 @@ public class PropertiesTest extends IlluminatiBaseProperties {
 
     private List<String> test;
 
-    public PropertiesTest () {
+    public PropertiesTest() {
     }
 
     public PropertiesTest(Properties prop) {

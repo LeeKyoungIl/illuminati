@@ -23,34 +23,36 @@ public enum EsQueryType {
 
     private String matchType;
 
-    EsQueryType (String matchType) {
+    EsQueryType(String matchType) {
         this.matchType = matchType;
     }
 
-    public String getMatchType () {
+    public String getMatchType() {
         return this.matchType;
     }
 
-    public static EsQueryType getMatchType (final String matchType) throws Exception {
+    public static EsQueryType getMatchType(String matchType) throws Exception {
         switch (matchType) {
-            case "match" :
+            case "match":
                 return EsQueryType.MATCH;
-            case "match_all" :
+            case "match_all":
                 return EsQueryType.MATCH_ALL;
-            case "term" :
+            case "term":
                 return EsQueryType.TERM;
             default:
                 throw new Exception("matchType must not be null.");
         }
     }
 
-    public static String getMatchText () {
+    public static String getMatchText() {
         return EsQueryType.MATCH.name().toLowerCase();
     }
-    public static String getMatchAllText () {
+
+    public static String getMatchAllText() {
         return EsQueryType.MATCH_ALL.name().toLowerCase();
     }
-    public static String getTermText () {
+
+    public static String getTermText() {
         return EsQueryType.TERM.name().toLowerCase();
     }
 }

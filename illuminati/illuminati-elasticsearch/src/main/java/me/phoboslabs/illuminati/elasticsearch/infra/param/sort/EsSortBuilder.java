@@ -16,10 +16,9 @@
 
 package me.phoboslabs.illuminati.elasticsearch.infra.param.sort;
 
+import java.util.Map;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import me.phoboslabs.illuminati.elasticsearch.infra.enums.EsOrderType;
-
-import java.util.Map;
 
 public class EsSortBuilder {
 
@@ -29,11 +28,11 @@ public class EsSortBuilder {
         return new EsSortBuilder();
     }
 
-    private EsSortBuilder () {
+    private EsSortBuilder() {
 
     }
 
-    public EsSortBuilder setSort (EsOrderType orderType, String key) {
+    public EsSortBuilder setSort(EsOrderType orderType, String key) {
         String orderByString = orderType.getOrderType();
 
         if (StringObjectUtils.isValid(orderByString)) {
@@ -43,7 +42,7 @@ public class EsSortBuilder {
         return this;
     }
 
-    public Map<String, String> build () {
+    public Map<String, String> build() {
         return this.esSort.getSort();
     }
 }

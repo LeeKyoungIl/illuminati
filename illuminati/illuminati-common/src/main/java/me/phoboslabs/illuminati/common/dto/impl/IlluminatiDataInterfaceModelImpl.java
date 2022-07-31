@@ -16,6 +16,10 @@
 
 package me.phoboslabs.illuminati.common.dto.impl;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.ChangedJsElement;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
@@ -27,11 +31,6 @@ import me.phoboslabs.illuminati.common.util.SystemUtil;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceModel {
 
@@ -56,7 +55,8 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
     private final static String OUTPUT_RESULT_STRING_KEY_NAME = "resultString";
     private final static String OUTPUT_RESULT_OBJECT_KEY_NAME = "resultObject";
 
-    private IlluminatiDataInterfaceModelImpl (HttpServletRequest request, MethodSignature signature, Object[] args, long elapsedTime, Map<String, Object> resultMap) {
+    private IlluminatiDataInterfaceModelImpl(HttpServletRequest request, MethodSignature signature, Object[] args,
+        long elapsedTime, Map<String, Object> resultMap) {
         this.signature = signature;
         this.args = args;
         this.elapsedTime = elapsedTime;
@@ -65,32 +65,41 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
         this.initDataFromHttpRequest(request);
     }
 
-    public static IlluminatiDataInterfaceModelImpl Builder (final HttpServletRequest request, final MethodSignature signature, final Object[] args, final long elapsedTime, final Map<String, Object> resultMap) {
+    public static IlluminatiDataInterfaceModelImpl Builder(HttpServletRequest request, MethodSignature signature, Object[] args,
+        long elapsedTime, Map<String, Object> resultMap) {
         return new IlluminatiDataInterfaceModelImpl(request, signature, args, elapsedTime, resultMap);
     }
 
-    private void initDataFromHttpRequest (final HttpServletRequest request) {
+    private void initDataFromHttpRequest(HttpServletRequest request) {
         this.requestHeaderModel = new RequestHeaderModel().setRequestInfo(request);
 
         try {
-            final String sProcId = SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID);
+            final String sProcId = SystemUtil.generateTransactionIdByRequest(request,
+                IlluminatiTransactionIdType.ILLUMINATI_S_PROC_ID);
             this.requestHeaderModel.setSessionTransactionId(sProcId);
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         try {
-            final String gProcId = SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID);
+            final String gProcId = SystemUtil.generateTransactionIdByRequest(request,
+                IlluminatiTransactionIdType.ILLUMINATI_G_PROC_ID);
             this.requestHeaderModel.setGlobalTransactionId(gProcId);
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         try {
-            final String procId = SystemUtil.generateTransactionIdByRequest(request, IlluminatiTransactionIdType.ILLUMINATI_PROC_ID);
+            final String procId = SystemUtil.generateTransactionIdByRequest(request,
+                IlluminatiTransactionIdType.ILLUMINATI_PROC_ID);
             this.requestHeaderModel.setTransactionId(procId);
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         try {
             this.illuminatiUniqueUserId = SystemUtil.getValueFromHeaderByKey(request, ILLUMINATI_UNIQUE_USER_ID_KEY);
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
         try {
             this.clientInfoMap = ConvertUtil.getClientInfoFromHttpRequest(request);
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         this.staticInfo = ConvertUtil.getStaticInfoFromHttpRequest(request);
         this.isActiveChaosBomber = ConvertUtil.getChaosBomberFromHttpRequest(request);
@@ -98,11 +107,13 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
         this.setChangedJsElement();
     }
 
-    private Map<String, Object> getOutputData (Map<String, Object> resultMap) {
+    private Map<String, Object> getOutputData(Map<String, Object> resultMap) {
         Map<String, Object> resultObjectMap = new HashMap<>();
         try {
-            final String jsonString = IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.toJson(resultMap.get(OUTPUT_RESULT_KEY_NAME));
-            resultObjectMap.put(OUTPUT_RESULT_OBJECT_KEY_NAME, IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.fromJson(jsonString, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN));
+            final String jsonString = IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.toJson(
+                resultMap.get(OUTPUT_RESULT_KEY_NAME));
+            resultObjectMap.put(OUTPUT_RESULT_OBJECT_KEY_NAME,
+                IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.fromJson(jsonString, IlluminatiConstant.TYPE_FOR_TYPE_TOKEN));
         } catch (Exception ignore) {
             resultObjectMap.put(OUTPUT_RESULT_STRING_KEY_NAME, resultMap);
         }
@@ -113,56 +124,64 @@ public class IlluminatiDataInterfaceModelImpl implements IlluminatiInterfaceMode
         return this.args != null && this.args.length > 0;
     }
 
-    private void setChangedJsElement () {
+    private void setChangedJsElement() {
         if (this.signature.getParameterTypes() != null) {
             Arrays.stream(this.signature.getParameterTypes())
-                .filter(paramType -> CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName()) && this.argsValidated())
+                .filter(paramType -> CHANGED_JS_ELEMENT_CLASS_SIMPLE_NAME.equalsIgnoreCase(paramType.getSimpleName())
+                    && this.argsValidated())
                 .forEach(paramType -> this.changedJsElement = (ChangedJsElement) this.args[0]);
         }
     }
 
-    public boolean isValid () {
+    public boolean isValid() {
         return this.requestHeaderModel != null && this.signature != null;
     }
 
-    public IlluminatiDataInterfaceModelImpl setPackageType (String packageType) {
+    public IlluminatiDataInterfaceModelImpl setPackageType(String packageType) {
         this.packageType = packageType;
         return this;
     }
 
-    public long getElapsedTime () {
+    public long getElapsedTime() {
         return this.elapsedTime;
     }
-    public Map<String, Object> getOutput () {
+
+    public Map<String, Object> getOutput() {
         return this.output;
     }
 
-    Object[] getParamValues () {
+    Object[] getParamValues() {
         return this.args;
     }
 
-    ChangedJsElement getChangedJsElement () {
+    ChangedJsElement getChangedJsElement() {
         return this.changedJsElement;
     }
 
-    String getPackageType () {
+    String getPackageType() {
         return this.packageType;
     }
-    MethodSignature getSignature () {
+
+    MethodSignature getSignature() {
         return this.signature;
     }
-    RequestHeaderModel getRequestHeaderModel () {
+
+    RequestHeaderModel getRequestHeaderModel() {
         return this.requestHeaderModel;
     }
+
     String getIlluminatiUniqueUserId() {
         return this.illuminatiUniqueUserId;
     }
+
     Map<String, String> getClientInfoMap() {
         return this.clientInfoMap;
     }
+
     Map<String, Object> getStaticInfo() {
         return this.staticInfo;
     }
+
     boolean isActiveChaosBomber() {
         return this.isActiveChaosBomber;
     }

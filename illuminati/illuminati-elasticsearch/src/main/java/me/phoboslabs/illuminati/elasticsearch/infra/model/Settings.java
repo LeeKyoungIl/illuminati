@@ -24,9 +24,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Settings {
 
-    @Expose @SerializedName("index.store.type") private String indexStoreType;
+    @Expose
+    @SerializedName("index.store.type")
+    private String indexStoreType;
 
-    public Settings (final String indexStoreType) {
+    public Settings(String indexStoreType) {
         this.indexStoreType = indexStoreType;
     }
 }

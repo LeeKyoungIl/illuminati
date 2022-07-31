@@ -17,39 +17,45 @@
 package me.phoboslabs.illuminati.common.dto;
 
 import com.google.gson.annotations.Expose;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Map;
 import me.phoboslabs.illuminati.common.dto.enums.MappingType;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Map;
-
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
- *
+ * <p>
  * get spring info is very expensive process. Because of this, it has to be executed only once.
  */
 public class ServerInfo {
 
     private static final Logger SERVER_INFO_LOGGER = LoggerFactory.getLogger(ServerInfo.class);
 
-    @Expose private String domain;
-    @Expose private int serverPort = 0;
+    @Expose
+    private String domain;
+    @Expose
+    private int serverPort = 0;
 
-    @Expose @GroupMapping(mappingType = MappingType.KEYWORD) private String hostName;
-    @Expose @GroupMapping(mappingType = MappingType.KEYWORD) private String serverIp;
+    @Expose
+    @GroupMapping(mappingType = MappingType.KEYWORD)
+    private String hostName;
+    @Expose
+    @GroupMapping(mappingType = MappingType.KEYWORD)
+    private String serverIp;
 
-    public ServerInfo () {}
+    public ServerInfo() {
+    }
 
-    public ServerInfo (final boolean init) {
+    public ServerInfo(boolean init) {
         if (init) {
             this.init();
         }
     }
 
-    private void init () {
+    private void init() {
         try {
             final InetAddress ip = InetAddress.getLocalHost();
 
@@ -64,18 +70,18 @@ public class ServerInfo {
         return this.serverIp;
     }
 
-    public boolean isAlreadySetServerDomainAndPort () {
+    public boolean isAlreadySetServerDomainAndPort() {
         return StringObjectUtils.isValid(this.domain) && this.serverPort > 0;
     }
 
     private final static String DOMAIN_KEYWORD = "domain";
     private final static String SERVER_PORT_KEYWORD = "serverPort";
 
-    private boolean isKeywordValidatedOnStaticInfo(final Map<String, Object> staticInfo, final String keyword) {
+    private boolean isKeywordValidatedOnStaticInfo(Map<String, Object> staticInfo, String keyword) {
         return staticInfo.containsKey(keyword) && staticInfo.get(keyword) != null;
     }
 
-    public void setStaticInfoFromRequest(final Map<String, Object> staticInfo) {
+    public void setStaticInfoFromRequest(Map<String, Object> staticInfo) {
         if (this.isKeywordValidatedOnStaticInfo(staticInfo, DOMAIN_KEYWORD)) {
             this.domain = (String) staticInfo.get(DOMAIN_KEYWORD);
         }

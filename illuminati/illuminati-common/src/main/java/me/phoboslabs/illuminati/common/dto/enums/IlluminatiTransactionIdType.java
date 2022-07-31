@@ -28,7 +28,7 @@ public enum IlluminatiTransactionIdType {
         this.value = value;
     }
 
-    public String getValue () {
+    public String getValue() {
         return this.value;
     }
 }

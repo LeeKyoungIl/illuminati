@@ -40,7 +40,7 @@ public class IlluminatiRestApiResult<T> {
         this.result = result;
     }
 
-    public void setCodeAndMessageOfResult (int code) {
+    public void setCodeAndMessageOfResult(int code) {
         this.code = code;
         this.message = IlluminatiConstant.JSON_STATUS_CODE.getMessage(code);
     }

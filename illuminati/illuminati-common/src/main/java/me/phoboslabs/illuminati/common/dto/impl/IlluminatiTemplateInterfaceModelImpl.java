@@ -17,36 +17,60 @@
 package me.phoboslabs.illuminati.common.dto.impl;
 
 import com.google.gson.annotations.Expose;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.dto.*;
+import me.phoboslabs.illuminati.common.dto.ChangedJsElement;
+import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.common.dto.RequestGeneralModel;
+import me.phoboslabs.illuminati.common.dto.RequestHeaderModel;
+import me.phoboslabs.illuminati.common.dto.ServerInfo;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.aspectj.lang.reflect.MethodSignature;
-
-import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
 public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterfaceModel {
 
-    @Expose private String parentModuleName;
-    @Expose private ServerInfo serverInfo;
-    @Expose private Map<String, Object> jvmInfo;
+    @Expose
+    private String parentModuleName;
+    @Expose
+    private ServerInfo serverInfo;
+    @Expose
+    private Map<String, Object> jvmInfo;
 
-    @Expose private String id;
-    @Expose private String illuminatiUniqueUserId;
-    @Expose private String packageType;
-    @Expose protected RequestGeneralModel general;
-    @Expose protected RequestHeaderModel header;
-    @Expose private ChangedJsElement changedJsElement;
-    @Expose private long elapsedTime;
-    @Expose private long timestamp;
-    @Expose private String logTime;
-    @Expose protected Map<String, Object> output;
+    @Expose
+    private String id;
+    @Expose
+    private String illuminatiUniqueUserId;
+    @Expose
+    private String packageType;
+    @Expose
+    protected RequestGeneralModel general;
+    @Expose
+    protected RequestHeaderModel header;
+    @Expose
+    private ChangedJsElement changedJsElement;
+    @Expose
+    private long elapsedTime;
+    @Expose
+    private long timestamp;
+    @Expose
+    private String logTime;
+    @Expose
+    protected Map<String, Object> output;
 
-    @Expose private boolean isActiveChaosBomber = false;
+    @Expose
+    private boolean isActiveChaosBomber = false;
 
     private Date localTime;
     private Object[] paramValues;
@@ -59,17 +83,20 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         TRANSACTION_IDS.add(ILLUMINATI_UNIQUE_USER_ID_KEY);
     }
 
-    public IlluminatiTemplateInterfaceModelImpl() {}
+    public IlluminatiTemplateInterfaceModelImpl() {
+    }
 
-    public IlluminatiTemplateInterfaceModelImpl(final IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
-        this.localTime = new Date();
+    public IlluminatiTemplateInterfaceModelImpl(IlluminatiDataInterfaceModelImpl illuminatiDataInterfaceModelImpl) {
+        LocalDateTime parsedLocalDateTime = LocalDateTime.now();
+
+        this.localTime = Date.from(parsedLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
         this.generateAggregateId();
 
         this.elapsedTime = illuminatiDataInterfaceModelImpl.getElapsedTime();
         this.output = illuminatiDataInterfaceModelImpl.getOutput();
 
         this.timestamp = localTime.getTime();
-        this.logTime = IlluminatiConstant.DATE_FORMAT_EVENT.format(localTime);
+        this.logTime = parsedLocalDateTime.format(IlluminatiConstant.DATE_FORMAT_EVENT);
         this.paramValues = illuminatiDataInterfaceModelImpl.getParamValues();
         this.changedJsElement = illuminatiDataInterfaceModelImpl.getChangedJsElement();
 
@@ -87,18 +114,18 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     // ### public methods                                                                                           ###
     // ################################################################################################################
 
-    public IlluminatiTemplateInterfaceModelImpl initBasicJvmInfo (final Map<String, Object> jvmInfo) {
+    public IlluminatiTemplateInterfaceModelImpl initBasicJvmInfo(Map<String, Object> jvmInfo) {
         this.jvmInfo = jvmInfo;
         return this;
     }
 
-    public IlluminatiTemplateInterfaceModelImpl initStaticInfo (final String parentModuleName, final ServerInfo serverInfo) {
-        this.parentModuleName= parentModuleName;
+    public IlluminatiTemplateInterfaceModelImpl initStaticInfo(String parentModuleName, ServerInfo serverInfo) {
+        this.parentModuleName = parentModuleName;
         this.serverInfo = serverInfo;
         return this;
     }
 
-    public IlluminatiTemplateInterfaceModelImpl addBasicJvmMemoryInfo (final Map<String, Object> jvmMemoryInfo) {
+    public IlluminatiTemplateInterfaceModelImpl addBasicJvmMemoryInfo(Map<String, Object> jvmMemoryInfo) {
         if (this.jvmInfo == null) {
             this.jvmInfo = new HashMap<>();
         }
@@ -108,21 +135,24 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         return this;
     }
 
-    public String getJsonString () {
+    public String getJsonString() {
         return IlluminatiConstant.ILLUMINATI_GSON_EXCLUDE_NULL_OBJ.toJson(this, IlluminatiTemplateInterfaceModelImpl.class);
     }
 
-    private boolean isEqualsGProcId(final String illuminatiGProcId) {
-        return StringObjectUtils.isValid(illuminatiGProcId) && (illuminatiGProcId.equals(this.changedJsElement.getIlluminatiGProcId()));
+    private boolean isEqualsGProcId(String illuminatiGProcId) {
+        return StringObjectUtils.isValid(illuminatiGProcId) && (illuminatiGProcId.equals(
+            this.changedJsElement.getIlluminatiGProcId()));
     }
 
-    private boolean isEqualsSProcId(final String illuminatiSProcId) {
-        return StringObjectUtils.isValid(illuminatiSProcId) && (illuminatiSProcId.equals(this.changedJsElement.getIlluminatiSProcId()));
+    private boolean isEqualsSProcId(String illuminatiSProcId) {
+        return StringObjectUtils.isValid(illuminatiSProcId) && (illuminatiSProcId.equals(
+            this.changedJsElement.getIlluminatiSProcId()));
     }
 
-    public IlluminatiTemplateInterfaceModelImpl setJavascriptUserAction () {
+    public IlluminatiTemplateInterfaceModelImpl setJavascriptUserAction() {
         if (this.changedJsElement != null
-                && this.isEqualsGProcId(this.header.getIlluminatiGProcId()) && this.isEqualsSProcId(this.header.getIlluminatiSProcId())) {
+            && this.isEqualsGProcId(this.header.getIlluminatiGProcId()) && this.isEqualsSProcId(
+            this.header.getIlluminatiSProcId())) {
             this.changedJsElement.convertListToMap();
         }
 
@@ -149,11 +179,11 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     // ### protected methods                                                                                        ###
     // ################################################################################################################
 
-    protected String getId () {
+    protected String getId() {
         return this.id;
     }
 
-    protected String getParentModuleName () {
+    protected String getParentModuleName() {
         return this.parentModuleName;
     }
 
@@ -161,17 +191,17 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
     // ### private methods                                                                                          ###
     // ################################################################################################################
 
-    private IlluminatiTemplateInterfaceModelImpl initReqHeaderInfo (final RequestHeaderModel requestHeaderModel) {
+    private IlluminatiTemplateInterfaceModelImpl initReqHeaderInfo(RequestHeaderModel requestHeaderModel) {
         this.header = requestHeaderModel;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl setPackageType (final String packageType) {
+    private IlluminatiTemplateInterfaceModelImpl setPackageType(String packageType) {
         this.packageType = packageType;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl loadClientInfo (final Map<String, String> clientInfoMap) {
+    private IlluminatiTemplateInterfaceModelImpl loadClientInfo(Map<String, String> clientInfoMap) {
         if (clientInfoMap == null) {
             return this;
         }
@@ -184,24 +214,24 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl staticInfo (final Map<String, Object> staticInfo) {
+    private IlluminatiTemplateInterfaceModelImpl staticInfo(Map<String, Object> staticInfo) {
         if (this.serverInfo != null && !this.serverInfo.isAlreadySetServerDomainAndPort()) {
             this.serverInfo.setStaticInfoFromRequest(staticInfo);
         }
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl isActiveChaosBomber (final boolean isActiveChaosBomber) {
+    private IlluminatiTemplateInterfaceModelImpl isActiveChaosBomber(boolean isActiveChaosBomber) {
         this.isActiveChaosBomber = isActiveChaosBomber;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl initUniqueUserId (final String illuminatiUniqueUserId) {
+    private IlluminatiTemplateInterfaceModelImpl initUniqueUserId(String illuminatiUniqueUserId) {
         this.illuminatiUniqueUserId = illuminatiUniqueUserId;
         return this;
     }
 
-    private IlluminatiTemplateInterfaceModelImpl checkAndSetTransactionIdFromPostBody (final String postBody) {
+    private IlluminatiTemplateInterfaceModelImpl checkAndSetTransactionIdFromPostBody(String postBody) {
         if (!StringObjectUtils.isValid(postBody)) {
             return this;
         }
@@ -213,30 +243,32 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         }
 
         Arrays.stream(postArrayData).map(postArrayDatum -> postArrayDatum.split("="))
-                .filter(postElementArrayData -> postElementArrayData.length == 2)
-                .<Consumer<? super String>>map(postElementArrayData -> keyValue -> {
-                    final String postElementKey = postElementArrayData[0];
-                    final String postElementValue = postElementArrayData[1];
-                    if (!keyValue.equals(postElementKey)) {
-                        return;
-                    }
-                    if (ILLUMINATI_GPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiGProcId())) {
-                        this.header.setGlobalTransactionId(postElementValue);
-                    } else if (ILLUMINATI_SPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiSProcId())) {
-                        this.header.setSessionTransactionId(postElementValue);
-                    } else if (ILLUMINATI_UNIQUE_USER_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.illuminatiUniqueUserId)) {
-                        this.illuminatiUniqueUserId = postElementValue;
-                    }
-        }).forEach(TRANSACTION_IDS::forEach);
+            .filter(postElementArrayData -> postElementArrayData.length == 2)
+            .<Consumer<? super String>>map(postElementArrayData -> keyValue -> {
+                final String postElementKey = postElementArrayData[0];
+                final String postElementValue = postElementArrayData[1];
+                if (!keyValue.equals(postElementKey)) {
+                    return;
+                }
+                if (ILLUMINATI_GPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(this.header.getIlluminatiGProcId())) {
+                    this.header.setGlobalTransactionId(postElementValue);
+                } else if (ILLUMINATI_SPROC_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(
+                    this.header.getIlluminatiSProcId())) {
+                    this.header.setSessionTransactionId(postElementValue);
+                } else if (ILLUMINATI_UNIQUE_USER_ID_KEY.equals(keyValue) && !StringObjectUtils.isValid(
+                    this.illuminatiUniqueUserId)) {
+                    this.illuminatiUniqueUserId = postElementValue;
+                }
+            }).forEach(TRANSACTION_IDS::forEach);
 
         return this;
     }
 
-    private void generateAggregateId () {
+    private void generateAggregateId() {
         this.id = StringObjectUtils.generateId(this.localTime.getTime(), null);
     }
 
-    private IlluminatiTemplateInterfaceModelImpl setMethod (final MethodSignature methodSignature) {
+    private IlluminatiTemplateInterfaceModelImpl setMethod(MethodSignature methodSignature) {
         if (this.general == null) {
             this.general = new RequestGeneralModel();
         }
@@ -244,11 +276,13 @@ public class IlluminatiTemplateInterfaceModelImpl implements IlluminatiInterface
         return this;
     }
 
-    @Override public IlluminatiInterfaceType getInterfaceType() throws Exception {
+    @Override
+    public IlluminatiInterfaceType getInterfaceType() throws Exception {
         throw new Exception("This feature is not available here.");
     }
 
-    @Override public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) throws Exception {
+    @Override
+    public void setIlluminatiInterfaceType(IlluminatiInterfaceType illuminatiInterfaceType) throws Exception {
         throw new Exception("This feature is not available here.");
     }
 }

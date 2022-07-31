@@ -16,12 +16,11 @@
 
 package me.phoboslabs.illuminati.annotation;
 
-import me.phoboslabs.illuminati.annotation.enums.PackageType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import me.phoboslabs.illuminati.annotation.enums.PackageType;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 18/07/2017.

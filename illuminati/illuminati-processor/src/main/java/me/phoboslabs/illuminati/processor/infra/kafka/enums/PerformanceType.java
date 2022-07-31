@@ -26,11 +26,11 @@ public enum PerformanceType {
 
     private String type;
 
-    PerformanceType (String type) {
+    PerformanceType(String type) {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 }

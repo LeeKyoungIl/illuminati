@@ -21,17 +21,17 @@ package me.phoboslabs.illuminati.elasticsearch.model;
  */
 public interface IlluminatiEsModel {
 
-    String getJsonString ();
+    String getJsonString();
 
-    String getEsUrl (String baseUrl) throws Exception;
+    String getEsUrl(String baseUrl) throws Exception;
 
-    String getBaseEsUrl (String baseUrl) throws Exception;
+    String getBaseEsUrl(String baseUrl) throws Exception;
 
-    void setEsUserAuth (String esUserName, String esUserPass);
+    void setEsUserAuth(String esUserName, String esUserPass);
 
-    boolean isSetUserAuth ();
+    boolean isSetUserAuth();
 
-    String getEsAuthString () throws Exception;
+    String getEsAuthString() throws Exception;
 
-    String getIndexMapping ();
+    String getIndexMapping();
 }

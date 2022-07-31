@@ -26,21 +26,21 @@ public enum BrokerType {
 
     private final String type;
 
-    BrokerType (String type) {
+    BrokerType(String type) {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 
     public static BrokerType getEnumType(String type) throws Exception {
         switch (type.toLowerCase()) {
-            case "rabbitmq" :
+            case "rabbitmq":
                 return RABBITMQ;
-            case "kafka" :
+            case "kafka":
                 return KAFKA;
-            default :
+            default:
                 throw new Exception(type + "is not support yet.");
         }
     }

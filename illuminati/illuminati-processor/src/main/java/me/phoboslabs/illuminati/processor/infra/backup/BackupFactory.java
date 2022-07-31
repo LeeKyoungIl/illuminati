@@ -16,22 +16,22 @@
 
 package me.phoboslabs.illuminati.processor.infra.backup;
 
-import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
-import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiStorageType;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
+import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor;
 
 public class BackupFactory {
 
     private static String DB_NAME = "illuminati-backup";
     private static String TABLE_NAME = "illuminati_backup";
 
-    public static DBExecutor getBackupInstance (IlluminatiStorageType illuminatiStorageType) throws Exception {
+    public static DBExecutor getBackupInstance(IlluminatiStorageType illuminatiStorageType) throws Exception {
         switch (illuminatiStorageType) {
-            case H2 :
+            case H2:
                 return H2Executor.getInstance(IlluminatiTemplateInterfaceModelImpl.class, DB_NAME, TABLE_NAME);
 
-            default :
+            default:
                 throw new Exception("Backup function is only supported by the H2 Database yet.");
         }
     }

@@ -27,11 +27,11 @@ public enum EsOrderType {
         this.orderType = orderType;
     }
 
-    public String getOrderType () {
+    public String getOrderType() {
         return this.orderType;
     }
 
-    public static EsOrderType getOrderType (final String orderType) {
+    public static EsOrderType getOrderType(String orderType) {
         return "asc".equalsIgnoreCase(orderType) ? EsOrderType.ASC : EsOrderType.DESC;
     }
 }

@@ -17,6 +17,12 @@
 package me.phoboslabs.illuminati.elasticsearch.model;
 
 import com.google.gson.annotations.Expose;
+import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.GroupMapping;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
@@ -35,29 +41,28 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 10/07/2017.
  */
 @EsDocument(indexName = "illuminati", type = "log", indexStoreType = EsIndexStoreType.FS, shards = 1, replicas = 0, refreshType = EsRefreshType.TRUE)
-public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiTemplateInterfaceModelImpl implements IlluminatiEsModel {
+public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiTemplateInterfaceModelImpl implements
+    IlluminatiEsModel {
 
     private final static Logger ES_CONSUMER_LOGGER = LoggerFactory.getLogger(IlluminatiEsTemplateInterfaceModelImpl.class);
 
     public final static UserAgentStringParser UA_PARSER = UADetectorServiceFactory.getResourceModuleParser();
 
-    @Expose private Settings settings;
-    @Expose private Map<String, String> postContentResultData;
+    @Expose
+    private Settings settings;
+    @Expose
+    private Map<String, String> postContentResultData;
 
-    @Expose private Map<String, String> clientBrower;
-    @Expose private Map<String, String> clientOs;
-    @Expose private String clientDevice;
+    @Expose
+    private Map<String, String> clientBrower;
+    @Expose
+    private Map<String, String> clientOs;
+    @Expose
+    private String clientDevice;
 
     private String esUserName;
     private String esUserPass;
@@ -71,7 +76,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         super();
     }
 
-    @Override public String getJsonString () {
+    @Override
+    public String getJsonString() {
         this.settings = new Settings(this.getEsDocumentAnnotation().indexStoreType().getType());
 
         this.setUserAgent();
@@ -80,7 +86,8 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(this);
     }
 
-    @Override public String getBaseEsUrl(final String baseUrl) throws Exception {
+    @Override
+    public String getBaseEsUrl(String baseUrl) throws Exception {
         if (!StringObjectUtils.isValid(baseUrl)) {
             final String errorMessage = "Sorry. baseUrl of Elasticsearch is required value.";
             ES_CONSUMER_LOGGER.error(errorMessage);
@@ -92,15 +99,17 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
 
             final String[] dateForIndex = IlluminatiConstant.DATE_FORMAT_EVENT.format(new Date()).split("T");
 
-            return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()).append("-").append(dateForIndex[0]).toString();
+            return new StringBuilder(baseUrl).append("/").append(esDocument.indexName()).append("-").append(dateForIndex[0])
+                .toString();
         } catch (Exception ex) {
-            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")";
+            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. (" + ex.toString() + ")";
             ES_CONSUMER_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }
 
-    @Override public String getEsUrl(final String baseUrl) throws Exception {
+    @Override
+    public String getEsUrl(String baseUrl) throws Exception {
         final String baseEsUrl = this.getBaseEsUrl(baseUrl);
         if (!StringObjectUtils.isValid(baseEsUrl)) {
             throw new Exception("baseEsUrl must not be null.");
@@ -110,31 +119,32 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             final EsDocument esDocument = this.getEsDocumentAnnotation();
 
             return new StringBuilder(baseEsUrl)
-                    .append("/")
-                    .append(esDocument.type())
-                    .append("/")
-                    .append(this.getId())
-                    .append("?refresh=")
-                    .append(esDocument.refreshType().getValue()).toString();
+                .append("/")
+                .append(esDocument.type())
+                .append("/")
+                .append(this.getId())
+                .append("?refresh=")
+                .append(esDocument.refreshType().getValue()).toString();
         } catch (Exception ex) {
-            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. ("+ex.toString()+")";
+            final String errorMessage = "Sorry. something is wrong in generated Elasticsearch url. (" + ex.toString() + ")";
             ES_CONSUMER_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }
 
-    @Override public void setEsUserAuth (String esUserName, String esUserPass) {
+    @Override
+    public void setEsUserAuth(String esUserName, String esUserPass) {
         if (StringObjectUtils.isValid(esUserName) && StringObjectUtils.isValid(esUserPass)) {
             this.esUserName = esUserName;
             this.esUserPass = esUserPass;
         }
     }
 
-    private EsDocument getEsDocumentAnnotation () {
+    private EsDocument getEsDocumentAnnotation() {
         return this.getClass().getAnnotation(EsDocument.class);
     }
 
-    private void setPostContentResultData () {
+    private void setPostContentResultData() {
         final String postContentBody = this.header.getPostContentBody();
 
         if (!StringObjectUtils.isValid(postContentBody)) {
@@ -160,7 +170,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         }
     }
 
-    private void setUserAgent () {
+    private void setUserAgent() {
         try {
             final String userAgent = this.header.getUserAgent();
 
@@ -178,7 +188,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         }
     }
 
-    private void setUserBrowser (final ReadableUserAgent agent) {
+    private void setUserBrowser(ReadableUserAgent agent) {
         this.clientBrower = new HashMap<>();
 
         this.clientBrower.put("browserType", agent.getType().getName());
@@ -193,7 +203,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         this.clientBrower.put("browserProducer", agent.getProducer());
     }
 
-    private void setUserOs (final ReadableUserAgent agent) {
+    private void setUserOs(ReadableUserAgent agent) {
         this.clientOs = new HashMap<>();
 
         final OperatingSystem os = agent.getOperatingSystem();
@@ -208,29 +218,33 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         this.clientOs.put("osVersionExtension", osVersion.getExtension());
     }
 
-    private void setUserDevice (final ReadableUserAgent agent) {
+    private void setUserDevice(ReadableUserAgent agent) {
         this.clientDevice = agent.getDeviceCategory().getName();
     }
 
-    @Override public boolean isSetUserAuth () {
+    @Override
+    public boolean isSetUserAuth() {
         return StringObjectUtils.isValid(this.esUserName) && StringObjectUtils.isValid(this.esUserPass);
     }
 
-    @Override public String getEsAuthString () throws Exception {
+    @Override
+    public String getEsAuthString() throws Exception {
         if (!this.isSetUserAuth()) {
             throw new Exception("Elasticsearch user auth not set.");
         }
         StringBuilder authInfo = new StringBuilder(this.esUserName).append(":").append(this.esUserPass);
 
-        byte[] credentials = Base64.encodeBase64(((authInfo.toString()).getBytes(Charset.forName(IlluminatiConstant.BASE_CHARSET))));
+        byte[] credentials = Base64.encodeBase64(
+            ((authInfo.toString()).getBytes(Charset.forName(IlluminatiConstant.BASE_CHARSET))));
         return new String(credentials, Charset.forName(IlluminatiConstant.BASE_CHARSET));
     }
 
-    @Override public String getIndexMapping () {
+    @Override
+    public String getIndexMapping() {
         return this.getGroupMappingAnnotation();
     }
 
-    private String getGroupMappingAnnotation () {
+    private String getGroupMappingAnnotation() {
         final EsDocument esDocument = this.getEsDocumentAnnotation();
 
         EsIndexMappingBuilder esIndexMappingBuilder = EsIndexMappingBuilder.Builder().setEsDataType(esDocument.type());
@@ -239,7 +253,7 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
         return IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(esIndexMappingBuilder.build());
     }
 
-    private void getMappingAnnotation (final Class<?> clazz, EsIndexMappingBuilder esIndexMappingBuilder) {
+    private void getMappingAnnotation(Class<?> clazz, EsIndexMappingBuilder esIndexMappingBuilder) {
         if (this.objectPackageName.equalsIgnoreCase(clazz.getName())) {
             return;
         }
@@ -249,12 +263,13 @@ public abstract class IlluminatiEsTemplateInterfaceModelImpl extends IlluminatiT
             if (className.contains(this.mappingTargetPackageName)) {
                 try {
                     this.getMappingAnnotation(Class.forName(className), esIndexMappingBuilder);
-                } catch (ClassNotFoundException ignored) {}
+                } catch (ClassNotFoundException ignored) {
+                }
             }
 
             if (field.getAnnotation(Expose.class) != null && field.getAnnotation(GroupMapping.class) != null) {
                 if (!this.mapPackageName.equalsIgnoreCase(className)
-                        && !this.listPackageName.equalsIgnoreCase(className)) {
+                    && !this.listPackageName.equalsIgnoreCase(className)) {
                     final GroupMapping annotatedOnField = field.getAnnotation(GroupMapping.class);
                     esIndexMappingBuilder.setMapping(clazz.getSimpleName(), field.getName(), annotatedOnField.mappingType());
                 }

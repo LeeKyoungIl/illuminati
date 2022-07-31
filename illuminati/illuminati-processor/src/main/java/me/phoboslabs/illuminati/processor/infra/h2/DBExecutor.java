@@ -16,20 +16,19 @@
 
 package me.phoboslabs.illuminati.processor.infra.h2;
 
-import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
-
 import java.util.List;
 import java.util.Map;
+import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 
 public interface DBExecutor<T> {
 
-    void appendByJsonString (IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData);
+    void appendByJsonString(IlluminatiInterfaceType illuminatiInterfaceType, String jsonStringData);
 
-    List<T> getDataByList (boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
+    List<T> getDataByList(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
 
-    Map<Integer, T> getDataByMap (boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
+    Map<Integer, T> getDataByMap(boolean isPaging, boolean isAfterDelete, int from, int size) throws Exception;
 
-    void deleteById (int id);
+    void deleteById(int id);
 
-    int getCount () throws Exception;
+    int getCount() throws Exception;
 }

@@ -17,11 +17,10 @@
 package me.phoboslabs.illuminati.switcher.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Properties;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-
-import java.util.Properties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiSwitchPropertiesImpl extends IlluminatiBaseProperties {
@@ -29,11 +28,11 @@ public class IlluminatiSwitchPropertiesImpl extends IlluminatiBaseProperties {
     private String illuminatiSwitchValueURL;
     private String illuminatiSwitchValueURLCheckInterval;
 
-    public IlluminatiSwitchPropertiesImpl () {
+    public IlluminatiSwitchPropertiesImpl() {
         super();
     }
 
-    public IlluminatiSwitchPropertiesImpl (final Properties prop) {
+    public IlluminatiSwitchPropertiesImpl(Properties prop) {
         super(prop);
     }
 
@@ -43,7 +42,7 @@ public class IlluminatiSwitchPropertiesImpl extends IlluminatiBaseProperties {
 
     public String getIlluminatiSwitchValueURLCheckInterval() {
         return StringObjectUtils.isValid(this.illuminatiSwitchValueURLCheckInterval)
-                ? this.illuminatiSwitchValueURLCheckInterval
-                : IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
+            ? this.illuminatiSwitchValueURLCheckInterval
+            : IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
     }
 }

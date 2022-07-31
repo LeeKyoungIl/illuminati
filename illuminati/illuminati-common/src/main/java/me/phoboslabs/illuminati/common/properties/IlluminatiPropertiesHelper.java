@@ -16,12 +16,11 @@
 
 package me.phoboslabs.illuminati.common.properties;
 
+import java.lang.reflect.Method;
 import me.phoboslabs.illuminati.common.util.PropertiesUtil;
 import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
 
 public class IlluminatiPropertiesHelper {
 
@@ -47,7 +46,8 @@ public class IlluminatiPropertiesHelper {
         return isIlluminatiSwitcherActive;
     }
 
-    public static String getPropertiesValueByKey(final Class<? extends IlluminatiProperties> clazz, final String configPropertiesFileName, final String key, final String defaultValue) {
+    public static String getPropertiesValueByKey(Class<? extends IlluminatiProperties> clazz, String configPropertiesFileName,
+        String key, String defaultValue) {
         final IlluminatiProperties illuminatiProperties = PropertiesUtil.getIlluminatiProperties(clazz, configPropertiesFileName);
         String propertiesValue = null;
 

@@ -23,21 +23,21 @@ public enum TableDDLType {
 
     private final String type;
 
-    TableDDLType (String type) {
+    TableDDLType(String type) {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 
     public static TableDDLType getEnumType(String type) throws Exception {
         switch (type.toLowerCase()) {
-            case "create" :
+            case "create":
                 return CREATE;
-            case "drop" :
+            case "drop":
                 return DROP;
-            default :
+            default:
                 throw new Exception(type + " is not support yet.");
         }
     }

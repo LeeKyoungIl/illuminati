@@ -29,21 +29,21 @@ public enum IlluminatiStorageType {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 
-    public static IlluminatiStorageType getEnumType(final String type) throws Exception {
+    public static IlluminatiStorageType getEnumType(String type) throws Exception {
         switch (type) {
-            case "org.h2.Driver" :
+            case "org.h2.Driver":
                 return H2;
-            case "mysql" :
+            case "mysql":
                 return MYSQL;
-            case "file" :
+            case "file":
                 return FILE;
-            case "broker" :
+            case "broker":
                 return BROKER;
-            default :
+            default:
                 throw new Exception(type + " is not support yet.");
         }
     }

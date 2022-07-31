@@ -21,5 +21,5 @@ import java.util.Map;
 
 public interface EsData {
 
-    List<Map<String, Object>> getEsDataList ();
+    List<Map<String, Object>> getEsDataList();
 }

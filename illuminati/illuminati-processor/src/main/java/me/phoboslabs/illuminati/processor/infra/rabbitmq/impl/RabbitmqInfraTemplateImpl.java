@@ -16,21 +16,13 @@
 
 package me.phoboslabs.illuminati.processor.infra.rabbitmq.impl;
 
-import me.phoboslabs.illuminati.processor.exception.CommunicationException;
-import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
-import me.phoboslabs.illuminati.processor.exception.ValidationException;
-import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
-import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
-import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Address;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultSocketConfigurator;
 import com.rabbitmq.client.impl.nio.NioParams;
-import me.phoboslabs.illuminati.processor.infra.rabbitmq.constants.RabbitmqConstant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -39,6 +31,17 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
+import me.phoboslabs.illuminati.processor.exception.CommunicationException;
+import me.phoboslabs.illuminati.processor.exception.PublishMessageException;
+import me.phoboslabs.illuminati.processor.exception.ValidationException;
+import me.phoboslabs.illuminati.processor.infra.IlluminatiInfraTemplate;
+import me.phoboslabs.illuminati.processor.infra.common.BasicTemplate;
+import me.phoboslabs.illuminati.processor.infra.kafka.enums.CommunicationType;
+import me.phoboslabs.illuminati.processor.infra.rabbitmq.constants.RabbitmqConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 11/07/2017.
@@ -54,7 +57,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
     private Connection amqpConnection;
     private Channel amqpChannel;
 
-    public RabbitmqInfraTemplateImpl(final String propertiesName) throws Exception {
+    public RabbitmqInfraTemplateImpl(String propertiesName) throws Exception {
         super(propertiesName);
 
         this.checkRequiredValuesForInit();
@@ -63,7 +66,8 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         this.createConnection(this.setBasicProperties());
     }
 
-    @Override protected void checkRequiredValuesForInit () {
+    @Override
+    protected void checkRequiredValuesForInit() {
         this.validateBasicTemplateClass();
 
         if (!StringObjectUtils.isValid(this.illuminatiProperties.getVirtualHost())) {
@@ -77,27 +81,31 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         }
     }
 
-    @Override protected void initProperties () throws Exception {
+    @Override
+    protected void initProperties() throws Exception {
         this.setProps();
         this.isAsync();
         this.isCompression();
         this.setTopic();
     }
 
-    @Override public void connectionClose() {
+    @Override
+    public void connectionClose() {
         this.waitBeforeClosing();
 
         try {
             if (this.amqpChannel != null && this.amqpChannel.isOpen()) {
                 this.amqpChannel.close();
             }
-        } catch (Exception ignore) {}
+        } catch (Exception ignore) {
+        }
 
         try {
             if (this.amqpConnection != null && this.amqpConnection.isOpen()) {
                 this.amqpConnection.close();
             }
-        } catch (IOException ignore) {}
+        } catch (IOException ignore) {
+        }
     }
 
     private static final String RABBIT_BROKER_CLASS_NAME = "com.rabbitmq.client.ConnectionFactory";
@@ -111,21 +119,21 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         }
     }
 
-    private void setProps () {
+    private void setProps() {
         this.props = new BasicProperties.Builder()
-                        .contentEncoding(this.compressionCodec)
-                        .contentType(this.contentType)
-                        .deliveryMode(2)
-                        .priority(0)
-                        .build();
+            .contentEncoding(this.compressionCodec)
+            .contentType(this.contentType)
+            .deliveryMode(2)
+            .priority(0)
+            .build();
     }
 
     @Override
-    public void sendToIlluminati (final String entity) throws Exception, PublishMessageException {
+    public void sendToIlluminati(String entity) throws Exception, PublishMessageException {
         try {
             if (this.amqpConnection.isOpen() && this.amqpChannel.isOpen()) {
                 this.sending = true;
-                this.amqpChannel.basicPublish(this.topic,"", this.props, entity.getBytes());
+                this.amqpChannel.basicPublish(this.topic, "", this.props, entity.getBytes());
 
                 if (this.communicationType == CommunicationType.SYNC) {
                     this.amqpChannel.waitForConfirms(RabbitmqConstant.VALUE_CONNECTION_WAIT_CONFIRM_TIMEOUT_MS);
@@ -133,41 +141,48 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
 
                 if (IlluminatiConstant.ILLUMINATI_DEBUG) {
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                        "#########################################################################################################");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send log");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                        "## -------------------------------------------------------------------------------------------------------");
                     RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## successfully transferred dto to Illuminati broker.");
-                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+                    RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                        "#########################################################################################################");
                 }
 
                 RABBITMQ_TEMPLATE_IMPL_LOGGER.info("successfully transferred dto to Illuminati broker(rabbitMq).");
             }
         } catch (Exception ex) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                "#########################################################################################################");
             RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## rabbitMq send exception log");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## -------------------------------------------------------------------------------------------------------");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : "+ex.toString());
-            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("#########################################################################################################");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                "## -------------------------------------------------------------------------------------------------------");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                "## failed to publish message (don't worry about failed. illuminati will retry send again your dto.) : ");
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info("## messages : " + ex.toString());
+            RABBITMQ_TEMPLATE_IMPL_LOGGER.info(
+                "#########################################################################################################");
 
             throw new PublishMessageException("failed to publish message : " + ex.toString());
-        }
-        finally {
+        } finally {
             this.sending = false;
         }
     }
 
-    @Override public boolean canIConnect() {
+    @Override
+    public boolean canIConnect() {
         boolean canIConnect = this.amqpChannel != null && this.amqpChannel.isOpen()
-                                && this.amqpConnection != null && this.amqpConnection.isOpen();
+            && this.amqpConnection != null && this.amqpConnection.isOpen();
         if (!canIConnect) {
             this.connectionClose();
         }
         return canIConnect;
     }
 
-    private synchronized void createConnection (ConnectionFactory rabbitMQConnectionFactory) {
+    private synchronized void createConnection(ConnectionFactory rabbitMQConnectionFactory) {
         try {
             this.setConnectUserInfo(rabbitMQConnectionFactory);
             final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -192,7 +207,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         }
     }
 
-    private Channel createAmqpChannel () throws Exception {
+    private Channel createAmqpChannel() throws Exception {
         if (this.amqpConnection == null) {
             throw new Exception("AMQP_CONNECTION must not be null.");
         }
@@ -205,13 +220,13 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
             }
             return amqpChannel;
         } catch (IOException ex) {
-            final String errorMessage = "error : create connection channel has failed.. ("+ex.toString()+")";
+            final String errorMessage = "error : create connection channel has failed.. (" + ex.toString() + ")";
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error(errorMessage, ex);
             throw new Exception(errorMessage);
         }
     }
 
-    private List<Address> getClusterList () {
+    private List<Address> getClusterList() {
         final String clusterList = this.illuminatiProperties.getClusterList();
         if (!StringObjectUtils.isValid(clusterList)) {
             RABBITMQ_TEMPLATE_IMPL_LOGGER.error("error : cluster list is empty.");
@@ -240,13 +255,13 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         return clusterAddressList;
     }
 
-    private ConnectionFactory setBasicProperties () {
+    private ConnectionFactory setBasicProperties() {
         ConnectionFactory rabbitMQConnectionFactory = new ConnectionFactory();
 
         final NioParams nioParams = new NioParams()
-                .setNbIoThreads(1)
-                .setWriteEnqueuingTimeoutInMs(0)
-                .setWriteByteBufferSize(RabbitmqConstant.VALUE_SET_WRITE_BUFFER_SIZE);
+            .setNbIoThreads(1)
+            .setWriteEnqueuingTimeoutInMs(0)
+            .setWriteByteBufferSize(RabbitmqConstant.VALUE_SET_WRITE_BUFFER_SIZE);
 
         rabbitMQConnectionFactory.useNio();
         rabbitMQConnectionFactory.setNioParams(nioParams);
@@ -278,7 +293,7 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         return rabbitMQConnectionFactory;
     }
 
-    private void setTopic () throws Exception {
+    private void setTopic() throws Exception {
         if (StringObjectUtils.isValid(this.illuminatiProperties.getTopic())) {
             this.topic = this.illuminatiProperties.getTopic();
         } else {
@@ -288,9 +303,9 @@ public class RabbitmqInfraTemplateImpl extends BasicTemplate implements Illumina
         }
     }
 
-    private void setConnectUserInfo (ConnectionFactory rabbitMQConnectionFactory) {
+    private void setConnectUserInfo(ConnectionFactory rabbitMQConnectionFactory) {
         if (StringObjectUtils.isValid(this.illuminatiProperties.getUserName()) && StringObjectUtils
-                .isValid(this.illuminatiProperties.getPassword())) {
+            .isValid(this.illuminatiProperties.getPassword())) {
             rabbitMQConnectionFactory.setUsername(this.illuminatiProperties.getUserName());
             rabbitMQConnectionFactory.setPassword(this.illuminatiProperties.getPassword());
         }

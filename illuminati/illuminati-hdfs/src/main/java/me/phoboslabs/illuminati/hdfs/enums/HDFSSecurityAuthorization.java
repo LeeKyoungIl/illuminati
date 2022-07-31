@@ -23,7 +23,7 @@ public enum HDFSSecurityAuthorization {
 
     private final String isAuthorization;
 
-    HDFSSecurityAuthorization(final String isAuthorization) {
+    HDFSSecurityAuthorization(String isAuthorization) {
         this.isAuthorization = isAuthorization;
     }
 

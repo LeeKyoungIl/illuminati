@@ -16,21 +16,20 @@
 
 package me.phoboslabs.illuminati.processor.executor.impl;
 
-import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
-import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
-import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
-import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
-import me.phoboslabs.illuminati.processor.infra.backup.BackupFactory;
-import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
+import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
+import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
+import me.phoboslabs.illuminati.processor.infra.backup.BackupFactory;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
+import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import org.apache.commons.collections.CollectionUtils;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/05/2018.
@@ -59,7 +58,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         this.DBExecutor = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
     }
 
-    public static IlluminatiBackupExecutorImpl getInstance () throws Exception {
+    public static IlluminatiBackupExecutorImpl getInstance() throws Exception {
         if (ILLUMINATI_BACKUP_EXECUTOR_IMPL == null) {
             synchronized (IlluminatiBackupExecutorImpl.class) {
                 if (ILLUMINATI_BACKUP_EXECUTOR_IMPL == null) {
@@ -71,7 +70,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         return ILLUMINATI_BACKUP_EXECUTOR_IMPL;
     }
 
-    @Override public IlluminatiBackupExecutorImpl init() throws RequiredValueException {
+    @Override
+    public IlluminatiBackupExecutorImpl init() throws RequiredValueException {
         if (this.DBExecutor == null) {
             throw new RequiredValueException();
         }
@@ -80,8 +80,10 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         return this;
     }
 
-    @Override public IlluminatiTemplateInterfaceModelImpl deQueue() throws Exception {
-        List<IlluminatiTemplateInterfaceModelImpl> backupObjectList = illuminatiBlockingQueue.pollToList(ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+    @Override
+    public IlluminatiTemplateInterfaceModelImpl deQueue() throws Exception {
+        List<IlluminatiTemplateInterfaceModelImpl> backupObjectList = illuminatiBlockingQueue.pollToList(
+            ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         if (CollectionUtils.isEmpty(backupObjectList)) {
             throw new Exception("backupObjectList is empty.");
@@ -92,7 +94,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         throw new Exception("Backup Executor is not returned messages.");
     }
 
-    @Override public IlluminatiTemplateInterfaceModelImpl deQueueByDebug () throws Exception {
+    @Override
+    public IlluminatiTemplateInterfaceModelImpl deQueueByDebug() throws Exception {
         ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
@@ -108,7 +111,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         throw new Exception("Backup Executor is not returned messages.");
     }
 
-    @Override public void sendToNextStep(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
+    @Override
+    public void sendToNextStep(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
         if (illuminatiTemplateInterfaceModel == null) {
             ILLUMINATI_EXECUTOR_LOGGER.warn("data is not valid");
             return;
@@ -118,10 +122,12 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             return;
         }
         //## Save file
-        this.DBExecutor.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR, IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
+        this.DBExecutor.appendByJsonString(IlluminatiInterfaceType.TEMPLATE_EXECUTOR,
+            IlluminatiConstant.ILLUMINATI_GSON_OBJ.toJson(illuminatiTemplateInterfaceModel));
     }
 
-    @Override protected void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiBackupInterfaceModel) {
+    @Override
+    protected void sendToNextStepByDebug(IlluminatiTemplateInterfaceModelImpl illuminatiBackupInterfaceModel) {
         final long start = System.currentTimeMillis();
         //## Save file
         this.sendToNextStep(illuminatiBackupInterfaceModel);
@@ -129,7 +135,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of template queue sent is {} millisecond", elapsedTime);
     }
 
-    @Override protected void createSystemThread () {
+    @Override
+    protected void createSystemThread() {
         final Runnable runnableFirst = () -> {
             while (!IlluminatiGracefulShutdownChecker.getIlluminatiReadyToShutdown()) {
                 try {
@@ -143,7 +150,10 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
                 } finally {
                     try {
                         Thread.sleep(BACKUP_THREAD_SLEEP_TIME);
-                    } catch (InterruptedException ignore) {}
+                    } catch (InterruptedException ignore) {
+                        ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
         };
@@ -154,7 +164,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         this.createDebugThread();
     }
 
-    @Override protected void preventErrorOfSystemThread(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
+    @Override
+    protected void preventErrorOfSystemThread(IlluminatiTemplateInterfaceModelImpl illuminatiTemplateInterfaceModel) {
 
     }
 
@@ -163,7 +174,8 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
             while (getQueueSize() > 0) {
                 try {
                     deQueue();
-                } catch (Exception ignore) {}
+                } catch (Exception ignore) {
+                }
             }
         };
 

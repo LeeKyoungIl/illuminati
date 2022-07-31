@@ -23,7 +23,7 @@ public class PathInfo {
     private final Path path;
     private final boolean isExists;
 
-    public PathInfo(final Path path, final boolean isExists) {
+    public PathInfo(Path path, boolean isExists) {
         this.path = path;
         this.isExists = isExists;
     }

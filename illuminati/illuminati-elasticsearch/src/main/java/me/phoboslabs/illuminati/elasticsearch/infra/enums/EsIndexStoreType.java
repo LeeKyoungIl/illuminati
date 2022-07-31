@@ -28,23 +28,23 @@ public enum EsIndexStoreType {
 
     private final String type;
 
-    EsIndexStoreType (final String type) {
+    EsIndexStoreType(String type) {
         this.type = type;
     }
 
-    public String getType () {
+    public String getType() {
         return this.type;
     }
 
-    public static EsIndexStoreType getEnumType(final String type) throws Exception {
+    public static EsIndexStoreType getEnumType(String type) throws Exception {
         switch (type) {
-            case "fs" :
+            case "fs":
                 return FS;
-            case "simplefs" :
+            case "simplefs":
                 return SIMPLEFS;
-            case "niofs" :
+            case "niofs":
                 return NIOFS;
-            case "mmapfs" :
+            case "mmapfs":
                 return MMAPFS;
             default:
                 throw new Exception("check type value.");

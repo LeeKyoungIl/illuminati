@@ -16,13 +16,13 @@
 
 package me.phoboslabs.illuminati.switcher;
 
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.http.IlluminatiHttpClient;
+import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
+import me.phoboslabs.illuminati.common.util.SystemUtil;
 import me.phoboslabs.illuminati.switcher.http.IlluminatiSwitchHttp;
 import me.phoboslabs.illuminati.switcher.http.impl.IlluminatiSwitchHttpImpl;
 import me.phoboslabs.illuminati.switcher.properties.IlluminatiSwitchPropertiesImpl;
-import me.phoboslabs.illuminati.common.http.IlluminatiHttpClient;
-import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
-import me.phoboslabs.illuminati.common.properties.IlluminatiPropertiesHelper;
-import me.phoboslabs.illuminati.common.util.SystemUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +31,15 @@ public class IlluminatiSwitch {
 
     private static final Logger ILLUMINATI_SWITCH_LOGGER = LoggerFactory.getLogger(IlluminatiSwitch.class);
 
-    private final static String ILLUMINATI_SWITCH_VALUE_GIT_URL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, "illuminati", "illuminatiSwitchValueURL", null);
+    private final static String ILLUMINATI_SWITCH_VALUE_GIT_URL = IlluminatiPropertiesHelper.getPropertiesValueByKey(
+        IlluminatiSwitchPropertiesImpl.class, "illuminati", "illuminatiSwitchValueURL", null);
     private static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
 
     private static IlluminatiSwitchHttp ILLUMINATI_SWITCH_HTTP;
 
     static {
-        BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = IlluminatiPropertiesHelper.getPropertiesValueByKey(IlluminatiSwitchPropertiesImpl.class, "illuminati", "illuminatiSwitchValueURLCheckInterval", null);
+        BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = IlluminatiPropertiesHelper.getPropertiesValueByKey(
+            IlluminatiSwitchPropertiesImpl.class, "illuminati", "illuminatiSwitchValueURLCheckInterval", null);
 
         if (BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL == null) {
             BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = IlluminatiConstant.BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL;
@@ -47,7 +49,7 @@ public class IlluminatiSwitch {
         initIlluminatiSwitchThread();
     }
 
-    private static void initIlluminatiSwitchChecker () {
+    private static void initIlluminatiSwitchChecker() {
         if (StringUtils.isNotEmpty(ILLUMINATI_SWITCH_VALUE_GIT_URL)) {
             ILLUMINATI_SWITCH_HTTP = new IlluminatiSwitchHttpImpl(new IlluminatiHttpClient(), ILLUMINATI_SWITCH_VALUE_GIT_URL);
         } else {
@@ -72,14 +74,17 @@ public class IlluminatiSwitch {
 
                 try {
                     Thread.sleep(Long.parseLong(BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL));
-                } catch (InterruptedException ignore) {}
+                } catch (InterruptedException ignore) {
+                    ILLUMINATI_SWITCH_LOGGER.warn("Interrupted!!", ignore);
+                    Thread.currentThread().interrupt();
+                }
             }
         };
 
         SystemUtil.createSystemThread(runnable, "ILLUMINATI_SWITCH_THREAD");
     }
 
-    private static void setIlluminatiSwitchValue (Object result) throws Exception {
+    private static void setIlluminatiSwitchValue(Object result) throws Exception {
         if (result == null) {
             final String errorMessage = "check your 'git url value'";
             ILLUMINATI_SWITCH_LOGGER.debug(errorMessage);

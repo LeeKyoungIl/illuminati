@@ -41,7 +41,7 @@ public class CommunicationException extends RuntimeException {
         this.cause = throwable;
     }
 
-    public Throwable getCause () {
+    public Throwable getCause() {
         return this.cause;
     }
 }

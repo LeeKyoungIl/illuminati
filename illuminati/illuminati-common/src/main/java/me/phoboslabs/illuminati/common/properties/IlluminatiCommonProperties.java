@@ -17,9 +17,8 @@
 package me.phoboslabs.illuminati.common.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-
 import java.util.Properties;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
 /**
  * This class is used where 'IlluminatiPropertiesImpl' is not used.
@@ -29,15 +28,15 @@ public class IlluminatiCommonProperties extends IlluminatiBaseProperties {
 
     private String debug = "false";
 
-    public IlluminatiCommonProperties () {
+    public IlluminatiCommonProperties() {
         super();
     }
 
-    public IlluminatiCommonProperties (final Properties prop) {
+    public IlluminatiCommonProperties(Properties prop) {
         super(prop);
     }
 
-    public String getDebug () {
+    public String getDebug() {
         return StringObjectUtils.isValid(this.debug) ? this.debug : "false";
     }
 }

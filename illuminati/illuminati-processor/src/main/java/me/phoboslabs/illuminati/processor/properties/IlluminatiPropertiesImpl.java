@@ -17,32 +17,20 @@
 package me.phoboslabs.illuminati.processor.properties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;
-import me.phoboslabs.illuminati.common.util.StringObjectUtils;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import me.phoboslabs.illuminati.common.properties.IlluminatiBaseProperties;
+import me.phoboslabs.illuminati.common.util.StringObjectUtils;
 
 /**
  * Created by leekyoungil (leekyoungil@gmail.com) on 04/16/2018.
- *
- * Sample
- * - broker: rabbitmq
- * - clusterList: pi.leekyoungil.com:5672
- * - virtualHost: illuminatiPiDev
- * - topic: pi-dev-illuminati-exchange
- * - queueName: pi-dev-illuminati-exchange.illuminati
- * - userName: illuminati-dev
- * - password: yourpassword
- * - isAsync: true
- * - isCompression: true
- * - compressionType: zstd
- * - parentModuleName: apisample
- * - samplingRate: 100
- * - performance: 0 // it's only using when you choose kafka.
+ * <p>
+ * Sample - broker: rabbitmq - clusterList: pi.leekyoungil.com:5672 - virtualHost: illuminatiPiDev - topic:
+ * pi-dev-illuminati-exchange - queueName: pi-dev-illuminati-exchange.illuminati - userName: illuminati-dev - password:
+ * yourpassword - isAsync: true - isCompression: true - compressionType: zstd - parentModuleName: apisample - samplingRate: 100 -
+ * performance: 0 // it's only using when you choose kafka.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
@@ -64,11 +52,11 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
     private String performance;
     private String compressionType;
 
-    public IlluminatiPropertiesImpl () {
+    public IlluminatiPropertiesImpl() {
         super();
     }
 
-    public IlluminatiPropertiesImpl(final Properties prop) {
+    public IlluminatiPropertiesImpl(Properties prop) {
         super(prop);
     }
 
@@ -123,7 +111,7 @@ public class IlluminatiPropertiesImpl extends IlluminatiBaseProperties {
 
     public String getCompressionType() {
         return StringObjectUtils.isValid(this.compressionType)
-                && "true".equalsIgnoreCase(this.getIsCompression()) ? this.compressionType : "none";
+            && "true".equalsIgnoreCase(this.getIsCompression()) ? this.compressionType : "none";
     }
 
     public String getSamplingRate() {

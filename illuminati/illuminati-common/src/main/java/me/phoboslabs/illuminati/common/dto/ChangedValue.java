@@ -20,12 +20,18 @@ import com.google.gson.annotations.Expose;
 
 public class ChangedValue {
 
-    @Expose private String elementUniqueId;
-    @Expose private String elementType;
-    @Expose private String attributeName;
-    @Expose private String newData;
-    @Expose private String oldData;
-    @Expose private String index;
+    @Expose
+    private String elementUniqueId;
+    @Expose
+    private String elementType;
+    @Expose
+    private String attributeName;
+    @Expose
+    private String newData;
+    @Expose
+    private String oldData;
+    @Expose
+    private String index;
 
     public void setElementUniqueId(String elementUniqueId) {
         this.elementUniqueId = elementUniqueId;
