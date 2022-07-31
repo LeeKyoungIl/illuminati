@@ -41,7 +41,8 @@ public class ServerIsNotAvailableException extends RuntimeException {
         this.cause = throwable;
     }
 
-    public Throwable getCause() {
+    @Override
+    public synchronized Throwable getCause() {
         return this.cause;
     }
 }
