@@ -110,9 +110,7 @@ public class IlluminatiProcessor extends AbstractProcessor {
                     break outerloop;
                 }
 
-                if (!this.setGeneratedIlluminatiTemplate(pkg.toString())) {
-                    continue;
-                }
+                this.setGeneratedIlluminatiTemplate(pkg.toString());
 
                 try {
                     final JavaFileObject javaFile = this.filer.createSourceFile("IlluminatiPointcutGenerated");
