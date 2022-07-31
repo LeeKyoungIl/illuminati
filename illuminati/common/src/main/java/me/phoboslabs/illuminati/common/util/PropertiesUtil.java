@@ -129,12 +129,6 @@ public class PropertiesUtil {
                 final Properties prop = new Properties();
                 prop.load(input);
 
-                if (prop == null) {
-                    PROPERTIES_UTIL_LOGGER.debug(
-                        "Sorry, unable to convert properties file to Properties. (" + configPropertiesFileName + ")");
-                    return null;
-                }
-
                 try {
                     illuminatiProperties = clazz.newInstance();
                     illuminatiProperties.setProperties(prop);
