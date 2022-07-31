@@ -119,11 +119,11 @@ public class SystemUtil {
             }
         }
 
-        if (value != null) {
+        if (value == null) {
             throw new Exception("value must not be null. (you can ignore this message)");
+        } else {
+            return value.toString();
         }
-
-        return value.toString();
     }
 
     private static boolean isThreadNameValidated(String threadName) {
