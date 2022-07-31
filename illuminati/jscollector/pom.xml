@@ -16,7 +16,7 @@
   <version>0.5.19</version>
   <packaging>jar</packaging>
 
-  <name>illuminati-jscollector</name>
+  <name>jscollector</name>
   <description>Project illuminati jscollector client library.</description>
   <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-jscollector</url>
 

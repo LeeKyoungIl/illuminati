@@ -16,7 +16,7 @@
   <version>1.4.14</version>
   <packaging>jar</packaging>
 
-  <name>illuminati-common</name>
+  <name>common</name>
   <description>Project illuminati base common library.</description>
   <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-common</url>
 

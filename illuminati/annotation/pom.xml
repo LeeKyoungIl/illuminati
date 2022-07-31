@@ -16,7 +16,7 @@
   <version>1.2.4</version>
   <packaging>jar</packaging>
 
-  <name>illuminati-annotation</name>
+  <name>annotation</name>
   <description>Project illuminati base annotation.</description>
   <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-annotation</url>
 

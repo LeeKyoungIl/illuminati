@@ -15,7 +15,7 @@
   <version>0.1</version>
   <packaging>jar</packaging>
 
-  <name>illuminati-mongo</name>
+  <name>mongo</name>
   <description>Project illuminati mongo client library.</description>
   <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-mongo</url>
 
