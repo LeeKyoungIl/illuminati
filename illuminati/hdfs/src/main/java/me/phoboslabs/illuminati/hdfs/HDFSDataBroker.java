@@ -49,13 +49,17 @@ public class HDFSDataBroker implements DataBroker {
     private static final class HDFSDataProcessorHolder {
 
         private static HDFSDataBroker INSTANCE_HOLDER;
+        private static final Object LOCK_OBJ = new Object();
 
         private static HDFSDataBroker getInstance(HDFSConnectionInfo hdfsConnectionInfo) {
             if (INSTANCE_HOLDER == null) {
-                synchronized (INSTANCE_HOLDER) {
+                synchronized (LOCK_OBJ) {
                     if (INSTANCE_HOLDER != null) {
                         return INSTANCE_HOLDER;
                     } else {
+                        if (hdfsConnectionInfo == null) {
+                            throw new IllegalArgumentException("hdfsConnectionInfo must not be null.");
+                        }
                         INSTANCE_HOLDER = new HDFSDataBroker(hdfsConnectionInfo);
                     }
                 }
