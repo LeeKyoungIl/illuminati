@@ -40,7 +40,8 @@ public class ValidationException extends RuntimeException {
         super(throwable);
     }
 
-    public Throwable getCause() {
+    @Override
+    public synchronized Throwable getCause() {
         return this.cause;
     }
 }

@@ -41,7 +41,8 @@ public class PublishMessageException extends Throwable {
         this.cause = throwable;
     }
 
-    public Throwable getCause() {
+    @Override
+    public synchronized Throwable getCause() {
         return this.cause;
     }
 }
