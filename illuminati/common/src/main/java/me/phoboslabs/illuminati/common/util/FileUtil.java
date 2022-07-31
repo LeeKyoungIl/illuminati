@@ -74,16 +74,16 @@ public class FileUtil {
             return;
         }
 
-        try {
+        try (FileWriter writer = new FileWriter(file, true);) {
             final long start = System.currentTimeMillis();
-            FileWriter writer = new FileWriter(file, true);
+
             writer.append(textData);
             writer.flush();
             writer.close();
 
             FILE_UTIL_LOGGER.info("Time spent writing files : " + ((System.currentTimeMillis() - start) / 1000f) + " seconds");
-        } catch (IOException e) {
-            FILE_UTIL_LOGGER.error("File write error : {}", e.toString(), e);
+        } catch (IOException ex) {
+            FILE_UTIL_LOGGER.error("File write error : {}", ex.toString(), ex);
         }
     }
 
