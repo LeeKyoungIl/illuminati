@@ -20,5 +20,5 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class IlluminatiInfraConstant {
 
-    volatile public static AtomicBoolean IS_CAN_CONNECT_TO_REMOTE_BROKER = new AtomicBoolean(false);
+    public static AtomicBoolean IS_CAN_CONNECT_TO_REMOTE_BROKER = new AtomicBoolean(false);
 }

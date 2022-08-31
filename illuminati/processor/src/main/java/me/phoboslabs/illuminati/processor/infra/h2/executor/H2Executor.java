@@ -73,13 +73,9 @@ public class H2Executor<T> implements DBExecutor<T> {
         }
     }
 
-    public static H2Executor getInstance(Class type, String dbName, String tableName) throws Exception {
+    public static synchronized H2Executor getInstance(Class type, String dbName, String tableName) throws Exception {
         if (H2_BACKUP == null) {
-            synchronized (H2Executor.class) {
-                if (H2_BACKUP == null) {
-                    H2_BACKUP = new H2Executor(type, dbName, tableName);
-                }
-            }
+            H2_BACKUP = new H2Executor(type, dbName, tableName);
         }
 
         return H2_BACKUP;
