@@ -66,14 +66,10 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
         this.illuminatiTemplate = this.initIlluminatiTemplate();
     }
 
-    public static IlluminatiTemplateExecutorImpl getInstance(IlluminatiBackupExecutorImpl illuminatiBackupExecutor)
+    public static synchronized IlluminatiTemplateExecutorImpl getInstance(IlluminatiBackupExecutorImpl illuminatiBackupExecutor)
         throws Exception {
         if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
-            synchronized (IlluminatiTemplateExecutorImpl.class) {
-                if (ILLUMINATI_TEMPLATE_EXECUTOR_IMPL == null) {
-                    ILLUMINATI_TEMPLATE_EXECUTOR_IMPL = new IlluminatiTemplateExecutorImpl(illuminatiBackupExecutor);
-                }
-            }
+            ILLUMINATI_TEMPLATE_EXECUTOR_IMPL = new IlluminatiTemplateExecutorImpl(illuminatiBackupExecutor);
         }
 
         return ILLUMINATI_TEMPLATE_EXECUTOR_IMPL;
@@ -215,16 +211,11 @@ public class IlluminatiTemplateExecutorImpl extends IlluminatiBasicExecutor<Illu
             while (true) {
                 try {
                     IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.lazySet(illuminatiTemplate.canIConnect());
-
-                    try {
-                        Thread.sleep(BROKER_HEALTH_CHECK_TIME);
-                    } catch (InterruptedException ignore) {
-                        ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
-                        Thread.currentThread().interrupt();
-                    }
+                    Thread.sleep(BROKER_HEALTH_CHECK_TIME);
                 } catch (Exception e) {
                     ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to execute the ILLUMINATI_BROKER_HEALTH_CHECKER.. ({})",
                         e.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }
         };

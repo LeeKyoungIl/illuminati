@@ -59,13 +59,9 @@ public class IlluminatiDataExecutorImpl extends IlluminatiBasicExecutor<Illumina
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
-    public static IlluminatiDataExecutorImpl getInstance(IlluminatiExecutor illuminatiExecutor) {
+    public static synchronized IlluminatiDataExecutorImpl getInstance(IlluminatiExecutor illuminatiExecutor) {
         if (ILLUMINATI_DATA_EXECUTOR_IMPL == null) {
-            synchronized (IlluminatiDataExecutorImpl.class) {
-                if (ILLUMINATI_DATA_EXECUTOR_IMPL == null) {
-                    ILLUMINATI_DATA_EXECUTOR_IMPL = new IlluminatiDataExecutorImpl(illuminatiExecutor);
-                }
-            }
+            ILLUMINATI_DATA_EXECUTOR_IMPL = new IlluminatiDataExecutorImpl(illuminatiExecutor);
         }
 
         return ILLUMINATI_DATA_EXECUTOR_IMPL;
