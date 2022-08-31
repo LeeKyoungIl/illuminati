@@ -69,7 +69,7 @@ public class H2Executor<T> implements DBExecutor<T> {
             }
             this.tableDDL(TableDDLType.CREATE);
         } else {
-            throw new Exception("H2 is can't connect.");
+            throw new SQLException("H2 is can't connect.");
         }
     }
 

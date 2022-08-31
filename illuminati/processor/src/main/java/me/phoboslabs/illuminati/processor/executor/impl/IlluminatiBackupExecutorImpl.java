@@ -23,6 +23,7 @@ import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.dto.enums.IlluminatiInterfaceType;
 import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.exception.IlluminatiQueueException;
 import me.phoboslabs.illuminati.processor.exception.RequiredValueException;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
 import me.phoboslabs.illuminati.processor.executor.IlluminatiBlockingQueue;
@@ -81,25 +82,25 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
     }
 
     @Override
-    public IlluminatiTemplateInterfaceModelImpl deQueue() throws Exception {
+    public IlluminatiTemplateInterfaceModelImpl deQueue() {
         List<IlluminatiTemplateInterfaceModelImpl> backupObjectList = illuminatiBlockingQueue.pollToList(
             ILLUMINATI_FILE_BACKUP_DEQUEUING_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         if (CollectionUtils.isEmpty(backupObjectList)) {
-            throw new Exception("backupObjectList is empty.");
+            throw new IlluminatiQueueException("backupObjectList is empty.");
         }
 
         backupObjectList.forEach(this::sendToNextStep);
 
-        throw new Exception("Backup Executor is not returned messages.");
+        throw new IlluminatiQueueException("Backup Executor is not returned messages.");
     }
 
     @Override
-    public IlluminatiTemplateInterfaceModelImpl deQueueByDebug() throws Exception {
+    public IlluminatiTemplateInterfaceModelImpl deQueueByDebug() {
         ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
-            throw new Exception("backupObjectList is empty.");
+            throw new IlluminatiQueueException("backupObjectList is empty.");
         }
 
         final long start = System.currentTimeMillis();
@@ -108,7 +109,7 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is {}", this.getQueueSize());
         ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of dequeueing ILLUMINATI_BLOCKING_QUEUE is {}  millisecond", elapsedTime);
 
-        throw new Exception("Backup Executor is not returned messages.");
+        throw new IlluminatiQueueException("Backup Executor is not returned messages.");
     }
 
     @Override

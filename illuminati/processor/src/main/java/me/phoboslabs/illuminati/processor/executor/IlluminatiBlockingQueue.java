@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.processor.exception.IlluminatiQueueException;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -35,10 +36,10 @@ public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends
         this.listCount = listCount;
     }
 
-    public List<E> pollToList(long timeout, TimeUnit unit) throws Exception {
+    public List<E> pollToList(long timeout, TimeUnit unit) {
         int superQueueSize = super.size();
         if (superQueueSize == 0) {
-            throw new Exception("Queue is empty.");
+            throw new IlluminatiQueueException("Queue is empty.");
         }
 
         if (superQueueSize > this.listCount) {
@@ -60,7 +61,7 @@ public class IlluminatiBlockingQueue<E extends IlluminatiInterfaceModel> extends
         }
 
         if (CollectionUtils.isEmpty(dataList)) {
-            throw new Exception("Queue is empty.");
+            throw new IlluminatiQueueException("Queue is empty.");
         }
 
         return dataList;

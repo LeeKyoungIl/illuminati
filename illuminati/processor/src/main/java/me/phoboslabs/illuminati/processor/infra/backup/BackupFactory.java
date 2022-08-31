@@ -32,7 +32,7 @@ public class BackupFactory {
                 return H2Executor.getInstance(IlluminatiTemplateInterfaceModelImpl.class, DB_NAME, TABLE_NAME);
 
             default:
-                throw new Exception("Backup function is only supported by the H2 Database yet.");
+                throw new IllegalArgumentException("Backup function is only supported by the H2 Database yet.");
         }
     }
 }

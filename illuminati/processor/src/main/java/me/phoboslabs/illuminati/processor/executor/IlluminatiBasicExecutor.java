@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
 import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
 import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.exception.IlluminatiQueueException;
 import me.phoboslabs.illuminati.processor.shutdown.IlluminatiGracefulShutdownChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,23 +60,27 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
     public void addToQueue(T illuminatQueueInterfaceModel) {
         if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             try {
-                illuminatiBlockingQueue.offer(illuminatQueueInterfaceModel, this.enQueuingTimeout, TimeUnit.MILLISECONDS);
+                if (!illuminatiBlockingQueue.offer(illuminatQueueInterfaceModel, this.enQueuingTimeout, TimeUnit.MILLISECONDS)) {
+                    throw new IlluminatiQueueException("illuminati queue offer has failed");
+                }
             } catch (InterruptedException e) {
                 ILLUMINATI_EXECUTOR_LOGGER.warn("Failed to enqueuing the ILLUMINATI_BLOCKING_QUEUE...", e);
+                Thread.currentThread().interrupt();
             }
         } else {
             this.addToQueueByDebug(illuminatQueueInterfaceModel);
         }
     }
 
-    public T deQueue() throws Exception {
+    public T deQueue() {
         if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
             try {
                 return illuminatiBlockingQueue.take();
             } catch (InterruptedException e) {
                 final String errorMessage = "Failed to dequeing the ILLUMINATI_BLOCKING_QUEUE... (" + e.getMessage() + ")";
                 ILLUMINATI_EXECUTOR_LOGGER.warn(errorMessage);
-                throw new Exception(errorMessage);
+                Thread.currentThread().interrupt();
+                throw new IlluminatiQueueException(errorMessage);
             }
         } else {
             return this.deQueueByDebug();
@@ -99,21 +104,25 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         try {
             ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
             final long start = System.currentTimeMillis();
-            illuminatiBlockingQueue.offer(illuminatiInterfaceModel, this.enQueuingTimeout, TimeUnit.MILLISECONDS);
-            final long elapsedTime = System.currentTimeMillis() - start;
-            ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is {}", this.getQueueSize());
-            ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of enqueueing ILLUMINATI_BLOCKING_QUEUE is {} millisecond",
-                elapsedTime);
+            if (illuminatiBlockingQueue.offer(illuminatiInterfaceModel, this.enQueuingTimeout, TimeUnit.MILLISECONDS)) {
+                final long elapsedTime = System.currentTimeMillis() - start;
+                ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE after inserted size is {}", this.getQueueSize());
+                ILLUMINATI_EXECUTOR_LOGGER.info("elapsed time of enqueueing ILLUMINATI_BLOCKING_QUEUE is {} millisecond",
+                        elapsedTime);
+            } else {
+                throw new IlluminatiQueueException("illuminati queue offer has failed");
+            }
         } catch (InterruptedException e) {
             ILLUMINATI_EXECUTOR_LOGGER.error("Failed to enqueuing the ILLUMINATI_BLOCKING_QUEUE... ({})", e.getMessage(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
-    protected T deQueueByDebug() throws Exception {
+    protected T deQueueByDebug() {
         ILLUMINATI_EXECUTOR_LOGGER.info("ILLUMINATI_BLOCKING_QUEUE current size is {}", this.getQueueSize());
 
         if (illuminatiBlockingQueue == null || this.getQueueSize() == 0) {
-            throw new Exception("ILLUMINATI_BLOCKING_QUEUE is empty");
+            throw new IlluminatiQueueException("ILLUMINATI_BLOCKING_QUEUE is empty");
         }
         try {
             final long start = System.currentTimeMillis();
@@ -126,7 +135,8 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
         } catch (InterruptedException e) {
             final String errorMessage = "Failed to dequeing the ILLUMINATI_BLOCKING_QUEUE... (" + e.getMessage() + ")";
             ILLUMINATI_EXECUTOR_LOGGER.warn(errorMessage);
-            throw new Exception(errorMessage);
+            Thread.currentThread().interrupt();
+            throw new IlluminatiQueueException(errorMessage);
         }
     }
 
@@ -147,12 +157,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                             preventErrorOfSystemThread(illuminatiInterfaceModel);
                         }
                     } else {
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ignore) {
-                            ILLUMINATI_EXECUTOR_LOGGER.warn("Interrupted!!", ignore);
-                            Thread.currentThread().interrupt();
-                        }
+                        Thread.sleep(2000);
                         sendToNextStepByDebug(illuminatiInterfaceModel);
                     }
                 } catch (Exception e) {
