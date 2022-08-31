@@ -174,6 +174,7 @@ public abstract class IlluminatiBasicExecutor<T extends IlluminatiInterfaceModel
                     }
 
                     ILLUMINATI_EXECUTOR_LOGGER.debug(errorMessage.toString(), e.getMessage());
+                    Thread.currentThread().interrupt();
                 }
             }
         };
