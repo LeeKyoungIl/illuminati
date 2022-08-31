@@ -52,13 +52,9 @@ public class RestoreTemplateData implements Restore {
         this.illuminatiTemplateExecutor = illuminatiExecutor;
     }
 
-    public static RestoreTemplateData getInstance(IlluminatiExecutor illuminatiExecutor) throws Exception {
+    public static synchronized RestoreTemplateData getInstance(IlluminatiExecutor illuminatiExecutor) throws Exception {
         if (RESTORE_TEMPLATE_DATA == null) {
-            synchronized (RestoreTemplateData.class) {
-                if (RESTORE_TEMPLATE_DATA == null) {
-                    RESTORE_TEMPLATE_DATA = new RestoreTemplateData(illuminatiExecutor);
-                }
-            }
+            RESTORE_TEMPLATE_DATA = new RestoreTemplateData(illuminatiExecutor);
         }
 
         return RESTORE_TEMPLATE_DATA;
@@ -122,24 +118,13 @@ public class RestoreTemplateData implements Restore {
                             restoreToQueue();
                         } else {
                             restoreToQueueByDebug();
-
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException ignore) {
-                                this.restoreTemplateDataLogger.warn("Interrupted!!", ignore);
-                                Thread.currentThread().interrupt();
-                            }
+                            Thread.sleep(5000);
                         }
                     }
-
-                    try {
-                        Thread.sleep(300000);
-                    } catch (InterruptedException ignore) {
-                        this.restoreTemplateDataLogger.warn("Interrupted!!", ignore);
-                        Thread.currentThread().interrupt();
-                    }
+                    Thread.sleep(300000);
                 } catch (Exception e) {
                     restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... (" + e.getMessage() + ")");
+                    Thread.currentThread().interrupt();
                 }
             }
         };
