@@ -16,6 +16,8 @@
 
 package me.phoboslabs.illuminati.processor.infra.kafka.impl;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +29,12 @@ import org.apache.kafka.common.Cluster;
  */
 public class RoundRobinPartitioner implements Partitioner {
 
-    private final AtomicInteger counter = new AtomicInteger((new Random().nextInt(Integer.MAX_VALUE)));
+    private final Random random = SecureRandom.getInstanceStrong();
+    private final AtomicInteger counter;
+
+    public RoundRobinPartitioner() throws NoSuchAlgorithmException {
+        this.counter = new AtomicInteger((this.random.nextInt(Integer.MAX_VALUE)));
+    }
 
     @Override
     public int partition(String topic, Object o, byte[] bytes, Object o1, byte[] bytes1, Cluster cluster) {
