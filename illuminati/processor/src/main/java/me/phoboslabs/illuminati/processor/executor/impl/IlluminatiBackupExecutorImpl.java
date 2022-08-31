@@ -59,13 +59,9 @@ public class IlluminatiBackupExecutorImpl extends IlluminatiBasicExecutor<Illumi
         this.DBExecutor = BackupFactory.getBackupInstance(IlluminatiConstant.ILLUMINATI_BACKUP_STORAGE_TYPE);
     }
 
-    public static IlluminatiBackupExecutorImpl getInstance() throws Exception {
+    public static synchronized IlluminatiBackupExecutorImpl getInstance() throws Exception {
         if (ILLUMINATI_BACKUP_EXECUTOR_IMPL == null) {
-            synchronized (IlluminatiBackupExecutorImpl.class) {
-                if (ILLUMINATI_BACKUP_EXECUTOR_IMPL == null) {
-                    ILLUMINATI_BACKUP_EXECUTOR_IMPL = new IlluminatiBackupExecutorImpl();
-                }
-            }
+            ILLUMINATI_BACKUP_EXECUTOR_IMPL = new IlluminatiBackupExecutorImpl();
         }
 
         return ILLUMINATI_BACKUP_EXECUTOR_IMPL;
