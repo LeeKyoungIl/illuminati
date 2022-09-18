@@ -10,14 +10,14 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>illuminati-common</module>
-    <module>illuminati-annotation</module>
-    <module>illuminati-processor</module>
-    <module>illuminati-elasticsearch</module>
-    <module>illuminati-switch</module>
-    <module>illuminati-jscollector</module>
-    <module>illuminati-hdfs</module>
-    <module>illuminati-mongo</module>
+    <module>common</module>
+    <module>annotation</module>
+    <module>processor</module>
+    <module>elasticsearch</module>
+    <module>switch</module>
+    <module>jscollector</module>
+    <module>hdfs</module>
+    <module>mongo</module>
   </modules>
 
   <licenses>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>me.phoboslabs.illuminati</groupId>
+    <artifactId>illuminati</artifactId>
+    <version>0.9</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>illuminati-switch</artifactId>
+  <version>1.0.18</version>
+  <packaging>jar</packaging>
+
+  <name>switch</name>
+  <description>Project illuminati switch library.</description>
+  <url>https://github.com/LeeKyoungIl/illuminati/tree/master/illuminati/illuminati-switch</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>me.phoboslabs.illuminati</groupId>
+      <artifactId>illuminati-common</artifactId>
+      <version>1.4.12</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.13.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>

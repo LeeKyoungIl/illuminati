@@ -1,0 +1,134 @@
+/*
+ * Copyright 2017 Phoboslabs.me
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package me.phoboslabs.illuminati.processor.infra.restore.impl;
+
+import java.util.List;
+import me.phoboslabs.illuminati.common.constant.IlluminatiConstant;
+import me.phoboslabs.illuminati.common.dto.IlluminatiInterfaceModel;
+import me.phoboslabs.illuminati.common.dto.impl.IlluminatiTemplateInterfaceModelImpl;
+import me.phoboslabs.illuminati.common.util.SystemUtil;
+import me.phoboslabs.illuminati.processor.executor.IlluminatiBasicExecutor;
+import me.phoboslabs.illuminati.processor.executor.IlluminatiExecutor;
+import me.phoboslabs.illuminati.processor.infra.common.IlluminatiInfraConstant;
+import me.phoboslabs.illuminati.processor.infra.h2.DBExecutor;
+import me.phoboslabs.illuminati.processor.infra.h2.executor.H2Executor;
+import me.phoboslabs.illuminati.processor.infra.restore.Restore;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class RestoreTemplateData implements Restore {
+
+    protected final Logger restoreTemplateDataLogger = LoggerFactory.getLogger(this.getClass());
+
+    private static RestoreTemplateData RESTORE_TEMPLATE_DATA;
+
+    private static final int RESTORE_CHECK_QUEUE_SIZE = 1500;
+    private static final int LIMIT_COUNT = 1000;
+
+    private final DBExecutor<IlluminatiInterfaceModel> h2DBExecutor;
+
+    // ################################################################################################################
+    // ### init illuminati template executor                                                                        ###
+    // ################################################################################################################
+    private IlluminatiExecutor<IlluminatiTemplateInterfaceModelImpl> illuminatiTemplateExecutor;
+
+    private RestoreTemplateData(IlluminatiExecutor illuminatiExecutor) throws Exception {
+        h2DBExecutor = H2Executor.getInstance(IlluminatiTemplateInterfaceModelImpl.class, "simple", "trace");
+        this.illuminatiTemplateExecutor = illuminatiExecutor;
+    }
+
+    public static synchronized RestoreTemplateData getInstance(IlluminatiExecutor illuminatiExecutor) throws Exception {
+        if (RESTORE_TEMPLATE_DATA == null) {
+            RESTORE_TEMPLATE_DATA = new RestoreTemplateData(illuminatiExecutor);
+        }
+
+        return RESTORE_TEMPLATE_DATA;
+    }
+
+    @Override
+    public RestoreTemplateData init() {
+        this.createSystemThread();
+        return this;
+    }
+
+    @Override
+    public void restoreToQueue() {
+        if (!this.readyToRestoreQueue()) {
+            return;
+        }
+
+        try {
+            final List<IlluminatiInterfaceModel> backupObjectList = this.h2DBExecutor.getDataByList(false, true, 0, LIMIT_COUNT);
+            if (CollectionUtils.isNotEmpty(backupObjectList)) {
+                backupObjectList.forEach(illuminatiInterfaceModel -> this.illuminatiTemplateExecutor.addToQueue(
+                    (IlluminatiTemplateInterfaceModelImpl) illuminatiInterfaceModel));
+            }
+        } catch (Exception ex) {
+            this.restoreTemplateDataLogger.error("check H2 database configurations.", ex);
+        }
+    }
+
+    private boolean readyToRestoreQueue() {
+        if (!IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.get()) {
+            return false;
+        }
+
+        try {
+            if (this.h2DBExecutor.getCount() == 0) {
+                return false;
+            }
+        } catch (Exception ex) {
+            return false;
+        }
+
+        final int restoreQueueSize = IlluminatiBasicExecutor.ILLUMINATI_BAK_LOG - this.illuminatiTemplateExecutor.getQueueSize();
+        return restoreQueueSize > RESTORE_CHECK_QUEUE_SIZE;
+    }
+
+    @Override
+    public void restoreToQueueByDebug() {
+        final long start = System.currentTimeMillis();
+        //## Restore file
+        this.restoreToQueue();
+        final long elapsedTime = System.currentTimeMillis() - start;
+        this.restoreTemplateDataLogger.info("elapsed time of template queue sent is " + elapsedTime + " millisecond");
+    }
+
+    private void createSystemThread() {
+        final Runnable runnableFirst = () -> {
+            while (true) {
+                try {
+                    if (IlluminatiInfraConstant.IS_CAN_CONNECT_TO_REMOTE_BROKER.get()) {
+                        if (!IlluminatiConstant.ILLUMINATI_DEBUG) {
+                            restoreToQueue();
+                        } else {
+                            restoreToQueueByDebug();
+                            Thread.sleep(5000);
+                        }
+                    }
+                    Thread.sleep(300000);
+                } catch (Exception e) {
+                    restoreTemplateDataLogger.debug("Failed to send the ILLUMINATI_BLOCKING_QUEUE... (" + e.getMessage() + ")");
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+
+        SystemUtil.createSystemThread(runnableFirst, this.getClass().getName() + " : ILLUMINATI_RESTORE_DATA_TO_TEMPLATE_THREAD");
+    }
+}
