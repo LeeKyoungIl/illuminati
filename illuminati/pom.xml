@@ -15,7 +15,6 @@
     <module>processor</module>
     <module>elasticsearch</module>
     <module>switch</module>
-    <module>jscollector</module>
     <module>hdfs</module>
     <module>mongo</module>
   </modules>

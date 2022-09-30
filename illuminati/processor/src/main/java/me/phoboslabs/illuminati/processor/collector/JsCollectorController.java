@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.phoboslabs.illuminati.jscollector.controller;
+package me.phoboslabs.illuminati.processor.collector;
 
 import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
@@ -27,18 +27,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/illuminati/js/collector", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/collect-log/v1/illuminati/js", produces = MediaType.APPLICATION_JSON_VALUE)
 public class JsCollectorController {
 
     @Illuminati(packageType = PackageType.JAVASCRIPT)
     @PostMapping
     public void getByPost(@RequestBody ChangedJsElement changedJsElement) {
-
     }
 
     @Illuminati(packageType = PackageType.JAVASCRIPT)
     @GetMapping
     public void getByGet(@RequestBody ChangedJsElement changedJsElement) {
-
     }
 }
