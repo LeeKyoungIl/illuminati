@@ -41,13 +41,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>me.phoboslabs.illuminati</groupId>
-      <artifactId>illuminati-annotation</artifactId>
-      <version>1.2.4</version>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
