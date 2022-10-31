@@ -19,6 +19,8 @@ package me.phoboslabs.illuminati.processor.collector;
 import me.phoboslabs.illuminati.annotation.Illuminati;
 import me.phoboslabs.illuminati.annotation.enums.PackageType;
 import me.phoboslabs.illuminati.common.dto.ChangedJsElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +32,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/collect-log/v1/illuminati/js", produces = MediaType.APPLICATION_JSON_VALUE)
 public class JsCollectorController {
 
+    private final static Logger JS_COLLECTOR_LOGGER = LoggerFactory.getLogger(JsCollectorController.class);
+
     @Illuminati(packageType = PackageType.JAVASCRIPT)
     @PostMapping
     public void getByPost(@RequestBody ChangedJsElement changedJsElement) {
+        JS_COLLECTOR_LOGGER.info("Send to Illuminati Store Success. (By Post)");
     }
 
     @Illuminati(packageType = PackageType.JAVASCRIPT)
     @GetMapping
     public void getByGet(@RequestBody ChangedJsElement changedJsElement) {
+        JS_COLLECTOR_LOGGER.info("Send to Illuminati Store Success. (By Get)");
     }
 }
