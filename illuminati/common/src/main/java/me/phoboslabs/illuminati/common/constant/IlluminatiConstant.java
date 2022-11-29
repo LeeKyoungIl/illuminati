@@ -56,11 +56,11 @@ abstract public class IlluminatiConstant {
 
     public static AtomicBoolean ILLUMINATI_SWITCH_VALUE = new AtomicBoolean(false);
 
-    public final static String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = "5000";
+    public static final String BASIC_ILLUMINATI_SWITCH_VALUE_CHECK_INTERVAL = "5000";
 
     public static final List<String> PROPERTIES_KEYS;
     public final static List<String> CONFIG_FILE_EXTENSTIONS;
-    public final static List<String> BASIC_CONFIG_FILES;
+    public static final List<String> BASIC_CONFIG_FILES;
 
     static {
         PROPERTIES_KEYS = Collections.unmodifiableList(Arrays.asList("parentModuleName", "samplingRate"
@@ -78,7 +78,7 @@ abstract public class IlluminatiConstant {
     public static final Gson ILLUMINATI_GSON_EXCLUDE_NULL_OBJ = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT)
         .create();
 
-    public final static ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
+    public static final ObjectMapper YAML_MAPPER = new ObjectMapper(new YAMLFactory());
 
     static {
         YAML_MAPPER.setVisibility(
@@ -90,9 +90,9 @@ abstract public class IlluminatiConstant {
         );
     }
 
-    public final static ObjectMapper BASIC_OBJECT_MAPPER = new ObjectMapper();
+    public static final ObjectMapper BASIC_OBJECT_MAPPER = new ObjectMapper();
 
-    public final static ObjectMapper BASIC_OBJECT_STRING_MAPPER;
+    public static final ObjectMapper BASIC_OBJECT_STRING_MAPPER;
 
     static {
         BASIC_OBJECT_STRING_MAPPER = new ObjectMapper();
@@ -100,13 +100,13 @@ abstract public class IlluminatiConstant {
         BASIC_OBJECT_STRING_MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
-    public final static IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(
+    public static final IlluminatiJsonCodeProperties JSON_STATUS_CODE = PropertiesUtil.getIlluminatiProperties(
         IlluminatiJsonCodeProperties.class, "jsonStatusCode");
 
-    public final static Type TYPE_FOR_TYPE_TOKEN = new TypeToken<Map<String, Object>>() {
+    public static final Type TYPE_FOR_TYPE_TOKEN = new TypeToken<Map<String, Object>>() {
     }.getType();
 
-    public final static String BASE_CHARSET = "UTF-8";
+    public static final String BASE_CHARSET = "UTF-8";
 
-    public final static String BASIC_PACKAGE_TYPE = "default";
+    public static final String BASIC_PACKAGE_TYPE = "default";
 }
